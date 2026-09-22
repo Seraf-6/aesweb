@@ -1,0 +1,934 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Preguntarle a un número · AESWeb</title>
+<meta name="description" content="La unidad de ecuaciones lineales de 7.º en ocho pasos: de las tres clases de igualdad a los problemas, con la balanza y la gráfica para probar en clase.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<style>
+/* ---------- encabezado ---------- */
+.tapa{padding-block:44px 28px}
+.sello{
+  font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--rojo); margin:0 0 14px
+}
+h1{
+  font-family:var(--serif); font-weight:800; font-size:clamp(2.4rem,7vw,4rem);
+  line-height:1.02; margin:0 0 16px; text-wrap:balance; letter-spacing:-.015em;
+}
+.bajada{
+  font-family:var(--serif); font-style:italic; font-size:clamp(1.1rem,2.6vw,1.35rem);
+  color:var(--lapiz); max-width:34em; margin:0 0 20px; line-height:1.45;
+}
+.pie-tapa{
+  font-size:14px; color:var(--lapiz);
+  border-top:1px solid var(--linea-fuerte); padding-top:12px;
+  display:flex; flex-wrap:wrap; gap:6px 18px;
+}
+
+/* ---------- navegador ---------- */
+.nav{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+  background:var(--papel); border-bottom:1px solid var(--linea-fuerte);
+  margin-inline:-20px; padding-inline:20px;
+}
+.nav-int{display:flex; gap:6px; overflow-x:auto; padding-block:9px; scrollbar-width:thin}
+.chip{
+  flex:0 0 auto; font-family:var(--mono); font-size:12px; font-weight:600;
+  border:1px solid var(--linea-fuerte); background:var(--papel-2); color:var(--lapiz);
+  border-radius:3px; padding:5px 9px; cursor:pointer; text-decoration:none;
+  white-space:nowrap; transition:color .12s,border-color .12s;
+}
+.chip:hover,.chip:focus-visible{color:var(--rojo); border-color:var(--rojo)}
+
+/* ---------- texto corriente ---------- */
+h2{
+  font-family:var(--serif); font-weight:800; font-size:clamp(1.5rem,4vw,2rem);
+  margin:0 0 6px; line-height:1.15; text-wrap:balance;
+}
+.intro{padding-block:26px 34px; border-bottom:2px solid var(--tinta)}
+
+/* ---------- ficha de paso ---------- */
+.caso{
+  padding-block:34px; border-bottom:1px solid var(--linea-fuerte);
+  scroll-margin-top:72px;
+}
+.caso-cab{display:flex; gap:16px; align-items:flex-start; margin-bottom:16px}
+.numero{
+  flex:0 0 auto; font-family:var(--serif); font-weight:800; font-size:2.7rem;
+  line-height:.9; color:var(--rojo); font-variant-numeric:tabular-nums;
+  min-width:1.6em;
+}
+.caso-tit{flex:1 1 auto; min-width:0}
+.caso-tit h3{
+  font-family:var(--serif); font-weight:700; font-size:clamp(1.25rem,3.4vw,1.6rem);
+  margin:0 0 2px; line-height:1.15; text-wrap:balance;
+}
+.paginas{
+  font-family:var(--mono); font-size:11.5px; color:var(--lapiz);
+  letter-spacing:.04em; text-transform:uppercase;
+}
+
+/* ---------- matemática ---------- */
+.forma{
+  background:var(--papel-2); border-left:3px solid var(--tinta);
+  padding:13px 16px; margin:0 0 18px; overflow-x:auto;
+}
+.forma .ec{font-size:1.2em}
+.forma .rotulo{
+  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz); margin-bottom:5px;
+}
+
+/* ---------- ejemplo con pasos ---------- */
+.ejemplo{margin:0 0 18px}
+.ejemplo-cab{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:12px; flex-wrap:wrap; margin-bottom:9px;
+}
+.rotulo-chico{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz);
+}
+.boton{
+  font-family:var(--sans); font-size:13px; font-weight:700;
+  background:none; border:1px solid var(--rojo); color:var(--rojo);
+  border-radius:3px; padding:4px 11px; cursor:pointer;
+  transition:background .12s,color .12s;
+}
+.boton:hover,.boton:focus-visible{background:var(--rojo); color:var(--papel)}
+.boton[disabled]{opacity:.35; cursor:default; background:none; color:var(--rojo)}
+.pasos{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px}
+.pasos li{
+  display:flex; gap:11px; align-items:baseline;
+  padding:7px 11px; background:var(--papel-2); border-radius:3px;
+  animation:entra .22s ease-out;
+}
+.pasos li .n{
+  font-family:var(--mono); font-size:11px; color:var(--lapiz);
+  flex:0 0 auto; padding-top:2px;
+}
+.pasos li .t{flex:1 1 auto; min-width:0; overflow-x:auto}
+.pasos li.final{background:var(--rojo-suave); font-weight:500}
+.pasos li.final .t .ec{color:var(--rojo); font-weight:700}
+@keyframes entra{from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){.pasos li{animation:none}}
+
+/* ---------- panel del gancho ---------- */
+.gancho{
+  background:var(--ambar-suave); border:1px solid var(--ambar-borde);
+  border-radius:4px; padding:15px 17px; margin-top:4px;
+}
+.gancho-tit{
+  font-family:var(--sans); font-weight:700; font-size:13px;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--ambar);
+  margin:0 0 7px; display:flex; align-items:center; gap:8px;
+}
+.gancho-tit::before{
+  content:""; width:16px; height:2px; background:var(--ambar); flex:0 0 auto;
+}
+.gancho p{margin:0 0 10px; max-width:60ch}
+.gancho p:last-child{margin-bottom:0}
+.cuenta{
+  font-family:var(--mono); font-size:15px; background:var(--papel);
+  border:1px solid var(--linea-fuerte); border-radius:3px;
+  padding:9px 12px; margin:10px 0; overflow-x:auto; white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.cuenta b{color:var(--rojo); font-weight:600}
+
+/* ---------- laboratorios ---------- */
+.lab{
+  background:var(--papel-2); border:1px solid var(--linea-fuerte);
+  border-radius:4px; padding:18px; margin:20px 0 0;
+}
+.lab h4{
+  font-family:var(--serif); font-weight:700; font-size:1.18rem; margin:0 0 4px;
+}
+.lab .sub{font-size:14px; color:var(--lapiz); margin:0 0 14px; max-width:58ch}
+.campos{display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:14px}
+.campo{display:flex; flex-direction:column; gap:4px}
+.campo label{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--lapiz);
+}
+.campo input{
+  font-family:var(--mono); font-size:16px; width:9ch;
+  background:var(--papel); color:var(--tinta);
+  border:1px solid var(--linea-fuerte); border-radius:3px; padding:7px 9px;
+}
+.campo input:focus-visible{outline:2px solid var(--rojo); outline-offset:1px; border-color:var(--rojo)}
+.salida{
+  font-family:var(--mono); font-size:15px; line-height:1.85;
+  background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:3px;
+  padding:12px 14px; overflow-x:auto; font-variant-numeric:tabular-nums;
+}
+.salida .dim{color:var(--lapiz)}
+.salida .ok{color:var(--rojo); font-weight:600}
+.salida .fila{white-space:nowrap}
+
+/* ---------- laboratorio de la balanza ---------- */
+.preset{
+  font-family:var(--mono); font-size:12px; font-weight:600;
+  background:var(--papel); border:1px solid var(--linea-fuerte); color:var(--lapiz);
+  border-radius:3px; padding:5px 10px; cursor:pointer;
+}
+.preset:hover,.preset:focus-visible{border-color:var(--rojo); color:var(--rojo)}
+.operaciones{display:flex; gap:6px; flex-wrap:wrap}
+.op{
+  font-family:var(--mono); font-size:17px; font-weight:600; line-height:1;
+  width:42px; height:40px; cursor:pointer;
+  background:var(--papel); color:var(--tinta);
+  border:1px solid var(--linea-fuerte); border-radius:3px;
+}
+.op[aria-pressed="true"]{background:var(--tinta); color:var(--papel); border-color:var(--tinta)}
+.op:focus-visible{outline:2px solid var(--rojo); outline-offset:2px}
+.historia{
+  list-style:none; margin:0 0 12px; padding:0;
+  display:flex; flex-direction:column; gap:4px;
+}
+.historia li{
+  display:flex; gap:12px; align-items:baseline; padding:6px 11px;
+  background:var(--papel); border:1px solid var(--linea); border-radius:3px;
+}
+.historia li .mov{
+  font-family:var(--mono); font-size:11.5px; color:var(--lapiz);
+  flex:0 0 auto; min-width:9em;
+}
+.historia li .ecu{flex:1 1 auto; min-width:0; overflow-x:auto; font-size:1.15em}
+.historia li.ahora{border-color:var(--tinta); background:var(--papel-2)}
+.historia li.ahora .ecu{font-weight:700}
+.veredicto{margin-top:12px}
+.veredicto p{margin:0; font-size:14.5px}
+
+/* ---------- lienzo ---------- */
+.lienzo{
+  background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:4px;
+  padding:8px; overflow:hidden; margin-bottom:14px;
+}
+.lienzo svg{display:block; width:100%; height:auto; max-width:100%}
+.grilla{stroke:var(--linea); stroke-width:1}
+.grilla-fuerte{stroke:var(--linea-fuerte); stroke-width:1}
+.eje{stroke:var(--tinta); stroke-width:1.6}
+.rotulo-eje{fill:var(--lapiz); font-family:'IBM Plex Mono',monospace; font-size:11px}
+.recta1{stroke:var(--r1); stroke-width:2.6; fill:none; stroke-linecap:round}
+.recta2{stroke:var(--r2); stroke-width:2.6; fill:none; stroke-linecap:round}
+.sol-halo{fill:var(--punto); opacity:.22}
+.sol-punto{fill:var(--punto); stroke:var(--papel); stroke-width:2}
+.sol-guia{stroke:var(--punto); stroke-width:1.2; stroke-dasharray:4 4; fill:none}
+.sol-texto{fill:var(--punto); font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600}
+
+/* ---------- cierre ---------- */
+.cierre{padding-block:38px 20px}
+.cierre .marco{
+  border:2px solid var(--tinta); padding:22px 24px; background:var(--papel);
+}
+.cierre h2{margin-bottom:10px}
+.cierre .prosa{max-width:58ch}
+.creditos{
+  padding-block:26px 46px; font-size:13.5px; color:var(--lapiz);
+  border-top:1px solid var(--linea-fuerte); margin-top:18px;
+}
+
+@media (max-width:520px){
+  body{font-size:16px}
+  .numero{font-size:2.1rem}
+  .caso-cab{gap:11px}
+  .campo input{width:7.5ch}
+  .historia li{flex-wrap:wrap; gap:2px 12px}
+}
+</style>
+</head>
+<body data-diapos=".intro, .caso, .cierre">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="index.html">7.º grado</a><span class="sep">/</span>
+      <span>Unidad 7 · págs. 132–150</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Matemática 7.º grado</p>
+    <h1>Preguntarle a un número</h1>
+    <p class="bajada">Una ecuación no afirma nada: pregunta. Y es la única parte de la
+      matemática donde la respuesta se corrige sola, porque para saber si acertaste
+      alcanza con devolvérsela a la pregunta.</p>
+    <div class="pie-tapa">
+      <span>Unidad 7 · páginas 132 a 150</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un paso">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro">
+    <div class="prosa">
+      <h2>Una ecuación es una pregunta</h2>
+      <p><span class="ec">3<i>x</i> + 5 = 20</span> no dice nada todavía. Pregunta:
+        <i>¿qué número puesto en ese lugar hace que esto sea cierto?</i> La
+        <span class="ec"><i>x</i></span> no es un misterio ni una letra rara: es un lugar
+        vacío esperando un número.</p>
+      <p>Resolver es cambiar la pregunta por otra más fácil que tenga <b>exactamente las
+        mismas respuestas</b>. <span class="ec">3<i>x</i> = 15</span> es más fácil que la
+        anterior y pregunta lo mismo. <span class="ec"><i>x</i> = 5</span> es tan fácil que
+        ya se contesta sola. Ese es todo el oficio: ir simplificando la pregunta sin
+        cambiarle la respuesta.</p>
+      <p>Y hay algo que conviene saber desde el primer día: acá <b>no hace falta que nadie
+        te diga si está bien</b>. Metés tu respuesta en la pregunta original y ella te
+        contesta. Ni el libro, ni el profesor, ni el de al lado. En ninguna otra parte de
+        la materia pasa eso.</p>
+      <p>Tocá <b>Siguiente paso</b> en cada ejemplo para verlo desarrollarse.</p>
+    </div>
+  </section>
+
+  <main id="pasos"></main>
+
+  <section class="cierre">
+    <div class="marco">
+      <h2>La única regla que se rompe</h2>
+      <div class="prosa">
+        <p>Toda la unidad se apoya en una sola idea: <b>lo que le hacés a un lado se lo
+          hacés al otro</b>. Mirá esta ecuación, que parece de jardín de infantes:</p>
+        <div class="cuenta">3<i>x</i> = 5<i>x</i></div>
+        <p>Resolvamos bien. Resto <span class="ec">3<i>x</i></span> de los dos lados y queda
+          <span class="ec">0 = 2<i>x</i></span>, o sea <b><span class="ec"><i>x</i> = 0</span></b>.
+          Y es cierto: 3 · 0 y 5 · 0 dan lo mismo.</p>
+        <p>Pero muchos hacen otra cosa: "hay una <span class="ec"><i>x</i></span> de cada
+          lado, la simplifico". Y queda:</p>
+        <div class="cuenta"><b>3 = 5</b></div>
+        <p>Simplificar la <span class="ec"><i>x</i></span> es <i>dividir los dos lados por
+          <span class="ec"><i>x</i></span></i>, que suena perfectamente legal. El problema es
+          que dividir por <span class="ec"><i>x</i></span> solo vale si
+          <span class="ec"><i>x</i></span> no es cero… y acá la única respuesta era
+          justamente el cero. Se dividió por cero sin darse cuenta, y así se llega a 3 = 5.</p>
+        <p>Por eso la regla completa lleva una condición al final: <b>se puede multiplicar o
+          dividir los dos lados por cualquier número, menos por cero</b>. Es la única cosa
+          que no se puede hacer de los dos lados, y todas las "demostraciones" de que 1 = 2
+          que circulan por internet esconden exactamente eso.</p>
+        <p>Queda una pregunta linda para terminar. Si el cero no se puede dividir, ¿qué pasa
+          cuando la <span class="ec"><i>x</i></span> desaparece sola? Hay dos ecuaciones que
+          lo hacen:</p>
+        <div class="cuenta">0 · <i>x</i> = 0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 · <i>x</i> = 7</div>
+        <p>La primera es cierta para <b>todos</b> los números; la segunda, para
+          <b>ninguno</b>. Así que una ecuación no siempre tiene una respuesta: a veces tiene
+          todas y a veces no tiene ninguna. <b>Decir cuál de los tres casos es también es
+          resolverla.</b> El año que viene, en 8.º, esos dos casos van a volver con forma de
+          dibujo: dos rectas que se superponen y dos rectas paralelas.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="creditos">
+    Material de clase · Unidad 7, <i>Matemática 7</i>, Editorial En Alianza.
+    Los ejemplos son originales; las páginas indicadas remiten al libro del alumno.
+    Cada resultado de esta página está verificado en
+    <span class="ec">verificacion/ecuaciones_7mo.py</span>.
+  </footer>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Los ocho pasos de la unidad
+   Toda respuesta que aparece acá está calculada y verificada en
+   verificacion/ecuaciones_7mo.py. No se escribe ninguna a mano.
+   ═══════════════════════════════════════════════════════════════ */
+const PASOS = [
+{
+  n:1, corto:'Tres igualdades', nombre:'Un signo igual dice tres cosas distintas',
+  pag:'págs. 132–135',
+  forma:'2(<i>x</i>+3) = 2<i>x</i>+6 &nbsp;siempre &nbsp;·&nbsp; 2<i>x</i>+6 = 14 &nbsp;a veces &nbsp;·&nbsp; <i>x</i>+1 = <i>x</i> &nbsp;nunca',
+  accion:'decidir de qué clase es',
+  enun:'3(<i>x</i> − 2) = 3<i>x</i> − 6',
+  pasos:[
+    'Pruebo con <span class="ec"><i>x</i> = 0</span>: a la izquierda 3(0 − 2) = −6, a la derecha −6. Coincide.',
+    'Pruebo con <span class="ec"><i>x</i> = 10</span>: a la izquierda 3 · 8 = 24, a la derecha 24. Coincide otra vez.',
+    'Dos números distintos que funcionan, y de un lado y del otro hay solo primer grado.',
+  ],
+  final:'es una identidad: vale para <i>todos</i> los números',
+  gancho:{
+    tit:'Dos puntos alcanzan, pero solo en primer grado',
+    html:`<p>¿Por qué con dos pruebas ya se puede afirmar algo sobre todos los números?
+      Porque cada lado de esa igualdad es una recta, y <b>dos rectas que coinciden en dos
+      puntos son la misma recta</b>. No hay manera de que se separen después.</p>
+      <p>Ojo que el truco se termina apenas aparece un cuadrado. Mirá
+      <span class="ec"><i>x</i><sup>2</sup></span> y <span class="ec">3<i>x</i> − 2</span>:</p>
+      <div class="cuenta">en <i>x</i> = 1: 1 y 1 &nbsp;·&nbsp; en <i>x</i> = 2: 4 y 4 &nbsp;·&nbsp; en <i>x</i> = 5: <b>25 y 13</b></div>
+      <p>Coinciden dos veces y no son lo mismo. Para una curva de segundo grado harían falta
+      tres puntos, y eso es justo lo que van a usar en 9.º con la parábola.</p>`
+  }
+},
+{
+  n:2, corto:'Palabras', nombre:'De las palabras a las letras', pag:'págs. 136–139',
+  forma:'un número → <i>x</i> &nbsp;·&nbsp; el doble → 2<i>x</i> &nbsp;·&nbsp; aumentado en 5 → + 5',
+  accion:'simbolizar',
+  enun:'«el doble de un número aumentado en 5»',
+  prosa:true,
+  pasos:[
+    'La frase se puede leer de dos maneras: «(el doble de un número) aumentado en 5» o «el doble de (un número aumentado en 5)».',
+    'La primera lectura es <span class="ec">2<i>x</i> + 5</span>. La segunda es <span class="ec">2(<i>x</i> + 5)</span>.',
+    'Con <span class="ec"><i>x</i> = 4</span> la primera da 13 y la segunda 18. No son la misma frase.',
+  ],
+  final:'hay que decidir cuál de las dos dice el problema',
+  gancho:{
+    tit:'Nombrar antes que traducir',
+    html:`<p>Antes de escribir la primera letra, escribí qué es. No
+      "<span class="ec"><i>x</i></span> = el número", sino
+      <b>"<span class="ec"><i>x</i></span> = la cantidad de alumnos"</b>, con su unidad.
+      Parece una formalidad y es el control de calidad más barato que existe.</p>
+      <p>Mirá para qué sirve: si <span class="ec"><i>x</i></span> son alumnos, entonces
+      <span class="ec">2<i>x</i></span> son alumnos y
+      <span class="ec"><i>x</i> + 5</span> también… pero solo si ese 5 son alumnos. Si el 5
+      eran sillas, la cuenta está sumando cosas de distinta especie.</p>
+      <p><b>Sumar cosas que no son de la misma especie es la señal más rápida de un planteo
+      mal hecho</b>, y se ve sin resolver nada. Metros con metros cuadrados, plata con
+      cantidad de cosas, horas con kilómetros: si eso aparece, el error está en la
+      traducción, no en la cuenta.</p>`
+  }
+},
+{
+  n:3, corto:'La balanza', nombre:'Hacer lo mismo de los dos lados', pag:'págs. 140–142',
+  forma:'si <i>a</i> = <i>b</i>, entonces <i>a</i> + <i>c</i> = <i>b</i> + <i>c</i> &nbsp;(y lo mismo con −, × y ÷)',
+  accion:'resolver',
+  enun:'3<i>x</i> + 5 = 20',
+  pasos:[
+    'Resto 5 de los dos lados: <span class="ec">3<i>x</i> = 15</span>.',
+    'Divido los dos lados por 3: <span class="ec"><i>x</i> = 5</span>.',
+    'Control: 3 · 5 + 5 = 20. La pregunta original queda contestada.',
+  ],
+  final:'<i>x</i> = 5',
+  lab:'lab-balanza',
+  gancho:{
+    tit:'«Pasa restando» no es una regla aparte',
+    html:`<p>Seguro escucharon "el que está sumando pasa restando". No está mal, pero dicho
+      así parece una regla suelta que hay que memorizar, y encima una donde es facilísimo
+      equivocarse de signo.</p>
+      <p>Lo que de verdad pasó es esto: <b>resté 5 de los dos lados</b>. El 5 de la izquierda
+      se fue porque 5 − 5 = 0, y el de la derecha aparece restando porque eso fue lo que
+      hice. Nada cruzó ninguna frontera ni cambió de signo por magia.</p>
+      <p>La ventaja es práctica: mientras lo digas así, <b>no podés equivocarte de signo</b>,
+      porque no estás recordando una regla sino describiendo una acción. Y funciona igual
+      con las cuatro operaciones, sin cuatro reglas distintas.</p>`
+  }
+},
+{
+  n:4, corto:'Paréntesis', nombre:'Repartir antes de mover', pag:'págs. 142–144',
+  forma:'<i>a</i>(<i>x</i> + <i>b</i>) = <i>ax</i> + <i>ab</i>',
+  accion:'resolver',
+  enun:'2(<i>x</i> + 5) = 26',
+  pasos:[
+    'El 2 multiplica a <b>todo</b> el paréntesis: <span class="ec">2<i>x</i> + 10 = 26</span>.',
+    'Resto 10 de los dos lados: <span class="ec">2<i>x</i> = 16</span>.',
+    'Divido por 2: <span class="ec"><i>x</i> = 8</span>.',
+  ],
+  final:'<i>x</i> = 8',
+  gancho:{
+    tit:'Un resultado que no vuelve no es un resultado',
+    html:`<p>El error más común en este paso es repartir a medias: escribir
+      <span class="ec">2<i>x</i> + 5 = 26</span>, multiplicando solo el primer término. Se
+      llega igual a un número, que es lo traicionero:</p>
+      <div class="cuenta">2<i>x</i> = 21 &nbsp;→&nbsp; <i>x</i> = 21/2</div>
+      <p>Parece una respuesta. Pero llevala a la ecuación original, que es la única que
+      manda:</p>
+      <div class="cuenta">2(21/2 + 5) = 2 · 31/2 = <b>31</b>, y no 26</div>
+      <p>No vuelve, así que no es la respuesta. Fijate que <b>el control detectó el error sin
+      que nadie supiera dónde estaba</b>: no hay que revisar el procedimiento paso por paso,
+      alcanza con probar el resultado.</p>
+      <p>De paso: acá también se podía empezar dividiendo los dos lados por 2, y quedaba
+      <span class="ec"><i>x</i> + 5 = 13</span> de una. Casi siempre hay más de un camino y
+      todos llegan al mismo lugar; conviene mirar un segundo cuál es el más corto antes de
+      arrancar.</p>`
+  }
+},
+{
+  n:5, corto:'De los dos lados', nombre:'Cuando la incógnita está de los dos lados',
+  pag:'págs. 144–146',
+  forma:'juntar las <i>x</i> de un lado y los números del otro',
+  accion:'resolver',
+  enun:'7<i>x</i> − 4 = 3<i>x</i> + 20',
+  pasos:[
+    'Resto <span class="ec">3<i>x</i></span> de los dos lados: <span class="ec">4<i>x</i> − 4 = 20</span>.',
+    'Sumo 4 de los dos lados: <span class="ec">4<i>x</i> = 24</span>.',
+    'Divido por 4: <span class="ec"><i>x</i> = 6</span>.',
+    'Control: a la izquierda 7 · 6 − 4 = 38, a la derecha 3 · 6 + 20 = 38. Iguales.',
+  ],
+  final:'<i>x</i> = 6',
+  gancho:{
+    tit:'Elegir el lado para no arrastrar negativos',
+    html:`<p>Podría haber restado <span class="ec">7<i>x</i></span> en vez de
+      <span class="ec">3<i>x</i></span>. Es igual de válido y da lo mismo, pero mirá el
+      camino que queda:</p>
+      <div class="cuenta">−4 = −4<i>x</i> + 20 &nbsp;→&nbsp; −24 = −4<i>x</i> &nbsp;→&nbsp; <b><i>x</i> = 6</b></div>
+      <p>Mismo resultado, dos negativos más para arrastrar y dos oportunidades más de
+      equivocarse de signo. <b>Llevá las <span class="ec"><i>x</i></span> al lado donde el
+      coeficiente es mayor</b> y casi nunca vas a tener que trabajar con negativos.</p>
+      <p>Que no sea obligatorio es justamente lo interesante: son decisiones de comodidad,
+      no de reglamento. La matemática no te obliga a un camino, pero algunos tienen menos
+      pozos que otros.</p>`
+  }
+},
+{
+  n:6, corto:'Fracciones', nombre:'Sacarse las fracciones de encima', pag:'págs. 146–148',
+  forma:'multiplicar los dos lados por el m.c.m. de los denominadores',
+  accion:'resolver',
+  enun:'(<i>x</i>+1)/2 − (<i>x</i>−3)/5 = 2',
+  pasos:[
+    'El m.c.m. de 2 y 5 es 10. Multiplico los dos lados por 10.',
+    'Queda <span class="ec">5(<i>x</i> + 1) − 2(<i>x</i> − 3) = 20</span>. Los paréntesis se mantienen.',
+    'Reparto: <span class="ec">5<i>x</i> + 5 − 2<i>x</i> + 6 = 20</span>, o sea <span class="ec">3<i>x</i> + 11 = 20</span>.',
+    'Resto 11 y divido por 3: <span class="ec"><i>x</i> = 3</span>.',
+  ],
+  final:'<i>x</i> = 3',
+  gancho:{
+    tit:'El menos también se reparte',
+    html:`<p>En el tercer paso, mucha gente escribe
+      <span class="ec">5<i>x</i> + 5 − 2<i>x</i> − 6</span>. El menos se repartió sobre la
+      <span class="ec"><i>x</i></span> y se olvidó del −3. Pero:</p>
+      <div class="cuenta">−2 · (−3) = <b>+6</b></div>
+      <p>El paréntesis del término que resta es el lugar donde más se pierde puntaje en toda
+      la unidad, y no por no entender: por apurarse.</p>
+      <p>Y hay un control precioso para este ejercicio. Con <span class="ec"><i>x</i> = 3</span>
+      el segundo término es <span class="ec">(3 − 3)/5</span>, que es <b>0</b>: desaparece.
+      Así que la ecuación se reduce a <span class="ec">(3 + 1)/2 = 2</span>, que cualquiera
+      verifica de memoria. <b>Elegir con qué número controlar también es parte del
+      oficio</b>: el que hace desaparecer un pedazo es el más barato de todos.</p>`
+  }
+},
+{
+  n:7, corto:'La gráfica', nombre:'Dónde se cruzan', pag:'págs. 148–149',
+  forma:'resolver <i>ax</i> + <i>b</i> = <i>c</i> es buscar dónde una recta alcanza cierta altura',
+  accion:'resolver mirando',
+  enun:'2<i>x</i> − 1 = 5',
+  pasos:[
+    'Miro el lado izquierdo como una recta: <span class="ec"><i>y</i> = 2<i>x</i> − 1</span>.',
+    'El lado derecho es otra recta, horizontal: <span class="ec"><i>y</i> = 5</span>.',
+    'La ecuación pregunta en qué <span class="ec"><i>x</i></span> las dos valen lo mismo, o sea dónde se cruzan.',
+  ],
+  final:'<i>x</i> = 3 — se cruzan en el punto (3, 5)',
+  lab:'lab-grafica',
+  gancho:{
+    tit:'Esto, el año que viene, se llama sistema',
+    html:`<p>Acabás de resolver una ecuación mirando un dibujo, y sin darte cuenta hiciste
+      geometría analítica: convertiste una pregunta de números en una pregunta de figuras.
+      Eso que hiciste tiene nombre y es el tema central de
+      <a href="../8vo/sistemas.html">la unidad de sistemas de 8.º grado</a>.</p>
+      <p>Movete los controles y probá esto: ¿qué pasa si la recta de arriba queda
+      <b>horizontal</b>, con pendiente 0? O no toca nunca a la otra —y la ecuación no tiene
+      solución—, o se le superpone entera —y entonces todos los números sirven—.</p>
+      <p>Son los dos casos raros del cierre de esta página, pero vistos como dibujo. A veces
+      un dibujo explica en dos segundos algo que en cuentas cuesta media hora.</p>`
+  }
+},
+{
+  n:8, corto:'Problemas', nombre:'Nombrar la incógnita', pag:'pág. 150',
+  forma:'<i>x</i> = lo que no sabés, escrito con su unidad',
+  accion:'plantear y resolver',
+  enun:'«El largo de un rectángulo supera en 4 m al ancho y el perímetro mide 52 m»',
+  prosa:true,
+  pasos:[
+    'Nombro: <span class="ec"><i>x</i></span> = el ancho, en metros. Entonces el largo es <span class="ec"><i>x</i> + 4</span>.',
+    'El perímetro son los cuatro lados: <span class="ec">2<i>x</i> + 2(<i>x</i> + 4) = 52</span>.',
+    'Reparto y junto: <span class="ec">4<i>x</i> + 8 = 52</span>, o sea <span class="ec">4<i>x</i> = 44</span>.',
+    'Divido por 4: <span class="ec"><i>x</i> = 11</span>. Pero <span class="ec"><i>x</i></span> era el ancho, no la respuesta.',
+  ],
+  final:'el ancho mide 11 m y el largo 15 m',
+  gancho:{
+    tit:'Verificar en la situación, no en la ecuación',
+    html:`<p>Acá hay una trampa que casi nadie ve. Si controlás tu respuesta metiéndola en
+      <i>la ecuación que vos escribiste</i>, estás usando tu propio planteo para corregir tu
+      propio planteo. Si lo habías escrito mal, la cuenta va a cerrar igual y no te vas a
+      enterar de nada.</p>
+      <p>El control que sirve vuelve al enunciado, que es lo único que no escribiste vos:</p>
+      <div class="cuenta">¿15 supera en 4 a 11? &nbsp;<b>sí</b> &nbsp;·&nbsp; ¿2 · (11 + 15) = 52? &nbsp;<b>sí</b></div>
+      <p>Recién ahí el problema terminó. Y todavía queda un control más, que es gratis:
+      <b>¿la respuesta tiene sentido?</b> Un ancho no puede dar negativo, una cantidad de
+      personas no puede dar 7,5, una edad no puede dar 300. Cuando eso pasa, el error está
+      casi siempre en el planteo, no en la cuenta.</p>
+      <p>Por eso la última línea de un problema nunca es un número suelto: es una frase que
+      contesta lo que preguntaron, <b>con unidad</b>.</p>`
+  }
+}
+];
+
+/* ——— navegación ——— */
+document.getElementById('nav').innerHTML = PASOS.map(p =>
+  `<a class="chip" href="#paso${p.n}">${p.n}. ${p.corto}</a>`).join('');
+
+/* ——— laboratorios ——— */
+const LABS = {
+'lab-balanza':`
+<div class="lab">
+  <h4>Probalo: la balanza</h4>
+  <p class="sub">Elegí una operación y un número, y se lo aplica a los dos lados a la vez.
+    No hay forma de "pasar" nada de un lado al otro: es lo único que se puede hacer, y
+    alcanza para resolver las cuatro. Se puede escribir un número (3, −5, 3/2) o un
+    término con incógnita (3x, −x), que es lo que hace falta cuando la
+    <span class="ec"><i>x</i></span> está de los dos lados.</p>
+  <div class="campos">
+    <div class="campo">
+      <label>Operación</label>
+      <div class="operaciones" id="bal-ops">
+        <button class="op" type="button" data-op="+" aria-pressed="true">+</button>
+        <button class="op" type="button" data-op="−" aria-pressed="false">−</button>
+        <button class="op" type="button" data-op="×" aria-pressed="false">×</button>
+        <button class="op" type="button" data-op="÷" aria-pressed="false">÷</button>
+      </div>
+    </div>
+    <div class="campo">
+      <label for="bal-num">Número o término</label>
+      <input id="bal-num" type="text" inputmode="text" value="5">
+    </div>
+    <button class="boton" type="button" id="bal-aplicar">A los dos lados</button>
+    <button class="preset" type="button" id="bal-atras">Deshacer</button>
+  </div>
+  <ol class="historia" id="bal-historia"></ol>
+  <div class="salida veredicto" id="bal-out"></div>
+  <div class="campos" style="margin:14px 0 0">
+    <button class="preset" type="button" data-ec="3,5,0,20">3x + 5 = 20</button>
+    <button class="preset" type="button" data-ec="7,-4,3,20">7x − 4 = 3x + 20</button>
+    <button class="preset" type="button" data-ec="3,0,5,0">3x = 5x</button>
+    <button class="preset" type="button" data-ec="2,6,0,14">2x + 6 = 14</button>
+  </div>
+</div>`,
+'lab-grafica':`
+<div class="lab">
+  <h4>Probalo: la altura de una recta</h4>
+  <p class="sub">La recta roja es el lado izquierdo de la ecuación; la horizontal verde es
+    el lado derecho. Donde se cruzan está la respuesta.</p>
+  <div class="lienzo">
+    <svg id="svg-rectas" viewBox="0 0 560 560" role="img"
+      aria-label="Una recta inclinada y una recta horizontal, con el punto donde se cruzan"></svg>
+  </div>
+  <div class="campos">
+    <div class="campo"><label for="gr-a">Pendiente</label><input id="gr-a" type="number" value="2" step="1"></div>
+    <div class="campo"><label for="gr-b">Término</label><input id="gr-b" type="number" value="-1" step="1"></div>
+    <div class="campo"><label for="gr-c">Altura</label><input id="gr-c" type="number" value="5" step="1"></div>
+  </div>
+  <div class="salida" id="gr-out"></div>
+</div>`
+};
+
+document.getElementById('pasos').innerHTML = PASOS.map(p => `
+<article class="caso" id="paso${p.n}">
+  <div class="caso-cab">
+    <div class="numero">${p.n}</div>
+    <div class="caso-tit">
+      <h3>${p.nombre}</h3>
+      <div class="paginas">${p.pag}</div>
+    </div>
+  </div>
+
+  <div class="forma">
+    <span class="rotulo">La idea</span>
+    <span class="ec">${p.forma}</span>
+  </div>
+
+  <div class="ejemplo" data-bloque="${p.n}">
+    <div class="ejemplo-cab">
+      <span class="rotulo-chico">Ejemplo · ${p.accion} ${p.prosa ? p.enun : `<span class="ec">${p.enun}</span>`}</span>
+      <button class="boton" type="button" data-accion="revelar" data-bloque="${p.n}">Siguiente paso</button>
+    </div>
+    <ol class="pasos" id="pasos${p.n}"></ol>
+  </div>
+
+  <div class="gancho">
+    <p class="gancho-tit">${p.gancho.tit}</p>
+    ${p.gancho.html}
+  </div>
+
+  ${p.lab ? LABS[p.lab] : ''}
+</article>`).join('');
+
+/* ——— revelar pasos ———
+   El atributo NO puede llamarse data-paso: el panel de proyección usa ese
+   nombre para las flechas de diapositiva y un clic acá saltaría de lámina. */
+const estado = {};
+PASOS.forEach(p => { estado[p.n] = 0; });
+
+function siguientePaso(n){
+  const p = PASOS.find(k => k.n === n);
+  const total = p.pasos.length + 1;
+  if (estado[n] >= total) return;
+  const i = estado[n];
+  const ultimo = (i === p.pasos.length);
+  const li = document.createElement('li');
+  if (ultimo) li.className = 'final';
+  li.innerHTML = ultimo
+    ? `<span class="n">=</span><span class="t"><span class="ec">${p.final}</span></span>`
+    : `<span class="n">${i+1}</span><span class="t">${p.pasos[i]}</span>`;
+  document.getElementById('pasos' + n).appendChild(li);
+  estado[n] = i + 1;
+  if (estado[n] >= total){
+    const b = document.querySelector(`[data-accion="revelar"][data-bloque="${n}"]`);
+    b.disabled = true; b.textContent = 'Completo';
+  }
+}
+
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-accion="revelar"]');
+  if (b) siguientePaso(Number(b.dataset.bloque));
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   Fracciones exactas
+   Nada de decimales: una ecuación con enteros puede dar 21/2, y
+   escribirlo redondeado sería perder exactitud sin ninguna necesidad.
+   ═══════════════════════════════════════════════════════════════ */
+const mcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a || 1; };
+
+function fr(n, d = 1){
+  if (d === 0) return null;
+  if (d < 0){ n = -n; d = -d; }
+  const g = mcd(n, d);
+  return { n: n / g, d: d / g };
+}
+const suma  = (p, q) => fr(p.n * q.d + q.n * p.d, p.d * q.d);
+const resta = (p, q) => fr(p.n * q.d - q.n * p.d, p.d * q.d);
+const prod  = (p, q) => fr(p.n * q.n, p.d * q.d);
+const coc   = (p, q) => (q.n === 0 ? null : fr(p.n * q.d, p.d * q.n));
+const cero  = p => p.n === 0;
+const igual = (p, q) => p.n === q.n && p.d === q.d;
+
+/* el signo va adelante, como en todo el material de la casa */
+function txt(p){
+  const s = p.n < 0 ? '−' : '';
+  const a = Math.abs(p.n);
+  return p.d === 1 ? s + a : s + a + '/' + p.d;
+}
+
+/* Acepta 5, −3, 3/2 y también 3x, −x, 3/2x: para juntar las incógnitas hay
+   que poder sumar y restar términos con x, no solo números. */
+function lee(bruto){
+  let t = String(bruto).trim().replace(/−/g, '-').replace(/\s+/g, '');
+  const esx = /x$/i.test(t);
+  if (esx) t = t.slice(0, -1);
+  if (t === '' || t === '+') t = '1';
+  if (t === '-') t = '-1';
+  const m = t.match(/^(-?\d+)\/(\d+)$/);
+  if (m) return { f:fr(Number(m[1]), Number(m[2])), esx };
+  if (/^-?\d+$/.test(t)) return { f:fr(Number(t)), esx };
+  return null;
+}
+
+/* un lado de la ecuación: a·x + b */
+function lado(a, b){
+  if (cero(a)) return txt(b);
+  let s;
+  if (igual(a, fr(1))) s = '<i>x</i>';
+  else if (igual(a, fr(-1))) s = '−<i>x</i>';
+  else s = txt(a) + '<i>x</i>';
+  if (cero(b)) return s;
+  return s + (b.n > 0 ? ' + ' + txt(b) : ' − ' + txt(fr(-b.n, b.d)));
+}
+const ecuacion = e => lado(e.a, e.b) + ' = ' + lado(e.c, e.d);
+
+/* ═══ laboratorio de la balanza ═══ */
+const balanza = { inicial:null, historia:[] };
+
+function balArranca(a, b, c, d){
+  balanza.inicial = { a:fr(a), b:fr(b), c:fr(c), d:fr(d) };
+  balanza.historia = [{ mov:'la ecuación', e:balanza.inicial }];
+  balPinta();
+}
+
+function balAplica(op, k){
+  const e = balanza.historia[balanza.historia.length - 1].e;
+  const f = k.f;
+  const nombre = k.esx ? (igual(f, fr(1)) ? 'x' : igual(f, fr(-1)) ? '−x' : txt(f) + 'x') : txt(f);
+  let nueva;
+  if (op === '+' || op === '−'){
+    const junta = op === '+' ? suma : resta;
+    nueva = k.esx
+      ? { a:junta(e.a, f), b:e.b, c:junta(e.c, f), d:e.d }
+      : { a:e.a, b:junta(e.b, f), c:e.c, d:junta(e.d, f) };
+  } else if (op === '×'){
+    if (k.esx) return 'Multiplicar los dos lados por x no siempre vale: si x fuera cero, la igualdad se cumpliría aunque no fuera cierta. Probá con un número.';
+    if (cero(f)) return 'Multiplicar por cero deja 0 = 0, que es cierto para cualquier número: se pierde la pregunta.';
+    nueva = { a:prod(e.a, f), b:prod(e.b, f), c:prod(e.c, f), d:prod(e.d, f) };
+  } else {
+    if (k.esx) return 'Dividir los dos lados por x es la trampa del cierre de esta página: solo vale si x no es cero, y justamente no sabemos cuánto vale x. Probá con un número.';
+    if (cero(f)) return 'No se puede dividir por cero. Es la única cosa que no se puede hacer de los dos lados.';
+    nueva = { a:coc(e.a, f), b:coc(e.b, f), c:coc(e.c, f), d:coc(e.d, f) };
+  }
+  balanza.historia.push({ mov:op + ' ' + nombre, e:nueva });
+  balPinta();
+  return null;
+}
+
+/* qué dice la ecuación que quedó, y el control contra la original */
+function balVeredicto(){
+  const e = balanza.historia[balanza.historia.length - 1].e;
+  const ini = balanza.inicial;
+  const pendiente = resta(e.a, e.c);      // coeficiente de x que sobrevive
+  const libre = resta(e.d, e.b);          // lo que quedó del otro lado
+
+  if (cero(pendiente)){
+    return cero(libre)
+      ? `<p><span class="ok">La <span class="ec"><i>x</i></span> desapareció y quedó algo cierto.</span>
+         <span class="dim">Sirve cualquier número: es una identidad.</span></p>`
+      : `<p><span class="ok">La <span class="ec"><i>x</i></span> desapareció y quedó algo falso.</span>
+         <span class="dim">No hay ningún número que la cumpla.</span></p>`;
+  }
+
+  const sol = coc(libre, pendiente);
+  const resuelta = (igual(e.a, fr(1)) && cero(e.b) && cero(e.c)) ||
+                   (igual(e.c, fr(1)) && cero(e.d) && cero(e.a));
+  /* el control se hace contra la ecuación del principio, no contra la de ahora */
+  const izq = suma(prod(ini.a, sol), ini.b);
+  const der = suma(prod(ini.c, sol), ini.d);
+  const cierra = igual(izq, der);
+
+  if (!resuelta){
+    return `<p class="dim">Seguí. Falta dejar la <span class="ec"><i>x</i></span> sola de un lado.</p>`;
+  }
+  return `<p><span class="ok">Resuelta: <span class="ec"><i>x</i> = ${txt(sol)}</span>.</span></p>
+    <p class="dim">Control contra la ecuación del principio, <span class="ec">${ecuacion(ini)}</span>:
+      izquierda ${txt(izq)}, derecha ${txt(der)} — ${cierra ? 'iguales.' : 'NO coinciden.'}</p>`;
+}
+
+function balPinta(){
+  const h = balanza.historia;
+  document.getElementById('bal-historia').innerHTML = h.map((paso, i) => `
+    <li class="${i === h.length - 1 ? 'ahora' : ''}">
+      <span class="mov">${paso.mov}</span>
+      <span class="ecu ec">${ecuacion(paso.e)}</span>
+    </li>`).join('');
+  document.getElementById('bal-out').innerHTML = balVeredicto();
+  document.getElementById('bal-atras').disabled = (h.length < 2);
+}
+
+document.getElementById('bal-ops').addEventListener('click', ev => {
+  const b = ev.target.closest('.op');
+  if (!b) return;
+  document.querySelectorAll('#bal-ops .op').forEach(o =>
+    o.setAttribute('aria-pressed', String(o === b)));
+});
+
+document.getElementById('bal-aplicar').addEventListener('click', () => {
+  const op = document.querySelector('#bal-ops .op[aria-pressed="true"]').dataset.op;
+  const k = lee(document.getElementById('bal-num').value);
+  const out = document.getElementById('bal-out');
+  if (!k){
+    out.innerHTML = '<p class="dim">Escribí un número (3, −5, 3/2) o un término con incógnita (3x, −x).</p>';
+    return;
+  }
+  const aviso = balAplica(op, k);
+  if (aviso) out.innerHTML = `<p class="dim">${aviso}</p>`;
+});
+
+document.getElementById('bal-atras').addEventListener('click', () => {
+  if (balanza.historia.length > 1){ balanza.historia.pop(); balPinta(); }
+});
+
+document.querySelectorAll('[data-ec]').forEach(b => {
+  b.addEventListener('click', () => {
+    const [a, bb, c, d] = b.dataset.ec.split(',').map(Number);
+    balArranca(a, bb, c, d);
+  });
+});
+
+balArranca(3, 5, 0, 20);
+
+/* ═══ laboratorio de la gráfica ═══
+   Misma geometría de lienzo que el taller de sistemas de 8.º. */
+const R = 10, M = 40, LADO = 480, U = LADO / (2 * R);
+const px = u => M + (u + R) * U;
+const py = v => M + (R - v) * U;
+
+function fondo(){
+  let g = '';
+  for (let i = -R; i <= R; i++){
+    const cls = (i % 5 === 0) ? 'grilla-fuerte' : 'grilla';
+    g += `<line class="${cls}" x1="${px(i)}" y1="${py(-R)}" x2="${px(i)}" y2="${py(R)}"/>`;
+    g += `<line class="${cls}" x1="${px(-R)}" y1="${py(i)}" x2="${px(R)}" y2="${py(i)}"/>`;
+  }
+  g += `<line class="eje" x1="${px(-R)}" y1="${py(0)}" x2="${px(R)}" y2="${py(0)}"/>`;
+  g += `<line class="eje" x1="${px(0)}" y1="${py(-R)}" x2="${px(0)}" y2="${py(R)}"/>`;
+  for (let i = -R; i <= R; i += 2){
+    if (i === 0) continue;
+    g += `<text class="rotulo-eje" x="${px(i)}" y="${py(0) + 15}" text-anchor="middle">${i}</text>`;
+    g += `<text class="rotulo-eje" x="${px(0) - 7}" y="${py(i) + 4}" text-anchor="end">${i}</text>`;
+  }
+  g += `<text class="rotulo-eje" x="${px(R) - 2}" y="${py(0) - 8}" text-anchor="end">x</text>`;
+  g += `<text class="rotulo-eje" x="${px(0) + 8}" y="${py(R) + 12}">y</text>`;
+  return g;
+}
+
+/* el pedazo de y = ax + b que entra en el recuadro */
+function trazoRecta(a, b, cls){
+  const pts = [];
+  const dentro = t => t >= -R - 1e-9 && t <= R + 1e-9;
+  for (const xx of [-R, R]){ const yy = a * xx + b; if (dentro(yy)) pts.push([xx, yy]); }
+  if (a !== 0){
+    for (const yy of [-R, R]){ const xx = (yy - b) / a; if (dentro(xx)) pts.push([xx, yy]); }
+  }
+  const unicos = [];
+  for (const p of pts){
+    if (!unicos.some(q => Math.abs(q[0] - p[0]) < 1e-9 && Math.abs(q[1] - p[1]) < 1e-9))
+      unicos.push(p);
+  }
+  if (unicos.length < 2) return '';
+  const [p1, p2] = unicos;
+  return `<line class="${cls}" x1="${px(p1[0])}" y1="${py(p1[1])}" x2="${px(p2[0])}" y2="${py(p2[1])}"/>`;
+}
+
+function dibujaRectas(){
+  const a = parseInt(document.getElementById('gr-a').value, 10);
+  const b = parseInt(document.getElementById('gr-b').value, 10);
+  const c = parseInt(document.getElementById('gr-c').value, 10);
+  const out = document.getElementById('gr-out');
+  if (![a, b, c].every(Number.isFinite)){
+    out.innerHTML = '<span class="dim">Escribí los tres números.</span>';
+    return;
+  }
+
+  let g = fondo();
+  g += trazoRecta(a, b, 'recta1');
+  g += trazoRecta(0, c, 'recta2');
+
+  const ec = `<span class="ec">${lado(fr(a), fr(b))} = ${c}</span>`;
+
+  if (a === 0){
+    out.innerHTML = b === c
+      ? `${ec}<br><span class="dim">Las dos rectas son la misma: se superponen.</span>
+         <span class="ok">Sirve cualquier número.</span>`
+      : `${ec}<br><span class="dim">Las dos rectas son paralelas: nunca se cruzan.</span>
+         <span class="ok">No tiene solución.</span>`;
+  } else {
+    const sol = fr(c - b, a);
+    const xs = sol.n / sol.d;
+    if (Math.abs(xs) <= R && Math.abs(c) <= R){
+      g += `<circle class="sol-halo" cx="${px(xs)}" cy="${py(c)}" r="13"/>`;
+      g += `<line class="sol-guia" x1="${px(xs)}" y1="${py(c)}" x2="${px(xs)}" y2="${py(0)}"/>`;
+      g += `<circle class="sol-punto" cx="${px(xs)}" cy="${py(c)}" r="6.5"/>`;
+      g += `<text class="sol-texto" x="${px(xs) + 11}" y="${py(c) - 11}">x = ${txt(sol)}</text>`;
+    }
+    out.innerHTML = `${ec}<br>
+      <span class="dim">se cruzan en</span> (${txt(sol)}, ${c})<span class="dim">, así que</span>
+      <span class="ok"><span class="ec"><i>x</i> = ${txt(sol)}</span></span>
+      ${Math.abs(xs) > R ? '<br><span class="dim">El cruce queda fuera del recuadro: achicá la altura.</span>' : ''}`;
+  }
+  document.getElementById('svg-rectas').innerHTML = g;
+}
+
+['gr-a','gr-b','gr-c'].forEach(id =>
+  document.getElementById(id).addEventListener('input', dibujaRectas));
+dibujaRectas();
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+</body>
+</html>

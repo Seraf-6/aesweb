@@ -44,6 +44,7 @@ assets/
   img/                      logos
 contenido.py                EL ÍNDICE DEL SITIO: grados, unidades, material
 build.py                    genera las páginas de índice desde contenido.py
+verificacion/               un guion por página de clase, que comprueba sus cuentas
 ```
 
 **Regla de oro de la estructura:** `contenido.py` es la única fuente de verdad
@@ -54,6 +55,37 @@ la pisa.
 Las páginas de clase (las diapositivas) sí se escriben a mano, porque cada una
 tiene su propio contenido y sus propios componentes. `build.py` las lista al
 final para que se vea cuáles hay.
+
+---
+
+## Verificar las cuentas de una página
+
+Cada página de clase tiene su guion en `verificacion/`, que se corre solo:
+
+```bash
+python verificacion/ecuaciones_7mo.py
+```
+
+El guion calcula con `sympy`, comprueba **por un camino distinto** (sustituir
+con `Fraction`, probar en puntos al azar, volver a la situación del enunciado)
+y al final abre el HTML y exige que cada respuesta verificada esté escrita tal
+cual. Así una respuesta no puede quedar mal tipeada en la página aunque la
+cuenta esté bien. Después de tocar una página de clase hay que volver a
+correrlo.
+
+Falta el de `factoreo.html` y el de `sistemas.html`: son anteriores a esta
+carpeta.
+
+---
+
+## Dos nombres reservados
+
+- **`data-paso` en un botón es del panel de proyección**: mueve de diapositiva.
+  Una página de clase que quiera sus propios botones tiene que usar otro
+  nombre (`data-bloque`, por ejemplo) o el clic va a saltar de lámina.
+- **`.ec` no corta la línea** (`white-space:nowrap`). Es para notación, no para
+  frases: una oración entera adentro de un `.ec` desborda la pantalla del
+  teléfono.
 
 ---
 
@@ -157,6 +189,7 @@ las páginas de clase.
 ## Estado actual
 
 Hecho: portada, índices de los tres grados, listado de fichas con 26 PDF,
+las diapositivas de ecuaciones lineales de 7.º,
 dos juegos de diapositivas de 8.º (factoreo y sistemas), el panel de proyección.
 
 Pendiente: el proyecto de estadística compartido por los tres grados (falta

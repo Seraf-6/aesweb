@@ -27,6 +27,10 @@ GRADOS = [
     {'n': 7, 'titulo': 'Ecuaciones lineales', 'pags': '132–150',
      'nota': 'Se dicta con enseñanza entre pares.',
      'material': [
+       {'tipo': 'diapositiva', 'titulo': 'Preguntarle a un número',
+        'desc': 'La unidad entera en ocho pasos, de las tres clases de igualdad a los '
+                'problemas, con la balanza y la gráfica para probar en clase.',
+        'url': 'matematica/7mo/ecuaciones.html'},
        {'tipo': 'ficha', 'titulo': 'Fichas de la unidad',
         'desc': 'Igualdades, expresión algebraica, ecuaciones lineales y con fracciones, '
                 'simbolizaciones y resolución de problemas.',
