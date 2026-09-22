@@ -1,0 +1,15 @@
+# Las claves de corrección NO van al repositorio.
+# Ver CLAUDE.md, sección "Lo que NO va en este repositorio".
+**/Clave_*
+**/claves/
+**/*clave*.pdf
+**/*Clave*.pdf
+
+# archivos de trabajo
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.aux
+*.log
+*.out

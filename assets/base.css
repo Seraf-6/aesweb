@@ -1,0 +1,252 @@
+/* ═══════════════════════════════════════════════════════════════
+   AESWeb · hoja base
+   Todo lo compartido entre páginas: los colores, la tipografía, la
+   notación matemática, el panel de proyección y el modo diapositiva.
+   Una página de contenido solo agrega sus propios componentes.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── tokens ─────────────────────────────────────────────────────
+   El tema claro se define en :root a secas. El oscuro solo redefine
+   los mismos nombres. Ningún color se define únicamente dentro de un
+   @media o de un [data-theme]: si no, la página se rompe cuando el
+   visitante no eligió tema. */
+:root{
+  --papel:#FAFBFC;
+  --papel-2:#F1F4F7;
+  --linea:#DBE4EA;
+  --linea-fuerte:#C3D0D9;
+  --tinta:#16283A;
+  --lapiz:#5D7080;
+
+  /* acentos: los nombres largos son los del sistema, los cortos son
+     alias que usan las páginas heredadas */
+  --acento:#C8102E;        --rojo:var(--acento);     --r1:var(--acento);
+  --acento-suave:#FCEEF0;  --rojo-suave:var(--acento-suave);
+                           --r1-suave:var(--acento-suave);
+  --acento2:#0B6E75;       --r2:var(--acento2);
+  --acento2-suave:#E7F2F2; --r2-suave:var(--acento2-suave);
+  --dest:#9A6B12;          --ambar:var(--dest);      --punto:#B8801A;
+  --dest-suave:#FBF2DE;    --ambar-suave:var(--dest-suave);
+                           --punto-suave:var(--dest-suave);
+  --dest-borde:#E4C67E;    --ambar-borde:var(--dest-borde);
+
+  --serif:'Alegreya',Georgia,'Times New Roman',serif;
+  --sans:'Alegreya Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'Courier New',monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --papel:#0E151C; --papel-2:#151F29; --linea:#1F2B36; --linea-fuerte:#2C3B49;
+    --tinta:#E4ECF2; --lapiz:#93A6B5;
+    --acento:#FF7186; --acento-suave:#2A151B;
+    --acento2:#4FC3CB; --acento2-suave:#0F2427;
+    --dest:#EFC162; --punto:#EFC162; --dest-suave:#231C0E; --dest-borde:#5C4A1E;
+  }
+}
+:root[data-theme="dark"]{
+  --papel:#0E151C; --papel-2:#151F29; --linea:#1F2B36; --linea-fuerte:#2C3B49;
+  --tinta:#E4ECF2; --lapiz:#93A6B5;
+  --acento:#FF7186; --acento-suave:#2A151B;
+  --acento2:#4FC3CB; --acento2-suave:#0F2427;
+  --dest:#EFC162; --punto:#EFC162; --dest-suave:#231C0E; --dest-borde:#5C4A1E;
+}
+
+/* ── base ─────────────────────────────────────────────────────── */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--papel); color:var(--tinta);
+  font-family:var(--sans); font-size:17px; line-height:1.6;
+  background-image:
+    linear-gradient(var(--linea) 1px,transparent 1px),
+    linear-gradient(90deg,var(--linea) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+.envoltura{max-width:960px; margin:0 auto; padding-inline:20px; padding-block:0}
+.envoltura.ancha{max-width:1100px}
+img{max-width:100%; height:auto}
+[hidden]{display:none!important}
+a{color:var(--acento)}
+
+h1,h2,h3,h4{font-family:var(--serif); text-wrap:balance}
+.prosa{max-width:62ch}
+.prosa p{margin:0 0 14px}
+
+/* ── notación matemática ──────────────────────────────────────── */
+.ec{font-family:var(--serif); font-size:1.06em; white-space:nowrap}
+.ec i{font-style:italic}
+.ec sup{font-size:.68em; vertical-align:super; line-height:0}
+.ec sub{font-size:.68em; vertical-align:sub; line-height:0}
+
+/* ═══════════════ modo proyección ═══════════════
+   Estos bloques van al final de la hoja a propósito: tienen que
+   ganarle tanto al tema claro como al oscuro. */
+
+/* ── paletas de fondo ── */
+:root[data-proy="alto"]{
+  --papel:#FFFFFF; --papel-2:#EFF2F5; --linea:#C6D1D9; --linea-fuerte:#8FA0AD;
+  --tinta:#000000; --lapiz:#2E4050;
+  --acento:#A8001F; --acento-suave:#FBE4E8; --acento2:#00565C;
+  --acento2-suave:#DCEEEF; --dest:#6B4500; --punto:#7A4E00;
+  --dest-suave:#FBF0D6; --dest-borde:#C9A24A;
+}
+:root[data-proy="crema"]{
+  --papel:#FFF6DC; --papel-2:#FAEBC0; --linea:#E0CB90; --linea-fuerte:#BFA45B;
+  --tinta:#140E02; --lapiz:#463714;
+  --acento:#A2001E; --acento-suave:#F7DFD6; --acento2:#00545A;
+  --acento2-suave:#DDEBDF; --dest:#6A4300; --punto:#6F4600;
+  --dest-suave:#F3E1B0; --dest-borde:#C29B3F;
+}
+:root[data-proy="celeste"]{
+  --papel:#E9F4FB; --papel-2:#D5E9F6; --linea:#A5CBE2; --linea-fuerte:#74AAC8;
+  --tinta:#041E2A; --lapiz:#264657;
+  --acento:#A8001F; --acento-suave:#F9DFE4; --acento2:#005A61;
+  --acento2-suave:#CFE7E9; --dest:#6B4500; --punto:#7A4E00;
+  --dest-suave:#F6EBCB; --dest-borde:#C4A257;
+}
+:root[data-proy="oscuro"]{
+  --papel:#04070B; --papel-2:#0F1720; --linea:#21303F; --linea-fuerte:#3A4B5D;
+  --tinta:#FFFFFF; --lapiz:#B8C8D6;
+  --acento:#FF8A9B; --acento-suave:#2B0E14; --acento2:#5FD8E0;
+  --acento2-suave:#082629; --dest:#FFD479; --punto:#FFD479;
+  --dest-suave:#241B06; --dest-borde:#7A6021;
+}
+:root[data-proy="pizarra"]{
+  --papel:#103629; --papel-2:#164536; --linea:#2A6050; --linea-fuerte:#427C68;
+  --tinta:#F4FBF6; --lapiz:#B4D5C5;
+  --acento:#FFB3BE; --acento-suave:#2A2020; --acento2:#7FE3D8;
+  --acento2-suave:#14413A; --dest:#FFDA8A; --punto:#FFDA8A;
+  --dest-suave:#2C2A17; --dest-borde:#7E7238;
+}
+
+/* ── cuadrícula: elegible, con dos pasos ──
+   En proyector una cuadrícula fina puede temblar (muaré); por eso hay
+   una versión de paso grande, que aguanta mejor la distancia. */
+body{--paso:26px}
+body[data-grilla="0"]{background-image:none}
+body[data-grilla="1"]{background-size:var(--paso) var(--paso)}
+body[data-grilla="2"]{--paso:46px; background-size:var(--paso) var(--paso)}
+
+/* ── trazos más gruesos para que lleguen al fondo del aula ── */
+:root[data-proy]:not([data-proy="normal"]) .recta1,
+:root[data-proy]:not([data-proy="normal"]) .recta2{stroke-width:4}
+:root[data-proy]:not([data-proy="normal"]) .eje{stroke-width:2.4}
+:root[data-proy]:not([data-proy="normal"]) .grilla{stroke-width:1.2}
+:root[data-proy]:not([data-proy="normal"]) .sol-punto{r:8}
+
+/* ── zona libre para escribir en la pizarra ── */
+:root{--libre:0%}
+body[data-libre]:not([data-libre="0"]) .envoltura{
+  max-width:none; width:calc(100% - var(--libre)); margin-left:0; margin-right:auto}
+body[data-libre="izq"] .envoltura{margin-left:var(--libre); margin-right:0}
+.marca-libre{
+  position:fixed; top:0; bottom:0; width:0; border-left:2px dashed var(--linea-fuerte);
+  pointer-events:none; z-index:5; display:none}
+body[data-libre]:not([data-libre="0"]) .marca-libre{display:block}
+.marca-libre span{
+  position:absolute; top:50%; left:10px; transform:translateY(-50%) rotate(90deg);
+  transform-origin:left center; font-family:var(--mono); font-size:11px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--linea-fuerte);
+  white-space:nowrap}
+
+/* ── el panel ── */
+.proy-btn{
+  position:fixed; right:14px; bottom:14px;
+  padding:9px 14px; padding-bottom:calc(9px + env(safe-area-inset-bottom,0px));
+  z-index:60; cursor:pointer; border-radius:999px;
+  background:var(--tinta); color:var(--papel); border:none;
+  font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.04em;
+  box-shadow:0 2px 12px rgba(0,0,0,.28)}
+.proy-btn:focus-visible{outline:2px solid var(--tinta); outline-offset:3px}
+.proy-panel{
+  position:fixed; right:14px; bottom:calc(58px + env(safe-area-inset-bottom,0px));
+  z-index:61; width:min(310px,calc(100vw - 28px));
+  background:var(--papel); color:var(--tinta);
+  border:1px solid var(--linea-fuerte); border-radius:6px; padding:15px;
+  box-shadow:0 6px 28px rgba(0,0,0,.3);
+  max-height:min(80vh,620px); overflow-y:auto;
+  display:flex; flex-direction:column; gap:14px}
+.proy-grupo h5{
+  margin:0 0 7px; font-family:var(--mono); font-size:10px; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--lapiz); font-weight:600}
+.proy-fila{display:flex; flex-wrap:wrap; gap:6px}
+.proy-op{
+  font-family:var(--sans); font-size:13px; font-weight:600; cursor:pointer;
+  border:1px solid var(--linea-fuerte); background:var(--papel-2); color:var(--tinta);
+  border-radius:4px; padding:6px 10px; line-height:1.2}
+.proy-op[aria-pressed="true"]{
+  background:var(--tinta); color:var(--papel); border-color:var(--tinta)}
+.proy-op:focus-visible{outline:2px solid var(--tinta); outline-offset:2px}
+.proy-muestra{
+  display:inline-block; width:11px; height:11px; border-radius:2px;
+  border:1px solid rgba(128,128,128,.5); margin-right:6px; vertical-align:-1px}
+.proy-nota{margin:0; font-size:12px; line-height:1.45; color:var(--lapiz)}
+@media print{.proy-btn,.proy-panel,.marca-libre,.proy-nav,.sitio-nav{display:none!important}}
+
+/* ── modo clase: una diapositiva a la vez y tipografía de aula ── */
+body[data-solo="1"] .diapo{display:none}
+body[data-solo="1"] .diapo.activa{display:block}
+body[data-solo="1"] .tapa,
+body[data-solo="1"] .sitio-nav{display:none}
+body[data-solo="1"]{font-size:21px}
+body[data-solo="1"] .prosa,
+body[data-solo="1"] .gancho p,
+body[data-solo="1"] .lab .sub{max-width:none}
+body[data-solo="1"] .ec{font-size:1.18em}
+body[data-solo="1"] .cuenta{font-size:1.15em}
+body[data-solo="1"] .caso{border-bottom:none; padding-block:16px}
+body[data-solo="1"] section{border-top:none; padding-block:16px}
+body[data-solo="1"] .paginas,
+body[data-solo="1"] .creditos{display:none}
+
+/* en proyección, nada de letra diminuta */
+body[data-solo="1"] .rotulo-chico{
+  font-size:.82em; text-transform:none; letter-spacing:.01em; color:var(--tinta)}
+body[data-solo="1"] .rotulo-chico .ec{font-size:1.5em; font-weight:700}
+body[data-solo="1"] .forma .rotulo,
+body[data-solo="1"] .gancho-tit,
+body[data-solo="1"] .tarjeta-ec h3,
+body[data-solo="1"] .eyebrow,
+body[data-solo="1"] .campo label{font-size:.7em; letter-spacing:.07em}
+body[data-solo="1"] .lab .sub,
+body[data-solo="1"] .caso p,
+body[data-solo="1"] .razones,
+body[data-solo="1"] .veredicto p,
+body[data-solo="1"] .explicita,
+body[data-solo="1"] .tabla-puntos{font-size:.92em}
+body[data-solo="1"] .chip{font-size:.62em; padding:6px 11px}
+body[data-solo="1"] .forma .ec{font-size:1.5em}
+body[data-solo="1"] .caso-tit h3{font-size:1.7em}
+body[data-solo="1"] .numero{font-size:3.2em}
+body[data-solo="1"] .lab h4{font-size:1.3em}
+body[data-solo="1"] .boton,
+body[data-solo="1"] .preset{font-size:.8em; padding:7px 14px}
+body[data-solo="1"] .coefs input,
+body[data-solo="1"] .campo input,
+body[data-solo="1"] .salida,
+body[data-solo="1"] .pasos li .n{font-size:.95em}
+
+.proy-nav{
+  position:fixed; left:14px; bottom:calc(14px + env(safe-area-inset-bottom,0px));
+  z-index:60; display:flex; align-items:center; gap:8px;
+  background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:999px;
+  padding:5px 7px; box-shadow:0 2px 12px rgba(0,0,0,.22)}
+.proy-nav button{
+  width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:17px;
+  background:var(--tinta); color:var(--papel); border:none; line-height:1}
+.proy-nav button:disabled{opacity:.3; cursor:default}
+.proy-nav button:focus-visible{outline:2px solid var(--tinta); outline-offset:2px}
+.proy-nav span{font-family:var(--mono); font-size:13px; color:var(--lapiz);
+  min-width:4.5em; text-align:center; font-variant-numeric:tabular-nums}
+
+/* ── color de letra, después de las paletas para ganarles ── */
+:root[data-tinta="negro"]{--tinta:#000000; --lapiz:#3B3B3B}
+:root[data-tinta="azul"]{--tinta:#0A2A5C; --lapiz:#2C4E82}
+:root[data-tinta="verde"]{--tinta:#0E3B1D; --lapiz:#2C5F38}
+:root[data-tinta="bordo"]{--tinta:#570A13; --lapiz:#7C2F37}
+:root[data-tinta="violeta"]{--tinta:#2C0A4A; --lapiz:#4E296E}
+:root[data-tinta="blanco"]{--tinta:#FFFFFF; --lapiz:#C2D0DC}
+:root[data-tinta="amarillo"]{--tinta:#FFE187; --lapiz:#C9AE5E}
+:root[data-tinta="celeste"]{--tinta:#9FD9FF; --lapiz:#73A8CA}
+:root[data-tinta="verdecl"]{--tinta:#A9F0B9; --lapiz:#74B184}
+:root[data-tinta="rosa"]{--tinta:#FFB6C9; --lapiz:#C98496}

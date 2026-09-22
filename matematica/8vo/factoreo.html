@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Los diez casos de factoreo · AESWeb</title>
+<meta name="description" content="Los diez casos de factoreo de 8.º, cada uno con su ejemplo paso a paso y el truco de cálculo o la regla de divisibilidad que explica.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<style>
+/* ---------- encabezado ---------- */
+.tapa{padding-block:44px 28px}
+.sello{
+  font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--rojo); margin:0 0 14px
+}
+h1{
+  font-family:var(--serif); font-weight:800; font-size:clamp(2.4rem,7vw,4rem);
+  line-height:1.02; margin:0 0 16px; text-wrap:balance; letter-spacing:-.015em;
+}
+.bajada{
+  font-family:var(--serif); font-style:italic; font-size:clamp(1.1rem,2.6vw,1.35rem);
+  color:var(--lapiz); max-width:34em; margin:0 0 20px; line-height:1.45;
+}
+.pie-tapa{
+  font-size:14px; color:var(--lapiz);
+  border-top:1px solid var(--linea-fuerte); padding-top:12px;
+  display:flex; flex-wrap:wrap; gap:6px 18px;
+}
+
+/* ---------- navegador ---------- */
+.nav{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+  background:var(--papel); border-bottom:1px solid var(--linea-fuerte);
+  margin-inline:-20px; padding-inline:20px;
+}
+.nav-int{display:flex; gap:6px; overflow-x:auto; padding-block:9px; scrollbar-width:thin}
+.chip{
+  flex:0 0 auto; font-family:var(--mono); font-size:12px; font-weight:600;
+  border:1px solid var(--linea-fuerte); background:var(--papel-2); color:var(--lapiz);
+  border-radius:3px; padding:5px 9px; cursor:pointer; text-decoration:none;
+  white-space:nowrap; transition:color .12s,border-color .12s;
+}
+.chip:hover,.chip:focus-visible{color:var(--rojo); border-color:var(--rojo)}
+
+/* ---------- texto corriente ---------- */
+h2{
+  font-family:var(--serif); font-weight:800; font-size:clamp(1.5rem,4vw,2rem);
+  margin:0 0 6px; line-height:1.15; text-wrap:balance;
+}
+.intro{padding-block:26px 34px; border-bottom:2px solid var(--tinta)}
+
+/* ---------- ficha de caso ---------- */
+.caso{
+  padding-block:34px; border-bottom:1px solid var(--linea-fuerte);
+  scroll-margin-top:72px;
+}
+.caso-cab{display:flex; gap:16px; align-items:flex-start; margin-bottom:16px}
+.numero{
+  flex:0 0 auto; font-family:var(--serif); font-weight:800; font-size:2.7rem;
+  line-height:.9; color:var(--rojo); font-variant-numeric:tabular-nums;
+  min-width:1.6em;
+}
+.caso-tit{flex:1 1 auto; min-width:0}
+.caso-tit h3{
+  font-family:var(--serif); font-weight:700; font-size:clamp(1.25rem,3.4vw,1.6rem);
+  margin:0 0 2px; line-height:1.15; text-wrap:balance;
+}
+.paginas{
+  font-family:var(--mono); font-size:11.5px; color:var(--lapiz);
+  letter-spacing:.04em; text-transform:uppercase;
+}
+
+/* ---------- matemática ---------- */
+.forma{
+  background:var(--papel-2); border-left:3px solid var(--tinta);
+  padding:13px 16px; margin:0 0 18px; overflow-x:auto;
+}
+.forma .ec{font-size:1.2em}
+.forma .rotulo{
+  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz); margin-bottom:5px;
+}
+
+/* ---------- ejemplo con pasos ---------- */
+.ejemplo{margin:0 0 18px}
+.ejemplo-cab{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:12px; flex-wrap:wrap; margin-bottom:9px;
+}
+.rotulo-chico{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz);
+}
+.boton{
+  font-family:var(--sans); font-size:13px; font-weight:700;
+  background:none; border:1px solid var(--rojo); color:var(--rojo);
+  border-radius:3px; padding:4px 11px; cursor:pointer;
+  transition:background .12s,color .12s;
+}
+.boton:hover,.boton:focus-visible{background:var(--rojo); color:var(--papel)}
+.boton[disabled]{opacity:.35; cursor:default; background:none; color:var(--rojo)}
+.pasos{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px}
+.pasos li{
+  display:flex; gap:11px; align-items:baseline;
+  padding:7px 11px; background:var(--papel-2); border-radius:3px;
+  animation:entra .22s ease-out;
+}
+.pasos li .n{
+  font-family:var(--mono); font-size:11px; color:var(--lapiz);
+  flex:0 0 auto; padding-top:2px;
+}
+.pasos li .t{flex:1 1 auto; min-width:0; overflow-x:auto}
+.pasos li.final{background:var(--rojo-suave); font-weight:500}
+.pasos li.final .t .ec{color:var(--rojo); font-weight:700}
+@keyframes entra{from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){.pasos li{animation:none}}
+
+/* ---------- panel del gancho ---------- */
+.gancho{
+  background:var(--ambar-suave); border:1px solid var(--ambar-borde);
+  border-radius:4px; padding:15px 17px; margin-top:4px;
+}
+.gancho-tit{
+  font-family:var(--sans); font-weight:700; font-size:13px;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--ambar);
+  margin:0 0 7px; display:flex; align-items:center; gap:8px;
+}
+.gancho-tit::before{
+  content:""; width:16px; height:2px; background:var(--ambar); flex:0 0 auto;
+}
+.gancho p{margin:0 0 10px; max-width:60ch}
+.gancho p:last-child{margin-bottom:0}
+.cuenta{
+  font-family:var(--mono); font-size:15px; background:var(--papel);
+  border:1px solid var(--linea-fuerte); border-radius:3px;
+  padding:9px 12px; margin:10px 0; overflow-x:auto; white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.cuenta b{color:var(--rojo); font-weight:600}
+
+/* ---------- laboratorios ---------- */
+.lab{
+  background:var(--papel-2); border:1px solid var(--linea-fuerte);
+  border-radius:4px; padding:18px; margin:20px 0 0;
+}
+.lab h4{
+  font-family:var(--serif); font-weight:700; font-size:1.18rem; margin:0 0 4px;
+}
+.lab .sub{font-size:14px; color:var(--lapiz); margin:0 0 14px; max-width:58ch}
+.campos{display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:14px}
+.campo{display:flex; flex-direction:column; gap:4px}
+.campo label{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--lapiz);
+}
+.campo input{
+  font-family:var(--mono); font-size:16px; width:9ch;
+  background:var(--papel); color:var(--tinta);
+  border:1px solid var(--linea-fuerte); border-radius:3px; padding:7px 9px;
+}
+.campo input:focus-visible{outline:2px solid var(--rojo); outline-offset:1px; border-color:var(--rojo)}
+.salida{
+  font-family:var(--mono); font-size:15px; line-height:1.85;
+  background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:3px;
+  padding:12px 14px; overflow-x:auto; font-variant-numeric:tabular-nums;
+}
+.salida .dim{color:var(--lapiz)}
+.salida .ok{color:var(--rojo); font-weight:600}
+.salida .fila{white-space:nowrap}
+
+/* ---------- cierre ---------- */
+.cierre{padding-block:38px 20px}
+.cierre .marco{
+  border:2px solid var(--tinta); padding:22px 24px; background:var(--papel);
+}
+.cierre h2{margin-bottom:10px}
+.cierre .prosa{max-width:58ch}
+.creditos{
+  padding-block:26px 46px; font-size:13.5px; color:var(--lapiz);
+  border-top:1px solid var(--linea-fuerte); margin-top:18px;
+}
+
+@media (max-width:520px){
+  body{font-size:16px}
+  .numero{font-size:2.1rem}
+  .caso-cab{gap:11px}
+  .campo input{width:7.5ch}
+}
+</style>
+</head>
+<body data-diapos=".intro, .caso, .cierre">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="index.html">8.º grado</a><span class="sep">/</span>
+      <span>Unidades 5 y 6 · págs. 94–134</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Matemática 8.º grado</p>
+    <h1>Los diez casos de factoreo</h1>
+    <p class="bajada">Cada caso que aprendés para factorizar letras es, al mismo tiempo,
+      un atajo para calcular con números y una razón por la que funcionan las reglas de
+      divisibilidad que usás desde la primaria.</p>
+    <div class="pie-tapa">
+      <span>Unidades 5 y 6 · páginas 94 a 134</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un caso">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro">
+    <div class="prosa">
+      <h2>Factorizar es deshacer una multiplicación</h2>
+      <p>Cuando multiplicás <span class="ec">(<i>a</i>+<i>b</i>)(<i>a</i>−<i>b</i>)</span>
+        obtenés <span class="ec"><i>a</i><sup>2</sup>−<i>b</i><sup>2</sup></span>. Factorizar
+        es el camino de vuelta: te dan el resultado y tenés que encontrar los factores.</p>
+      <p>Lo que casi nunca se cuenta es que ese camino de vuelta sirve para algo más.
+        Un número también es una expresión: <b>4271</b> es
+        <span class="ec">4·10<sup>3</sup> + 2·10<sup>2</sup> + 7·10 + 1</span>. Todo lo que
+        aprendas a hacer con letras lo podés hacer con cifras. De ahí salen los trucos de
+        cálculo mental, las reglas de divisibilidad, y hasta un método para factorizar
+        números grandes que tiene casi cuatrocientos años.</p>
+      <p>Tocá <b>Siguiente paso</b> en cada ejemplo para verlo desarrollarse.</p>
+    </div>
+  </section>
+
+  <main id="casos"></main>
+
+  <section class="cierre">
+    <div class="marco">
+      <h2>Un último, el más lindo</h2>
+      <div class="prosa">
+        <p>Mirá <span class="ec"><i>n</i><sup>4</sup> + 4</span>. No es diferencia de
+          cuadrados, no es suma de cubos, no es trinomio: no es ninguno de los diez casos.
+          Y sin embargo se factoriza, combinando dos de ellos.</p>
+        <p>El truco es sumar y restar lo mismo para armar un cuadrado perfecto:</p>
+        <div class="cuenta"><i>n</i><sup>4</sup> + 4 = <i>n</i><sup>4</sup> + 4<i>n</i><sup>2</sup> + 4 − 4<i>n</i><sup>2</sup> = (<i>n</i><sup>2</sup>+2)<sup>2</sup> − (2<i>n</i>)<sup>2</sup></div>
+        <p>Y eso último ya es diferencia de cuadrados:</p>
+        <div class="cuenta"><b>(<i>n</i><sup>2</sup> − 2<i>n</i> + 2)(<i>n</i><sup>2</sup> + 2<i>n</i> + 2)</b></div>
+        <p>Consecuencia: <b>ningún número de la forma <span class="ec"><i>n</i><sup>4</sup>+4</span>
+          con <span class="ec"><i>n</i> ≥ 2</span> es primo</b>, porque siempre se parte en
+          esos dos pedazos. Probá con <span class="ec"><i>n</i></span> = 5:
+          <span class="ec">5<sup>4</sup>+4 = 629</span>, y la fórmula dice 17 · 37. Es cierto.</p>
+        <p>La versión general se llama <b>identidad de Sophie Germain</b>, por la matemática
+          francesa que tuvo que firmar sus trabajos con nombre de varón para que los leyeran:</p>
+        <div class="cuenta"><i>a</i><sup>4</sup> + 4<i>b</i><sup>4</sup> = (<i>a</i><sup>2</sup> − 2<i>ab</i> + 2<i>b</i><sup>2</sup>)(<i>a</i><sup>2</sup> + 2<i>ab</i> + 2<i>b</i><sup>2</sup>)</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="creditos">
+    Material de clase · Unidades 5 y 6, <i>Matemática 8</i>, Editorial En Alianza.
+    Los ejemplos son originales; las páginas indicadas remiten al libro del alumno.
+  </footer>
+</div>
+
+<script>
+/* ——— helpers de notación ——— */
+const E = s => '<span class="ec">' + s + '</span>';
+
+const CASOS = [
+{
+  n:1, corto:'Factor común', nombre:'Factor común monomio', pag:'págs. 96–97',
+  forma:'<i>ax</i> + <i>ay</i> + <i>az</i> = <i>a</i>(<i>x</i> + <i>y</i> + <i>z</i>)',
+  enun:'12<i>a</i><sup>3</sup><i>b</i> − 18<i>a</i><sup>2</sup><i>b</i><sup>2</sup> + 30<i>a</i><sup>2</sup><i>b</i>',
+  pasos:[
+    'Máximo común divisor de 12, 18 y 30: es <b>6</b>.',
+    'De cada letra, el menor exponente que aparece: <i>a</i><sup>2</sup> y <i>b</i>.',
+    'El factor común es 6<i>a</i><sup>2</sup><i>b</i>. Divido cada término por él.',
+  ],
+  final:'6<i>a</i><sup>2</sup><i>b</i>(2<i>a</i> − 3<i>b</i> + 5)',
+  gancho:{
+    tit:'Decidir sin calcular',
+    html:`<p>¿<span class="ec">4<sup>5</sup> + 4<sup>6</sup></span> es divisible por 5?
+      Nadie quiere calcular eso a mano. Pero sacando factor común:</p>
+      <div class="cuenta">4<sup>5</sup> + 4<sup>6</sup> = 4<sup>5</sup>(1 + 4) = <b>5 · 4<sup>5</sup></b></div>
+      <p>Sí lo es, y ni hizo falta saber cuánto vale. (Vale 5120, por si tenían la duda.)
+      Sacar factor común es la forma más rápida de decidir si un número enorme es
+      divisible por algo.</p>`
+  }
+},
+{
+  n:2, corto:'F. c. polinomio', nombre:'Factor común polinomio', pag:'págs. 98–99',
+  forma:'<i>a</i>(<i>m</i>+<i>n</i>) + <i>b</i>(<i>m</i>+<i>n</i>) = (<i>m</i>+<i>n</i>)(<i>a</i>+<i>b</i>)',
+  enun:'5<i>a</i>(<i>n</i>+3) − 7<i>b</i>(<i>n</i>+3)',
+  pasos:[
+    'El paréntesis (<i>n</i>+3) se repite en los dos términos: ese es el factor común.',
+    'Lo saco afuera, y adentro queda lo que multiplicaba a cada uno.',
+  ],
+  final:'(<i>n</i>+3)(5<i>a</i> − 7<i>b</i>)',
+  gancho:{
+    tit:'Un número que nunca es primo',
+    html:`<p>Tomá <span class="ec"><i>n</i><sup>3</sup> + <i>n</i><sup>2</sup> + <i>n</i> + 1</span>
+      y agrupá de a dos:</p>
+      <div class="cuenta"><i>n</i><sup>2</sup>(<i>n</i>+1) + (<i>n</i>+1) = <b>(<i>n</i>+1)(<i>n</i><sup>2</sup>+1)</b></div>
+      <p>Como se parte en dos factores que valen más que 1, <b>nunca es primo</b> para
+      <span class="ec"><i>n</i> ≥ 2</span>. Probalo con <span class="ec"><i>n</i></span> = 10:
+      da 1111, y la fórmula anuncia 11 · 101. Exacto.</p>`
+  }
+},
+{
+  n:3, corto:'Agrupación', nombre:'Factor común por agrupación de términos', pag:'págs. 100–102',
+  forma:'<i>ax</i> + <i>ay</i> + <i>bx</i> + <i>by</i> = (<i>a</i>+<i>b</i>)(<i>x</i>+<i>y</i>)',
+  enun:'3<i>an</i> − 5<i>bn</i> + 3<i>ab</i> − 5<i>b</i><sup>2</sup>',
+  pasos:[
+    'Agrupo los que comparten letra: (3<i>an</i> − 5<i>bn</i>) + (3<i>ab</i> − 5<i>b</i><sup>2</sup>).',
+    'Saco factor común en cada grupo: <i>n</i>(3<i>a</i> − 5<i>b</i>) + <i>b</i>(3<i>a</i> − 5<i>b</i>).',
+    'Ahora (3<i>a</i> − 5<i>b</i>) se repite: es el caso anterior.',
+  ],
+  final:'(3<i>a</i> − 5<i>b</i>)(<i>n</i> + <i>b</i>)',
+  gancho:{
+    tit:'El truco del bloque repetido',
+    html:`<p>Escribí cualquier número de tres cifras dos veces seguidas: 123123, 847847,
+      506506. Agrupando:</p>
+      <div class="cuenta">123123 = 123·1000 + 123 = 123(1000 + 1) = 123 · <b>1001</b></div>
+      <p>Y 1001 = 7 · 11 · 13. Así que <b>todo número así es divisible por 7, por 11 y por
+      13</b>, sin importar cuál hayas elegido. Probalo con el tuyo.</p>`
+  }
+},
+{
+  n:4, corto:'Dif. cuadrados', nombre:'Diferencia de cuadrados perfectos', pag:'págs. 103–105',
+  forma:'<i>a</i><sup>2</sup> − <i>b</i><sup>2</sup> = (<i>a</i> + <i>b</i>)(<i>a</i> − <i>b</i>)',
+  enun:'49<i>a</i><sup>2</sup> − 64<i>b</i><sup>2</sup>',
+  pasos:[
+    'Raíz cuadrada del primer término: 7<i>a</i>. Del segundo: 8<i>b</i>.',
+    'Uno suma y otro resta.',
+  ],
+  final:'(7<i>a</i> + 8<i>b</i>)(7<i>a</i> − 8<i>b</i>)',
+  gancho:{
+    tit:'Multiplicar de memoria',
+    html:`<p>98 × 102 parece un problema. Pero los dos están a 2 de 100, así que es
+      <span class="ec">(100−2)(100+2)</span>, que es exactamente
+      <span class="ec">100<sup>2</sup> − 2<sup>2</sup></span>:</p>
+      <div class="cuenta">98 × 102 = 10 000 − 4 = <b>9996</b></div>
+      <div class="cuenta">47 × 53 = 50<sup>2</sup> − 3<sup>2</sup> = 2500 − 9 = <b>2491</b></div>
+      <div class="cuenta">995 × 1005 = 1000<sup>2</sup> − 5<sup>2</sup> = <b>999 975</b></div>
+      <p>Funciona siempre que los dos números estén a la misma distancia de un número
+      redondo. El de abajo lo hace solo.</p>`
+  },
+  lab:'lab-cuadrados'
+},
+{
+  n:5, corto:'Cubos', nombre:'Suma y diferencia de cubos perfectos', pag:'págs. 106–107',
+  forma:'<i>a</i><sup>3</sup> + <i>b</i><sup>3</sup> = (<i>a</i>+<i>b</i>)(<i>a</i><sup>2</sup> − <i>ab</i> + <i>b</i><sup>2</sup>)',
+  enun:'27<i>a</i><sup>3</sup> + 8<i>b</i><sup>3</sup>',
+  pasos:[
+    'Raíz cúbica de cada término: 3<i>a</i> y 2<i>b</i>.',
+    'Primer paréntesis: la suma de las raíces, (3<i>a</i> + 2<i>b</i>).',
+    'Segundo: cuadrado, menos el producto, más cuadrado.',
+  ],
+  final:'(3<i>a</i> + 2<i>b</i>)(9<i>a</i><sup>2</sup> − 6<i>ab</i> + 4<i>b</i><sup>2</sup>)',
+  gancho:{
+    tit:'Por qué siempre da múltiplo de 6',
+    html:`<p>Tomá cualquier entero, elevalo al cubo y restale el número original.
+      El resultado siempre es divisible por 6. La razón es una diferencia de cubos
+      seguida de una diferencia de cuadrados:</p>
+      <div class="cuenta"><i>n</i><sup>3</sup> − <i>n</i> = <i>n</i>(<i>n</i><sup>2</sup> − 1) = <b>(<i>n</i>−1) · <i>n</i> · (<i>n</i>+1)</b></div>
+      <p>Son tres enteros consecutivos: entre ellos hay sí o sí un múltiplo de 2 y uno de 3.
+      Con <span class="ec"><i>n</i></span> = 7: 343 − 7 = 336 = 6 · 56.</p>`
+  }
+},
+{
+  n:6, corto:'Suma de potencias', nombre:'Suma de potencias de igual grado', pag:'págs. 108–109',
+  forma:'<i>a</i><sup>5</sup> + <i>b</i><sup>5</sup> = (<i>a</i>+<i>b</i>)(<i>a</i><sup>4</sup> − <i>a</i><sup>3</sup><i>b</i> + <i>a</i><sup>2</sup><i>b</i><sup>2</sup> − <i>ab</i><sup>3</sup> + <i>b</i><sup>4</sup>)',
+  enun:'<i>a</i><sup>5</sup> + 32<i>b</i><sup>5</sup>',
+  pasos:[
+    '32<i>b</i><sup>5</sup> es (2<i>b</i>)<sup>5</sup>, así que las bases son <i>a</i> y 2<i>b</i>.',
+    'El exponente 5 es impar: se puede. Primer factor, la suma de las bases.',
+    'En el segundo, los signos van alternando.',
+  ],
+  final:'(<i>a</i> + 2<i>b</i>)(<i>a</i><sup>4</sup> − 2<i>a</i><sup>3</sup><i>b</i> + 4<i>a</i><sup>2</sup><i>b</i><sup>2</sup> − 8<i>ab</i><sup>3</sup> + 16<i>b</i><sup>4</sup>)',
+  gancho:{
+    tit:'Atención: solo con exponente impar',
+    html:`<p>Con exponente par no hay caso: <span class="ec"><i>a</i><sup>2</sup>+<i>b</i><sup>2</sup></span>
+      no se factoriza. Con exponente impar, en cambio,
+      <span class="ec"><i>a</i><sup><i>n</i></sup>+<i>b</i><sup><i>n</i></sup></span>
+      siempre es divisible por <span class="ec"><i>a</i>+<i>b</i></span>.</p>
+      <p>Eso deja fuera de carrera a un montón de candidatos a número primo. Tomá
+      <span class="ec">2<sup><i>n</i></sup>+1</span> con <span class="ec"><i>n</i></span> impar:
+      es divisible por <span class="ec">2+1 = 3</span>, así que no puede ser primo.</p>
+      <div class="cuenta">2<sup>5</sup> + 1 = 33 = <b>3 · 11</b> &nbsp;&nbsp; 2<sup>7</sup> + 1 = 129 = <b>3 · 43</b></div>
+      <p>Por eso los únicos <span class="ec">2<sup><i>n</i></sup>+1</span> que tienen chance
+      de ser primos son los que tienen <span class="ec"><i>n</i></span> potencia de 2. Se
+      llaman <b>primos de Fermat</b>, y hasta hoy se conocen solamente cinco.</p>`
+  }
+},
+{
+  n:7, corto:'Dif. de potencias', nombre:'Diferencia de potencias de igual grado', pag:'págs. 110–111',
+  forma:'<i>a</i><sup><i>n</i></sup> − <i>b</i><sup><i>n</i></sup> = (<i>a</i> − <i>b</i>)(<i>a</i><sup><i>n</i>−1</sup> + <i>a</i><sup><i>n</i>−2</sup><i>b</i> + ⋯ + <i>b</i><sup><i>n</i>−1</sup>)',
+  enun:'<i>a</i><sup>4</sup> − 81<i>b</i><sup>4</sup>',
+  pasos:[
+    'Acá el exponente es par, así que conviene verlo como diferencia de cuadrados: (<i>a</i><sup>2</sup>)<sup>2</sup> − (9<i>b</i><sup>2</sup>)<sup>2</sup>.',
+    'Primera vuelta: (<i>a</i><sup>2</sup> + 9<i>b</i><sup>2</sup>)(<i>a</i><sup>2</sup> − 9<i>b</i><sup>2</sup>).',
+    'El segundo paréntesis vuelve a ser diferencia de cuadrados. El primero no se puede.',
+  ],
+  final:'(<i>a</i><sup>2</sup> + 9<i>b</i><sup>2</sup>)(<i>a</i> + 3<i>b</i>)(<i>a</i> − 3<i>b</i>)',
+  gancho:{
+    tit:'De acá sale la regla del 9',
+    html:`<p>Esta es la más importante de todas. La regla dice
+      <span class="ec"><i>a</i><sup><i>n</i></sup> − <i>b</i><sup><i>n</i></sup></span> es
+      siempre divisible por <span class="ec"><i>a</i> − <i>b</i></span>. Poné
+      <span class="ec"><i>a</i></span> = 10 y <span class="ec"><i>b</i></span> = 1:</p>
+      <div class="cuenta">10<sup><i>n</i></sup> − 1 es divisible por 10 − 1 = <b>9</b></div>
+      <p>O sea: 9, 99, 999, 9999… todos múltiplos de 9. Ahora mirá un número cualquiera,
+      4271, y restale la suma de sus cifras:</p>
+      <div class="cuenta">4271 − (4+2+7+1) = 4·<b>999</b> + 2·<b>99</b> + 7·<b>9</b> = 4257</div>
+      <p>Cada pedazo es múltiplo de 9, así que la resta entera lo es. <b>Entonces el número
+      y la suma de sus cifras dejan el mismo resto al dividir por 9.</b> Eso es, palabra por
+      palabra, la regla que usan desde la primaria — y recién ahora está demostrada.</p>
+      <p>Con <span class="ec"><i>b</i></span> = −1 sale la regla del 11:
+      <span class="ec">10<sup><i>n</i></sup> − (−1)<sup><i>n</i></sup></span> es divisible
+      por 11, y de ahí la suma alternada de cifras.</p>`
+  },
+  lab:'lab-nueve'
+},
+{
+  n:8, corto:'Trinomio c. p.', nombre:'Trinomio cuadrado perfecto', pag:'págs. 118–119',
+  forma:'<i>a</i><sup>2</sup> ± 2<i>ab</i> + <i>b</i><sup>2</sup> = (<i>a</i> ± <i>b</i>)<sup>2</sup>',
+  enun:'9<i>a</i><sup>2</sup> + 30<i>ab</i> + 25<i>b</i><sup>2</sup>',
+  pasos:[
+    'Raíces de los extremos: 3<i>a</i> y 5<i>b</i>. Los dos extremos son positivos: buena señal.',
+    'Control: el doble producto tiene que ser 2 · 3<i>a</i> · 5<i>b</i> = 30<i>ab</i>. Coincide.',
+    'El signo del binomio es el del término del medio.',
+  ],
+  final:'(3<i>a</i> + 5<i>b</i>)<sup>2</sup>',
+  gancho:{
+    tit:'Elevar al cuadrado cualquier número terminado en 5',
+    html:`<p>85 al cuadrado, mentalmente: agarrá el 8, multiplicalo por el que sigue
+      (8 × 9 = 72), y pegale 25 atrás. <b>7225</b>. Listo.</p>
+      <div class="cuenta">35<sup>2</sup> → 3·4 = 12 → <b>1225</b> &nbsp;&nbsp;&nbsp; 115<sup>2</sup> → 11·12 = 132 → <b>13 225</b></div>
+      <p>Funciona por este caso. Todo número terminado en 5 es
+      <span class="ec">10<i>a</i> + 5</span>, y al elevarlo al cuadrado:</p>
+      <div class="cuenta">(10<i>a</i> + 5)<sup>2</sup> = 100<i>a</i><sup>2</sup> + 100<i>a</i> + 25 = <b>100·<i>a</i>(<i>a</i>+1) + 25</b></div>
+      <p>El <span class="ec"><i>a</i>(<i>a</i>+1)</span> es el "multiplicalo por el que sigue",
+      y el 100 es el "pegale 25 atrás".</p>`
+  }
+},
+{
+  n:9, corto:'Trinomios', nombre:'Trinomio de la forma <i>x</i>² + <i>bx</i> + <i>c</i> y <i>ax</i>² + <i>bx</i> + <i>c</i>', pag:'págs. 120–123',
+  forma:'<i>x</i><sup>2</sup> + <i>bx</i> + <i>c</i> = (<i>x</i> + <i>p</i>)(<i>x</i> + <i>q</i>) &nbsp; con &nbsp; <i>p</i> + <i>q</i> = <i>b</i>, &nbsp; <i>p</i> · <i>q</i> = <i>c</i>',
+  enun:'<i>n</i><sup>2</sup> + 9<i>n</i> + 20',
+  pasos:[
+    'Busco dos números que multiplicados den 20 y sumados den 9.',
+    'Los divisores de 20 son 1, 2, 4, 5, 10 y 20. La pareja 4 y 5 cumple las dos cosas.',
+    'Y con <i>a</i> ≠ 1 el mismo razonamiento, repartiendo también el coeficiente: 6<i>n</i><sup>2</sup> + 7<i>n</i> − 3 = (2<i>n</i> + 3)(3<i>n</i> − 1).',
+  ],
+  final:'(<i>n</i> + 4)(<i>n</i> + 5)',
+  gancho:{
+    tit:'Por qué la búsqueda siempre termina',
+    html:`<p>Podría parecer que hay que probar infinitas parejas. No: si
+      <span class="ec"><i>p</i> · <i>q</i> = <i>c</i></span>, entonces <b><i>p</i> y <i>q</i>
+      son divisores de <i>c</i></b>, y un número entero tiene una cantidad finita de
+      divisores. La lista de candidatos es corta y se agota.</p>
+      <p>Es exactamente la misma idea que usan con la regla de Ruffini: cuando buscan un
+      valor que anule el polinomio, prueban con los divisores del término independiente y
+      no con cualquier número. La factorización y la búsqueda de raíces son el mismo
+      problema mirado de dos maneras.</p>`
+  }
+},
+{
+  n:10, corto:'Cubo perfecto', nombre:'Cuatrinomio cubo perfecto', pag:'págs. 124–125',
+  forma:'<i>a</i><sup>3</sup> + 3<i>a</i><sup>2</sup><i>b</i> + 3<i>ab</i><sup>2</sup> + <i>b</i><sup>3</sup> = (<i>a</i> + <i>b</i>)<sup>3</sup>',
+  enun:'8<i>a</i><sup>3</sup> + 36<i>a</i><sup>2</sup><i>b</i> + 54<i>ab</i><sup>2</sup> + 27<i>b</i><sup>3</sup>',
+  pasos:[
+    'Raíces cúbicas de los extremos: 2<i>a</i> y 3<i>b</i>.',
+    'Control del segundo término: 3 · (2<i>a</i>)<sup>2</sup> · 3<i>b</i> = 36<i>a</i><sup>2</sup><i>b</i>. ✓',
+    'Control del tercero: 3 · 2<i>a</i> · (3<i>b</i>)<sup>2</sup> = 54<i>ab</i><sup>2</sup>. ✓ Los cuatro términos cierran.',
+  ],
+  final:'(2<i>a</i> + 3<i>b</i>)<sup>3</sup>',
+  gancho:{
+    tit:'Los coeficientes están en el triángulo de Pascal',
+    html:`<p>El 1, 3, 3, 1 de este caso es la cuarta fila del triángulo de Pascal. Y hay una
+      manera preciosa de verlo: elevá 11 al cubo.</p>
+      <div class="cuenta">11<sup>3</sup> = <b>1331</b> &nbsp;&nbsp;&nbsp; 101<sup>3</sup> = <b>1 03 03 01</b> = 1 030 301</div>
+      <p>Las cifras <i>son</i> los coeficientes. Porque 11 = 10 + 1, y al desarrollar
+      <span class="ec">(10+1)<sup>3</sup></span> cada coeficiente cae en su propia columna
+      de unidades, decenas, centenas. Con 101 hay dos ceros de separación y se ve todavía
+      más claro.</p>
+      <p>El truco se rompe en <span class="ec">11<sup>5</sup></span>, cuando algún
+      coeficiente pasa de 9 y hay que llevarse. Fijate cuál es el primero que falla.</p>`
+  }
+}
+];
+
+/* ——— navegación ——— */
+document.getElementById('nav').innerHTML = CASOS.map(c =>
+  `<a class="chip" href="#caso${c.n}">${c.n}. ${c.corto}</a>`).join('');
+
+/* ——— fichas ——— */
+const LABS = {
+'lab-cuadrados':`
+<div class="lab">
+  <h4>Probalo: multiplicar de memoria</h4>
+  <p class="sub">Escribí dos números que estén a la misma distancia de un número redondo
+    y mirá cómo se convierte en una resta de cuadrados.</p>
+  <div class="campos">
+    <div class="campo"><label for="dc-a">Primero</label><input id="dc-a" type="number" value="98"></div>
+    <div class="campo"><label for="dc-b">Segundo</label><input id="dc-b" type="number" value="102"></div>
+  </div>
+  <div class="salida" id="dc-out"></div>
+</div>`,
+'lab-nueve':`
+<div class="lab">
+  <h4>Probalo: por qué funciona la regla del 9</h4>
+  <p class="sub">Escribí cualquier número y mirá la resta que lo demuestra: cada pedazo que
+    queda es un 9, un 99 o un 999.</p>
+  <div class="campos">
+    <div class="campo"><label for="n9">Número</label><input id="n9" type="number" value="4271"></div>
+  </div>
+  <div class="salida" id="n9-out"></div>
+</div>`
+};
+
+document.getElementById('casos').innerHTML = CASOS.map(c => `
+<article class="caso" id="caso${c.n}">
+  <div class="caso-cab">
+    <div class="numero">${c.n}</div>
+    <div class="caso-tit">
+      <h3>${c.nombre}</h3>
+      <div class="paginas">${c.pag}</div>
+    </div>
+  </div>
+
+  <div class="forma">
+    <span class="rotulo">Forma general</span>
+    <span class="ec">${c.forma}</span>
+  </div>
+
+  <div class="ejemplo" data-caso="${c.n}">
+    <div class="ejemplo-cab">
+      <span class="rotulo-chico">Ejemplo · factorizar <span class="ec">${c.enun}</span></span>
+      <button class="boton" type="button" data-accion="paso" data-caso="${c.n}">Siguiente paso</button>
+    </div>
+    <ol class="pasos" id="pasos${c.n}"></ol>
+  </div>
+
+  <div class="gancho">
+    <p class="gancho-tit">${c.gancho.tit}</p>
+    ${c.gancho.html}
+  </div>
+
+  ${c.lab ? LABS[c.lab] : ''}
+</article>`).join('');
+
+/* ——— revelar pasos ——— */
+const estado = {};
+CASOS.forEach(c => { estado[c.n] = 0; });
+
+function siguientePaso(n){
+  const c = CASOS.find(k => k.n === n);
+  const total = c.pasos.length + 1;
+  if (estado[n] >= total) return;
+  const i = estado[n];
+  const ultimo = (i === c.pasos.length);
+  const li = document.createElement('li');
+  if (ultimo) li.className = 'final';
+  li.innerHTML = ultimo
+    ? `<span class="n">=</span><span class="t"><span class="ec">${c.final}</span></span>`
+    : `<span class="n">${i+1}</span><span class="t">${c.pasos[i]}</span>`;
+  document.getElementById('pasos' + n).appendChild(li);
+  estado[n] = i + 1;
+  if (estado[n] >= total){
+    const b = document.querySelector(`[data-accion="paso"][data-caso="${n}"]`);
+    b.disabled = true; b.textContent = 'Completo';
+  }
+}
+
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-accion="paso"]');
+  if (b) siguientePaso(Number(b.dataset.caso));
+});
+
+/* ——— laboratorio: diferencia de cuadrados ——— */
+const miles = x => x.toLocaleString('es-PY');
+
+function calcCuadrados(){
+  const a = parseInt(document.getElementById('dc-a').value, 10);
+  const b = parseInt(document.getElementById('dc-b').value, 10);
+  const out = document.getElementById('dc-out');
+  if (!Number.isFinite(a) || !Number.isFinite(b)){
+    out.innerHTML = '<span class="dim">Escribí los dos números.</span>'; return;
+  }
+  if ((a + b) % 2 !== 0){
+    out.innerHTML = `<span class="dim">${miles(a)} × ${miles(b)} = </span><span class="ok">${miles(a*b)}</span><br>
+      <span class="dim">Para el truco conviene que los dos sean pares o los dos impares,
+      así el punto medio es entero.</span>`;
+    return;
+  }
+  const m = (a + b) / 2, d = Math.abs(a - b) / 2;
+  out.innerHTML = `
+    <div class="fila"><span class="dim">punto medio:</span> ${miles(m)} &nbsp;&nbsp;
+      <span class="dim">distancia:</span> ${miles(d)}</div>
+    <div class="fila">${miles(a)} × ${miles(b)} = (${miles(m)} − ${miles(d)})(${miles(m)} + ${miles(d)})</div>
+    <div class="fila"><span class="dim">=</span> ${miles(m)}<sup>2</sup> − ${miles(d)}<sup>2</sup>
+      <span class="dim">=</span> ${miles(m*m)} − ${miles(d*d)}</div>
+    <div class="fila"><span class="dim">=</span> <span class="ok">${miles(a*b)}</span></div>`;
+}
+
+/* ——— laboratorio: regla del 9 ——— */
+function calcNueve(){
+  const campo = document.getElementById('n9');
+  const bruto = String(campo.value).replace(/[^0-9]/g, '').slice(0, 12);
+  const out = document.getElementById('n9-out');
+  if (bruto.length < 2){
+    out.innerHTML = '<span class="dim">Escribí un número de al menos dos cifras.</span>'; return;
+  }
+  const cifras = bruto.split('').map(Number);
+  const N = Number(bruto);
+  const suma = cifras.reduce((s, d) => s + d, 0);
+  const k = cifras.length;
+  const trozos = cifras.map((d, i) => {
+      const nueves = '9'.repeat(k - 1 - i);
+      return nueves ? `${d}·<b>${nueves}</b>` : null;
+    }).filter(Boolean).join(' + ');
+  out.innerHTML = `
+    <div class="fila">${miles(N)} <span class="dim">− suma de cifras (</span>${cifras.join(' + ')}<span class="dim"> = ${suma})</span></div>
+    <div class="fila"><span class="dim">=</span> ${trozos} <span class="dim">=</span> ${miles(N - suma)}</div>
+    <div class="fila"><span class="dim">cada pedazo es múltiplo de 9, así que ${miles(N - suma)} lo es:</span> ${miles(N - suma)} ÷ 9 = ${miles((N - suma) / 9)}</div>
+    <div class="fila"><span class="dim">resto de</span> ${miles(N)} <span class="dim">÷ 9 =</span> <span class="ok">${N % 9}</span>
+      <span class="dim">· resto de</span> ${suma} <span class="dim">÷ 9 =</span> <span class="ok">${suma % 9}</span>
+      <span class="dim">— el mismo.</span></div>`;
+}
+
+['dc-a','dc-b'].forEach(id => document.getElementById(id).addEventListener('input', calcCuadrados));
+document.getElementById('n9').addEventListener('input', calcNueve);
+calcCuadrados();
+calcNueve();
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dos rectas, una solución · AESWeb</title>
+<meta name="description" content="Taller del método gráfico para sistemas de dos ecuaciones de primer grado.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<style>
+.tapa{padding-block:44px 26px}
+.sello{font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--r1); margin:0 0 14px}
+h1{font-family:var(--serif); font-weight:800; font-size:clamp(2.3rem,7vw,4rem);
+  line-height:1.02; margin:0 0 16px; text-wrap:balance; letter-spacing:-.015em}
+.bajada{font-family:var(--serif); font-style:italic; font-size:clamp(1.1rem,2.6vw,1.35rem);
+  color:var(--lapiz); max-width:34em; margin:0 0 20px; line-height:1.45}
+.pie-tapa{font-size:14px; color:var(--lapiz); border-top:1px solid var(--linea-fuerte);
+  padding-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
+
+section{padding-block:30px; border-top:1px solid var(--linea-fuerte)}
+section:first-of-type{border-top:2px solid var(--tinta)}
+h2{font-family:var(--serif); font-weight:800; font-size:clamp(1.45rem,4vw,1.95rem);
+  margin:0 0 4px; line-height:1.15; text-wrap:balance}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--lapiz); margin:0 0 8px}
+
+.destacado{background:var(--papel-2); border-left:3px solid var(--tinta);
+  padding:13px 16px; margin:16px 0; overflow-x:auto}
+.destacado .ec{font-size:1.2em}
+
+/* ---------- graficador ---------- */
+.taller{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,320px);
+  gap:22px; align-items:start; margin-top:18px}
+@media (max-width:760px){.taller{grid-template-columns:minmax(0,1fr)}}
+
+.lienzo{background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:4px;
+  padding:8px; overflow:hidden}
+.lienzo svg{display:block; width:100%; height:auto; max-width:100%}
+.grilla{stroke:var(--linea); stroke-width:1}
+.grilla-fuerte{stroke:var(--linea-fuerte); stroke-width:1}
+.eje{stroke:var(--tinta); stroke-width:1.6}
+.rotulo-eje{fill:var(--lapiz); font-family:'IBM Plex Mono',monospace; font-size:11px}
+.recta1{stroke:var(--r1); stroke-width:2.6; fill:none; stroke-linecap:round}
+.recta2{stroke:var(--r2); stroke-width:2.6; fill:none; stroke-linecap:round}
+.recta2.encimada{stroke-dasharray:9 7}
+.sol-halo{fill:var(--punto); opacity:.22}
+.sol-punto{fill:var(--punto); stroke:var(--papel); stroke-width:2}
+.sol-guia{stroke:var(--punto); stroke-width:1.2; stroke-dasharray:4 4; fill:none}
+.sol-texto{fill:var(--punto); font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600}
+
+.panel{display:flex; flex-direction:column; gap:14px}
+.tarjeta-ec{border:1px solid var(--linea-fuerte); border-radius:4px; padding:12px 13px}
+.tarjeta-ec.uno{border-left:4px solid var(--r1); background:var(--r1-suave)}
+.tarjeta-ec.dos{border-left:4px solid var(--r2); background:var(--r2-suave)}
+.tarjeta-ec h3{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; margin:0 0 9px; font-weight:600}
+.tarjeta-ec.uno h3{color:var(--r1)} .tarjeta-ec.dos h3{color:var(--r2)}
+.coefs{display:flex; align-items:center; gap:5px; flex-wrap:wrap;
+  font-family:var(--serif); font-size:1.12rem}
+.coefs input{font-family:var(--mono); font-size:15px; width:3.6em; text-align:center;
+  background:var(--papel); color:var(--tinta); border:1px solid var(--linea-fuerte);
+  border-radius:3px; padding:5px 3px}
+.coefs input:focus-visible{outline:2px solid var(--tinta); outline-offset:1px}
+.explicita{font-family:var(--mono); font-size:12.5px; color:var(--lapiz);
+  margin-top:9px; overflow-x:auto; white-space:nowrap}
+
+.veredicto{border:1px solid var(--linea-fuerte); border-radius:4px; padding:14px;
+  background:var(--papel-2)}
+.pastilla{display:inline-block; font-family:var(--sans); font-weight:700; font-size:12.5px;
+  letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:99px;
+  margin-bottom:9px}
+.pastilla.det{background:var(--punto-suave); color:var(--punto); border:1px solid var(--punto)}
+.pastilla.inc{background:var(--r1-suave); color:var(--r1); border:1px solid var(--r1)}
+.pastilla.ind{background:var(--r2-suave); color:var(--r2); border:1px solid var(--r2)}
+.veredicto p{margin:0 0 8px; font-size:15px}
+.veredicto p:last-child{margin-bottom:0}
+.razones{font-family:var(--mono); font-size:13px; color:var(--lapiz); line-height:1.9;
+  font-variant-numeric:tabular-nums}
+.razones b{color:var(--tinta); font-weight:600}
+
+.presets{display:flex; flex-wrap:wrap; gap:7px; margin-top:16px}
+.preset{font-family:var(--sans); font-size:13.5px; font-weight:700; cursor:pointer;
+  background:none; border:1px solid var(--linea-fuerte); color:var(--tinta);
+  border-radius:3px; padding:6px 12px; transition:border-color .12s,color .12s}
+.preset:hover,.preset:focus-visible{border-color:var(--r1); color:var(--r1)}
+
+/* ---------- el deslizador de la recta ---------- */
+.paseo{background:var(--papel-2); border:1px solid var(--linea-fuerte); border-radius:4px;
+  padding:16px; margin-top:16px}
+.paseo .fila{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px}
+.paseo input[type=range]{flex:1 1 220px; accent-color:var(--r1); min-width:0}
+.paseo .par{font-family:var(--mono); font-size:16px; color:var(--r1); font-weight:600;
+  font-variant-numeric:tabular-nums; white-space:nowrap}
+.tabla-puntos{display:flex; gap:0; overflow-x:auto; border:1px solid var(--linea-fuerte);
+  border-radius:3px; background:var(--papel); font-family:var(--mono); font-size:13px}
+.tabla-puntos div{flex:1 0 auto; text-align:center; padding:7px 11px;
+  border-right:1px solid var(--linea); font-variant-numeric:tabular-nums}
+.tabla-puntos div:last-child{border-right:none}
+.tabla-puntos .cab{background:var(--papel-2); color:var(--lapiz); font-size:11px;
+  letter-spacing:.08em; text-transform:uppercase}
+.tabla-puntos .act{background:var(--r1-suave); color:var(--r1); font-weight:600}
+
+/* ---------- tres casos ---------- */
+.casos{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px;
+  margin-top:18px}
+.caso{border:1px solid var(--linea-fuerte); border-radius:4px; padding:15px;
+  display:flex; flex-direction:column; gap:8px}
+.caso h3{font-family:var(--serif); font-size:1.15rem; margin:0; font-weight:700}
+.caso p{margin:0; font-size:14.5px; color:var(--lapiz)}
+.caso .mini{font-family:var(--mono); font-size:12.5px; color:var(--tinta)}
+
+.creditos{padding-block:26px 46px; font-size:13.5px; color:var(--lapiz);
+  border-top:1px solid var(--linea-fuerte)}
+
+@media (max-width:520px){
+  body{font-size:16px}
+  .coefs{font-size:1rem}
+  .coefs input{width:3.2em; font-size:14px}
+}
+</style>
+</head>
+<body data-diapos="section">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="index.html">8.º grado</a><span class="sep">/</span>
+      <span>Unidad 9 · págs. 178–196</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+<header class="tapa">
+  <p class="sello">Albert Einstein School · Matemática 8.º grado</p>
+  <h1>Dos rectas, una solución</h1>
+  <p class="bajada">Un sistema de dos ecuaciones de primer grado no es un truco de
+    despejar. Es una pregunta de geometría: ¿en qué punto se cruzan estas dos rectas?</p>
+  <div class="pie-tapa">
+    <span>Unidad 9 · páginas 178 a 196</span>
+    <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+  </div>
+</header>
+
+<section>
+  <p class="eyebrow">Punto de partida</p>
+  <h2>Una ecuación con dos incógnitas tiene infinitas soluciones</h2>
+  <div class="prosa">
+    <p>Cuando resolvías <span class="ec">2<i>x</i> = 6</span> había una sola respuesta.
+      Pero <span class="ec">2<i>x</i> + <i>y</i> = 7</span> se cumple con
+      <span class="ec">(0, 7)</span>, con <span class="ec">(1, 5)</span>, con
+      <span class="ec">(3, 1)</span>… elegís cualquier <span class="ec"><i>x</i></span> y
+      siempre hay un <span class="ec"><i>y</i></span> que la hace verdadera.</p>
+    <p>Movés el deslizador y vas generando soluciones. Fijate dónde caen los puntos.</p>
+  </div>
+
+  <div class="paseo">
+    <div class="fila">
+      <label class="ec" for="paseo-x" style="min-width:8em">Elegí <i>x</i>:</label>
+      <input id="paseo-x" type="range" min="-4" max="8" step="1" value="3">
+      <span class="par" id="paseo-par"></span>
+    </div>
+    <div class="tabla-puntos" id="paseo-tabla"></div>
+    <div class="lienzo" style="margin-top:12px"><svg id="svg-paseo" viewBox="0 0 560 560" role="img" aria-label="Los puntos que cumplen 2x + y = 7 caen todos sobre una misma recta"></svg></div>
+    <p style="margin:12px 0 0; font-size:15px; color:var(--lapiz)">
+      Todos caen alineados. Esa recta <b>es</b> el conjunto de soluciones: cada punto de la
+      recta es un par que cumple la ecuación, y cada par que la cumple está en la recta.</p>
+  </div>
+</section>
+
+<section>
+  <p class="eyebrow">El taller</p>
+  <h2>Dos ecuaciones a la vez</h2>
+  <div class="prosa">
+    <p>Resolver el sistema es buscar un par <span class="ec">(<i>x</i>, <i>y</i>)</span> que
+      cumpla <b>las dos</b> ecuaciones. En el dibujo: un punto que esté sobre las dos rectas.
+      Cambiá los números y mirá qué pasa.</p>
+  </div>
+
+  <div class="taller">
+    <div class="lienzo"><svg id="svg-sistema" viewBox="0 0 560 560" role="img" aria-label="Gráfico de las dos rectas del sistema y su punto de intersección"></svg></div>
+    <div class="panel">
+      <div class="tarjeta-ec uno">
+        <h3>Primera ecuación</h3>
+        <div class="coefs">
+          <input id="a1" type="number" value="2" step="1" aria-label="coeficiente de x en la primera ecuación">
+          <span class="ec"><i>x</i> +</span>
+          <input id="b1" type="number" value="1" step="1" aria-label="coeficiente de y en la primera ecuación">
+          <span class="ec"><i>y</i> =</span>
+          <input id="c1" type="number" value="7" step="1" aria-label="término independiente de la primera ecuación">
+        </div>
+        <div class="explicita" id="exp1"></div>
+      </div>
+
+      <div class="tarjeta-ec dos">
+        <h3>Segunda ecuación</h3>
+        <div class="coefs">
+          <input id="a2" type="number" value="1" step="1" aria-label="coeficiente de x en la segunda ecuación">
+          <span class="ec"><i>x</i> +</span>
+          <input id="b2" type="number" value="-1" step="1" aria-label="coeficiente de y en la segunda ecuación">
+          <span class="ec"><i>y</i> =</span>
+          <input id="c2" type="number" value="2" step="1" aria-label="término independiente de la segunda ecuación">
+        </div>
+        <div class="explicita" id="exp2"></div>
+      </div>
+
+      <div class="veredicto" id="veredicto"></div>
+    </div>
+  </div>
+
+  <div class="presets">
+    <button class="preset" type="button" data-sist="2,1,7,1,-1,2">Se cortan</button>
+    <button class="preset" type="button" data-sist="2,3,6,4,6,5">Paralelas</button>
+    <button class="preset" type="button" data-sist="1,-2,4,3,-6,12">La misma recta</button>
+    <button class="preset" type="button" data-sist="3,2,12,1,-1,1">Solución fraccionaria</button>
+    <button class="preset" type="button" data-sist="1,0,4,0,1,-3">Una vertical y una horizontal</button>
+  </div>
+</section>
+
+<section>
+  <p class="eyebrow">Los tres finales posibles</p>
+  <h2>Y no hay un cuarto</h2>
+  <div class="prosa">
+    <p>Dos rectas en el plano solo pueden hacer tres cosas. Por eso un sistema de dos
+      ecuaciones de primer grado tiene una solución, ninguna, o infinitas — nunca
+      exactamente dos.</p>
+  </div>
+  <div class="casos">
+    <div class="caso">
+      <h3>Se cortan</h3>
+      <p class="mini">Compatible determinado</p>
+      <p>Un solo punto en común: una única solución. Es lo que pasa casi siempre.</p>
+    </div>
+    <div class="caso">
+      <h3>Son paralelas</h3>
+      <p class="mini">Incompatible</p>
+      <p>Misma inclinación, distinta altura: nunca se tocan. El sistema no tiene solución,
+        y al despejar te queda algo imposible como <span class="ec">0 = 3</span>.</p>
+    </div>
+    <div class="caso">
+      <h3>Son la misma recta</h3>
+      <p class="mini">Compatible indeterminado</p>
+      <p>Una ecuación es la otra multiplicada por un número. Todos los puntos sirven: hay
+        infinitas soluciones, y al despejar te queda <span class="ec">0 = 0</span>.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="eyebrow">Sin dibujar</p>
+  <h2>Los coeficientes ya lo dicen</h2>
+  <div class="prosa">
+    <p>Antes de graficar podés saber en cuál de los tres casos estás, comparando los
+      coeficientes de una ecuación con los de la otra:</p>
+  </div>
+  <div class="destacado">
+    <span class="ec">
+      <sup><i>a</i><sub>1</sub></sup>&frasl;<sub><i>a</i><sub>2</sub></sub> ≠
+      <sup><i>b</i><sub>1</sub></sup>&frasl;<sub><i>b</i><sub>2</sub></sub>
+      &nbsp;→&nbsp; se cortan &nbsp;&nbsp;·&nbsp;&nbsp;
+      <sup><i>a</i><sub>1</sub></sup>&frasl;<sub><i>a</i><sub>2</sub></sub> =
+      <sup><i>b</i><sub>1</sub></sup>&frasl;<sub><i>b</i><sub>2</sub></sub> ≠
+      <sup><i>c</i><sub>1</sub></sup>&frasl;<sub><i>c</i><sub>2</sub></sub>
+      &nbsp;→&nbsp; paralelas &nbsp;&nbsp;·&nbsp;&nbsp;
+      todas iguales &nbsp;→&nbsp; la misma recta
+    </span>
+  </div>
+  <div class="prosa">
+    <p>Tiene sentido: <span class="ec"><i>a</i></span> y <span class="ec"><i>b</i></span>
+      son los que deciden la inclinación, y <span class="ec"><i>c</i></span> la altura. Si
+      la inclinación coincide pero la altura no, son paralelas. Si coincide todo, es la
+      misma recta escrita de otra manera. El panel del taller te va mostrando estas tres
+      razones mientras cambiás los números.</p>
+  </div>
+</section>
+
+<section>
+  <p class="eyebrow">Hacia dónde va esto</p>
+  <h2>El puente a la geometría analítica</h2>
+  <div class="prosa">
+    <p>Cuando despejás <span class="ec"><i>y</i></span> en
+      <span class="ec"><i>ax</i> + <i>by</i> = <i>c</i></span> te queda:</p>
+  </div>
+  <div class="destacado">
+    <span class="ec"><i>y</i> = <i>m x</i> + <i>h</i></span>
+    &nbsp;&nbsp;con&nbsp;&nbsp;
+    <span class="ec"><i>m</i> = −<sup><i>a</i></sup>&frasl;<sub><i>b</i></sub></span>
+    &nbsp;&nbsp;y&nbsp;&nbsp;
+    <span class="ec"><i>h</i> = <sup><i>c</i></sup>&frasl;<sub><i>b</i></sub></span>
+  </div>
+  <div class="prosa">
+    <p>Esos dos números son toda la recta. La <b>pendiente</b>
+      <span class="ec"><i>m</i></span> dice cuánto sube <span class="ec"><i>y</i></span> por
+      cada uno que avanza <span class="ec"><i>x</i></span>: si
+      <span class="ec"><i>m</i></span> = 2 la recta sube de a dos, si
+      <span class="ec"><i>m</i></span> = −3 baja de a tres. La <b>ordenada al origen</b>
+      <span class="ec"><i>h</i></span> dice por dónde cruza el eje vertical. El taller de
+      arriba te muestra las dos formas de cada ecuación, una al lado de la otra.</p>
+    <p>Con eso, "paralelas" deja de ser algo que se ve en el dibujo y pasa a ser algo que se
+      calcula: <b>dos rectas son paralelas exactamente cuando tienen la misma pendiente</b>.
+      Y la solución del sistema es el punto donde se cruzan.</p>
+    <p>Eso último es la idea central de la <b>geometría analítica</b>: cada figura
+      geométrica se puede escribir como una ecuación, y cada pregunta geométrica
+      —¿se cortan?, ¿dónde?, ¿son paralelas?— se vuelve una cuenta. Es el mismo movimiento
+      que hicieron ustedes acá, y es el que van a seguir haciendo el año que viene con la
+      circunferencia y con la parábola.</p>
+  </div>
+</section>
+
+<footer class="creditos">
+  Material de clase · Unidad 9, <i>Matemática 8</i>, Editorial En Alianza.
+  El taller acepta cualquier par de ecuaciones con coeficientes enteros.
+</footer>
+</div>
+
+<script>
+/* ═══ geometría del lienzo ═══ */
+const R = 10, M = 40, LADO = 480, U = LADO / (2 * R);   // 24 px por unidad
+const px = u => M + (u + R) * U;
+const py = v => M + (R - v) * U;
+
+function fondo(){
+  let g = '';
+  for (let i = -R; i <= R; i++){
+    const cls = (i % 5 === 0) ? 'grilla-fuerte' : 'grilla';
+    g += `<line class="${cls}" x1="${px(i)}" y1="${py(-R)}" x2="${px(i)}" y2="${py(R)}"/>`;
+    g += `<line class="${cls}" x1="${px(-R)}" y1="${py(i)}" x2="${px(R)}" y2="${py(i)}"/>`;
+  }
+  g += `<line class="eje" x1="${px(-R)}" y1="${py(0)}" x2="${px(R)}" y2="${py(0)}"/>`;
+  g += `<line class="eje" x1="${px(0)}" y1="${py(-R)}" x2="${px(0)}" y2="${py(R)}"/>`;
+  for (let i = -R; i <= R; i += 2){
+    if (i === 0) continue;
+    g += `<text class="rotulo-eje" x="${px(i)}" y="${py(0) + 15}" text-anchor="middle">${i}</text>`;
+    g += `<text class="rotulo-eje" x="${px(0) - 7}" y="${py(i) + 4}" text-anchor="end">${i}</text>`;
+  }
+  g += `<text class="rotulo-eje" x="${px(R) - 2}" y="${py(0) - 8}" text-anchor="end">x</text>`;
+  g += `<text class="rotulo-eje" x="${px(0) + 8}" y="${py(R) + 12}">y</text>`;
+  return g;
+}
+
+/* los extremos de ax + by = c dentro del recuadro visible */
+function segmento(a, b, c){
+  if (a === 0 && b === 0) return null;
+  const pts = [];
+  const dentro = t => t >= -R - 1e-9 && t <= R + 1e-9;
+  if (b !== 0){
+    for (const xx of [-R, R]){ const yy = (c - a * xx) / b; if (dentro(yy)) pts.push([xx, yy]); }
+  }
+  if (a !== 0){
+    for (const yy of [-R, R]){ const xx = (c - b * yy) / a; if (dentro(xx)) pts.push([xx, yy]); }
+  }
+  const unicos = [];
+  for (const p of pts){
+    if (!unicos.some(q => Math.abs(q[0] - p[0]) < 1e-9 && Math.abs(q[1] - p[1]) < 1e-9))
+      unicos.push(p);
+  }
+  return unicos.length >= 2 ? [unicos[0], unicos[1]] : null;
+}
+
+function trazo(a, b, c, clase){
+  const s = segmento(a, b, c);
+  if (!s) return '';
+  const [[x1, y1], [x2, y2]] = s;
+  return `<line class="${clase}" x1="${px(x1)}" y1="${py(y1)}" x2="${px(x2)}" y2="${py(y2)}"/>`;
+}
+
+/* ═══ fracciones exactas ═══ */
+const mcd = (p, q) => q ? mcd(q, p % q) : Math.abs(p);
+function frac(p, q){
+  if (q === 0) return '—';
+  if (q < 0){ p = -p; q = -q; }
+  const g = mcd(Math.abs(p), q) || 1;
+  p /= g; q /= g;
+  return q === 1 ? String(p) : `${p}/${q}`;
+}
+const dec = (p, q) => q === 0 ? NaN : p / q;
+
+/* ═══ sección 1: el paseo por la recta ═══ */
+const A1 = 2, B1 = 1, C1 = 7;                    // 2x + y = 7
+const XS = [-4,-3,-2,-1,0,1,2,3,4,5,6,7,8];
+
+function pintaPaseo(){
+  const xv = Number(document.getElementById('paseo-x').value);
+  const yv = (C1 - A1 * xv) / B1;
+  document.getElementById('paseo-par').textContent = `( ${xv} , ${yv} )`;
+
+  document.getElementById('paseo-tabla').innerHTML =
+    `<div class="cab">x</div>` + XS.map(v =>
+      `<div class="${v === xv ? 'act' : ''}">${v}</div>`).join('') +
+    `<div class="cab">y</div>` + XS.map(v =>
+      `<div class="${v === xv ? 'act' : ''}">${C1 - A1 * v}</div>`).join('');
+
+  let g = fondo();
+  g += trazo(A1, B1, C1, 'recta1');
+  for (const v of XS){
+    const w = C1 - A1 * v;
+    if (Math.abs(w) > R) continue;
+    g += `<circle cx="${px(v)}" cy="${py(w)}" r="3.5" fill="var(--r1)" opacity=".5"/>`;
+  }
+  if (Math.abs(yv) <= R){
+    g += `<circle class="sol-halo" cx="${px(xv)}" cy="${py(yv)}" r="13"/>`;
+    g += `<circle class="sol-punto" cx="${px(xv)}" cy="${py(yv)}" r="6"/>`;
+    g += `<text class="sol-texto" x="${px(xv) + 12}" y="${py(yv) - 10}">(${xv}, ${yv})</text>`;
+  }
+  document.getElementById('svg-paseo').innerHTML = g;
+}
+
+/* ═══ sección 2: el taller ═══ */
+const IDS = ['a1','b1','c1','a2','b2','c2'];
+const leer = id => {
+  const v = parseInt(document.getElementById(id).value, 10);
+  return Number.isFinite(v) ? v : 0;
+};
+
+function explicita(a, b, c){
+  if (b === 0) return a === 0 ? 'no es una recta' : `recta vertical:  x = ${frac(c, a)}`;
+  return `y = ${frac(-a, b)}x ${c * b >= 0 ? '+' : '−'} ${frac(Math.abs(c), Math.abs(b))}`
+         .replace('+ -', '− ');
+}
+
+function razon(p, q){ return q === 0 ? (p === 0 ? '0/0' : '∞') : frac(p, q); }
+
+function pintaSistema(){
+  const [a1,b1,c1,a2,b2,c2] = IDS.map(leer);
+
+  document.getElementById('exp1').textContent = explicita(a1, b1, c1);
+  document.getElementById('exp2').textContent = explicita(a2, b2, c2);
+
+  const D  = a1 * b2 - a2 * b1;
+  const Dx = c1 * b2 - c2 * b1;
+  const Dy = a1 * c2 - a2 * c1;
+
+  let g = fondo();
+  const encimada = (D === 0 && Dx === 0 && Dy === 0);
+  g += trazo(a1, b1, c1, 'recta1');
+  g += trazo(a2, b2, c2, 'recta2' + (encimada ? ' encimada' : ''));
+
+  let tipo, clase, titulo, texto;
+  if (a1 === 0 && b1 === 0 || a2 === 0 && b2 === 0){
+    tipo = 'ind'; clase = 'ind'; titulo = 'No es un sistema de dos rectas';
+    texto = 'Si <i>a</i> y <i>b</i> valen cero a la vez, esa ecuación ya no describe una recta. Cambiá alguno de los dos.';
+  } else if (D !== 0){
+    const xs = dec(Dx, D), ys = dec(Dy, D);
+    tipo = 'det'; clase = 'det'; titulo = 'Compatible determinado';
+    texto = `Las rectas se cortan en un solo punto: <b>( ${frac(Dx, D)} , ${frac(Dy, D)} )</b>. Esa es la única solución.`;
+    if (Math.abs(xs) <= R && Math.abs(ys) <= R){
+      g += `<line class="sol-guia" x1="${px(xs)}" y1="${py(ys)}" x2="${px(xs)}" y2="${py(0)}"/>`;
+      g += `<line class="sol-guia" x1="${px(xs)}" y1="${py(ys)}" x2="${px(0)}" y2="${py(ys)}"/>`;
+      g += `<circle class="sol-halo" cx="${px(xs)}" cy="${py(ys)}" r="14"/>`;
+      g += `<circle class="sol-punto" cx="${px(xs)}" cy="${py(ys)}" r="6.5"/>`;
+      const izq = xs > R - 4;
+      g += `<text class="sol-texto" x="${px(xs) + (izq ? -12 : 12)}" y="${py(ys) - 12}"
+              text-anchor="${izq ? 'end' : 'start'}">(${frac(Dx, D)}, ${frac(Dy, D)})</text>`;
+    } else {
+      texto += ' Queda fuera del recuadro: probá con otros números para verlo.';
+    }
+  } else if (encimada){
+    tipo = 'ind'; clase = 'ind'; titulo = 'Compatible indeterminado';
+    texto = 'Las dos ecuaciones describen <b>la misma recta</b>: una es la otra multiplicada por un número. Todos los puntos de la recta son solución.';
+  } else {
+    tipo = 'inc'; clase = 'inc'; titulo = 'Incompatible';
+    texto = 'Las rectas son <b>paralelas</b>: misma inclinación, distinta altura. El sistema no tiene solución.';
+  }
+  document.getElementById('svg-sistema').innerHTML = g;
+
+  document.getElementById('veredicto').innerHTML = `
+    <span class="pastilla ${clase}">${titulo}</span>
+    <p>${texto}</p>
+    <div class="razones">
+      a<sub>1</sub>/a<sub>2</sub> = <b>${razon(a1, a2)}</b> &nbsp;
+      b<sub>1</sub>/b<sub>2</sub> = <b>${razon(b1, b2)}</b> &nbsp;
+      c<sub>1</sub>/c<sub>2</sub> = <b>${razon(c1, c2)}</b>
+    </div>`;
+}
+
+IDS.forEach(id => document.getElementById(id).addEventListener('input', pintaSistema));
+document.getElementById('paseo-x').addEventListener('input', pintaPaseo);
+document.querySelectorAll('.preset').forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.sist.split(',');
+  IDS.forEach((id, i) => { document.getElementById(id).value = v[i]; });
+  pintaSistema();
+}));
+
+pintaPaseo();
+pintaSistema();
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+</body>
+</html>
