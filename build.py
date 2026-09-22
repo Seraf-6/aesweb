@@ -259,8 +259,8 @@ def main():
     for r in hechas:
         print('  ', r)
     print(f'{len(hechas)} páginas generadas.')
-    sueltas = sorted(p.relative_to(RAIZ) for p in RAIZ.rglob('*.html')
-                     if str(p.relative_to(RAIZ)) not in hechas)
+    sueltas = sorted(p.relative_to(RAIZ).as_posix() for p in RAIZ.rglob('*.html')
+                     if p.relative_to(RAIZ).as_posix() not in hechas)
     if sueltas:
         print('Páginas escritas a mano (no las toca el generador):')
         for s in sueltas:

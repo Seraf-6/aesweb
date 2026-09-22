@@ -16,10 +16,11 @@ la carpeta entera y usarla **sin conexión**.
 Para regenerar las páginas de índice después de tocar el contenido:
 
 ```bash
-python3 build.py
+python build.py
 ```
 
-No necesita instalar nada: solo Python 3.
+No necesita instalar nada: solo Python 3. En Windows el comando es `python`;
+en Linux y macOS suele ser `python3`.
 
 ---
 
@@ -103,7 +104,7 @@ series originales propias.
 
 1. Poner el PDF en `fichas/pdf/<grado>/Ficha_NN.pdf`.
 2. Agregar `(NN, 'Título')` a `FICHAS[<grado>]` en `contenido.py`.
-3. `python3 build.py`.
+3. `python build.py`.
 
 ### Diapositivas nuevas
 
@@ -113,7 +114,7 @@ series originales propias.
    `.caso`, `.forma`, `.pasos`, `.gancho`, `.lab`, `.ec`, `.cuenta`.
 3. Agregar la entrada en `contenido.py`, dentro del `material` de la unidad
    que corresponda, con `'tipo': 'diapositiva'` y su `url`.
-4. `python3 build.py`.
+4. `python build.py`.
 
 ### Una unidad nueva
 
