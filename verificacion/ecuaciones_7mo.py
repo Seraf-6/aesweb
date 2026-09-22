@@ -175,15 +175,22 @@ def verifica_ganchos():
     """Lo que afirman los recuadros ámbar, que también son respuestas."""
     print('5. Las afirmaciones de los ganchos')
 
-    # paso 1: x² y 3x−2 coinciden en 1 y en 2, y se separan en 5
-    cuad, recta = x ** 2, 3 * x - 2
-    for punto in (1, 2):
-        if cuad.subs(x, punto) != recta.subs(x, punto):
-            mal(f'x² y 3x−2 no coinciden en {punto}')
-    if cuad.subs(x, 5) == recta.subs(x, 5):
-        mal('x² y 3x−2 coinciden en 5: el ejemplo no muestra nada')
-    print(f'   x² y 3x−2: en 1 dan {cuad.subs(x, 1)}, en 2 dan {cuad.subs(x, 2)}, '
-          f'en 5 dan {cuad.subs(x, 5)} y {recta.subs(x, 5)}')
+    # paso 1: la identidad 3(x−2) = 3x−6 como atajo de cálculo mental.
+    # El truco se comprueba con enteros de Python, que son exactos, y la
+    # identidad en sí con sympy: dos caminos distintos para lo mismo.
+    identidad = sp.expand(3 * (x - 2)) - (3 * x - 6)
+    if sp.simplify(identidad) != 0:
+        mal('3(x−2) no es 3x−6')
+    atajos = [(3, 98, 100), (6, 99, 100), (4, 102, 100)]
+    for k, n, redondo in atajos:
+        derecho = k * n
+        atajo = k * redondo + k * (n - redondo)
+        if derecho != atajo:
+            mal(f'el atajo de {k} · {n} no da lo mismo ({derecho} ≠ {atajo})')
+        if int(sp.Integer(k) * sp.Integer(n)) != derecho:
+            mal(f'sympy no coincide en {k} · {n}')
+    print('   3(x−2) = 3x−6 y los atajos: ' +
+          ', '.join(f'{k}·{n} = {k * n}' for k, n, _ in atajos))
 
     # paso 4: dividir primero por 2 lleva al mismo lugar
     otro = sp.solve(sp.Eq(x + 5, 13), x)[0]
@@ -255,7 +262,7 @@ def verifica_pagina(rect, cruce):
         f'<i>x</i> = {cruce}',
         '21/2',    # la raíz del atajo falso del paso 4, escrita como fracción
         '31',      # lo que da la ecuación original con esa raíz
-        '25 y 13', # x² contra 3x − 2 en x = 5
+        '300 − 6 = <b>294</b>',   # el atajo de cálculo del paso 1
     ]
     for t in esperados:
         if t not in html:

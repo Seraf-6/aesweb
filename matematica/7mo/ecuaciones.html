@@ -22,8 +22,12 @@ h1{
   line-height:1.02; margin:0 0 16px; text-wrap:balance; letter-spacing:-.015em;
 }
 .bajada{
-  font-family:var(--serif); font-style:italic; font-size:clamp(1.1rem,2.6vw,1.35rem);
-  color:var(--lapiz); max-width:34em; margin:0 0 20px; line-height:1.45;
+  font-family:var(--serif); font-style:italic; font-size:clamp(1.15rem,2.8vw,1.5rem);
+  color:var(--tinta); max-width:30em; margin:0 0 20px; line-height:1.4;
+}
+.bajada .firma{
+  display:block; font-style:normal; font-family:var(--mono); font-size:11.5px;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--lapiz); margin-top:9px;
 }
 .pie-tapa{
   font-size:14px; color:var(--lapiz);
@@ -95,6 +99,34 @@ h2{
   font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
   text-transform:uppercase; color:var(--lapiz);
 }
+/* El ejercicio es lo que el alumno tiene que leer desde el fondo del aula:
+   nunca va como epígrafe. El rótulo se achica, el enunciado no.
+   Va en un <div> a propósito: base.css achica los <p> de un .caso en modo
+   clase, y como <p> el enunciado salía más chico que el texto corriente. */
+.enunciado{
+  margin:0 0 12px; padding:11px 14px;
+  background:var(--papel-2); border-left:3px solid var(--rojo);
+  font-size:1.5rem; line-height:1.35; overflow-x:auto;
+}
+.enunciado.frase{
+  font-family:var(--serif); font-style:italic; font-size:1.2rem;
+  white-space:normal; line-height:1.4;
+}
+
+/* ---------- series de cajitas ----------
+   Separar con · sería mala señal: acaban de aprender que ese punto
+   multiplica. Cada elemento va en su propia caja. */
+.serie{display:flex; flex-wrap:wrap; gap:10px; margin:0 0 18px}
+.caja{
+  flex:1 1 auto; min-width:min(100%,9em);
+  background:var(--papel); border:1px solid var(--linea-fuerte);
+  border-radius:4px; padding:10px 13px;
+}
+.caja .caja-rot{
+  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz); margin-bottom:5px;
+}
+.caja .ec{font-size:1.3em}
 .boton{
   font-family:var(--sans); font-size:13px; font-weight:700;
   background:none; border:1px solid var(--rojo); color:var(--rojo);
@@ -203,6 +235,27 @@ h2{
 .historia li .ecu{flex:1 1 auto; min-width:0; overflow-x:auto; font-size:1.15em}
 .historia li.ahora{border-color:var(--tinta); background:var(--papel-2)}
 .historia li.ahora .ecu{font-weight:700}
+/* el movimiento escrito antes de resolverlo: no se saltea ningún paso */
+.historia li.crudo{border-style:dashed}
+.historia li.crudo .ecu{font-weight:400}
+.historia li .nuevo{color:var(--rojo); font-weight:700}
+.historia li{animation:aparece .3s ease-out}
+.historia li.crudo .nuevo{animation:late .5s ease-out}
+@keyframes aparece{from{opacity:0; transform:translateY(-5px)} to{opacity:1; transform:none}}
+@keyframes late{0%{opacity:0; transform:scale(.6)} 60%{transform:scale(1.18)} 100%{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .historia li,.historia li.crudo .nuevo{animation:none}
+}
+
+/* ---------- notas del docente ---------- */
+.notas{
+  margin-top:26px; padding:18px 20px;
+  border:1px dashed var(--linea-fuerte); border-radius:4px; background:var(--papel-2);
+}
+.notas h2{font-size:1.15rem; margin:0 0 8px}
+.notas p{margin:0 0 10px; max-width:62ch; font-size:15px}
+.notas p:last-child{margin-bottom:0}
+body[data-solo="1"] .notas{display:none}
 .veredicto{margin-top:12px}
 .veredicto p{margin:0; font-size:14.5px}
 
@@ -235,9 +288,15 @@ h2{
   border-top:1px solid var(--linea-fuerte); margin-top:18px;
 }
 
+/* en proyección el enunciado crece con todo lo demás */
+body[data-solo="1"] .enunciado{font-size:1.7em}
+body[data-solo="1"] .enunciado.frase{font-size:1.25em}
+body[data-solo="1"] .caja .ec{font-size:1.45em}
+
 @media (max-width:520px){
   body{font-size:16px}
   .numero{font-size:2.1rem}
+  .enunciado{font-size:1.25rem}
   .caso-cab{gap:11px}
   .campo input{width:7.5ch}
   .historia li{flex-wrap:wrap; gap:2px 12px}
@@ -262,9 +321,8 @@ h2{
   <header class="tapa">
     <p class="sello">Albert Einstein School · Matemática 7.º grado</p>
     <h1>Preguntarle a un número</h1>
-    <p class="bajada">Una ecuación no afirma nada: pregunta. Y es la única parte de la
-      matemática donde la respuesta se corrige sola, porque para saber si acertaste
-      alcanza con devolvérsela a la pregunta.</p>
+    <p class="bajada">«La política es para el presente, pero una ecuación es algo para
+      la eternidad.»<span class="firma">atribuida a Albert Einstein</span></p>
     <div class="pie-tapa">
       <span>Unidad 7 · páginas 132 a 150</span>
       <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
@@ -307,8 +365,8 @@ h2{
         <p>Resolvamos bien. Resto <span class="ec">3<i>x</i></span> de los dos lados y queda
           <span class="ec">0 = 2<i>x</i></span>, o sea <b><span class="ec"><i>x</i> = 0</span></b>.
           Y es cierto: 3 · 0 y 5 · 0 dan lo mismo.</p>
-        <p>Pero muchos hacen otra cosa: "hay una <span class="ec"><i>x</i></span> de cada
-          lado, la simplifico". Y queda:</p>
+        <p>Pero demasiados alumnos hacen otra cosa: "hay una
+          <span class="ec"><i>x</i></span> de cada lado, la simplifico". Y queda:</p>
         <div class="cuenta"><b>3 = 5</b></div>
         <p>Simplificar la <span class="ec"><i>x</i></span> es <i>dividir los dos lados por
           <span class="ec"><i>x</i></span></i>, que suena perfectamente legal. El problema es
@@ -322,7 +380,10 @@ h2{
         <p>Queda una pregunta linda para terminar. Si el cero no se puede dividir, ¿qué pasa
           cuando la <span class="ec"><i>x</i></span> desaparece sola? Hay dos ecuaciones que
           lo hacen:</p>
-        <div class="cuenta">0 · <i>x</i> = 0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 · <i>x</i> = 7</div>
+        <div class="serie" style="margin:12px 0">
+          <div class="caja"><span class="caja-rot">la cumplen todos</span><span class="ec">0 · <i>x</i> = 0</span></div>
+          <div class="caja"><span class="caja-rot">no la cumple ninguno</span><span class="ec">0 · <i>x</i> = 7</span></div>
+        </div>
         <p>La primera es cierta para <b>todos</b> los números; la segunda, para
           <b>ninguno</b>. Así que una ecuación no siempre tiene una respuesta: a veces tiene
           todas y a veces no tiene ninguna. <b>Decir cuál de los tres casos es también es
@@ -330,6 +391,22 @@ h2{
           dibujo: dos rectas que se superponen y dos rectas paralelas.</p>
       </div>
     </div>
+  </section>
+
+  <section class="notas">
+    <h2>Notas del docente</h2>
+    <p>La idea que sostiene toda la página: <b>una ecuación no afirma nada, pregunta</b>.
+      Y es la única parte de la matemática donde la respuesta se corrige sola, porque para
+      saber si acertaste alcanza con devolvérsela a la pregunta. Si hay una sola cosa que
+      tiene que quedar de la unidad, es esa: el control no es un trámite del final, es lo
+      que vuelve innecesario preguntar si está bien.</p>
+    <p>Los ocho pasos siguen el orden de las fichas 2 a 8, no el del libro. El paso 7 es el
+      que más rinde proyectado: conviene moverle los controles en vivo y dejar que ellos
+      anticipen dónde va a cruzar antes de soltar el número.</p>
+    <p>El cierre —<span class="ec">3<i>x</i> = 5<i>x</i></span> que lleva a
+      <span class="ec">3 = 5</span>— funciona mejor si se plantea como desafío antes de
+      explicarlo: se escribe en la pizarra y se los deja discutir dónde está el error.</p>
+    <p>Este bloque no aparece en el modo "una a la vez" del panel de proyección.</p>
   </section>
 
   <footer class="creditos">
@@ -350,7 +427,11 @@ const PASOS = [
 {
   n:1, corto:'Tres igualdades', nombre:'Un signo igual dice tres cosas distintas',
   pag:'págs. 132–135',
-  forma:'2(<i>x</i>+3) = 2<i>x</i>+6 &nbsp;siempre &nbsp;·&nbsp; 2<i>x</i>+6 = 14 &nbsp;a veces &nbsp;·&nbsp; <i>x</i>+1 = <i>x</i> &nbsp;nunca',
+  serie:[
+    { rot:'siempre es cierta', ec:'2(<i>x</i> + 3) = 2<i>x</i> + 6' },
+    { rot:'es cierta a veces',  ec:'2<i>x</i> + 6 = 14' },
+    { rot:'nunca es cierta',    ec:'<i>x</i> + 1 = <i>x</i>' },
+  ],
   accion:'decidir de qué clase es',
   enun:'3(<i>x</i> − 2) = 3<i>x</i> − 6',
   pasos:[
@@ -360,20 +441,28 @@ const PASOS = [
   ],
   final:'es una identidad: vale para <i>todos</i> los números',
   gancho:{
-    tit:'Dos puntos alcanzan, pero solo en primer grado',
-    html:`<p>¿Por qué con dos pruebas ya se puede afirmar algo sobre todos los números?
-      Porque cada lado de esa igualdad es una recta, y <b>dos rectas que coinciden en dos
-      puntos son la misma recta</b>. No hay manera de que se separen después.</p>
-      <p>Ojo que el truco se termina apenas aparece un cuadrado. Mirá
-      <span class="ec"><i>x</i><sup>2</sup></span> y <span class="ec">3<i>x</i> − 2</span>:</p>
-      <div class="cuenta">en <i>x</i> = 1: 1 y 1 &nbsp;·&nbsp; en <i>x</i> = 2: 4 y 4 &nbsp;·&nbsp; en <i>x</i> = 5: <b>25 y 13</b></div>
-      <p>Coinciden dos veces y no son lo mismo. Para una curva de segundo grado harían falta
-      tres puntos, y eso es justo lo que van a usar en 9.º con la parábola.</p>`
+    tit:'Una identidad es un truco de cálculo',
+    html:`<p>Una identidad no sirve solo para la prueba. Dice que la misma cuenta se puede
+      hacer de dos maneras, y casi siempre una de las dos es mucho más fácil. Mirá qué
+      dice <span class="ec">3(<i>x</i> − 2) = 3<i>x</i> − 6</span> cuando
+      <span class="ec"><i>x</i></span> vale 100:</p>
+      <div class="cuenta">3 · 98 = 3 · 100 − 3 · 2 = 300 − 6 = <b>294</b></div>
+      <p>Nadie multiplica 3 · 98 de memoria, pero 3 · 100 sí. La identidad te avisa que las
+      dos cuentas dan lo mismo, así que podés elegir la cómoda. Probá vos con
+      <b>6 · 99</b> y con <b>4 · 102</b>, buscando primero el número redondo que tienen
+      cerca.</p>
+      <p>Por eso conviene mirarlas con cariño: <b>cada identidad que aprendas es también un
+      atajo de cálculo mental</b>. Y si querés ver por qué alcanza con probar dos números,
+      esperá al paso 7: ahí cada lado de una igualdad se convierte en un dibujo.</p>`
   }
 },
 {
   n:2, corto:'Palabras', nombre:'De las palabras a las letras', pag:'págs. 136–139',
-  forma:'un número → <i>x</i> &nbsp;·&nbsp; el doble → 2<i>x</i> &nbsp;·&nbsp; aumentado en 5 → + 5',
+  serie:[
+    { rot:'un número',        ec:'<i>x</i>' },
+    { rot:'el doble',         ec:'2<i>x</i>' },
+    { rot:'aumentado en 5',   ec:'+ 5' },
+  ],
   accion:'simbolizar',
   enun:'«el doble de un número aumentado en 5»',
   prosa:true,
@@ -437,9 +526,9 @@ const PASOS = [
   final:'<i>x</i> = 8',
   gancho:{
     tit:'Un resultado que no vuelve no es un resultado',
-    html:`<p>El error más común en este paso es repartir a medias: escribir
-      <span class="ec">2<i>x</i> + 5 = 26</span>, multiplicando solo el primer término. Se
-      llega igual a un número, que es lo traicionero:</p>
+    html:`<p>Muchos chicos reparten a medias y escriben
+      <span class="ec">2<i>x</i> + 5 = 26</span>, multiplicando solo el primer término. Lo
+      peligroso es que igual se llega a un número:</p>
       <div class="cuenta">2<i>x</i> = 21 &nbsp;→&nbsp; <i>x</i> = 21/2</div>
       <p>Parece una respuesta. Pero llevala a la ecuación original, que es la única que
       manda:</p>
@@ -494,9 +583,10 @@ const PASOS = [
   final:'<i>x</i> = 3',
   gancho:{
     tit:'El menos también se reparte',
-    html:`<p>En el tercer paso, mucha gente escribe
-      <span class="ec">5<i>x</i> + 5 − 2<i>x</i> − 6</span>. El menos se repartió sobre la
-      <span class="ec"><i>x</i></span> y se olvidó del −3. Pero:</p>
+    html:`<p>Atendé que no te equivoques escribiendo
+      <span class="ec">5<i>x</i> + 5 − 2<i>x</i> − 6</span>: es donde más alumnos de 7.º se
+      traban. El menos se repartió sobre la <span class="ec"><i>x</i></span> y se olvidó
+      del −3. Pero:</p>
       <div class="cuenta">−2 · (−3) = <b>+6</b></div>
       <p>El paréntesis del término que resta es el lugar donde más se pierde puntaje en toda
       la unidad, y no por no entender: por apurarse.</p>
@@ -547,12 +637,12 @@ const PASOS = [
   final:'el ancho mide 11 m y el largo 15 m',
   gancho:{
     tit:'Verificar en la situación, no en la ecuación',
-    html:`<p>Acá hay una trampa que casi nadie ve. Si controlás tu respuesta metiéndola en
-      <i>la ecuación que vos escribiste</i>, estás usando tu propio planteo para corregir tu
-      propio planteo. Si lo habías escrito mal, la cuenta va a cerrar igual y no te vas a
-      enterar de nada.</p>
+    html:`<p>Acá se traba la mayoría de los alumnos de 7.º, y ni se entera. Si controlás tu
+      respuesta metiéndola en <i>la ecuación que vos escribiste</i>, estás usando tu propio
+      planteo para corregir tu propio planteo. Si lo habías escrito mal, la cuenta va a
+      cerrar igual y no te vas a enterar de nada.</p>
       <p>El control que sirve vuelve al enunciado, que es lo único que no escribiste vos:</p>
-      <div class="cuenta">¿15 supera en 4 a 11? &nbsp;<b>sí</b> &nbsp;·&nbsp; ¿2 · (11 + 15) = 52? &nbsp;<b>sí</b></div>
+      <div class="cuenta">¿15 supera en 4 a 11? &nbsp;<b>sí</b> &nbsp;&nbsp;|&nbsp;&nbsp; ¿2 · (11 + 15) = 52? &nbsp;<b>sí</b></div>
       <p>Recién ahí el problema terminó. Y todavía queda un control más, que es gratis:
       <b>¿la respuesta tiene sentido?</b> Un ancho no puede dar negativo, una cantidad de
       personas no puede dar 7,5, una edad no puede dar 300. Cuando eso pasa, el error está
@@ -631,16 +721,23 @@ document.getElementById('pasos').innerHTML = PASOS.map(p => `
     </div>
   </div>
 
+  ${p.serie ? `
+  <div class="serie">
+    ${p.serie.map(c => `<div class="caja">
+      <span class="caja-rot">${c.rot}</span><span class="ec">${c.ec}</span>
+    </div>`).join('')}
+  </div>` : `
   <div class="forma">
     <span class="rotulo">La idea</span>
     <span class="ec">${p.forma}</span>
-  </div>
+  </div>`}
 
   <div class="ejemplo" data-bloque="${p.n}">
     <div class="ejemplo-cab">
-      <span class="rotulo-chico">Ejemplo · ${p.accion} ${p.prosa ? p.enun : `<span class="ec">${p.enun}</span>`}</span>
+      <span class="rotulo-chico">Ejemplo — ${p.accion}</span>
       <button class="boton" type="button" data-accion="revelar" data-bloque="${p.n}">Siguiente paso</button>
     </div>
+    <div class="enunciado ${p.prosa ? 'frase' : ''}">${p.prosa ? p.enun : `<span class="ec">${p.enun}</span>`}</div>
     <ol class="pasos" id="pasos${p.n}"></ol>
   </div>
 
@@ -729,23 +826,32 @@ function lado(a, b){
   let s;
   if (igual(a, fr(1))) s = '<i>x</i>';
   else if (igual(a, fr(-1))) s = '−<i>x</i>';
-  else s = txt(a) + '<i>x</i>';
+  else s = txt(a) + (a.d === 1 ? '' : ' ') + '<i>x</i>';
   if (cero(b)) return s;
   return s + (b.n > 0 ? ' + ' + txt(b) : ' − ' + txt(fr(-b.n, b.d)));
 }
 const ecuacion = e => lado(e.a, e.b) + ' = ' + lado(e.c, e.d);
 
 /* ═══ laboratorio de la balanza ═══ */
-const balanza = { inicial:null, historia:[] };
+const balanza = { inicial:null, historia:[], pendiente:null };
+const quieto = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function balArranca(a, b, c, d){
+  clearTimeout(balanza.pendiente); balanza.pendiente = null;
   balanza.inicial = { a:fr(a), b:fr(b), c:fr(c), d:fr(d) };
   balanza.historia = [{ mov:'la ecuación', e:balanza.inicial }];
   balPinta();
 }
 
+const ultimaEcuacion = () => {
+  for (let i = balanza.historia.length - 1; i >= 0; i--){
+    if (balanza.historia[i].e) return balanza.historia[i].e;
+  }
+};
+
 function balAplica(op, k){
-  const e = balanza.historia[balanza.historia.length - 1].e;
+  if (balanza.pendiente) return null;
+  const e = ultimaEcuacion();
   const f = k.f;
   const nombre = k.esx ? (igual(f, fr(1)) ? 'x' : igual(f, fr(-1)) ? '−x' : txt(f) + 'x') : txt(f);
   let nueva;
@@ -763,14 +869,36 @@ function balAplica(op, k){
     if (cero(f)) return 'No se puede dividir por cero. Es la única cosa que no se puede hacer de los dos lados.';
     nueva = { a:coc(e.a, f), b:coc(e.b, f), c:coc(e.c, f), d:coc(e.d, f) };
   }
-  balanza.historia.push({ mov:op + ' ' + nombre, e:nueva });
-  balPinta();
+  /* Primero se escribe el movimiento en los dos miembros, sin resolver nada:
+     el paso intermedio es justamente el que no hay que saltear. */
+  const marca = `<b class="nuevo">${op} ${nombre}</b>`;
+  /* el paréntesis solo hace falta si ese miembro tiene dos términos */
+  const envuelve = (co, cte) => {
+    const t = lado(co, cte);
+    const dos = !cero(co) && !cero(cte);
+    return (dos && (op === '×' || op === '÷')) ? `(${t})` : t;
+  };
+  balanza.historia.push({
+    mov:'a los dos lados',
+    crudo:`${envuelve(e.a, e.b)} ${marca} = ${envuelve(e.c, e.d)} ${marca}`
+  });
+
+  const resolver = () => {
+    balanza.pendiente = null;
+    balanza.historia.push({ mov:op + ' ' + nombre, e:nueva });
+    balPinta();
+  };
+  if (quieto()) resolver();
+  else { balanza.pendiente = setTimeout(resolver, 1100); balPinta(); }
   return null;
 }
 
 /* qué dice la ecuación que quedó, y el control contra la original */
 function balVeredicto(){
-  const e = balanza.historia[balanza.historia.length - 1].e;
+  if (balanza.pendiente){
+    return `<p class="dim">Ahora hay que resolver cada miembro…</p>`;
+  }
+  const e = ultimaEcuacion();
   const ini = balanza.inicial;
   const pendiente = resta(e.a, e.c);      // coeficiente de x que sobrevive
   const libre = resta(e.d, e.b);          // lo que quedó del otro lado
@@ -802,12 +930,13 @@ function balVeredicto(){
 function balPinta(){
   const h = balanza.historia;
   document.getElementById('bal-historia').innerHTML = h.map((paso, i) => `
-    <li class="${i === h.length - 1 ? 'ahora' : ''}">
+    <li class="${paso.crudo ? 'crudo' : ''}${i === h.length - 1 ? ' ahora' : ''}">
       <span class="mov">${paso.mov}</span>
-      <span class="ecu ec">${ecuacion(paso.e)}</span>
+      <span class="ecu ec">${paso.crudo || ecuacion(paso.e)}</span>
     </li>`).join('');
   document.getElementById('bal-out').innerHTML = balVeredicto();
-  document.getElementById('bal-atras').disabled = (h.length < 2);
+  document.getElementById('bal-aplicar').disabled = !!balanza.pendiente;
+  document.getElementById('bal-atras').disabled = (h.length < 2) || !!balanza.pendiente;
 }
 
 document.getElementById('bal-ops').addEventListener('click', ev => {
@@ -830,7 +959,11 @@ document.getElementById('bal-aplicar').addEventListener('click', () => {
 });
 
 document.getElementById('bal-atras').addEventListener('click', () => {
-  if (balanza.historia.length > 1){ balanza.historia.pop(); balPinta(); }
+  if (balanza.historia.length < 2) return;
+  balanza.historia.pop();                                   // la ecuación resuelta
+  const anterior = balanza.historia[balanza.historia.length - 1];
+  if (anterior && anterior.crudo) balanza.historia.pop();   // y el movimiento escrito
+  balPinta();
 });
 
 document.querySelectorAll('[data-ec]').forEach(b => {
