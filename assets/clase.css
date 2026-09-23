@@ -515,3 +515,7 @@ body[data-libre="izq"] .cls-panel{width:max(280px, calc(var(--libre) - 28px)); r
 .al-sig{padding:0 .32em; text-align:center}
 .al-der{white-space:nowrap}
 body[data-solo="1"] .alineado{font-size:1.2em}
+
+/* el control va después de la respuesta, con su propia marca */
+.pasos li.control{background:var(--acento2-suave)}
+.pasos li.control .n{color:var(--acento2); font-weight:700; font-size:1em}

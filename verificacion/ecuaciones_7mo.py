@@ -289,6 +289,15 @@ def tema5():
         aparece(f'<i>x</i> = {html_num(v)}', f'tema 5, {rotulo}')
     sin_repetir(5, res)
 
+    # los controles del ejemplo 4 y del 5, tal como los muestra la página
+    if F(3 + 1, 2) - F(3 - 3, 5) != 2:
+        mal('el control del ejemplo 4 no da 2')
+    v16 = F(16, 5)
+    izq, der = (2 * v16 - 1) / 3, (v16 + 4) / 4
+    if not (2 * v16 - 1 == F(27, 5) and v16 + 4 == F(36, 5) and izq == der == F(9, 5)):
+        mal(f'el control del ejemplo 5 no da 9/5 de los dos lados ({izq}, {der})')
+    print(f'   controles: ejemplo 4 da 2 · ejemplo 5 da {izq} de los dos lados')
+
     # el menos que se reparte en el ejemplo 4
     if sp.expand(5 * (x + 1) - 2 * (x - 3)) != 3 * x + 11:
         mal('5(x+1) − 2(x−3) no es 3x + 11')
@@ -438,6 +447,19 @@ def verifica_pagina():
             mal(f'hay cuentas encadenadas en un mismo renglón («{encadenado}»): van en un A()')
     if 'function A(' not in cuerpo:
         mal('falta A(), el que alinea las cuentas')
+
+    # el control va después de la respuesta: nunca es un paso de la resolución
+    for n, linea in enumerate(html.splitlines(), 1):
+        if re.match(r"^( {8}| {4})[`']Control", linea):
+            mal(f'línea {n}: un control quedó entre los pasos, antes de la respuesta')
+    # una propiedad sin coma antes de «control:» rompe todo el guion de la página
+    # (este guion lee el archivo, no ejecuta el JavaScript: por eso se mira acá)
+    renglones = html.splitlines()
+    for n in range(1, len(renglones)):
+        if renglones[n].lstrip().startswith('control:') and not renglones[n - 1].rstrip().endswith(','):
+            mal(f'línea {n + 1}: falta la coma antes de «control:», y la página no carga')
+    if 'function totalPasos(' not in cuerpo:
+        mal('falta totalPasos(): el control tiene que mostrarse después de la respuesta')
 
     # cada paso se puede recorrer para atrás
     if 'data-accion="atras"' not in cuerpo:

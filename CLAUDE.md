@@ -148,6 +148,12 @@ Es un color con fondo, porque el proyector lava los colores y el fondo no.
 antes de resolverla (`6x − 5 + 5 = 25 + 5`, y recién después `6x = 30`),
 igual que en la balanza.
 
+**El orden de un ejemplo es siempre: pasos, respuesta, control.** El
+control no es un paso de la resolución: controla una respuesta, así que
+no puede aparecer antes que ella. En el guion va en su propio campo
+(`control:`), y la página lo muestra después de la respuesta, con su
+marca ✓. Todo ejemplo que termina en un número tiene su control.
+
 **Cuando una cuenta sigue, sigue en el renglón de abajo, con los `=`
 alineados**, como en el cuaderno:
 
