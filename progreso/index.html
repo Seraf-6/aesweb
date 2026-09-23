@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cómo se juegan las últimas semanas · AESWeb</title>
+<meta name="description" content="Calibración de puntos del tramo final y carrera del curso. Matemática, Tercer Ciclo, Albert Einstein School.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;0,800;1,400;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../assets/base.css">
+<link rel="stylesheet" href="../assets/sitio.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   AESWeb · progreso del tramo
+   Los colores, la tipografía, la cuadrícula y las paletas de proyección
+   vienen de base.css: el contraste y la cuadrícula se cambian desde el
+   panel de Proyección, como en todo el sitio. El crema de acá es el que
+   se midió en el aula; no hay otro.
+   ═══════════════════════════════════════════════════════════════ */
+
+h1,h2,h3,h4{margin:0}
+.env{max-width:1120px; margin:0 auto; padding:0 20px}
+.num{font-family:var(--mono); font-variant-numeric:tabular-nums}
+
+/* ── encabezado y pestañas ────────────────────────────────────── */
+.cab{border-bottom:2px solid var(--tinta); background:var(--papel)}
+.cab-int{display:flex; align-items:flex-end; gap:18px; flex-wrap:wrap;
+         padding:14px 0 0}
+.sello{font-size:11.5px; font-weight:700; letter-spacing:.16em;
+       text-transform:uppercase; color:var(--acento); margin-bottom:4px}
+.cab h1{font-size:clamp(1.5rem,3.4vw,2.1rem); font-weight:800; letter-spacing:-.015em}
+.cab .sub{font-family:var(--serif); font-style:italic; color:var(--lapiz); font-size:15px}
+.pest{display:flex; gap:2px; margin-left:auto; align-items:flex-end}
+.pest button{
+  font-family:var(--sans); font-size:14.5px; font-weight:700; cursor:pointer;
+  background:transparent; color:var(--lapiz); border:1px solid transparent;
+  border-bottom:none; padding:9px 15px; border-radius:5px 5px 0 0;
+  margin-bottom:-2px}
+.pest button[aria-selected="true"]{
+  background:var(--papel-2); color:var(--tinta);
+  border-color:var(--linea-fuerte); box-shadow:0 2px 0 0 var(--papel-2)}
+.pest button:hover{color:var(--tinta)}
+
+.barra-2{display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+         padding:10px 0; border-bottom:1px solid var(--linea-fuerte);
+         background:var(--papel-2)}
+.grados{display:flex; gap:0; border:1px solid var(--linea-fuerte); border-radius:5px;
+        overflow:hidden; background:var(--papel)}
+.grados button{
+  font-family:var(--sans); font-size:14.5px; font-weight:700; cursor:pointer;
+  background:transparent; color:var(--lapiz); border:none; padding:7px 16px}
+.grados button+button{border-left:1px solid var(--linea-fuerte)}
+.grados button[aria-pressed="true"]{background:var(--acento); color:#fff}
+.mini{font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+      text-transform:uppercase; color:var(--lapiz)}
+.btn{
+  font-family:var(--sans); font-size:14px; font-weight:700; cursor:pointer;
+  background:var(--papel); color:var(--tinta); border:1px solid var(--linea-fuerte);
+  border-radius:5px; padding:7px 13px}
+.btn:hover{border-color:var(--acento); color:var(--acento)}
+.btn.fuerte{background:var(--acento); color:#fff; border-color:var(--acento)}
+.btn.fuerte:hover{filter:brightness(1.08); color:#fff}
+select.btn,input.btn{font-weight:400}
+
+/* ── calibrador ───────────────────────────────────────────────── */
+.vista{padding:22px 0 60px}
+.rejilla{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:26px}
+@media (max-width:900px){.rejilla{grid-template-columns:1fr}}
+
+.caja{border:1px solid var(--linea-fuerte); border-radius:6px; background:var(--papel);
+      padding:16px 18px; margin-bottom:18px}
+.caja > h3{font-size:1.15rem; font-weight:800; margin-bottom:2px}
+.caja > .pie-nota{font-size:13.5px; color:var(--lapiz); margin:4px 0 12px; line-height:1.4}
+
+.campo{display:flex; align-items:center; gap:10px; padding:6px 0;
+       border-top:1px solid var(--linea)}
+.campo:first-of-type{border-top:none}
+.campo label{flex:1 1 auto; font-size:15px}
+.campo .ayuda{display:block; font-size:12.5px; color:var(--lapiz); line-height:1.35}
+.campo input[type=number],.campo input[type=text]{
+  font-family:var(--mono); font-size:15px; width:5.2em; text-align:right;
+  padding:5px 7px; border:1px solid var(--linea-fuerte); border-radius:4px;
+  background:var(--papel-2); color:var(--tinta)}
+.campo input[type=text].nombre-proy{width:auto; flex:1 1 10em; text-align:left;
+  font-family:var(--sans)}
+.campo .calc{font-family:var(--mono); font-size:13px; color:var(--lapiz);
+             width:6.5em; text-align:right}
+
+.fila-proy{display:flex; align-items:center; gap:8px; padding:6px 0;
+           border-top:1px solid var(--linea)}
+.fila-proy:first-of-type{border-top:none}
+.fila-proy input[type=number]{
+  font-family:var(--mono); font-size:15px; width:4.6em; text-align:right;
+  padding:5px 7px; border:1px solid var(--linea-fuerte); border-radius:4px;
+  background:var(--papel-2); color:var(--tinta)}
+.fila-proy input[type=text]{
+  flex:1 1 auto; min-width:0; font-size:15px; padding:5px 7px;
+  border:1px solid transparent; border-radius:4px; background:transparent;
+  color:var(--tinta); font-family:var(--sans)}
+.fila-proy input[type=text]:focus{border-color:var(--linea-fuerte); background:var(--papel-2)}
+.quitar{background:none; border:none; color:var(--lapiz); cursor:pointer;
+        font-size:17px; line-height:1; padding:2px 5px}
+.quitar:hover{color:var(--acento)}
+
+/* el total y los cortes */
+.total-caja{border:2px solid var(--tinta); border-radius:6px; padding:16px 18px;
+            background:var(--papel-2); margin-bottom:18px}
+.total-caja .rot{font-family:var(--mono); font-size:11px; letter-spacing:.12em;
+                 text-transform:uppercase; color:var(--lapiz)}
+.total-caja .cifra{font-family:var(--serif); font-weight:800;
+                   font-size:clamp(2.6rem,7vw,3.8rem); line-height:1; letter-spacing:-.02em}
+.total-caja .cifra small{font-family:var(--sans); font-size:.3em; font-weight:700;
+                         letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+.desglose{display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:10px;
+          font-family:var(--mono); font-size:12.5px; color:var(--lapiz)}
+.desglose b{color:var(--tinta); font-weight:600}
+
+.cortes{display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-top:14px}
+.corte{border:1px solid var(--linea-fuerte); border-radius:6px; padding:10px 8px;
+       text-align:center; background:var(--papel)}
+.corte .n{font-family:var(--serif); font-weight:800; font-size:1.1rem; color:var(--lapiz)}
+.corte .p{font-family:var(--mono); font-weight:600; font-size:clamp(1.3rem,3.6vw,1.9rem);
+          line-height:1.1; color:var(--tinta)}
+.corte .pc{font-family:var(--mono); font-size:11px; color:var(--lapiz)}
+.corte.c5{border-color:var(--acento); background:var(--acento-suave)}
+.corte.c5 .p{color:var(--acento)}
+.corte.c2{border-color:var(--acento2); background:var(--acento2-suave)}
+.corte.c2 .p{color:var(--acento2)}
+
+/* perfiles */
+table.perf{width:100%; border-collapse:collapse; font-size:14.5px}
+table.perf th{text-align:left; font-family:var(--mono); font-size:10.5px;
+              letter-spacing:.1em; text-transform:uppercase; color:var(--lapiz);
+              font-weight:400; padding:0 6px 6px; border-bottom:1px solid var(--linea-fuerte)}
+table.perf th.d,table.perf td.d{text-align:right}
+table.perf td{padding:6px; border-top:1px solid var(--linea)}
+table.perf td.d{font-family:var(--mono); font-variant-numeric:tabular-nums}
+table.perf .nota-b{display:inline-block; min-width:1.9em; text-align:center;
+  font-family:var(--serif); font-weight:800; font-size:1.05rem; border-radius:4px;
+  padding:1px 5px; border:1px solid currentColor}
+.n1{color:var(--acento)} .n2{color:var(--dest)} .n3{color:var(--lapiz)}
+.n4{color:var(--acento2)} .n5{color:var(--acento2); background:var(--acento2-suave)}
+table.perf tr.clave td{background:var(--dest-suave)}
+
+.alarma{border:1px solid var(--dest-borde); background:var(--dest-suave);
+        border-radius:6px; padding:12px 14px; margin-top:14px; font-size:14.5px}
+.alarma b{color:var(--dest)}
+.alarma.ok{border-color:var(--linea-fuerte); background:var(--papel-2)}
+.alarma.ok b{color:var(--acento2)}
+
+/* ── para dictar ──────────────────────────────────────────────── */
+.dictar{max-width:none}
+.dictar h2{font-size:clamp(1.6rem,4.2vw,2.4rem); font-weight:800; margin-bottom:6px}
+.regla{display:grid; grid-template-columns:2.6em 1fr; gap:4px 14px;
+       border-top:1px solid var(--linea-fuerte); padding:14px 0}
+.regla .rn{font-family:var(--serif); font-weight:800; font-size:1.7rem;
+           color:var(--acento); line-height:1}
+.regla h3{font-size:clamp(1.15rem,2.6vw,1.45rem); font-weight:800}
+.regla p{margin:5px 0 0; font-size:clamp(15px,2vw,17.5px); max-width:60ch}
+.regla .cuad{grid-column:2; margin-top:9px; border:1px solid var(--linea-fuerte);
+             border-radius:5px; background:var(--papel-2); padding:10px 12px;
+             font-family:var(--mono); font-size:14px}
+.numeros-grandes{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+                 gap:12px; margin:10px 0 0}
+.ng{border:2px solid var(--linea-fuerte); border-radius:8px; padding:12px;
+    text-align:center; background:var(--papel)}
+.ng .q{font-family:var(--serif); font-size:1rem; color:var(--lapiz); font-weight:700}
+.ng .v{font-family:var(--mono); font-weight:600; font-size:clamp(2rem,5.5vw,3rem);
+       line-height:1.05}
+.ng.g5{border-color:var(--acento); background:var(--acento-suave)}
+.ng.g5 .v{color:var(--acento)}
+.ng.g2{border-color:var(--acento2); background:var(--acento2-suave)}
+.ng.g2 .v{color:var(--acento2)}
+.cuaderno{border:1px dashed var(--linea-fuerte); border-radius:6px; padding:12px 14px;
+          background:var(--papel-2); margin-top:10px}
+.cuaderno table{border-collapse:collapse; font-family:var(--mono); font-size:14px}
+.cuaderno td,.cuaderno th{border:1px solid var(--linea-fuerte); padding:5px 12px;
+                          text-align:center}
+.cuaderno th{font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+             color:var(--lapiz); font-weight:400}
+
+/* ── carrera ──────────────────────────────────────────────────── */
+.pegar{width:100%; min-height:130px; font-family:var(--mono); font-size:14px;
+       padding:10px 12px; border:1px solid var(--linea-fuerte); border-radius:6px;
+       background:var(--papel-2); color:var(--tinta); resize:vertical}
+.pista{margin-top:14px; border:1px solid var(--linea-fuerte); border-radius:8px;
+       background:var(--papel); padding:14px 16px 10px; position:relative;
+       overflow:hidden}
+.metas{position:relative; height:36px; margin-left:var(--anchoNom);
+       margin-right:var(--anchoDer);
+       border-bottom:1px solid var(--linea-fuerte)}
+.meta{position:absolute; top:0; bottom:-100000px; width:0;
+      border-left:2px dashed var(--linea-fuerte); pointer-events:none}
+.meta .et{position:absolute; top:2px; left:4px; white-space:nowrap;
+          font-family:var(--mono); font-size:13px; color:var(--lapiz)}
+.meta .et b{font-family:var(--serif); font-size:1.25em; color:var(--tinta)}
+/* los cortes del 3 y del 4 caen cerca: se escalonan para que no se pisen */
+.meta.impar .et{top:19px}
+.meta.m2{border-color:var(--acento2)} .meta.m2 .et b{color:var(--acento2)}
+.meta.m5{border-color:var(--acento)}  .meta.m5 .et b{color:var(--acento)}
+.carriles{position:relative}
+.carril{display:grid;
+        grid-template-columns:var(--anchoNom) minmax(0,1fr) 3.8em var(--anchoFalta);
+        align-items:center; gap:0; height:var(--altoCarril);
+        border-bottom:1px solid var(--linea)}
+.carril:last-child{border-bottom:none}
+.carril .nom{font-size:clamp(12px,calc(var(--altoCarril)*.46),19px); font-weight:700;
+             white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+             padding-right:9px; text-align:right; color:var(--tinta)}
+.carril .via{position:relative; height:100%}
+.carril .barra{position:absolute; left:0; top:50%; transform:translateY(-50%);
+               height:calc(var(--altoCarril)*.46); border-radius:99px;
+               background:var(--acento2-suave); border:1px solid var(--acento2);
+               width:0}
+.carril .corredor{position:absolute; top:50%; left:0;
+                  transform:translate(-50%,-50%);
+                  width:calc(var(--altoCarril)*.66); height:calc(var(--altoCarril)*.66);
+                  border-radius:50%; background:var(--acento); color:#fff;
+                  display:flex; align-items:center; justify-content:center;
+                  font-family:var(--mono); font-weight:600;
+                  font-size:calc(var(--altoCarril)*.26); letter-spacing:-.02em;
+                  box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.carril .pts{font-family:var(--mono); font-variant-numeric:tabular-nums;
+             font-weight:600; text-align:right; padding-left:8px; color:var(--tinta);
+             font-size:clamp(12px,calc(var(--altoCarril)*.44),19px)}
+.carril .falta{padding-left:12px; white-space:nowrap; overflow:hidden;
+               text-overflow:ellipsis;
+               font-family:var(--mono);
+               font-size:clamp(10px,calc(var(--altoCarril)*.32),14px);
+               color:var(--lapiz); opacity:0; transition:opacity .4s}
+.carril.listo .falta{opacity:1}
+/* el color lo lleva el corredor, no el nombre: marcar en rojo a los
+   últimos de la lista proyectado en la pared es otra conversación */
+.carril.n1 .corredor{background:var(--lapiz)}
+.carril.n1 .barra{background:var(--papel-2); border-color:var(--linea-fuerte)}
+.carril.n2 .corredor,.carril.n3 .corredor{background:var(--acento2)}
+.carril.n4 .corredor,.carril.n5 .corredor{background:var(--acento)}
+.carril.n4 .barra,.carril.n5 .barra{background:var(--acento-suave);
+                                    border-color:var(--acento)}
+.podio1 .corredor{box-shadow:0 0 0 3px var(--dest),0 1px 3px rgba(0,0,0,.25)}
+
+/* modo pista: en el aula el encabezado se come media pantalla, y eso ya
+   se midió proyectando. Con la carrera sola los carriles pasan de 20 px
+   a 55 y el nombre se lee desde la última fila. */
+body.solo-pista .cab-int,body.solo-pista .sitio-nav{display:none}
+body.solo-pista .vista{padding-top:10px}
+body.solo-pista #caja-datos{display:none}
+body.solo-pista .leyenda{display:none}
+.salir-pista{display:none}
+body.solo-pista .salir-pista{display:inline-block}
+body.solo-pista .entrar-pista{display:none}
+
+.ctrl-carrera{display:flex; gap:9px; align-items:center; flex-wrap:wrap; margin-top:12px}
+.leyenda{font-size:13.5px; color:var(--lapiz); margin-top:10px}
+.vacio{color:var(--lapiz); font-style:italic; font-family:var(--serif);
+       padding:26px 0; text-align:center}
+</style>
+
+</head>
+<body>
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../index.html">Inicio</a><span class="sep">/</span>
+      <span>Progreso del tramo</span>
+    </div>
+  </div>
+</nav>
+
+<div class="cab">
+  <div class="env cab-int">
+    <div>
+      <div class="sello">Albert Einstein School · Matemática</div>
+      <h1>Cómo se juegan las últimas semanas</h1>
+      <div class="sub">Calibración de puntos y carrera del curso · tramo final 2026</div>
+    </div>
+    <div class="pest" role="tablist">
+      <button role="tab" data-v="calibrar" aria-selected="true">Calibrar</button>
+      <button role="tab" data-v="dictar" aria-selected="false">Para dictar</button>
+      <button role="tab" data-v="carrera" aria-selected="false">La carrera</button>
+    </div>
+  </div>
+  <div class="barra-2">
+    <div class="env" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="grados" role="group" aria-label="grado">
+        <button data-g="7mo" aria-pressed="true">7.º</button>
+        <button data-g="8vo" aria-pressed="false">8.º</button>
+        <button data-g="9no" aria-pressed="false">9.º</button>
+      </div>
+      <span class="mini" id="resumen-barra"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ CALIBRAR ══════════════════ -->
+<div class="env vista" id="v-calibrar">
+  <div class="rejilla">
+    <div>
+      <div class="caja">
+        <h3>Las clases</h3>
+        <p class="pie-nota">Se cuenta <b>de menos</b> a propósito. Si después
+          aparecen más clases, el número que anunciaste queda más fácil, no más
+          difícil. El error que no se puede arreglar delante del curso es el otro.</p>
+        <div class="campo">
+          <label for="i-semanas">Semanas del tramo
+            <span class="ayuda" id="ayuda-ventana"></span></label>
+          <input type="number" id="i-semanas" min="1" max="20" step="1">
+        </div>
+        <div class="campo">
+          <label for="i-clasessem">Clases por semana</label>
+          <input type="number" id="i-clasessem" min="1" max="7" step="1">
+        </div>
+        <div class="campo">
+          <label for="i-descuento">Clases que descuento
+            <span class="ayuda">Feriados, actos, viajes, lo que se cae. El 29 de
+              septiembre es feriado (Boquerón) y el fin de semana del Open House
+              suele comerse un día.</span></label>
+          <input type="number" id="i-descuento" min="0" max="20" step="1">
+        </div>
+        <div class="campo">
+          <label for="i-ptsclase">Puntos por clase trabajada</label>
+          <input type="number" id="i-ptsclase" min="0" max="20" step="1">
+        </div>
+        <div class="campo">
+          <label style="color:var(--lapiz)">Clases que cuento</label>
+          <span class="calc" id="c-clases"></span>
+        </div>
+      </div>
+
+      <div class="caja">
+        <h3>Las fichas</h3>
+        <p class="pie-nota">También de menos: si das una ficha más, es regalo.
+          Una ficha entregada tarde vale menos, pero <b>el total no cambia</b> —
+          por eso la penalización por atraso no rompe la calibración.</p>
+        <div class="campo">
+          <label for="i-fichas">Fichas con puntos
+            <span class="ayuda">Solo las que se entregan y valen 5. La tarea
+              que se corrige en clase no cuenta acá: ya está adentro de los
+              puntos por trabajar en clase. El plan de 8.º tiene 8.</span></label>
+          <input type="number" id="i-fichas" min="0" max="30" step="1">
+        </div>
+        <div class="campo">
+          <label for="i-ptsficha">Puntos por ficha</label>
+          <input type="number" id="i-ptsficha" min="0" max="20" step="1">
+        </div>
+        <div class="campo">
+          <label style="color:var(--lapiz)">Total de fichas</label>
+          <span class="calc" id="c-fichas"></span>
+        </div>
+      </div>
+
+      <div class="caja">
+        <h3>Los proyectos</h3>
+        <p class="pie-nota">Acá se decide de verdad la escala: los proyectos son
+          los escalones que suben de nota. Poné 0 en lo que no vas a tomar.</p>
+        <div id="lista-proy"></div>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn" id="b-agregar-proy">+ agregar</button>
+          <span class="calc" id="c-proy" style="margin-left:auto;align-self:center"></span>
+        </div>
+      </div>
+
+      <div class="caja">
+        <h3>Lo que ya tienen</h3>
+        <div class="campo">
+          <label for="i-previo">Puntos ya ofrecidos en este período
+            <span class="ayuda">Lo que sumó un alumno perfecto antes de hoy. Si el
+              tramo arranca de cero, dejá 0.</span></label>
+          <input type="number" id="i-previo" min="0" max="2000" step="1">
+        </div>
+      </div>
+
+      <div class="caja">
+        <h3>Cómo redondeo el número que dicto</h3>
+        <div class="campo">
+          <label for="i-paso">Múltiplo</label>
+          <select class="btn" id="i-paso">
+            <option value="1">exacto</option>
+            <option value="5">de 5 en 5</option>
+            <option value="10">de 10 en 10</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="i-modo">Dirección
+            <span class="ayuda">Hacia abajo: el número dictado nunca pide más que
+              el porcentaje. El redondeo siempre a favor del alumno.</span></label>
+          <select class="btn" id="i-modo">
+            <option value="abajo">hacia abajo</option>
+            <option value="cercano">al más cercano</option>
+            <option value="arriba">hacia arriba</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="i-escala">Escala MEC (% para 2·3·4·5)</label>
+          <input type="text" id="i-escala" style="width:11.5em;text-align:center">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="total-caja">
+        <div class="rot">Total de puntos del tramo · <span id="rot-grado"></span></div>
+        <div class="cifra"><span id="c-total">—</span> <small>puntos</small></div>
+        <div class="desglose" id="c-desglose"></div>
+        <div class="cortes" id="c-cortes"></div>
+      </div>
+
+      <div class="caja">
+        <h3>En qué nota cae cada tipo de alumno</h3>
+        <p class="pie-nota">Que la suma cierre no alcanza. Esta tabla es la
+          prueba de la calibración: si el que viene todos los días y entrega
+          todas las fichas no llega al 2, la escala está mal armada.</p>
+        <table class="perf">
+          <thead><tr>
+            <th>Perfil</th><th class="d">Puntos</th><th class="d">%</th><th class="d">Nota</th>
+          </tr></thead>
+          <tbody id="c-perfiles"></tbody>
+        </table>
+        <div id="c-alarma"></div>
+      </div>
+
+      <div class="caja">
+        <h3>Guardar esta calibración</h3>
+        <p class="pie-nota">Los valores viajan en la dirección de la página.
+          Copiá el enlace y la abrís mañana con todo puesto — funciona igual sin
+          conexión.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn fuerte" id="b-enlace">Copiar enlace con mis números</button>
+          <button class="btn" id="b-reset">Volver a los valores sugeridos</button>
+        </div>
+        <div class="mini" id="aviso-copia" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PARA DICTAR ══════════════════ -->
+<div class="env vista dictar" id="v-dictar" hidden>
+  <h2>Las reglas de las últimas <span id="d-semanas"></span> semanas</h2>
+  <p class="sub" style="font-family:var(--serif);font-style:italic;color:var(--lapiz);
+     font-size:17px;margin:0 0 16px">
+     <span id="d-grado"></span> · <span id="d-ventana"></span> ·
+     saquen el cuaderno de Matemática y copien los cuatro números del final.</p>
+
+  <div class="regla">
+    <div class="rn">1</div>
+    <div>
+      <h3>Una firma por día, con su número al lado</h3>
+      <p>Cada clase vale <b><span id="d-ptsclase"></span> puntos</b> por trabajar.
+        No firmo dos veces el mismo cuaderno en el mismo día: firmo una vez y
+        escribo al lado cuánto vale ese día. Si ese día además entregaste la
+        ficha, el número es más grande.</p>
+      <div class="cuad" id="d-tabla-firma"></div>
+    </div>
+  </div>
+
+  <div class="regla">
+    <div class="rn">2</div>
+    <div>
+      <h3>La ficha se entrega en la clase siguiente</h3>
+      <p>Cada ficha vale <b><span id="d-ptsficha"></span> puntos</b> y se recibe en
+        la clase siguiente a la que se dio. Entregada más tarde vale menos:
+        una clase de atraso, <span id="d-tarde1"></span>; dos o más,
+        <span id="d-tarde2"></span>; después de la fecha de cierre, nada.
+        Fijate que el <b>máximo no cambia</b>: el total de puntos del tramo es el
+        mismo para todos, lo único que cambia es cuánto te llevás vos.</p>
+    </div>
+  </div>
+
+  <div class="regla">
+    <div class="rn">3</div>
+    <div>
+      <h3>Los proyectos son los escalones</h3>
+      <p>Venir y trabajar todos los días te sostiene. Los proyectos son los que
+        te suben de nota, y no se pueden recuperar en la última semana.</p>
+      <div class="cuad" id="d-proyectos"></div>
+    </div>
+  </div>
+
+  <div class="regla">
+    <div class="rn">4</div>
+    <div>
+      <h3>Tu cuaderno es el registro</h3>
+      <p>Llevás la cuenta vos: al lado de cada firma está el número del día, y en
+        la última hoja del cuaderno la suma corrida. Cuando quieras saber dónde
+        estás, no me preguntás: mirás tu cuaderno y lo comparás con los cuatro
+        números de abajo.</p>
+      <div class="cuaderno">
+        <table>
+          <tr><th>Fecha</th><th>Qué</th><th>Vale</th><th>Acumulado</th></tr>
+          <tr><td>30/09</td><td>clase</td><td id="d-ej1"></td><td id="d-ej1a"></td></tr>
+          <tr><td>02/10</td><td>clase + ficha 12</td><td id="d-ej2"></td><td id="d-ej2a"></td></tr>
+          <tr><td>05/10</td><td>clase</td><td id="d-ej3"></td><td id="d-ej3a"></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="regla">
+    <div class="rn">5</div>
+    <div>
+      <h3>Los cuatro números que van al cuaderno</h3>
+      <p>El total que se puede juntar en el tramo es
+        <b><span id="d-total"></span> puntos</b>. Estos son los que necesitás:</p>
+      <div class="numeros-grandes" id="d-numeros"></div>
+      <p style="margin-top:12px">Ese es todo el trato. No hay letra chica, no hay
+        sorpresa al final: el número está escrito en tu cuaderno desde hoy.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ CARRERA ══════════════════ -->
+<div class="env vista" id="v-carrera" hidden>
+  <div class="caja" id="caja-datos">
+    <h3>Los puntos de cada uno</h3>
+    <p class="pie-nota">Copiá dos columnas del Excel —nombre y puntos— y pegalas
+      acá. Entiende tabulaciones, comas y punto y coma.</p>
+    <textarea class="pegar" id="datos" spellcheck="false"
+      placeholder="Ana Gómez&#9;96&#10;Bruno Díaz&#9;131&#10;Carla Núñez&#9;118"></textarea>
+    <div class="ctrl-carrera">
+      <button class="btn fuerte" id="b-correr">▶ Correr</button>
+      <button class="btn" id="b-reiniciar">↺ Reiniciar</button>
+      <label class="mini" for="i-privacidad">Nombres</label>
+      <select class="btn" id="i-privacidad">
+        <option value="pila">Nombre + inicial</option>
+        <option value="completo">Completo</option>
+        <option value="nombre">Solo el nombre</option>
+        <option value="iniciales">Solo iniciales</option>
+        <option value="codigo">Códigos</option>
+      </select>
+      <label class="mini" for="i-veloc">Velocidad</label>
+      <select class="btn" id="i-veloc">
+        <option value="4200">tranquila</option>
+        <option value="2800" selected>normal</option>
+        <option value="1500">rápida</option>
+      </select>
+      <button class="btn" id="b-ejemplo">Datos de prueba</button>
+      <button class="btn entrar-pista" id="b-pista">Pantalla de proyección</button>
+    </div>
+  </div>
+
+  <div class="pista" id="pista">
+    <div class="metas" id="metas"></div>
+    <div class="carriles" id="carriles">
+      <div class="vacio">Pegá los nombres y los puntos, y apretá Correr.</div>
+    </div>
+  </div>
+  <p class="leyenda" id="leyenda-carrera"></p>
+  <button class="btn salir-pista" id="b-salir-pista"
+          style="position:fixed;left:14px;top:12px;z-index:65">✕ salir</button>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════ el modelo ═══════════════
+   Las mismas fórmulas que verificacion/progreso.py, que las recalcula
+   en Python con enteros. Si hay que discutir un número, se discute acá, y
+   después se corre el verificador.                                      */
+
+var SUGERIDO = {
+  semanas:7, ptsClase:4, ptsFicha:5, paso:5, modo:'abajo',
+  escala:[60,70,80,90],
+  inicio:'2026-09-28',
+  grados:{
+    '7mo':{nombre:'7.º grado', clasesSem:4, descuento:3, fichas:8, previo:0},
+    '8vo':{nombre:'8.º grado', clasesSem:3, descuento:2, fichas:8, previo:0},
+    '9no':{nombre:'9.º grado', clasesSem:3, descuento:2, fichas:8, previo:0}
+  },
+  proyectos:[
+    ['Khan Academy · repaso del grado anterior', 25],
+    ['Proyecto de estadística (Forms → Sheets → QR)', 25],
+    ['Open House · sábado 10 de octubre', 10],
+    ['Valoración escrita de cierre', 0]
+  ]
+};
+
+/* Las fracciones de cada perfil van como PORCENTAJES ENTEROS: sobre el
+   trabajo en clase, sobre las fichas y sobre los proyectos. La última
+   columna marca el perfil que dispara la alarma de calibración. */
+var PERFILES = [
+  ['Viene y trabaja, nada más',                 100,   0,   0, 0],
+  ['Viene, trabaja y entrega todas las fichas', 100, 100,   0, 1],
+  ['Todo lo de clase + un proyecto chico',      100, 100,  20, 0],
+  ['Todo lo de clase + el de Khan',             100, 100,  45, 0],
+  ['Cumple absolutamente todo',                 100, 100, 100, 0],
+  ['Falta seguido pero hace los proyectos',      60,  50, 100, 0],
+  ['A medias en todo',                           75,  60,  50, 0],
+  ['Casi no trabaja',                            40,  25,   0, 0]
+];
+
+function clon(o){ return JSON.parse(JSON.stringify(o)); }
+var E = clon(SUGERIDO);       // estado
+var gActivo = '7mo';
+
+/* Toda la aritmética de los cortes se hace en CENTÉSIMOS de punto y con
+   enteros. Con punto flotante, 0.60*350 da 209.99999999999997 y el
+   redondeo hacia abajo devolvía 205 en lugar de 210. Y Math.round de la
+   mitad va hacia arriba mientras round() de Python va al par, así que
+   los dos modelos discrepaban en 1 punto. Con enteros no hay nada que
+   discutir: los dos dan lo mismo. */
+function redondea(cent, paso, modo){
+  if(paso <= 1) return Math.ceil(cent/100);
+  var d = 100*paso;
+  if(modo === 'arriba')  return Math.ceil(cent/d)*paso;
+  if(modo === 'cercano') return Math.floor((2*cent + d)/(2*d))*paso;
+  return Math.floor(cent/d)*paso;                 // 'abajo'
+}
+
+function calcula(gid){
+  var g = E.grados[gid];
+  var clases  = Math.max(0, E.semanas*g.clasesSem - g.descuento);
+  var ptsCla  = clases * E.ptsClase;
+  var ptsFic  = g.fichas * E.ptsFicha;
+  var ptsProy = E.proyectos.reduce(function(a,p){ return a + (+p[1]||0); }, 0);
+  var total   = (+g.previo||0) + ptsCla + ptsFic + ptsProy;
+  var cortes  = E.escala.map(function(pc, i){
+    var cent = pc*total;
+    return {nota:i+2, pc:pc, exacto:cent/100,
+            dicho:redondea(cent, E.paso, E.modo)};
+  });
+  return {clases:clases, nominal:E.semanas*g.clasesSem, ptsCla:ptsCla,
+          ptsFic:ptsFic, ptsProy:ptsProy, total:total, cortes:cortes};
+}
+
+/* Los puntos de un perfil, con la mitad siempre hacia arriba. */
+function puntosPerfil(p, r, previo){
+  var cent = p[1]*r.ptsCla + p[2]*r.ptsFic + p[3]*r.ptsProy;
+  return Math.floor((cent + 50)/100) + (+previo||0);
+}
+
+function notaDe(p, cortes){
+  var n = 1;
+  cortes.forEach(function(c){ if(p >= c.dicho) n = c.nota; });
+  return n;
+}
+
+/* ═══════════════ fechas ═══════════════ */
+var MES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
+           'septiembre','octubre','noviembre','diciembre'];
+function fecha(iso){ var p = iso.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
+function dma(d){ return d.getDate() + ' de ' + MES[d.getMonth()]; }
+function ventana(){
+  var ini = fecha(E.inicio);
+  var fin = new Date(ini.getTime());
+  fin.setDate(fin.getDate() + E.semanas*7 - 3);   // viernes de la última semana
+  return {ini:ini, fin:fin, txt:'del ' + dma(ini) + ' al ' + dma(fin)};
+}
+
+/* ═══════════════ estado en la dirección ═══════════════ */
+function guardaHash(){
+  try{
+    var s = btoa(unescape(encodeURIComponent(JSON.stringify(E))));
+    history.replaceState(null, '', '#c=' + s);
+  }catch(e){}
+}
+function leeHash(){
+  try{
+    var m = /[#&]c=([^&]+)/.exec(location.hash);
+    if(!m) return;
+    var o = JSON.parse(decodeURIComponent(escape(atob(m[1]))));
+    if(o && o.grados && o.proyectos) E = o;
+  }catch(e){}
+}
+
+/* ═══════════════ pintar el calibrador ═══════════════ */
+var $ = function(id){ return document.getElementById(id); };
+
+function pintaProyectos(){
+  var c = $('lista-proy'); c.innerHTML = '';
+  E.proyectos.forEach(function(p, i){
+    var f = document.createElement('div'); f.className = 'fila-proy';
+    var t = document.createElement('input'); t.type = 'text'; t.value = p[0];
+    t.setAttribute('aria-label','nombre del proyecto');
+    t.oninput = function(){ E.proyectos[i][0] = t.value; guardaHash(); pintaDictar(); };
+    var n = document.createElement('input'); n.type = 'number'; n.min = 0; n.step = 1;
+    n.value = p[1]; n.setAttribute('aria-label','puntos');
+    n.oninput = function(){ E.proyectos[i][1] = +n.value||0; todo(); };
+    var q = document.createElement('button'); q.className = 'quitar';
+    q.type = 'button'; q.textContent = '×'; q.title = 'quitar';
+    q.onclick = function(){ E.proyectos.splice(i,1); pintaProyectos(); todo(); };
+    f.appendChild(t); f.appendChild(n); f.appendChild(q); c.appendChild(f);
+  });
+}
+
+function pintaCalibrador(){
+  var g = E.grados[gActivo], r = calcula(gActivo), v = ventana();
+
+  $('i-semanas').value   = E.semanas;
+  $('i-clasessem').value = g.clasesSem;
+  $('i-descuento').value = g.descuento;
+  $('i-ptsclase').value  = E.ptsClase;
+  $('i-fichas').value    = g.fichas;
+  $('i-ptsficha').value  = E.ptsFicha;
+  $('i-previo').value    = g.previo;
+  $('i-paso').value      = E.paso;
+  $('i-modo').value      = E.modo;
+  $('i-escala').value    = E.escala.join(' · ');
+
+  $('ayuda-ventana').textContent = v.txt + '.';
+  $('c-clases').textContent = r.clases + ' de ' + r.nominal;
+  $('c-fichas').textContent = r.ptsFic + ' pts';
+  $('c-proy').textContent   = 'proyectos: ' + r.ptsProy + ' pts';
+  $('rot-grado').textContent = g.nombre;
+  $('c-total').textContent = r.total;
+
+  $('c-desglose').innerHTML =
+    (g.previo ? '<span>ya ofrecido <b>' + g.previo + '</b></span>' : '') +
+    '<span>trabajo en clase <b>' + r.clases + '×' + E.ptsClase + ' = ' + r.ptsCla + '</b></span>' +
+    '<span>fichas <b>' + g.fichas + '×' + E.ptsFicha + ' = ' + r.ptsFic + '</b></span>' +
+    '<span>proyectos <b>' + r.ptsProy + '</b></span>';
+
+  $('c-cortes').innerHTML = r.cortes.map(function(c){
+    var cls = c.nota === 5 ? 'c5' : (c.nota === 2 ? 'c2' : '');
+    return '<div class="corte ' + cls + '"><div class="n">nota ' + c.nota +
+      '</div><div class="p">' + c.dicho + '</div><div class="pc">' + c.pc + '% = ' +
+      c.exacto.toFixed(0) + '</div></div>';
+  }).join('');
+
+  var tb = $('c-perfiles'); tb.innerHTML = '';
+  PERFILES.forEach(function(p){
+    var pts = puntosPerfil(p, r, g.previo);
+    var n = notaDe(pts, r.cortes);
+    var tr = document.createElement('tr');
+    if(p[4]) tr.className = 'clave';
+    tr.innerHTML = '<td>' + p[0] + '</td><td class="d">' + pts + '</td><td class="d">' +
+      (r.total ? Math.round(pts/r.total*100) : 0) + '%</td>' +
+      '<td class="d"><span class="nota-b n' + n + '">' + n + '</span></td>';
+    tb.appendChild(tr);
+  });
+
+  // la alarma de calibración: el perfil marcado tiene que llegar al 2
+  var pc = PERFILES.filter(function(p){ return p[4]; })[0] || PERFILES[1];
+  var ptsC = puntosPerfil(pc, r, g.previo);
+  var nc = notaDe(ptsC, r.cortes);
+  $('c-alarma').innerHTML = nc >= 2
+    ? '<div class="alarma ok"><b>La escala cierra.</b> El que viene a todas las ' +
+      'clases y entrega todas las fichas llega al <b>' + nc + '</b> sin proyectos; ' +
+      'los proyectos son los que lo suben de ahí.</div>'
+    : '<div class="alarma"><b>Ojo con esta escala.</b> El alumno que viene a todas ' +
+      'las clases y entrega todas las fichas junta ' + ptsC + ' puntos y todavía ' +
+      'saca <b>1</b>. Es una conversación difícil con la familia. Bajá el peso de ' +
+      'los proyectos o subí los puntos por clase hasta que ese perfil llegue al 2.</div>';
+
+  $('resumen-barra').textContent =
+    r.total + ' pts · el 2 está en ' + r.cortes[0].dicho + ' · ' + r.clases + ' clases';
+}
+
+/* ═══════════════ pintar lo que se dicta ═══════════════ */
+function pintaDictar(){
+  var g = E.grados[gActivo], r = calcula(gActivo), v = ventana();
+  var dia = E.ptsClase, conFicha = E.ptsClase + E.ptsFicha;
+
+  $('d-semanas').textContent  = E.semanas;
+  $('d-grado').textContent    = g.nombre;
+  $('d-ventana').textContent  = v.txt;
+  $('d-ptsclase').textContent = E.ptsClase;
+  $('d-ptsficha').textContent = E.ptsFicha;
+  $('d-total').textContent    = r.total;
+  $('d-tarde1').textContent   = Math.max(0, Math.round(E.ptsFicha*0.6)) + ' puntos';
+  $('d-tarde2').textContent   = Math.max(0, Math.round(E.ptsFicha*0.4)) + ' puntos';
+
+  $('d-tabla-firma').innerHTML =
+    'día de clase común &nbsp;→&nbsp; <b>' + dia + '</b><br>' +
+    'día en que además entregás la ficha &nbsp;→&nbsp; <b>' + conFicha + '</b><br>' +
+    'día que falté o no trabajé &nbsp;→&nbsp; <b>0</b> (no hay firma)';
+
+  $('d-proyectos').innerHTML = E.proyectos
+    .filter(function(p){ return (+p[1]||0) > 0; })
+    .map(function(p){ return p[0] + ' &nbsp;→&nbsp; <b>' + p[1] + ' puntos</b>'; })
+    .join('<br>') || 'todavía sin proyectos cargados';
+
+  $('d-ej1').textContent = dia;       $('d-ej1a').textContent = dia;
+  $('d-ej2').textContent = conFicha;  $('d-ej2a').textContent = dia + conFicha;
+  $('d-ej3').textContent = dia;       $('d-ej3a').textContent = dia*2 + conFicha;
+
+  $('d-numeros').innerHTML = r.cortes.map(function(c){
+    var cls = c.nota === 5 ? 'g5' : (c.nota === 2 ? 'g2' : '');
+    return '<div class="ng ' + cls + '"><div class="q">para un ' + c.nota +
+      '</div><div class="v">' + c.dicho + '</div></div>';
+  }).join('');
+}
+
+/* ═══════════════ la carrera ═══════════════ */
+var alumnos = [], animando = null;
+
+function parsea(txt){
+  var out = [];
+  txt.split(/\r?\n/).forEach(function(l){
+    l = l.trim(); if(!l) return;
+    var partes = l.split('\t');
+    var nom, pts;
+    if(partes.length >= 2){
+      pts = partes[partes.length-1];
+      nom = partes.slice(0, partes.length-1).join(' ');
+    }else{
+      var m = /^(.*?)[\s,;]+(-?\d+(?:[.,]\d+)?)\s*$/.exec(l);
+      if(!m) return;
+      nom = m[1]; pts = m[2];
+    }
+    nom = nom.replace(/[;,]+$/,'').trim();
+    pts = parseFloat(String(pts).replace(/[^\d.,-]/g,'').replace(',','.'));
+    if(!nom || !isFinite(pts)) return;
+    out.push({nombre:nom, pts:pts});
+  });
+  return out.sort(function(a,b){ return b.pts - a.pts; });
+}
+
+function muestra(nom, i, modo){
+  var p = nom.split(/\s+/);
+  if(modo === 'completo')  return nom;
+  if(modo === 'nombre')    return p[0];
+  if(modo === 'iniciales') return p.map(function(x){ return x[0].toUpperCase(); }).join('');
+  if(modo === 'codigo')    return 'N.º ' + (i+1);
+  return p[0] + (p[1] ? ' ' + p[1][0].toUpperCase() + '.' : '');   // pila
+}
+
+function pintaCarrera(){
+  var r = calcula(gActivo);
+  var modo = $('i-privacidad').value;
+  var cs = $('carriles'), ms = $('metas');
+  var pista = $('pista');
+
+  if(!alumnos.length){
+    cs.innerHTML = '<div class="vacio">Pegá los nombres y los puntos, y apretá Correr.</div>';
+    ms.innerHTML = ''; $('leyenda-carrera').textContent = ''; return;
+  }
+
+  var maxAl = Math.max.apply(null, alumnos.map(function(a){ return a.pts; }));
+  var escala = Math.max(r.total, maxAl, 1);
+
+  // los carriles tienen que entrar enteros en la pantalla del proyector:
+  // se mide lo que queda de alto desde donde empieza la pista
+  var cab = document.querySelector('.cab').getBoundingClientRect().height;
+  var extra = document.body.classList.contains('solo-pista') ? 78 : 150;
+  var libre = Math.max(240, window.innerHeight - cab - extra);
+  var alto = Math.max(18, Math.min(58, Math.floor(libre/alumnos.length)));
+  var anchoNom = modo === 'codigo' ? '4.8em' : (modo === 'iniciales' ? '3.6em' : '9.5em');
+  pista.style.setProperty('--altoCarril', alto + 'px');
+  pista.style.setProperty('--anchoNom', anchoNom);
+  pista.style.setProperty('--anchoFalta', alto < 24 ? '0em' : '11em');
+  pista.style.setProperty('--anchoDer', alto < 24 ? '3.8em' : '14.8em');
+
+  ms.innerHTML = r.cortes.map(function(c, i){
+    var cls = (c.nota === 5 ? 'm5' : (c.nota === 2 ? 'm2' : '')) +
+              (i % 2 ? ' impar' : '');
+    return '<div class="meta ' + cls + '" style="left:' + (c.dicho/escala*100) +
+      '%"><span class="et"><b>' + c.nota + '</b> ' + c.dicho + '</span></div>';
+  }).join('');
+
+  cs.innerHTML = '';
+  alumnos.forEach(function(a, i){
+    var n = notaDe(a.pts, r.cortes);
+    var sig = r.cortes.filter(function(c){ return a.pts < c.dicho; })[0];
+    var d = document.createElement('div');
+    d.className = 'carril n' + n + (i === 0 ? ' podio1' : '');
+    d.innerHTML =
+      '<div class="nom"></div>' +
+      '<div class="via"><div class="barra"></div>' +
+      '<div class="corredor">' + n + '</div></div>' +
+      '<div class="pts">0</div>' +
+      '<div class="falta">' + (sig
+          ? 'faltan ' + Math.round(sig.dicho - a.pts) + ' para el ' + sig.nota
+          : '★ llegó al tope') + '</div>';
+    d.querySelector('.nom').textContent = muestra(a.nombre, i, modo);
+    cs.appendChild(d);
+  });
+
+  // pasada correctiva: ya con los carriles puestos se mide dónde
+  // empiezan de verdad y se ajusta para que el último entre en pantalla.
+  // Estimar el alto del encabezado a ojo no alcanza: la versión del sitio
+  // lleva una barra más arriba que la del artifact.
+  var tope = cs.getBoundingClientRect().top;
+  var cabe = Math.floor((window.innerHeight - tope - 14)/alumnos.length);
+  if(cabe < alto && cabe >= 18){
+    alto = cabe;
+    pista.style.setProperty('--altoCarril', alto + 'px');
+    pista.style.setProperty('--anchoFalta', alto < 24 ? '0em' : '11em');
+    pista.style.setProperty('--anchoDer', alto < 24 ? '3.8em' : '14.8em');
+  }
+
+  $('leyenda-carrera').textContent =
+    alumnos.length + ' alumnos · la meta de la pista es ' + escala +
+    ' puntos · las líneas de puntos son el 2, el 3, el 4 y el 5.';
+  return {escala:escala, cortes:r.cortes};
+}
+
+function corre(){
+  var ctx = pintaCarrera();
+  if(!ctx) return;
+  if(animando) cancelAnimationFrame(animando);
+  var dur = +$('i-veloc').value;
+  var filas = [].slice.call($('carriles').children);
+  var t0 = null;
+
+  function paso(t){
+    if(t0 === null) t0 = t;
+    var listo = true;
+    filas.forEach(function(f, i){
+      var meta = alumnos[i].pts;
+      var retraso = i*40;
+      var u = Math.min(1, Math.max(0, (t - t0 - retraso)/dur));
+      if(u < 1) listo = false;
+      var e = 1 - Math.pow(1 - u, 3);                 // easeOutCubic
+      var v = meta*e;
+      var pc = ctx.escala ? v/ctx.escala*100 : 0;
+      f.querySelector('.barra').style.width = pc + '%';
+      f.querySelector('.corredor').style.left = pc + '%';
+      f.querySelector('.pts').textContent = Math.round(v);
+      if(u >= 1) f.classList.add('listo');
+    });
+    if(!listo) animando = requestAnimationFrame(paso);
+    else animando = null;
+  }
+  animando = requestAnimationFrame(paso);
+}
+
+/* ═══════════════ cableado ═══════════════ */
+function todo(){ guardaHash(); pintaCalibrador(); pintaDictar(); }
+
+function num(id, set){
+  $(id).addEventListener('input', function(){ set(+this.value||0); todo(); });
+}
+num('i-semanas',   function(v){ E.semanas = Math.max(1, v); });
+num('i-clasessem', function(v){ E.grados[gActivo].clasesSem = Math.max(1, v); });
+num('i-descuento', function(v){ E.grados[gActivo].descuento = Math.max(0, v); });
+num('i-ptsclase',  function(v){ E.ptsClase = Math.max(0, v); });
+num('i-fichas',    function(v){ E.grados[gActivo].fichas = Math.max(0, v); });
+num('i-ptsficha',  function(v){ E.ptsFicha = Math.max(0, v); });
+num('i-previo',    function(v){ E.grados[gActivo].previo = Math.max(0, v); });
+
+$('i-paso').onchange = function(){ E.paso = +this.value; todo(); };
+$('i-modo').onchange = function(){ E.modo = this.value; todo(); };
+$('i-escala').onchange = function(){
+  var v = this.value.split(/[^\d]+/).filter(Boolean).map(Number);
+  if(v.length === 4) E.escala = v;
+  todo();
+};
+$('b-agregar-proy').onclick = function(){
+  E.proyectos.push(['Proyecto nuevo', 10]); pintaProyectos(); todo();
+};
+$('b-reset').onclick = function(){
+  E = clon(SUGERIDO); pintaProyectos(); todo();
+};
+$('b-enlace').onclick = function(){
+  guardaHash();
+  var url = location.href;
+  var ok = function(){ $('aviso-copia').textContent = 'Enlace copiado.'; };
+  if(navigator.clipboard) navigator.clipboard.writeText(url).then(ok, function(){
+    $('aviso-copia').textContent = 'No pude copiar: está en la barra de direcciones.';
+  });
+  else $('aviso-copia').textContent = 'Está en la barra de direcciones.';
+};
+
+[].forEach.call(document.querySelectorAll('.pest button'), function(b){
+  b.onclick = function(){
+    [].forEach.call(document.querySelectorAll('.pest button'), function(x){
+      x.setAttribute('aria-selected', String(x === b));
+    });
+    ['calibrar','dictar','carrera'].forEach(function(v){
+      $('v-' + v).hidden = (v !== b.dataset.v);
+    });
+    if(b.dataset.v === 'carrera') pintaCarrera();
+  };
+});
+[].forEach.call(document.querySelectorAll('.grados button'), function(b){
+  b.onclick = function(){
+    gActivo = b.dataset.g;
+    [].forEach.call(document.querySelectorAll('.grados button'), function(x){
+      x.setAttribute('aria-pressed', String(x === b));
+    });
+    pintaCalibrador(); pintaDictar(); pintaCarrera();
+  };
+});
+
+
+$('b-correr').onclick = function(){
+  alumnos = parsea($('datos').value);
+  corre();
+};
+$('b-reiniciar').onclick = function(){ pintaCarrera(); };
+$('i-privacidad').onchange = function(){ pintaCarrera(); };
+function modoPista(on){
+  document.body.classList.toggle('solo-pista', on);
+  if(alumnos.length) corre();
+}
+$('b-pista').onclick = function(){ modoPista(true); };
+$('b-salir-pista').onclick = function(){ modoPista(false); };
+$('b-ejemplo').onclick = function(){
+  $('datos').value = [
+    'Ana Gómez\t148','Bruno Díaz\t131','Carla Núñez\t126','Diego Franco\t119',
+    'Elena Ruiz\t112','Fabio Ortiz\t108','Gisela Paredes\t101','Hugo Ramírez\t94',
+    'Irene Sosa\t88','Javier Toledo\t76','Karen Vera\t71','Luis Zárate\t58'
+  ].join('\n');
+  alumnos = parsea($('datos').value); corre();
+};
+
+window.addEventListener('resize', function(){
+  if(!$('v-carrera').hidden && alumnos.length) pintaCarrera();
+});
+
+leeHash();
+pintaProyectos();
+pintaCalibrador();
+pintaDictar();
+})();
+</script>
+
+<script src="../assets/proyeccion.js" defer></script>
+<script src="../assets/timer.js" defer></script>
+</body>
+</html>

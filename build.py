@@ -101,7 +101,7 @@ def portada():
 </header>""")
 
     cuerpo.append('<section class="bloque"><p class="eyebrow">Por dónde entrar</p>')
-    cuerpo.append('<h2>Dos módulos</h2>')
+    cuerpo.append('<h2>Los módulos</h2>')
     cuerpo.append('<div class="tarjetas">')
     cuerpo.append("""<a class="tarjeta" href="matematica/index.html">
       <span class="rotulo">7.º · 8.º · 9.º grado</span>
@@ -115,6 +115,11 @@ def portada():
       <span class="rotulo">Todas juntas</span>
       <h3>Fichas de ejercitación</h3>
       <p>Las fichas de los tres grados, en PDF, para imprimir.</p></a>""")
+    cuerpo.append("""<a class="tarjeta" href="progreso/index.html">
+      <span class="rotulo">Para el docente</span>
+      <h3>Progreso del tramo</h3>
+      <p>Cuántos puntos tiene el tramo final, dónde cae cada nota, las reglas para
+        dictar y la carrera del curso para proyectar.</p></a>""")
     cuerpo.append('</div></section>')
 
     cuerpo.append("""<section class="bloque">

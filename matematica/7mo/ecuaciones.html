@@ -225,6 +225,24 @@ const LABS = {
    siempre adentro de M() o de un .ec: no pone cursivas por su cuenta. */
 const N = s => `<span class="nuevo">${s}</span>`;
 
+/* A() alinea una cadena de igualdades: una por renglón y todos los signos
+   = en la misma columna, como en el cuaderno. Cada fila es una igualdad
+   ('3(1 + 2) = 3 · 1 + 6'), una continuación (' = 9'), o un par
+   ['izquierda', '3(1 + 2) = 9'] cuando se calcula cada miembro aparte.
+   También acepta ≠, para cuando los dos miembros no coinciden. */
+function A(...filas){
+  return '<div class="alineado">' + filas.map(f => {
+    const [rot, e] = Array.isArray(f) ? f : ['', f];
+    const m = / (=|≠) /.exec(' ' + e);
+    const izq = m ? e.slice(0, Math.max(0, m.index - 1)) : '';
+    const sig = m ? m[1] : '';
+    const der = m ? e.slice(m.index + m[0].length - 1) : e;
+    return `<span class="al-rot">${rot}</span><span class="al-izq">${I(izq)}</span>` +
+           `<span class="al-sig">${sig}</span><span class="al-der">${I(der)}</span>`;
+  }).join('') + '</div>';
+}
+
+
 /* ═══════════════════════════════════════════════════════════════
    Los siete temas del libro
    Toda respuesta que aparece acá está calculada y verificada en
@@ -250,29 +268,29 @@ const TEMAS = [
   ejemplos:[
     { titulo:'sumar lo mismo', enun:`A ${M('2 · 6 + 3 = 15')} le sumo 5 en los dos miembros`,
       pasos:[
-        `Escribo el +5 en los dos miembros: ${M(`2 · 6 + 3 ${N('+ 5')} = 15 ${N('+ 5')}`)}`,
-        'Calculo cada miembro por separado: a la izquierda 12 + 3 + 5, a la derecha 15 + 5.',
+        `Escribo el +5 en los dos miembros:${A(`2 · 6 + 3 ${N('+ 5')} = 15 ${N('+ 5')}`)}`,
+        `Calculo cada miembro por separado:${A('12 + 3 + 5 = 15 + 5')}`,
       ], final:'20 = 20 — sigue siendo igualdad' },
     { titulo:'cambio la operación: multiplicar', enun:`A ${M('2 · 6 + 3 = 15')} la multiplico por 2`,
       pasos:[
-        `El · 2 tiene que multiplicar al miembro entero, así que el miembro va entre paréntesis: ${M(`(2 · 6 + 3) ${N('· 2')} = 15 ${N('· 2')}`)}`,
-        'Izquierda: 15 · 2. Derecha: 15 · 2. Son la misma cuenta.',
+        `El · 2 tiene que multiplicar al miembro entero, así que el miembro va entre paréntesis:${A(`(2 · 6 + 3) ${N('· 2')} = 15 ${N('· 2')}`)}`,
+        `Calculo cada miembro:${A('15 · 2 = 15 · 2')}`,
       ], final:'30 = 30' },
     { titulo:'cambio la operación: dividir', enun:`A ${M('2 · 6 + 3 = 15')} la divido por 3`,
       pasos:[
-        `Otra vez, el miembro entero entre paréntesis: ${M(`(2 · 6 + 3) ${N(': 3')} = 15 ${N(': 3')}`)}`,
-        'Izquierda: 15 : 3. Derecha: 15 : 3.',
+        `Otra vez, el miembro entero entre paréntesis:${A(`(2 · 6 + 3) ${N(': 3')} = 15 ${N(': 3')}`)}`,
+        `Calculo cada miembro:${A('15 : 3 = 15 : 3')}`,
       ], final:'5 = 5' },
     { titulo:'cambio la operación: elevar', enun:`A ${M('2 · 6 + 3 = 15')} la elevo al cuadrado`,
       pasos:[
-        `${M(`(2 · 6 + 3)${N('<sup>2</sup>')} = 15${N('<sup>2</sup>')}`)}`,
-        'Izquierda: 15 · 15. Derecha: 15 · 15.',
+        `Elevo los dos miembros:${A(`(2 · 6 + 3)${N('<sup>2</sup>')} = 15${N('<sup>2</sup>')}`)}`,
+        `Calculo cada miembro:${A('15 · 15 = 15 · 15')}`,
       ], final:'225 = 225' },
     { titulo:'y ahora falta un número', enun:M('4 · 7 + 2 = 5 · □'),
       pasos:[
-        'Calculo el miembro que está completo: 4 · 7 + 2 = 30.',
-        `Entonces ${M(`30 = 5 · ${N('□')}`)}: busco qué número multiplicado por 5 da 30.`,
-        `Es el ${N('6')}, porque 5 · 6 = 30.`,
+        `Calculo el miembro que está completo:${A('4 · 7 + 2 = 30')}`,
+        `Entonces busco qué número multiplicado por 5 da 30:${A(`30 = 5 · ${N('□')}`)}`,
+        `Es el 6, porque:${A('5 · 6 = 30')}`,
       ], final:'el número que falta es 6' },
   ],
   preguntas:[
@@ -321,28 +339,28 @@ const TEMAS = [
   ejemplos:[
     { titulo:'la de partida', enun:M('3(x + 2) = 3x + 6'),
       pasos:[
-        `Reemplazo ${M('x')} por 1: ${M(`3(${N('1')} + 2) = 3 · ${N('1')} + 6`)}. <b>9 = 9</b>`,
-        `Por 2: ${M(`3(${N('2')} + 2) = 3 · ${N('2')} + 6`)}. <b>12 = 12</b>`,
-        `Por −2: ${M(`3(${N('−2')} + 2) = 3 · (${N('−2')}) + 6`)}. <b>0 = 0</b>`,
+        `Reemplazo ${M('x')} por 1:${A(`3(${N('1')} + 2) = 3 · ${N('1')} + 6`, '9 = 9')}`,
+        `Por 2:${A(`3(${N('2')} + 2) = 3 · ${N('2')} + 6`, '12 = 12')}`,
+        `Por −2:${A(`3(${N('−2')} + 2) = 3 · (${N('−2')}) + 6`, '0 = 0')}`,
         `Siempre da lo mismo: el 3 multiplica a la ${M('x')} y al 2.`,
       ], final:'es una identidad' },
     { titulo:'cambio el último número: 6 por 2', enun:M(`3(x + 2) = 3x + ${N('2')}`),
       pasos:[
-        `Reemplazo por 1: ${M(`3(${N('1')} + 2) = 3 · ${N('1')} + 2`)}, o sea 9 y 5. No.`,
-        `Reparto el 3: ${M('3x + 6 = 3x + 2')}.`,
+        `Reemplazo por 1 y calculo cada miembro por separado:${A(['izquierda', `3(${N('1')} + 2) = 9`], ['derecha', `3 · ${N('1')} + 2 = 5`])}No coinciden.`,
+        `Reparto el 3:${A('3x + 6 = 3x + 2')}`,
         `Los dos miembros tienen ${M('3x')}, pero a uno le suman 6 y al otro 2: nunca pueden valer lo mismo.`,
       ], final:'no se cumple para ningún número' },
     { titulo:'cambio el coeficiente: 3x por 2x', enun:M(`3(x + 2) = ${N('2x')} + 6`),
       pasos:[
-        `Por 1: ${M(`3(${N('1')} + 2) = 2 · ${N('1')} + 6`)}, o sea 9 y 8. No.`,
-        `Por 0: ${M(`3(${N('0')} + 2) = 2 · ${N('0')} + 6`)}, o sea 6 y 6. Sí.`,
+        `Reemplazo por 1:${A(['izquierda', `3(${N('1')} + 2) = 9`], ['derecha', `2 · ${N('1')} + 6 = 8`])}No coinciden.`,
+        `Reemplazo por 0:${A(`3(${N('0')} + 2) = 2 · ${N('0')} + 6`, '6 = 6')}`,
         'Con cualquier otro número, la izquierda crece más rápido: se cumple una sola vez.',
       ], final:'se cumple solo si <i>x</i> = 0 — es una ecuación' },
     { titulo:'encontrarlo probando', enun:M('x + 7 = 2x + 4'),
       pasos:[
-        `Por 1: ${M(`${N('1')} + 7 = 2 · ${N('1')} + 4`)}, o sea 8 y 6. La izquierda gana por 2.`,
-        `Por 2: ${M(`${N('2')} + 7 = 2 · ${N('2')} + 4`)}, o sea 9 y 8. Gana por 1: se están acercando.`,
-        `Por 3: ${M(`${N('3')} + 7 = 2 · ${N('3')} + 4`)}, o sea 10 y 10.`,
+        `Pruebo con 1:${A(['izquierda', `${N('1')} + 7 = 8`], ['derecha', `2 · ${N('1')} + 4 = 6`])}La izquierda gana por 2.`,
+        `Con 2:${A(['izquierda', `${N('2')} + 7 = 9`], ['derecha', `2 · ${N('2')} + 4 = 8`])}Gana por 1: se están acercando.`,
+        `Con 3:${A(['izquierda', `${N('3')} + 7 = 10`], ['derecha', `2 · ${N('3')} + 4 = 10`])}Los dos dan 10.`,
       ], final:'<i>x</i> = 3' },
   ],
   preguntas:[
@@ -391,37 +409,36 @@ const TEMAS = [
   ejemplos:[
     { titulo:'la forma ax = b', enun:M('6x = 42'),
       pasos:[
-        `Divido los dos miembros por 6: ${M(`6x ${N(': 6')} = 42 ${N(': 6')}`)}`,
-        'Control en la ecuación original: 6 · 7 = 42 ✓',
+        `Divido los dos miembros por 6:${A(`6x ${N(': 6')} = 42 ${N(': 6')}`)}`,
+        `Control en la ecuación original:${A('6 · 7 = 42 ✓')}`,
       ], final:'<i>x</i> = 7' },
     { titulo:'agrego un término: ax + b = c', enun:M(`6x ${N('− 5')} = 25`),
       pasos:[
-        `Sumo 5 a los dos miembros: ${M(`6x − 5 ${N('+ 5')} = 25 ${N('+ 5')}`)}`,
-        `Queda ${M('6x = 30')}. Divido por 6: ${M(`6x ${N(': 6')} = 30 ${N(': 6')}`)}`,
-        'Control: 6 · 5 − 5 = 25 ✓',
+        `Sumo 5 a los dos miembros:${A(`6x − 5 ${N('+ 5')} = 25 ${N('+ 5')}`, '6x = 30')}`,
+        `Divido los dos miembros por 6:${A(`6x ${N(': 6')} = 30 ${N(': 6')}`)}`,
+        `Control:${A('6 · 5 − 5 = 25 ✓')}`,
       ], final:'<i>x</i> = 5' },
     { titulo:'la x en los dos miembros: ax + b = cx + d', enun:M(`6x − 5 = ${N('2x +')} 11`),
       pasos:[
-        `Resto ${M('2x')} a los dos miembros: ${M(`6x − 5 ${N('− 2x')} = 2x + 11 ${N('− 2x')}`)}`,
-        `Queda ${M('4x − 5 = 11')}. Sumo 5: ${M(`4x − 5 ${N('+ 5')} = 11 ${N('+ 5')}`)}`,
-        `Queda ${M('4x = 16')}. Divido por 4: ${M(`4x ${N(': 4')} = 16 ${N(': 4')}`)}`,
-        'Control: izquierda 6 · 4 − 5 = 19, derecha 2 · 4 + 11 = 19 ✓',
+        `Resto ${M('2x')} a los dos miembros:${A(`6x − 5 ${N('− 2x')} = 2x + 11 ${N('− 2x')}`, '4x − 5 = 11')}`,
+        `Sumo 5:${A(`4x − 5 ${N('+ 5')} = 11 ${N('+ 5')}`, '4x = 16')}`,
+        `Divido por 4:${A(`4x ${N(': 4')} = 16 ${N(': 4')}`)}`,
+        `Control, miembro por miembro:${A(['izquierda', '6 · 4 − 5 = 19'], ['derecha', '2 · 4 + 11 = 19 ✓'])}`,
       ], final:'<i>x</i> = 4' },
     { titulo:'aparece un paréntesis', enun:M('3(x − 2) = x + 10'),
       pasos:[
-        `Distributiva: el 3 multiplica a los dos términos. ${M(`${N('3 · x − 3 · 2')} = x + 10`)}, o sea ${M('3x − 6 = x + 10')}`,
-        `Resto ${M('x')}: ${M(`3x − 6 ${N('− x')} = x + 10 ${N('− x')}`)}, queda ${M('2x − 6 = 10')}`,
-        `Sumo 6: ${M(`2x − 6 ${N('+ 6')} = 10 ${N('+ 6')}`)}, queda ${M('2x = 16')}`,
-        `Divido por 2: ${M(`2x ${N(': 2')} = 16 ${N(': 2')}`)}`,
-        'Control: 3 · (8 − 2) = 18 y 8 + 10 = 18 ✓',
+        `Distributiva: el 3 multiplica a los dos términos del paréntesis.${A(`${N('3 · x − 3 · 2')} = x + 10`, '3x − 6 = x + 10')}`,
+        `Resto ${M('x')}:${A(`3x − 6 ${N('− x')} = x + 10 ${N('− x')}`, '2x − 6 = 10')}`,
+        `Sumo 6:${A(`2x − 6 ${N('+ 6')} = 10 ${N('+ 6')}`, '2x = 16')}`,
+        `Divido por 2:${A(`2x ${N(': 2')} = 16 ${N(': 2')}`)}`,
+        `Control:${A(['izquierda', '3 · (8 − 2) = 18'], ['derecha', '8 + 10 = 18 ✓'])}`,
       ], final:'<i>x</i> = 8' },
     { titulo:'un menos delante del paréntesis', enun:M(`10 ${N('−')} (x + 4) = 2x`),
       pasos:[
-        `El menos cambia el signo de todo lo de adentro: ${M(`10 ${N('− x − 4')} = 2x`)}`,
-        `Reduzco: ${M('6 − x = 2x')}`,
-        `Sumo ${M('x')}: ${M(`6 − x ${N('+ x')} = 2x ${N('+ x')}`)}, queda ${M('6 = 3x')}`,
-        `Divido por 3: ${M(`6 ${N(': 3')} = 3x ${N(': 3')}`)}`,
-        'Control: 10 − (2 + 4) = 4 y 2 · 2 = 4 ✓',
+        `El menos cambia el signo de todo lo de adentro:${A(`10 ${N('− x − 4')} = 2x`, '6 − x = 2x')}`,
+        `Sumo ${M('x')}:${A(`6 − x ${N('+ x')} = 2x ${N('+ x')}`, '6 = 3x')}`,
+        `Divido por 3:${A(`6 ${N(': 3')} = 3x ${N(': 3')}`)}`,
+        `Control:${A(['izquierda', '10 − (2 + 4) = 4'], ['derecha', '2 · 2 = 4 ✓'])}`,
       ], final:'<i>x</i> = 2' },
   ],
   taller:'lab-balanza',
@@ -476,31 +493,32 @@ const TEMAS = [
     { titulo:'ya está en la forma y = ax + b', enun:M('y = 2x − 1'),
       grafica:{ a:[2, 1], b:[-1, 1], xs:[0, 2, 1] },
       pasos:[
-        `Elijo ${M('x = 0')}: ${M(`y = 2 · ${N('0')} − 1 = −1`)}. Punto <b>(0, −1)</b>.`,
-        `Elijo ${M('x = 2')}: ${M(`y = 2 · ${N('2')} − 1 = 3`)}. Punto <b>(2, 3)</b>.`,
-        `Control con ${M('x = 1')}: ${M(`y = 2 · ${N('1')} − 1 = 1`)}. El punto <b>(1, 1)</b> tiene que quedar alineado.`,
+        `Elijo ${M('x = 0')}:${A(`y = 2 · ${N('0')} − 1`, ' = −1')}Punto <b>(0, −1)</b>.`,
+        `Elijo ${M('x = 2')}:${A(`y = 2 · ${N('2')} − 1`, ' = 3')}Punto <b>(2, 3)</b>.`,
+        `Control con ${M('x = 1')}:${A(`y = 2 · ${N('1')} − 1`, ' = 1')}El punto <b>(1, 1)</b> tiene que quedar alineado.`,
       ], final:'una recta que sube: la pendiente, 2, es positiva' },
     { titulo:'cambio el signo de la pendiente', enun:M(`y = ${N('−')}2x + 3`),
       grafica:{ a:[-2, 1], b:[3, 1], xs:[0, 2, 1] },
       pasos:[
-        `${M('x = 0')}: ${M(`y = −2 · ${N('0')} + 3 = 3`)}. Punto <b>(0, 3)</b>.`,
-        `${M('x = 2')}: ${M(`y = −2 · ${N('2')} + 3 = −1`)}. Punto <b>(2, −1)</b>.`,
-        `Control con ${M('x = 1')}: ${M(`y = −2 · ${N('1')} + 3 = 1`)}. Punto (1, 1).`,
+        `Elijo ${M('x = 0')}:${A(`y = −2 · ${N('0')} + 3`, ' = 3')}Punto <b>(0, 3)</b>.`,
+        `Elijo ${M('x = 2')}:${A(`y = −2 · ${N('2')} + 3`, ' = −1')}Punto <b>(2, −1)</b>.`,
+        `Control con ${M('x = 1')}:${A(`y = −2 · ${N('1')} + 3`, ' = 1')}Punto (1, 1).`,
       ], final:'una recta que baja: la pendiente, −2, es negativa' },
     { titulo:'no está despejada', enun:M('3x + y − 5 = 0'),
       grafica:{ a:[-3, 1], b:[5, 1], xs:[0, 1, 2] },
       pasos:[
-        `Despejo ${M('y')}: resto ${M('3x')} y sumo 5 a los dos miembros. ${M(`3x + y − 5 ${N('− 3x + 5')} = 0 ${N('− 3x + 5')}`)}`,
-        `Queda ${M('y = −3x + 5')}. Con ${M('x = 0')}: <b>(0, 5)</b>. Con ${M('x = 1')}: ${M(`y = −3 · ${N('1')} + 5 = 2`)}, <b>(1, 2)</b>.`,
-        `Control con ${M('x = 2')}: ${M(`y = −3 · ${N('2')} + 5 = −1`)}. Punto (2, −1).`,
+        `Despejo ${M('y')}: resto ${M('3x')} y sumo 5 a los dos miembros.${A(`3x + y − 5 ${N('− 3x + 5')} = 0 ${N('− 3x + 5')}`, 'y = −3x + 5')}`,
+        `Elijo ${M('x = 0')}:${A(`y = −3 · ${N('0')} + 5`, ' = 5')}Punto <b>(0, 5)</b>.`,
+        `Elijo ${M('x = 1')}:${A(`y = −3 · ${N('1')} + 5`, ' = 2')}Punto <b>(1, 2)</b>.`,
+        `Control con ${M('x = 2')}:${A(`y = −3 · ${N('2')} + 5`, ' = −1')}Punto (2, −1).`,
       ], final:'la recta de <span class="ec"><i>y</i> = −3<i>x</i> + 5</span>, que baja de a 3' },
     { titulo:'al despejar queda una fracción', enun:M('2x + 3y − 6 = 0'),
       grafica:{ a:[-2, 3], b:[2, 1], xs:[0, 3, 6] },
       pasos:[
-        `Despejo: ${M(`2x + 3y − 6 ${N('− 2x + 6')} = 0 ${N('− 2x + 6')}`)}, queda ${M('3y = −2x + 6')}`,
-        `Divido por 3: <span class="ec"><i>y</i> = −${Q('2','3')}<i>x</i> + 2</span>`,
-        `Como hay tercios, elijo ${M('x')} múltiplos de 3. ${M('x = 0')}: <b>(0, 2)</b>. ${M('x = 3')}: <b>(3, 0)</b>.`,
-        `Control con ${M('x = 6')}: ${M('y = −2')}. Punto <b>(6, −2)</b>.`,
+        `Despejo ${M('3y')}:${A(`2x + 3y − 6 ${N('− 2x + 6')} = 0 ${N('− 2x + 6')}`, '3y = −2x + 6')}`,
+        `Divido los dos miembros por 3:${A(`y = −${Q('2','3')}x + 2`)}`,
+        `Como hay tercios, elijo ${M('x')} múltiplos de 3. Con ${M('x = 0')}: <b>(0, 2)</b>. Con ${M('x = 3')}: <b>(3, 0)</b>.`,
+        `Control con ${M('x = 6')}:${A(`y = −${Q('2','3')} · ${N('6')} + 2`, ' = −2')}Punto <b>(6, −2)</b>.`,
       ], final:'elegir bien la <i>x</i> ahorra las fracciones' },
   ],
   taller:'lab-grafica',
@@ -545,38 +563,36 @@ const TEMAS = [
   ejemplos:[
     { titulo:'la forma ax = b, con fracción', enun:`<span class="ec">${Q('x','4')} = 3</span>`,
       pasos:[
-        `Multiplico los dos miembros por 4: <span class="ec">${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 3</span>`,
-        `El 4 se simplifica con el denominador: ${M('x = 12')}.`,
-        'Control: 12 : 4 = 3 ✓',
+        `Multiplico los dos miembros por 4:${A(`${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 3`)}`,
+        `El 4 se simplifica con el denominador:${A('x = 4 · 3')}`,
+        `Control:${A('12 : 4 = 3 ✓')}`,
       ], final:'<i>x</i> = 12' },
     { titulo:'agrego un término: ax + b = c', enun:`<span class="ec">${Q('x','2')} ${N('+ ' + Q('1','3'))} = ${Q('5','6')}</span>`,
       pasos:[
         'El m.c.m. de 2, 3 y 6 es 6.',
-        `Multiplico cada término por 6: <span class="ec">${N('6 ·')} ${Q('x','2')} + ${N('6 ·')} ${Q('1','3')} = ${N('6 ·')} ${Q('5','6')}</span>`,
-        `Queda ${M('3x + 2 = 5')}. Resto 2: ${M(`3x + 2 ${N('− 2')} = 5 ${N('− 2')}`)}, o sea ${M('3x = 3')}.`,
-        `Divido por 3. Control: <span class="ec">${Q('1','2')} + ${Q('1','3')} = ${Q('3','6')} + ${Q('2','6')} = ${Q('5','6')}</span> ✓`,
+        `Multiplico cada término por 6:${A(`${N('6 ·')} ${Q('x','2')} + ${N('6 ·')} ${Q('1','3')} = ${N('6 ·')} ${Q('5','6')}`, '3x + 2 = 5')}`,
+        `Resto 2:${A(`3x + 2 ${N('− 2')} = 5 ${N('− 2')}`, '3x = 3')}`,
+        `Divido por 3. Control:${A(`${Q('1','2')} + ${Q('1','3')} = ${Q('3','6')} + ${Q('2','6')}`, ` = ${Q('5','6')} ✓`)}`,
       ], final:'<i>x</i> = 1' },
     { titulo:'la x en los dos miembros', enun:`<span class="ec">${Q('3','4')}<i>x</i> − 1 = ${N(Q('x','2') + ' +')} 1</span>`,
       pasos:[
         'El m.c.m. de 4 y 2 es 4. Multiplico todo por 4, también el −1 y el +1.',
-        `<span class="ec">${N('4 ·')} ${Q('3','4')}<i>x</i> − ${N('4 ·')} 1 = ${N('4 ·')} ${Q('x','2')} + ${N('4 ·')} 1</span>`,
-        `Queda ${M('3x − 4 = 2x + 4')}. Resto ${M('2x')} y sumo 4: ${M(`3x − 4 ${N('− 2x + 4')} = 2x + 4 ${N('− 2x + 4')}`)}`,
-        `Control: <span class="ec">${Q('3','4')} · 8 − 1 = 5</span> y <span class="ec">${Q('8','2')} + 1 = 5</span> ✓`,
+        `Cada término por 4:${A(`${N('4 ·')} ${Q('3','4')}x − ${N('4 ·')} 1 = ${N('4 ·')} ${Q('x','2')} + ${N('4 ·')} 1`, '3x − 4 = 2x + 4')}`,
+        `Resto ${M('2x')} y sumo 4:${A(`3x − 4 ${N('− 2x + 4')} = 2x + 4 ${N('− 2x + 4')}`)}`,
+        `Control:${A(['izquierda', `${Q('3','4')} · 8 − 1 = 5`], ['derecha', `${Q('8','2')} + 1 = 5 ✓`])}`,
       ], final:'<i>x</i> = 8' },
     { titulo:'los numeradores tienen dos términos', enun:`<span class="ec">${Q('x + 1','2')} − ${Q('x − 3','5')} = 2</span>`,
       pasos:[
         'm.c.m. de 2 y 5: 10. Multiplico todo por 10.',
-        `<span class="ec">${N('10 ·')} ${Q('x + 1','2')} − ${N('10 ·')} ${Q('x − 3','5')} = ${N('10 ·')} 2</span>`,
-        `10 : 2 = 5 y 10 : 5 = 2, y los numeradores van entre paréntesis: ${M('5(x + 1) − 2(x − 3) = 20')}`,
-        `Reparto con cuidado el menos: ${M(`5x + 5 − 2x ${N('+ 6')} = 20`)}, o sea ${M('3x + 11 = 20')}`,
-        `Resto 11: ${M('3x = 9')}. Divido por 3: ${M(`3x ${N(': 3')} = 9 ${N(': 3')}`)}`,
+        `Como 10 : 2 = 5 y 10 : 5 = 2, los numeradores quedan entre paréntesis:${A(`${N('10 ·')} ${Q('x + 1','2')} − ${N('10 ·')} ${Q('x − 3','5')} = ${N('10 ·')} 2`, '5(x + 1) − 2(x − 3) = 20')}`,
+        `Reparto con cuidado el menos:${A(`5x + 5 − 2x ${N('+ 6')} = 20`, '3x + 11 = 20')}`,
+        `Resto 11:${A(`3x + 11 ${N('− 11')} = 20 ${N('− 11')}`, '3x = 9')}Divido por 3.`,
       ], final:'<i>x</i> = 3' },
     { titulo:'fracción en los dos miembros, y la respuesta no es entera', enun:`<span class="ec">${Q('2x − 1','3')} = ${Q('x + 4','4')}</span>`,
       pasos:[
         'm.c.m. de 3 y 4: 12. Multiplico los dos miembros por 12.',
-        `<span class="ec">${N('12 ·')} ${Q('2x − 1','3')} = ${N('12 ·')} ${Q('x + 4','4')}</span>`,
-        `12 : 3 = 4 y 12 : 4 = 3: ${M('4(2x − 1) = 3(x + 4)')}, o sea ${M('8x − 4 = 3x + 12')}`,
-        `Resto ${M('3x')} y sumo 4: ${M(`8x − 4 ${N('− 3x + 4')} = 3x + 12 ${N('− 3x + 4')}`)}, queda ${M('5x = 16')}`,
+        `Como 12 : 3 = 4 y 12 : 4 = 3:${A(`${N('12 ·')} ${Q('2x − 1','3')} = ${N('12 ·')} ${Q('x + 4','4')}`, '4(2x − 1) = 3(x + 4)', '8x − 4 = 3x + 12')}`,
+        `Resto ${M('3x')} y sumo 4:${A(`8x − 4 ${N('− 3x + 4')} = 3x + 12 ${N('− 3x + 4')}`, '5x = 16')}`,
         'Divido por 5. No da entero, y está bien: la respuesta es una fracción.',
       ], final:'<i>x</i> = 16/5' },
   ],
@@ -624,25 +640,25 @@ const TEMAS = [
       pasos:[
         `"Un número" es ${M('x')}.`,
         `"El triple" es multiplicar por 3: ${M('3 · x')}.`,
-        `Control con ${M('x = 10')}: ${M(`3 · ${N('10')} = 30`)}.`,
+        `Control con ${M('x = 10')}:${A(`3 · ${N('10')} = 30`)}`,
       ], final:'3<i>x</i>' },
     { titulo:'agrego "menos 4"', enun:`«el triple de un número, ${N('menos 4')}»`, prosa:true,
       pasos:[
         `Primero el triple: ${M('3x')}.`,
         `Después, a eso, le resto 4: ${M(`3x ${N('− 4')}`)}.`,
-        `Control con ${M('x = 10')}: ${M(`3 · ${N('10')} − 4 = 26`)}.`,
+        `Control con ${M('x = 10')}:${A(`3 · ${N('10')} − 4 = 26`)}`,
       ], final:'3<i>x</i> − 4' },
     { titulo:'cambio el orden: "de la diferencia"', enun:`«el triple de ${N('la diferencia entre')} un número y 4»`, prosa:true,
       pasos:[
         `Primero la diferencia: ${M('x − 4')}.`,
         `Después el triple de todo eso, que va entre paréntesis: ${M(`3${N('(')}x − 4${N(')')}`)}.`,
-        `Control con ${M('x = 10')}: ${M(`3(${N('10')} − 4) = 18`)}, no 26. No es lo mismo que el ejemplo anterior.`,
+        `Control con ${M('x = 10')}:${A(`3(${N('10')} − 4) = 18`)}No da 26: no es lo mismo que el ejemplo anterior.`,
       ], final:'3(<i>x</i> − 4)' },
     { titulo:'cambio "triple" por "tercera parte"', enun:`«${N('la tercera parte')} de un número, menos 4»`, prosa:true,
       pasos:[
         `La tercera parte de ${M('x')} es <span class="ec">${Q('x','3')}</span>.`,
         `Le resto 4: <span class="ec">${Q('x','3')} ${N('− 4')}</span>.`,
-        `Control con ${M('x = 10')}: <span class="ec">${Q(N('10'),'3')} − 4</span> = −2/3. Una fracción negativa, y está bien.`,
+        `Control con ${M('x = 10')}:${A(`${Q(N('10'),'3')} − 4 = −2/3`)}Una fracción negativa, y está bien.`,
       ], final:`<span class="ec">${Q('x','3')} − 4</span>` },
     { titulo:'al revés: de letras a palabras', enun:M('x + (x + 1)'),
       pasos:[
@@ -693,42 +709,41 @@ const TEMAS = [
     { titulo:'una compra', prosa:true,
       enun:'«Compré 3 cuadernos iguales y una regla de ₲ 8000. Pagué ₲ 47 000 en total. ¿Cuánto costó cada cuaderno?»',
       pasos:[
-        `${M('x')} = el precio de un cuaderno, en guaraníes.`,
-        `Tres cuadernos más la regla: ${M('3x + 8000 = 47 000')}`,
-        `Resto 8000: ${M(`3x + 8000 ${N('− 8000')} = 47 000 ${N('− 8000')}`)}, queda ${M('3x = 39 000')}`,
-        `Divido por 3: ${M(`3x ${N(': 3')} = 39 000 ${N(': 3')}`)}`,
-        'Control en el enunciado: 3 · 13 000 + 8000 = 47 000 ✓',
+        `${M('x')} es el precio de un cuaderno, en guaraníes.`,
+        `Tres cuadernos más la regla:${A('3x + 8000 = 47 000')}`,
+        `Resto 8000:${A(`3x + 8000 ${N('− 8000')} = 47 000 ${N('− 8000')}`, '3x = 39 000')}`,
+        `Divido por 3:${A(`3x ${N(': 3')} = 39 000 ${N(': 3')}`, 'x = 13 000')}`,
+        `Control en el enunciado:${A('3 · 13 000 + 8000 = 47 000 ✓')}`,
       ], final:'cada cuaderno costó ₲ 13 000' },
     { titulo:'tres números que se siguen', prosa:true,
       enun:'«Tres números consecutivos suman 51. ¿Cuáles son?»',
       pasos:[
-        `${M('x')} = el menor. Los otros dos son ${M('x + 1')} y ${M('x + 2')}.`,
-        `${M('x + (x + 1) + (x + 2) = 51')}, o sea ${M('3x + 3 = 51')}`,
-        `Resto 3: ${M(`3x + 3 ${N('− 3')} = 51 ${N('− 3')}`)}. Divido por 3: ${M(`3x ${N(': 3')} = 48 ${N(': 3')}`)}`,
-        'Control: 16 + 17 + 18 = 51 ✓',
+        `${M('x')} es el menor. Los otros dos son ${M('x + 1')} y ${M('x + 2')}.`,
+        `Los tres suman 51:${A('x + (x + 1) + (x + 2) = 51', '3x + 3 = 51')}`,
+        `Resto 3 y divido por 3:${A(`3x + 3 ${N('− 3')} = 51 ${N('− 3')}`, '3x = 48', 'x = 16')}`,
+        `Control:${A('16 + 17 + 18 = 51 ✓')}`,
       ], final:'los números son 16, 17 y 18' },
     { titulo:'una figura', prosa:true,
       enun:'«El largo de un rectángulo supera en 4 m al ancho, y el perímetro mide 52 m. ¿Cuánto mide cada lado?»',
       pasos:[
-        `${M('x')} = el ancho, en metros. El largo, que depende del ancho, es ${M('x + 4')}.`,
-        `El perímetro son los cuatro lados: ${M('2x + 2(x + 4) = 52')}, o sea ${M('4x + 8 = 52')}`,
-        `Resto 8: ${M(`4x + 8 ${N('− 8')} = 52 ${N('− 8')}`)}. Divido por 4: ${M(`4x ${N(': 4')} = 44 ${N(': 4')}`)}`,
-        'Control en el enunciado: 15 supera en 4 a 11, y 2 · (11 + 15) = 52 ✓',
+        `${M('x')} es el ancho, en metros. El largo, que depende del ancho, es ${M('x + 4')}.`,
+        `El perímetro son los cuatro lados:${A('2x + 2(x + 4) = 52', '4x + 8 = 52')}`,
+        `Resto 8 y divido por 4:${A(`4x + 8 ${N('− 8')} = 52 ${N('− 8')}`, '4x = 44', 'x = 11')}`,
+        `Control en el enunciado: 15 supera en 4 a 11, y el perímetro da${A('2 · (11 + 15) = 52 ✓')}`,
       ], final:'el ancho mide 11 m y el largo 15 m' },
     { titulo:'una parte de un número', prosa:true,
       enun:'«La diferencia entre un número y su cuarta parte es 18. ¿Cuál es el número?»',
       pasos:[
-        `${M('x')} = el número. Su cuarta parte es <span class="ec">${Q('x','4')}</span>.`,
-        `<span class="ec"><i>x</i> − ${Q('x','4')} = 18</span>. Multiplico todo por 4: <span class="ec">${N('4 ·')} <i>x</i> − ${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 18</span>`,
-        `Queda ${M('4x − x = 72')}, o sea ${M('3x = 72')}. Divido por 3.`,
-        'Control: la cuarta parte de 24 es 6, y 24 − 6 = 18 ✓',
+        `${M('x')} es el número. Su cuarta parte es <span class="ec">${Q('x','4')}</span>, así que:${A(`x − ${Q('x','4')} = 18`)}`,
+        `Multiplico todo por 4:${A(`${N('4 ·')} x − ${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 18`, '4x − x = 72', '3x = 72')}Divido por 3.`,
+        `Control: la cuarta parte de 24 es 6, y${A('24 − 6 = 18 ✓')}`,
       ], final:'el número es 24' },
     { titulo:'edades, hacia atrás y hacia adelante', prosa:true,
       enun:'«Dentro de 4 años, Sofía va a tener el triple de la edad que tenía hace 4 años. ¿Cuántos años tiene?»',
       pasos:[
-        `${M('x')} = la edad de Sofía hoy. Dentro de 4 años: ${M('x + 4')}. Hace 4 años: ${M('x − 4')}.`,
-        `${M('x + 4 = 3(x − 4)')}, o sea ${M('x + 4 = 3x − 12')}`,
-        `Resto ${M('x')} y sumo 12: ${M(`x + 4 ${N('− x + 12')} = 3x − 12 ${N('− x + 12')}`)}, queda ${M('16 = 2x')}`,
+        `${M('x')} es la edad de Sofía hoy. Dentro de 4 años tiene ${M('x + 4')}; hace 4 años tenía ${M('x − 4')}.`,
+        `Lo de dentro de 4 es el triple de lo de hace 4:${A('x + 4 = 3(x − 4)', 'x + 4 = 3x − 12')}`,
+        `Resto ${M('x')} y sumo 12:${A(`x + 4 ${N('− x + 12')} = 3x − 12 ${N('− x + 12')}`, '16 = 2x')}Divido por 2.`,
         'Control: hace 4 años tenía 4; dentro de 4 va a tener 12, que es el triple de 4 ✓',
       ], final:'Sofía tiene 8 años' },
   ],
@@ -761,11 +776,11 @@ const DESAFIO = {
   titulo:'El epitafio de Diofanto',
   enun:'«Diofanto pasó la sexta parte de su vida de niño y la doceava parte de joven. Pasó una séptima parte más y se casó. Cinco años después nació su hijo, que vivió la mitad de lo que vivió su padre. Diofanto murió cuatro años después que su hijo. ¿Cuántos años vivió?»',
   pasos:[
-    `${M('x')} = los años que vivió Diofanto.`,
-    `Todas las etapas suman la vida entera: <span class="ec">${Q('x','6')} + ${Q('x','12')} + ${Q('x','7')} + 5 + ${Q('x','2')} + 4 = <i>x</i></span>`,
-    `El m.c.m. de 6, 12, 7 y 2 es 84. Multiplico cada término por ${N('84')}: ${M('14x + 7x + 12x + 420 + 42x + 336 = 84x')}`,
-    `Reduzco: ${M('75x + 756 = 84x')}. Resto ${M('75x')}: ${M(`756 = 84x ${N('− 75x')}`)}, o sea ${M('756 = 9x')}`,
-    'Control: 14 + 7 + 12 + 5 + 42 + 4 = 84 ✓',
+    `${M('x')} es la cantidad de años que vivió Diofanto.`,
+    `Todas las etapas suman la vida entera:${A(`${Q('x','6')} + ${Q('x','12')} + ${Q('x','7')} + 5 + ${Q('x','2')} + 4 = x`)}`,
+    `El m.c.m. de 6, 12, 7 y 2 es 84. Multiplico cada término por ${N('84')}:${A('14x + 7x + 12x + 420 + 42x + 336 = 84x', '75x + 756 = 84x')}`,
+    `Resto ${M('75x')}:${A(`75x + 756 ${N('− 75x')} = 84x ${N('− 75x')}`, '756 = 9x')}Divido por 9.`,
+    `Control:${A('14 + 7 + 12 + 5 + 42 + 4 = 84 ✓')}`,
   ],
   final:'Diofanto vivió 84 años',
   preguntas:[
@@ -785,10 +800,10 @@ const DESAFIO = {
 const PREGUNTA_INICIAL = {
   enun:'«Para el reciclaje juntamos tapitas: 3 bolsas iguales y 12 sueltas, 147 en total. ¿Cuántas tapitas trae cada bolsa?»',
   pasos:[
-    `${M('x')} = las tapitas de una bolsa.`,
-    `${M('3x + 12 = 147')}. Resto 12: ${M(`3x + 12 ${N('− 12')} = 147 ${N('− 12')}`)}, queda ${M('3x = 135')}`,
-    `Divido por 3: ${M(`3x ${N(': 3')} = 135 ${N(': 3')}`)}`,
-    'Control: 3 · 45 + 12 = 147 ✓',
+    `${M('x')} es la cantidad de tapitas de una bolsa.`,
+    `Tres bolsas y 12 sueltas son 147. Resto 12:${A('3x + 12 = 147', `3x + 12 ${N('− 12')} = 147 ${N('− 12')}`, '3x = 135')}`,
+    `Divido por 3:${A(`3x ${N(': 3')} = 135 ${N(': 3')}`, 'x = 45')}`,
+    `Control:${A('3 · 45 + 12 = 147 ✓')}`,
   ],
   final:'cada bolsa trae 45 tapitas'
 };
@@ -831,7 +846,7 @@ function caja(c){
 function navPasos(clave, total){
   return `<div class="pasos-nav" data-nav="${clave}">
       <button class="boton" type="button" data-accion="atras" data-bloque="${clave}" disabled>← Anterior</button>
-      <span class="pasos-cuenta">0 / ${total}</span>
+      <span class="pasos-cuenta">${total} pasos</span>
       <button class="boton" type="button" data-accion="revelar" data-bloque="${clave}">Siguiente →</button>
     </div>`;
 }
@@ -936,7 +951,7 @@ function actualizaNav(clave){
   const nav = document.querySelector(`[data-nav="${clave}"]`);
   nav.querySelector('[data-accion="atras"]').disabled = (i === 0);
   nav.querySelector('[data-accion="revelar"]').disabled = (i >= total);
-  nav.querySelector('.pasos-cuenta').textContent = `${i} / ${total}`;
+  nav.querySelector('.pasos-cuenta').textContent = i ? `paso ${i} de ${total}` : `${total} pasos`;
 }
 
 function siguientePaso(clave){
@@ -948,7 +963,7 @@ function siguientePaso(clave){
   if (ultimo) li.className = 'final';
   li.innerHTML = ultimo
     ? `<span class="n">=</span><span class="t final-txt">${ej.final}</span>`
-    : `<span class="n">${i + 1}</span><span class="t">${ej.pasos[i]}</span>`;
+    : `<span class="n">${i + 1}</span><div class="t">${ej.pasos[i]}</div>`;
   document.getElementById('pasos-' + clave).appendChild(li);
   avance[clave] = i + 1;
   if (ultimo && ej.grafica) muestraGrafica(clave, ej.grafica);

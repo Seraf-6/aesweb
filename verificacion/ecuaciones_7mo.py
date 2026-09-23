@@ -431,6 +431,14 @@ def verifica_pagina():
     for pieza in ('assets/clase.js', 'window.CLASE', 'data-tema='):
         if pieza not in cuerpo:
             mal(f'falta «{pieza}»: sin eso no hay botones de notas ni de observador')
+    # cuando una cuenta sigue, sigue en el renglón de abajo (A()), con los =
+    # alineados: nunca dos igualdades encadenadas con "o sea", "queda" o un punto
+    for encadenado in ('o sea ${M(', 'queda ${M(', 'Queda ${M('):
+        if encadenado in cuerpo:
+            mal(f'hay cuentas encadenadas en un mismo renglón («{encadenado}»): van en un A()')
+    if 'function A(' not in cuerpo:
+        mal('falta A(), el que alinea las cuentas')
+
     # cada paso se puede recorrer para atrás
     if 'data-accion="atras"' not in cuerpo:
         mal('los ejemplos no tienen botón para volver un paso')

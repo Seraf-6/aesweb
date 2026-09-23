@@ -39,6 +39,7 @@ fichas/
   index.html                listado                      ← lo genera build.py
   pdf/<grado>/Ficha_NN.pdf  los archivos
 omapa/index.html            módulo de olimpiada          ← lo genera build.py
+progreso/index.html         progreso del tramo           ← escrita a mano
 assets/
   base.css                  colores, tipografía, notación, panel de proyección
   clase.css                 los componentes de las páginas de clase
@@ -147,6 +148,23 @@ Es un color con fondo, porque el proyector lava los colores y el fondo no.
 antes de resolverla (`6x − 5 + 5 = 25 + 5`, y recién después `6x = 30`),
 igual que en la balanza.
 
+**Cuando una cuenta sigue, sigue en el renglón de abajo, con los `=`
+alineados**, como en el cuaderno:
+
+```
+Reemplazo x por 1:
+    3(1 + 2) = 3 · 1 + 6
+           9 = 9
+```
+
+Nunca se encadenan dos igualdades en el mismo renglón con un punto, una
+coma, "o sea" o "queda": el punto se confunde con el de multiplicar y la
+cadena no se lee. En el guion de la página eso lo hace `A()`: cada
+argumento es una igualdad, una continuación (`' = −1'`) o un par
+`['izquierda', '3(1 + 2) = 9']` para cuando se calcula cada miembro por
+separado. Si los dos miembros no coinciden se usa `≠`, nunca un `=` falso.
+El verificador rechaza la página si encuentra una cadena en un renglón.
+
 **La notación es la del libro.** `·` para multiplicar, `:` para dividir,
 fracciones apiladas (`Q(numerador, denominador)` en el guion de la página) y
 `₲` para los guaraníes. Los contextos, locales: tapitas para reciclar,
@@ -228,6 +246,36 @@ guardado en `localStorage` de esa computadora.
 **El valor por defecto es el fondo crema.** No es capricho: se probó proyectando
 sobre la pizarra blanca del aula y es el que mejor aguanta el tinte verdoso del
 proyector. No cambiarlo sin volver a probar en el aula.
+
+---
+
+## El módulo de progreso
+
+`progreso/index.html` es una herramienta del docente para el tramo final
+del año, con tres pestañas:
+
+- **Calibrar**: cuántos puntos tiene el tramo (clases, fichas, proyectos) y
+  dónde cae cada nota según la escala del MEC. Una tabla de perfiles de
+  alumno controla la calibración: si el que viene a todas las clases y
+  entrega todas las fichas no llega al 2, avisa. Los valores viajan en la
+  dirección de la página, así que se guardan copiando el enlace.
+- **Para dictar**: las reglas y los cuatro números que van al cuaderno.
+- **La carrera**: se pegan del Excel dos columnas —nombre y puntos— y se
+  proyecta una carrera con las líneas de cada nota. Hay modos para no
+  mostrar nombres completos (iniciales, códigos).
+
+**Los nombres de los alumnos no salen de la computadora**: se pegan, se
+dibujan y se pierden al cerrar. No viajan en la dirección, no se guardan en
+el navegador y la página no hace ningún pedido de red. Se escriben como
+texto, nunca como HTML. El verificador controla las tres cosas.
+
+Usa `base.css`, el panel de Proyección y el timer como el resto del sitio:
+el contraste y la cuadrícula se eligen desde Proyección, con el crema medido
+en el aula. Es una página escrita a mano, como las de clase: `build.py` no la
+toca, solo la enlaza desde la portada.
+
+Las cuentas se verifican con `verificacion/progreso.py`, que lee los valores
+sugeridos de la página y recalcula todo en Python con enteros.
 
 ---
 

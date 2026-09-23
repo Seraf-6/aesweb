@@ -489,3 +489,29 @@ body[data-libre="izq"] .cls-panel{width:max(280px, calc(var(--libre) - 28px)); r
    de la pantalla, y clase.js no puede saber si se está mirando ella o la
    anterior (con la página al fondo, las dos quedan en el mismo lugar). */
 .creditos{padding-bottom:55vh}
+
+/* ═══════════════════════════════════════════════════════════════
+   Cuentas alineadas: A() en el guion de la página
+   Cuando una cuenta sigue, sigue en el renglón de abajo, y los signos =
+   quedan en la misma columna, como en el cuaderno:
+
+        3(1 + 2) = 3 · 1 + 6
+               9 = 9
+
+   Nunca se encadenan dos igualdades con un punto o una coma en el
+   mismo renglón. Una columna opcional a la izquierda lleva un rótulo
+   ("izquierda", "derecha") para cuando se calcula cada miembro aparte.
+   ═══════════════════════════════════════════════════════════════ */
+.alineado{
+  display:grid; grid-template-columns:repeat(4, max-content); justify-content:start;
+  row-gap:.12em; margin:.35em 0 .15em .2em;
+  font-family:var(--serif); font-size:1.08em; line-height:1.45; overflow-x:auto}
+.alineado i{font-style:italic}
+.al-rot{
+  font-family:var(--sans); font-size:.78em; color:var(--lapiz);
+  padding-right:.7em; align-self:center}
+.al-rot:empty{padding:0}
+.al-izq{text-align:right; white-space:nowrap}
+.al-sig{padding:0 .32em; text-align:center}
+.al-der{white-space:nowrap}
+body[data-solo="1"] .alineado{font-size:1.2em}
