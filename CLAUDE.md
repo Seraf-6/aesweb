@@ -31,6 +31,8 @@ index.html                  portada
 matematica/
   index.html                los tres grados
   7mo|8vo|9no/index.html    las unidades de cada grado   ← los genera build.py
+  7mo/ecuaciones.html       diapositivas                 ← escritas a mano
+  7mo/poligonos.html        diapositivas                 ← escritas a mano
   8vo/factoreo.html         diapositivas                 ← escritas a mano
   8vo/sistemas.html         diapositivas                 ← escritas a mano
 fichas/
@@ -39,6 +41,7 @@ fichas/
 omapa/index.html            módulo de olimpiada          ← lo genera build.py
 assets/
   base.css                  colores, tipografía, notación, panel de proyección
+  clase.css                 los componentes de las páginas de clase
   sitio.css                 navegación y portadas
   proyeccion.js             el panel de proyección
   timer.js                  el timer de pantalla completa, con música generada
@@ -77,6 +80,10 @@ correrlo.
 
 Falta el de `factoreo.html` y el de `sistemas.html`: son anteriores a esta
 carpeta.
+
+Las páginas de clase enlazan `assets/clase.css`, que tiene los componentes
+compartidos (la tapa, la ficha de cada paso, el enunciado, los ganchos, los
+laboratorios). En su `<style>` propio va solo lo que es de esa página.
 
 ---
 
@@ -223,9 +230,10 @@ las páginas de clase.
 ## Estado actual
 
 Hecho: portada, índices de los tres grados, listado de fichas con 26 PDF,
-las diapositivas de ecuaciones lineales de 7.º,
-dos juegos de diapositivas de 8.º (factoreo y sistemas), el panel de proyección.
+las diapositivas de 7.º (ecuaciones lineales y polígonos), las dos de 8.º
+(factoreo y sistemas), el panel de proyección y el timer de aula.
 
 Pendiente: el proyecto de estadística compartido por los tres grados (falta
-definir el tema), diapositivas de Pitágoras para 7.º, de cuerpos geométricos
-para 9.º, de la parábola para 9.º, y todo el contenido de OMAPA.
+definir el tema), las diapositivas de cuerpos geométricos y de la parábola
+para 9.º, el material de circunferencia de 8.º, la ficha de sistemas de 8.º
+y todo el contenido de OMAPA.

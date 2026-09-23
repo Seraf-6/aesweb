@@ -1,0 +1,300 @@
+/* ═══════════════════════════════════════════════════════════════
+   AESWeb · componentes de las páginas de clase
+
+   Lo que comparten las diapositivas: la tapa con su cita, el navegador
+   de pasos, la ficha de cada paso, el enunciado, los recuadros de
+   gancho, los laboratorios y el lienzo de las figuras.
+
+   Una página de clase enlaza base.css, sitio.css y esta, y agrega en un
+   <style> propio solo lo que sea de ella.
+   ═══════════════════════════════════════════════════════════════ */
+/* ---------- encabezado ---------- */
+.tapa{padding-block:44px 28px}
+.sello{
+  font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--rojo); margin:0 0 14px
+}
+h1{
+  font-family:var(--serif); font-weight:800; font-size:clamp(2.4rem,7vw,4rem);
+  line-height:1.02; margin:0 0 16px; text-wrap:balance; letter-spacing:-.015em;
+}
+.bajada{
+  font-family:var(--serif); font-style:italic; font-size:clamp(1.15rem,2.8vw,1.5rem);
+  color:var(--tinta); max-width:30em; margin:0 0 20px; line-height:1.4;
+}
+.bajada .firma{
+  display:block; font-style:normal; font-family:var(--mono); font-size:11.5px;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--lapiz); margin-top:9px;
+}
+.pie-tapa{
+  font-size:14px; color:var(--lapiz);
+  border-top:1px solid var(--linea-fuerte); padding-top:12px;
+  display:flex; flex-wrap:wrap; gap:6px 18px;
+}
+
+/* ---------- navegador ---------- */
+.nav{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+  background:var(--papel); border-bottom:1px solid var(--linea-fuerte);
+  margin-inline:-20px; padding-inline:20px;
+}
+.nav-int{display:flex; gap:6px; overflow-x:auto; padding-block:9px; scrollbar-width:thin}
+.chip{
+  flex:0 0 auto; font-family:var(--mono); font-size:12px; font-weight:600;
+  border:1px solid var(--linea-fuerte); background:var(--papel-2); color:var(--lapiz);
+  border-radius:3px; padding:5px 9px; cursor:pointer; text-decoration:none;
+  white-space:nowrap; transition:color .12s,border-color .12s;
+}
+.chip:hover,.chip:focus-visible{color:var(--rojo); border-color:var(--rojo)}
+
+/* ---------- texto corriente ---------- */
+h2{
+  font-family:var(--serif); font-weight:800; font-size:clamp(1.5rem,4vw,2rem);
+  margin:0 0 6px; line-height:1.15; text-wrap:balance;
+}
+.intro{padding-block:26px 34px; border-bottom:2px solid var(--tinta)}
+
+/* ---------- ficha de paso ---------- */
+.caso{
+  padding-block:34px; border-bottom:1px solid var(--linea-fuerte);
+  scroll-margin-top:72px;
+}
+.caso-cab{display:flex; gap:16px; align-items:flex-start; margin-bottom:16px}
+.numero{
+  flex:0 0 auto; font-family:var(--serif); font-weight:800; font-size:2.7rem;
+  line-height:.9; color:var(--rojo); font-variant-numeric:tabular-nums;
+  min-width:1.6em;
+}
+.caso-tit{flex:1 1 auto; min-width:0}
+.caso-tit h3{
+  font-family:var(--serif); font-weight:700; font-size:clamp(1.25rem,3.4vw,1.6rem);
+  margin:0 0 2px; line-height:1.15; text-wrap:balance;
+}
+.paginas{
+  font-family:var(--mono); font-size:11.5px; color:var(--lapiz);
+  letter-spacing:.04em; text-transform:uppercase;
+}
+
+/* ---------- matemática ---------- */
+.forma{
+  background:var(--papel-2); border-left:3px solid var(--tinta);
+  padding:13px 16px; margin:0 0 18px; overflow-x:auto;
+}
+.forma .ec{font-size:1.2em}
+.forma .rotulo{
+  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz); margin-bottom:5px;
+}
+
+/* ---------- ejemplo con pasos ---------- */
+.ejemplo{margin:0 0 18px}
+.ejemplo-cab{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:12px; flex-wrap:wrap; margin-bottom:9px;
+}
+.rotulo-chico{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz);
+}
+/* El ejercicio es lo que el alumno tiene que leer desde el fondo del aula:
+   nunca va como epígrafe. El rótulo se achica, el enunciado no.
+   Va en un <div> a propósito: base.css achica los <p> de un .caso en modo
+   clase, y como <p> el enunciado salía más chico que el texto corriente. */
+.enunciado{
+  margin:0 0 12px; padding:11px 14px;
+  background:var(--papel-2); border-left:3px solid var(--rojo);
+  font-size:1.5rem; line-height:1.35; overflow-x:auto;
+}
+.enunciado.frase{
+  font-family:var(--serif); font-style:italic; font-size:1.2rem;
+  white-space:normal; line-height:1.4;
+}
+
+/* ---------- series de cajitas ----------
+   Separar con · sería mala señal: acaban de aprender que ese punto
+   multiplica. Cada elemento va en su propia caja. */
+.serie{display:flex; flex-wrap:wrap; gap:10px; margin:0 0 18px}
+.caja{
+  flex:1 1 auto; min-width:min(100%,9em);
+  background:var(--papel); border:1px solid var(--linea-fuerte);
+  border-radius:4px; padding:10px 13px;
+}
+.caja .caja-rot{
+  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz); margin-bottom:5px;
+}
+.caja .ec{font-size:1.3em}
+.boton{
+  font-family:var(--sans); font-size:13px; font-weight:700;
+  background:none; border:1px solid var(--rojo); color:var(--rojo);
+  border-radius:3px; padding:4px 11px; cursor:pointer;
+  transition:background .12s,color .12s;
+}
+.boton:hover,.boton:focus-visible{background:var(--rojo); color:var(--papel)}
+.boton[disabled]{opacity:.35; cursor:default; background:none; color:var(--rojo)}
+.pasos{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px}
+.pasos li{
+  display:flex; gap:11px; align-items:baseline;
+  padding:7px 11px; background:var(--papel-2); border-radius:3px;
+  animation:entra .22s ease-out;
+}
+.pasos li .n{
+  font-family:var(--mono); font-size:11px; color:var(--lapiz);
+  flex:0 0 auto; padding-top:2px;
+}
+.pasos li .t{flex:1 1 auto; min-width:0; overflow-x:auto}
+.pasos li.final{background:var(--rojo-suave); font-weight:500}
+.pasos li.final .t .ec{color:var(--rojo); font-weight:700}
+@keyframes entra{from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){.pasos li{animation:none}}
+
+/* ---------- panel del gancho ---------- */
+.gancho{
+  background:var(--ambar-suave); border:1px solid var(--ambar-borde);
+  border-radius:4px; padding:15px 17px; margin-top:4px;
+}
+.gancho-tit{
+  font-family:var(--sans); font-weight:700; font-size:13px;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--ambar);
+  margin:0 0 7px; display:flex; align-items:center; gap:8px;
+}
+.gancho-tit::before{
+  content:""; width:16px; height:2px; background:var(--ambar); flex:0 0 auto;
+}
+.gancho p{margin:0 0 10px; max-width:60ch}
+.gancho p:last-child{margin-bottom:0}
+.cuenta{
+  font-family:var(--mono); font-size:15px; background:var(--papel);
+  border:1px solid var(--linea-fuerte); border-radius:3px;
+  padding:9px 12px; margin:10px 0; overflow-x:auto; white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.cuenta b{color:var(--rojo); font-weight:600}
+
+/* ---------- laboratorios ---------- */
+.lab{
+  background:var(--papel-2); border:1px solid var(--linea-fuerte);
+  border-radius:4px; padding:18px; margin:20px 0 0;
+}
+.lab h4{
+  font-family:var(--serif); font-weight:700; font-size:1.18rem; margin:0 0 4px;
+}
+.lab .sub{font-size:14px; color:var(--lapiz); margin:0 0 14px; max-width:58ch}
+.campos{display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:14px}
+.campo{display:flex; flex-direction:column; gap:4px}
+.campo label{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--lapiz);
+}
+.campo input{
+  font-family:var(--mono); font-size:16px; width:9ch;
+  background:var(--papel); color:var(--tinta);
+  border:1px solid var(--linea-fuerte); border-radius:3px; padding:7px 9px;
+}
+.campo input:focus-visible{outline:2px solid var(--rojo); outline-offset:1px; border-color:var(--rojo)}
+.salida{
+  font-family:var(--mono); font-size:15px; line-height:1.85;
+  background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:3px;
+  padding:12px 14px; overflow-x:auto; font-variant-numeric:tabular-nums;
+}
+.salida .dim{color:var(--lapiz)}
+.salida .ok{color:var(--rojo); font-weight:600}
+.salida .fila{white-space:nowrap}
+
+/* ---------- laboratorio de la balanza ---------- */
+.preset{
+  font-family:var(--mono); font-size:12px; font-weight:600;
+  background:var(--papel); border:1px solid var(--linea-fuerte); color:var(--lapiz);
+  border-radius:3px; padding:5px 10px; cursor:pointer;
+}
+.preset:hover,.preset:focus-visible{border-color:var(--rojo); color:var(--rojo)}
+.operaciones{display:flex; gap:6px; flex-wrap:wrap}
+.op{
+  font-family:var(--mono); font-size:17px; font-weight:600; line-height:1;
+  width:42px; height:40px; cursor:pointer;
+  background:var(--papel); color:var(--tinta);
+  border:1px solid var(--linea-fuerte); border-radius:3px;
+}
+.op[aria-pressed="true"]{background:var(--tinta); color:var(--papel); border-color:var(--tinta)}
+.op:focus-visible{outline:2px solid var(--rojo); outline-offset:2px}
+.historia{
+  list-style:none; margin:0 0 12px; padding:0;
+  display:flex; flex-direction:column; gap:4px;
+}
+.historia li{
+  display:flex; gap:12px; align-items:baseline; padding:6px 11px;
+  background:var(--papel); border:1px solid var(--linea); border-radius:3px;
+}
+.historia li .mov{
+  font-family:var(--mono); font-size:11.5px; color:var(--lapiz);
+  flex:0 0 auto; min-width:9em;
+}
+.historia li .ecu{flex:1 1 auto; min-width:0; overflow-x:auto; font-size:1.15em}
+.historia li.ahora{border-color:var(--tinta); background:var(--papel-2)}
+.historia li.ahora .ecu{font-weight:700}
+/* el movimiento escrito antes de resolverlo: no se saltea ningún paso */
+.historia li.crudo{border-style:dashed}
+.historia li.crudo .ecu{font-weight:400}
+.historia li .nuevo{color:var(--rojo); font-weight:700}
+.historia li{animation:aparece .3s ease-out}
+.historia li.crudo .nuevo{animation:late .5s ease-out}
+@keyframes aparece{from{opacity:0; transform:translateY(-5px)} to{opacity:1; transform:none}}
+@keyframes late{0%{opacity:0; transform:scale(.6)} 60%{transform:scale(1.18)} 100%{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .historia li,.historia li.crudo .nuevo{animation:none}
+}
+
+/* ---------- notas del docente ---------- */
+.notas{
+  margin-top:26px; padding:18px 20px;
+  border:1px dashed var(--linea-fuerte); border-radius:4px; background:var(--papel-2);
+}
+.notas h2{font-size:1.15rem; margin:0 0 8px}
+.notas p{margin:0 0 10px; max-width:62ch; font-size:15px}
+.notas p:last-child{margin-bottom:0}
+body[data-solo="1"] .notas{display:none}
+.veredicto{margin-top:12px}
+.veredicto p{margin:0; font-size:14.5px}
+
+/* ---------- lienzo ---------- */
+.lienzo{
+  background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:4px;
+  padding:8px; overflow:hidden; margin-bottom:14px;
+}
+.lienzo svg{display:block; width:100%; height:auto; max-width:100%}
+.grilla{stroke:var(--linea); stroke-width:1}
+.grilla-fuerte{stroke:var(--linea-fuerte); stroke-width:1}
+.eje{stroke:var(--tinta); stroke-width:1.6}
+.rotulo-eje{fill:var(--lapiz); font-family:'IBM Plex Mono',monospace; font-size:11px}
+.recta1{stroke:var(--r1); stroke-width:2.6; fill:none; stroke-linecap:round}
+.recta2{stroke:var(--r2); stroke-width:2.6; fill:none; stroke-linecap:round}
+.sol-halo{fill:var(--punto); opacity:.22}
+.sol-punto{fill:var(--punto); stroke:var(--papel); stroke-width:2}
+.sol-guia{stroke:var(--punto); stroke-width:1.2; stroke-dasharray:4 4; fill:none}
+.sol-texto{fill:var(--punto); font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600}
+
+/* ---------- cierre ---------- */
+.cierre{padding-block:38px 20px}
+.cierre .marco{
+  border:2px solid var(--tinta); padding:22px 24px; background:var(--papel);
+}
+.cierre h2{margin-bottom:10px}
+.cierre .prosa{max-width:58ch}
+.creditos{
+  padding-block:26px 46px; font-size:13.5px; color:var(--lapiz);
+  border-top:1px solid var(--linea-fuerte); margin-top:18px;
+}
+
+/* en proyección el enunciado crece con todo lo demás */
+body[data-solo="1"] .enunciado{font-size:1.7em}
+body[data-solo="1"] .enunciado.frase{font-size:1.25em}
+body[data-solo="1"] .caja .ec{font-size:1.45em}
+
+@media (max-width:520px){
+  body{font-size:16px}
+  .numero{font-size:2.1rem}
+  .enunciado{font-size:1.25rem}
+  .caso-cab{gap:11px}
+  .campo input{width:7.5ch}
+  .historia li{flex-wrap:wrap; gap:2px 12px}
+}

@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Todo se corta en triángulos · AESWeb</title>
+<meta name="description" content="La unidad fusionada de polígonos de 7.º en ocho pasos, con Pitágoras una sola vez y aplicado después a triángulos y a cuadriláteros.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- las figuras ---------- */
+.taller{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,240px);
+  gap:18px; align-items:start}
+@media (max-width:700px){.taller{grid-template-columns:minmax(0,1fr)}}
+.figura{fill:var(--acento2-suave); stroke:var(--acento2); stroke-width:2.5;
+  stroke-linejoin:round}
+.triangulado{fill:var(--acento-suave); stroke:var(--linea-fuerte); stroke-width:1}
+.diagonal{stroke:var(--acento); stroke-width:2; stroke-dasharray:6 5; fill:none}
+.vertice{fill:var(--acento2); stroke:var(--papel); stroke-width:1.5}
+.vertice.foco{fill:var(--acento); r:7}
+.rotulo{fill:var(--lapiz); font-family:'IBM Plex Mono',monospace; font-size:13px}
+.rotulo.dest{fill:var(--acento); font-weight:600}
+.cuad-a{fill:var(--acento2-suave); stroke:var(--acento2); stroke-width:2}
+.cuad-b{fill:var(--dest-suave); stroke:var(--dest); stroke-width:2}
+.cuad-c{fill:var(--acento-suave); stroke:var(--acento); stroke-width:2}
+.tri-recto{fill:var(--papel-2); stroke:var(--tinta); stroke-width:2.5}
+.escuadra{fill:none; stroke:var(--tinta); stroke-width:2}
+.varilla{stroke-width:9; stroke-linecap:round; fill:none}
+.varilla-1{stroke:var(--acento)}
+.varilla-2{stroke:var(--acento2)}
+.varilla-3{stroke:var(--dest)}
+.medida{stroke:var(--lapiz); stroke-width:1; stroke-dasharray:4 4}
+/* .ec no corta la línea: es para notación. Las palabras van con estas
+   clases, que sí cortan y no desbordan la pantalla del teléfono. */
+.caja-txt{font-family:var(--serif); font-size:1.15em; line-height:1.3}
+.forma-txt{font-family:var(--serif); font-size:1.2em; line-height:1.35}
+body[data-solo="1"] .caja-txt{font-size:1.35em}
+body[data-solo="1"] .forma-txt{font-size:1.45em}
+
+.cuentas{display:flex; flex-direction:column; gap:7px}
+.cuentas .dato{display:flex; justify-content:space-between; gap:10px;
+  border-bottom:1px solid var(--linea); padding-bottom:5px;
+  font-family:var(--mono); font-size:13.5px}
+.cuentas .dato b{font-weight:600; color:var(--acento); font-variant-numeric:tabular-nums}
+.cuentas .dato span{color:var(--lapiz)}
+body[data-solo="1"] .cuentas .dato{font-size:.85em}
+</style>
+</head>
+<body data-diapos=".intro, .caso, .cierre">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="index.html">7.º grado</a><span class="sep">/</span>
+      <span>Unidades 8 y 9 · págs. 152–192</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Matemática 7.º grado</p>
+    <h1>Todo se corta en triángulos</h1>
+    <p class="bajada">«No hay camino real hacia la geometría.»<span class="firma">Euclides
+      a Ptolomeo, según cuenta Proclo</span></p>
+    <div class="pie-tapa">
+      <span>Unidades 8 y 9 · páginas 152 a 192</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un paso">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro">
+    <div class="prosa">
+      <h2>El triángulo es la pieza</h2>
+      <p>En esta unidad hay muchas fórmulas: cuántas diagonales tiene un polígono, cuánto
+        suman sus ángulos, cuánto mide su área. Parecen seis cosas distintas para memorizar.
+        <b>Son una sola cosa mirada desde seis lugares</b>, y esa cosa es el triángulo.</p>
+      <p>Cualquier polígono se puede cortar en triángulos, y una vez cortado ya no hay nada
+        nuevo que aprender: la suma de sus ángulos es la de los triángulos que salieron, y su
+        área es la suma de esas áreas. El triángulo es la pieza más chica que no se puede
+        deformar, y por eso también es la que usan los puentes y los techos.</p>
+      <p>En el medio de la unidad aparece <b>Pitágoras</b>, que parece hablar de lados y en
+        realidad habla de áreas. Lo vamos a ver una sola vez, en el paso 5, y después lo
+        vamos a usar dos veces seguidas: en los triángulos y en los cuadriláteros.</p>
+      <p>Tocá <b>Siguiente paso</b> en cada ejemplo para verlo desarrollarse.</p>
+    </div>
+  </section>
+
+  <main id="pasos"></main>
+
+  <section class="cierre">
+    <div class="marco">
+      <h2>Pitágoras no es un teorema sobre cuadrados</h2>
+      <div class="prosa">
+        <p>Todo el mundo dibuja el teorema con tres cuadrados. Pero el cuadrado no tiene nada
+          de especial: es solo la figura más fácil de dibujar sobre un lado.</p>
+        <p>Probemos con <b>semicírculos</b>. En el triángulo de 3, 4 y 5, el semicírculo sobre
+          cada lado tiene área <span class="ec">π(<i>L</i>/2)<sup>2</sup>/2</span>:</p>
+        <div class="cuenta">9π/8 &nbsp;+&nbsp; 2π &nbsp;=&nbsp; <b>25π/8</b></div>
+        <p>Cierra. Probemos con <b>triángulos equiláteros</b>, cuya área es
+          <span class="ec">(√3/4)<i>L</i><sup>2</sup></span>:</p>
+        <div class="cuenta">9√3/4 &nbsp;+&nbsp; 4√3 &nbsp;=&nbsp; <b>25√3/4</b></div>
+        <p>También cierra. Y va a cerrar con <b>cualquier figura</b> que dibujes sobre los
+          tres lados, mientras sea la misma figura agrandada o achicada. ¿Por qué?</p>
+        <p>Porque el área de cualquier figura es <span class="ec"><i>k</i> · <i>L</i><sup>2</sup></span>:
+          un número fijo multiplicado por el lado al cuadrado. Para el cuadrado
+          <span class="ec"><i>k</i></span> = 1, para el semicírculo
+          <span class="ec"><i>k</i></span> = π/8, para el equilátero √3/4. Y si
+          <span class="ec"><i>a</i><sup>2</sup> + <i>b</i><sup>2</sup> = <i>c</i><sup>2</sup></span>,
+          multiplicar los tres por el mismo <span class="ec"><i>k</i></span> no rompe nada:</p>
+        <div class="cuenta"><i>ka</i><sup>2</sup> + <i>kb</i><sup>2</sup> = <i>kc</i><sup>2</sup></div>
+        <p>Es <b>hacer lo mismo de los dos lados</b>, que es exactamente lo que aprendieron en
+          la unidad anterior con las ecuaciones. El teorema no habla de cuadrados: habla de
+          que <b>el área crece con el cuadrado del lado</b>. Por eso una pizza de 40 cm no
+          tiene el doble de pizza que una de 20, sino cuatro veces.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="notas">
+    <h2>Notas del docente</h2>
+    <p>Esta es la unidad 8 y la 9 del libro fusionadas. El motivo es que el corte del libro
+      deja a <b>Pitágoras en el medio</b>: aparece recién en la segunda unidad, separado de
+      los triángulos por una evaluación y un Taller de Siembra. Fusionadas, el teorema se
+      presenta una sola vez —paso 5 de 8— y se aplica dos veces seguidas, a triángulos
+      (paso 6) y a cuadriláteros (paso 7). Se ahorra una evaluación.</p>
+    <p>El hilo de toda la unidad es <b>cortar en triángulos</b>: de ahí salen la suma de los
+      ángulos, el área de los regulares y la demostración misma de Pitágoras. Si en algún
+      momento alguien pregunta "¿esta fórmula hay que aprenderla de memoria?", la respuesta
+      de esta unidad es siempre la misma: no, hay que saber cortar.</p>
+    <p>Los tres laboratorios están pensados para proyectar y que pasen ellos: el del paso 4
+      sirve para que descubran la fórmula antes de que aparezca, y el de las varillas del
+      paso 6 funciona mejor si primero apuestan y después prueban.</p>
+    <p>Este bloque no aparece en el modo "una a la vez" del panel de proyección.</p>
+  </section>
+
+  <footer class="creditos">
+    Material de clase · Unidades 8 y 9, <i>Matemática 7</i>, Editorial En Alianza.
+    Las figuras y los ejemplos son originales; las páginas indicadas remiten al libro del
+    alumno. Cada medida de esta página está verificada en
+    <span class="ec">verificacion/poligonos_7mo.py</span>.
+  </footer>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Los ocho pasos de la unidad fusionada
+   Toda medida que aparece acá está calculada y verificada en
+   verificacion/poligonos_7mo.py. Ninguna se escribe a mano.
+   ═══════════════════════════════════════════════════════════════ */
+const PASOS = [
+{
+  n:1, corto:'Qué es', nombre:'Un polígono es un camino cerrado', pag:'págs. 152–155',
+  formaTxt:'tantos vértices como lados, tantos ángulos como lados, y además las diagonales',
+  accion:'contar los elementos de',
+  enun:'un pentágono',
+  pasos:[
+    'Tiene <b>5 lados</b>: los tramos rectos del camino.',
+    'Tiene <b>5 vértices</b>: los puntos donde el camino dobla. Siempre hay tantos vértices como lados.',
+    'Tiene <b>5 ángulos interiores</b>, uno en cada vértice.',
+    'Y tiene <b>5 diagonales</b>: los segmentos que unen dos vértices que no son vecinos.',
+  ],
+  final:'5 lados, 5 vértices, 5 ángulos y 5 diagonales',
+  gancho:{
+    tit:'La diagonal que se escapa',
+    html:`<p>Un polígono es <b>convexo</b> si todas sus diagonales quedan adentro, y
+      <b>cóncavo</b> si alguna se escapa afuera. No hace falta medir ningún ángulo para
+      saberlo: alcanza con mirar las diagonales.</p>
+      <p>Hay otra manera de decir lo mismo, y es la que más sirve: en un polígono convexo,
+      <b>si apoyás una regla sobre cualquier lado, toda la figura queda de un solo lado de
+      la regla</b>. En uno cóncavo, siempre hay un lado que si lo prolongás parte la figura
+      en dos.</p>
+      <p>Probá con la letra L, que es un polígono de seis lados. ¿Cuál es el vértice que la
+      hace cóncava? Es el único que "entra" en vez de salir.</p>`
+  }
+},
+{
+  n:2, corto:'La familia', nombre:'Los nombres y la familia', pag:'págs. 156–160',
+  serie:[
+    { rot:'3 y 4 lados', txt:'triángulo, cuadrilátero' },
+    { rot:'5, 6 y 7 lados', txt:'pentágono, hexágono, heptágono' },
+    { rot:'8, 10 y 12 lados', txt:'octógono, decágono, dodecágono' },
+  ],
+  accion:'decidir si es regular',
+  enun:'un rombo que no es cuadrado',
+  pasos:[
+    '¿Tiene todos los lados iguales? <b>Sí</b>: los cuatro miden lo mismo.',
+    '¿Tiene todos los ángulos iguales? <b>No</b>: dos son agudos y dos obtusos.',
+    'Para ser regular hacen falta <b>las dos cosas</b>, no una.',
+  ],
+  final:'no es regular: le faltan los ángulos',
+  gancho:{
+    tit:'Por qué las abejas eligieron el hexágono',
+    html:`<p>Solo tres polígonos regulares embaldosan el plano sin dejar huecos: el
+      <b>triángulo</b>, el <b>cuadrado</b> y el <b>hexágono</b>. Es porque sus ángulos
+      —60°, 90° y 120°— son los únicos que entran una cantidad exacta de veces en los 360°
+      de una vuelta completa: seis, cuatro y tres.</p>
+      <p>De esos tres, el hexágono es el que <b>menos borde usa para encerrar la misma
+      área</b>. Para una abeja eso es cera ahorrada, y la cera cuesta mucho trabajo.</p>
+      <p>Lo notable es que esto último, que cualquiera puede ver en un panal, recién se
+      <b>demostró en 1999</b>. Se lo llama el teorema del panal, y estuvo dos mil años sin
+      demostración: las abejas lo sabían primero.</p>`
+  }
+},
+{
+  n:3, corto:'Diagonales', nombre:'Cuántas diagonales tiene', pag:'págs. 158–161',
+  forma:'<i>n</i>(<i>n</i> − 3)/2',
+  accion:'contar las diagonales de',
+  enun:'un octógono',
+  pasos:[
+    'De cada vértice salen diagonales a todos los demás <b>menos tres</b>: él mismo y sus dos vecinos.',
+    'Entonces de cada uno salen 8 − 3 = <b>5</b>, y hay 8 vértices: 8 · 5 = <b>40</b>.',
+    'Pero así cada diagonal se contó <b>dos veces</b>, una desde cada punta. Divido por 2.',
+  ],
+  final:'40 ÷ 2 = 20 diagonales',
+  gancho:{
+    tit:'Es el mismo número que los saludos de una fiesta',
+    html:`<p>En una reunión de 8 personas donde todos se saludan una vez, ¿cuántos saludos
+      hay? Cada uno saluda a 7, eso da 56, pero cada saludo se contó dos veces: son
+      <b>28</b>.</p>
+      <div class="cuenta">8 · 7 ÷ 2 = <b>28</b> saludos &nbsp;&nbsp;|&nbsp;&nbsp; 28 − 8 = <b>20</b> diagonales</div>
+      <p>Las diagonales son exactamente eso: los saludos <b>menos</b> los que se dan entre
+      vecinos, que son los lados. Por eso las dos fórmulas dan lo mismo, y por eso no hace
+      falta memorizar la segunda si te acordás de la primera.</p>
+      <p>Este truco —contar de más y después dividir por las veces que repetiste— es una de
+      las ideas que más aparecen en la olimpiada.</p>`
+  }
+},
+{
+  n:4, corto:'Los ángulos', nombre:'Cuánto suman los ángulos', pag:'págs. 162–167',
+  forma:'(<i>n</i> − 2) · 180°',
+  accion:'calcular los ángulos de',
+  enun:'un pentágono regular',
+  pasos:[
+    'Elijo un vértice y tiro las diagonales desde ahí: el pentágono queda partido en <b>3 triángulos</b>.',
+    'Siempre salen <b>dos triángulos menos</b> que lados, porque los dos vecinos no cuentan.',
+    'Cada triángulo aporta 180°: 3 · 180 = <b>540°</b> en total.',
+    'Y como es regular, los 5 ángulos son iguales: 540 ÷ 5.',
+  ],
+  final:'suman 540° y cada ángulo mide 108°',
+  lab:'lab-poligono',
+  gancho:{
+    tit:'Por fuera siempre suman 360, tenga los lados que tenga',
+    html:`<p>Los ángulos <b>interiores</b> dependen de cuántos lados haya. Los
+      <b>exteriores</b> no: suman 360° siempre, en el triángulo, en el pentágono y en un
+      polígono de mil lados.</p>
+      <p>La razón es preciosa y no necesita ninguna cuenta. Imaginate que <b>caminás el borde
+      del polígono</b>. En cada vértice girás un poquito —ese giro es el ángulo exterior— y
+      cuando volvés al punto de partida estás mirando otra vez para donde empezaste. Diste
+      una vuelta completa: 360°.</p>
+      <p>Movele los lados al taller de acá arriba y mirá: el interior cambia, el exterior
+      siempre suma lo mismo. De paso, en un regular cada ángulo exterior mide 360/<i>n</i>,
+      que es la forma más rápida de sacar el interior sin la fórmula.</p>`
+  }
+},
+{
+  n:5, corto:'Pitágoras', nombre:'Pitágoras, una sola vez', pag:'págs. 168–174',
+  forma:'<i>a</i><sup>2</sup> + <i>b</i><sup>2</sup> = <i>c</i><sup>2</sup>',
+  accion:'hallar la hipotenusa de',
+  enun:'un triángulo rectángulo de catetos 8 y 15',
+  pasos:[
+    'Los catetos son los dos lados que forman el ángulo recto; la hipotenusa es el que queda enfrente, siempre el más largo.',
+    'Elevo los catetos al cuadrado: 8<sup>2</sup> = 64 y 15<sup>2</sup> = 225.',
+    'Los sumo: 64 + 225 = <b>289</b>. Eso es el cuadrado de la hipotenusa.',
+    'Busco qué número al cuadrado da 289: es 17, porque 17 · 17 = 289.',
+  ],
+  final:'la hipotenusa mide 17',
+  lab:'lab-pitagoras',
+  gancho:{
+    tit:'No son lados: son áreas',
+    html:`<p>Cuando escribimos <span class="ec"><i>a</i><sup>2</sup></span> no estamos
+      diciendo "el lado por sí mismo" como una cuenta cualquiera: estamos diciendo
+      <b>el área del cuadrado que se apoya sobre ese lado</b>. El teorema dice que los dos
+      cuadrados chicos, juntos, tienen exactamente la misma superficie que el grande. Movelo
+      en el taller de arriba y miralo.</p>
+      <p>Y hay una manera de convencerse sin álgebra, recortando. Tomá cuatro triángulos
+      rectángulos iguales y un cuadrado de lado
+      <span class="ec"><i>a</i> + <i>b</i></span>. Acomodá los cuatro triángulos adentro de
+      dos maneras distintas: en una te queda libre un cuadrado de lado
+      <span class="ec"><i>c</i></span>, y en la otra te quedan libres dos, de lados
+      <span class="ec"><i>a</i></span> y <span class="ec"><i>b</i></span>. Mismo cuadrado
+      grande, mismos cuatro triángulos, entonces <b>lo que sobra tiene que ser igual</b>.</p>
+      <p>Los egipcios lo usaban sin escribirlo: una soga con <b>12 nudos</b> a distancias
+      iguales, estirada en 3, 4 y 5 tramos, arma un triángulo con una esquina perfectamente
+      recta. Servía para replantear terrenos después de cada crecida del Nilo, y sigue
+      sirviendo: los albañiles la usan hoy.</p>
+      <div class="cuenta">3<sup>2</sup> + 4<sup>2</sup> = 9 + 16 = 25 = 5<sup>2</sup> &nbsp;&nbsp;|&nbsp;&nbsp; 3 + 4 + 5 = <b>12 nudos</b></div>
+      <p>Eso sí: casi nunca da un número redondo. En un cuadrado de lado 5 la diagonal mide
+      <span class="ec">5√2</span>, que no es ningún número exacto con coma, por más decimales
+      que escribas. Descubrirlo fue una crisis para los griegos, que estaban convencidos de
+      que todo se podía escribir como fracción. El taller de acá arriba te lo muestra: probá
+      con catetos 2 y 3.</p>`
+  }
+},
+{
+  n:6, corto:'En el triángulo', nombre:'Pitágoras adentro del triángulo', pag:'págs. 175–182',
+  formaTxt:'la altura parte al equilátero en dos triángulos rectángulos',
+  accion:'hallar la altura y el área de',
+  enun:'un triángulo equilátero de lado 6',
+  pasos:[
+    'La altura cae al medio de la base y la parte en dos pedazos de <b>3</b> y <b>3</b>.',
+    'Queda un triángulo rectángulo de hipotenusa 6 y un cateto 3: el otro cateto es la altura.',
+    '6<sup>2</sup> − 3<sup>2</sup> = 36 − 9 = <b>27</b>, así que la altura es <span class="ec">√27</span>.',
+    'Y <span class="ec">√27 = √(9 · 3) = 3√3</span>. El área es base por altura sobre dos: 6 · 3√3 ÷ 2.',
+  ],
+  final:'altura 3√3 y área 9√3',
+  lab:'lab-varillas',
+  gancho:{
+    tit:'El teorema al revés es el que usa el albañil',
+    html:`<p>Hasta acá lo usamos así: <i>sé que es rectángulo, entonces vale
+      <span class="ec"><i>a</i><sup>2</sup>+<i>b</i><sup>2</sup>=<i>c</i><sup>2</sup></span></i>.
+      Pero también funciona al revés: <b>si los tres lados cumplen esa cuenta, entonces el
+      triángulo es rectángulo</b>. Eso ya no es el teorema, es su recíproco, y es lo que
+      hace útil a la soga de los egipcios.</p>
+      <div class="cuenta">6, 8, 10 → 36 + 64 = 100 &nbsp;<b>es rectángulo</b> &nbsp;|&nbsp; 6, 8, 11 → 36 + 64 ≠ 121 &nbsp;<b>no</b></div>
+      <p>Hay algo todavía más básico que hay que revisar antes: <b>no cualquier trío de
+      medidas forma un triángulo</b>. Con varillas de 3, 4 y 8 no hay manera, porque 3 + 4
+      no alcanza para llegar de una punta a la otra del 8. Probalo en el taller de arriba.</p>
+      <p>La regla se llama <b>desigualdad triangular</b> y en el fondo dice algo que ya
+      sabés: ir derecho nunca es más largo que dar la vuelta. Con 3, 4 y 7 justo justo
+      llegan, pero el triángulo queda aplastado y no tiene área: son tres puntos en fila.</p>`
+  }
+},
+{
+  n:7, corto:'Cuadriláteros', nombre:'Pitágoras en los cuadriláteros', pag:'págs. 183–188',
+  serie:[
+    { rot:'dos pares de lados paralelos', txt:'paralelogramos' },
+    { rot:'un solo par', txt:'trapecios' },
+    { rot:'ningún par', txt:'trapezoides' },
+  ],
+  accion:'hallar el lado y el área de',
+  enun:'un rombo de diagonales 16 y 12',
+  pasos:[
+    'Las diagonales del rombo se cortan <b>en el medio</b> y <b>en ángulo recto</b>. Eso arma cuatro triángulos rectángulos iguales.',
+    'Los catetos de cada uno son las mitades: 16 ÷ 2 = <b>8</b> y 12 ÷ 2 = <b>6</b>.',
+    'El lado del rombo es la hipotenusa: 8<sup>2</sup> + 6<sup>2</sup> = 64 + 36 = 100, o sea <b>10</b>.',
+    'El área son los cuatro triangulitos, que es lo mismo que diagonal por diagonal sobre dos: 16 · 12 ÷ 2.',
+  ],
+  final:'lado 10 y área 96',
+  gancho:{
+    tit:'Las pulgadas de un televisor son la diagonal',
+    html:`<p>Cuando un televisor dice <b>32 pulgadas</b>, esas pulgadas no son el ancho ni el
+      alto: son la <b>diagonal</b>. Y como la pantalla es un rectángulo, la diagonal es la
+      hipotenusa de un triángulo rectángulo cuyos catetos son el ancho y el alto.</p>
+      <p>En una pantalla de proporción 16:9, una de 32″ mide más o menos <b>27,9″ de ancho y
+      15,7″ de alto</b>. Ninguno de los dos números es 32.</p>
+      <p>Lo interesante viene ahora: dos televisores de "32 pulgadas" con proporciones
+      distintas <b>no tienen la misma superficie</b>. Cuanto más alargada la pantalla, menos
+      área para la misma diagonal. Es exactamente el mismo fenómeno de la pizza del cierre:
+      el número que anuncian es un largo, y lo que mirás es un área.</p>`
+  }
+},
+{
+  n:8, corto:'Área', nombre:'El área vuelve a los triángulos', pag:'págs. 189–192',
+  formaTxt:'el área de un regular es perímetro · apotema ÷ 2',
+  accion:'hallar el área de',
+  enun:'un hexágono regular de lado 6',
+  pasos:[
+    'Uno el centro con cada vértice: el hexágono queda partido en <b>6 triángulos iguales</b>.',
+    'La altura de cada triángulo es la <b>apotema</b>, que va del centro al medio de un lado.',
+    'En el hexágono, esos triángulos son equiláteros de lado 6, así que la apotema sale por Pitágoras: 6<sup>2</sup> − 3<sup>2</sup> = 27 → <span class="ec">3√3</span>.',
+    'Cada triángulo mide 6 · 3√3 ÷ 2, y hay seis. O, lo que es lo mismo, perímetro por apotema sobre dos: 36 · 3√3 ÷ 2.',
+  ],
+  final:'área 54√3',
+  gancho:{
+    tit:'La fórmula que no hay que memorizar',
+    html:`<p><span class="ec">P · a ÷ 2</span> no es una fórmula nueva que aparece en la
+      última página de la unidad. Es "base por altura sobre dos", repetido
+      <span class="ec"><i>n</i></span> veces y escrito corto:</p>
+      <div class="cuenta"><i>n</i> · (lado · apotema ÷ 2) = (<i>n</i> · lado) · apotema ÷ 2 = <b>P · a ÷ 2</b></div>
+      <p>Lo único que se hizo fue sacar factor común, que es lo que van a hacer todo el año
+      que viene en 8.º. Si te olvidás la fórmula, cortás en triángulos y la volvés a armar en
+      diez segundos.</p>
+      <p>Con el trapecio pasa lo mismo. Uno de bases 10 y 4 con lados de 5: los dos pedacitos
+      que sobran a los costados miden (10 − 4) ÷ 2 = 3, y por Pitágoras la altura es
+      <span class="ec">√(5<sup>2</sup> − 3<sup>2</sup>) = 4</span>. Su área da
+      <b>28</b>, y de nuevo no hubo nada nuevo: un rectángulo y dos triángulos.</p>`
+  }
+}
+];
+
+/* ——— navegación ——— */
+document.getElementById('nav').innerHTML = PASOS.map(p =>
+  `<a class="chip" href="#paso${p.n}">${p.n}. ${p.corto}</a>`).join('');
+
+/* ——— laboratorios ——— */
+const LABS = {
+'lab-poligono':`
+<div class="lab">
+  <h4>Probalo: el polígono que se corta solo</h4>
+  <p class="sub">Movele la cantidad de lados y mirá los triángulos que quedan al tirar las
+    diagonales desde un vértice. La fórmula está ahí adentro: son siempre dos menos que
+    lados.</p>
+  <div class="taller">
+    <div class="lienzo">
+      <svg id="svg-poli" viewBox="0 0 420 380" role="img"
+        aria-label="Polígono regular partido en triángulos desde un vértice"></svg>
+    </div>
+    <div>
+      <div class="campos">
+        <div class="campo">
+          <label for="poli-n">Lados</label>
+          <input id="poli-n" type="number" min="3" max="14" step="1" value="5">
+        </div>
+      </div>
+      <div class="cuentas" id="poli-out"></div>
+    </div>
+  </div>
+</div>`,
+'lab-pitagoras':`
+<div class="lab">
+  <h4>Probalo: los tres cuadrados</h4>
+  <p class="sub">Cambiá los catetos y mirá las áreas. Las dos de abajo siempre suman la de
+    arriba, den o no un número redondo.</p>
+  <div class="taller">
+    <div class="lienzo">
+      <svg id="svg-pit" viewBox="0 0 460 460" role="img"
+        aria-label="Triángulo rectángulo con un cuadrado apoyado sobre cada lado"></svg>
+    </div>
+    <div>
+      <div class="campos">
+        <div class="campo"><label for="pit-a">Cateto</label><input id="pit-a" type="number" min="1" max="12" step="1" value="3"></div>
+        <div class="campo"><label for="pit-b">Cateto</label><input id="pit-b" type="number" min="1" max="12" step="1" value="4"></div>
+      </div>
+      <div class="cuentas" id="pit-out"></div>
+    </div>
+  </div>
+</div>`,
+'lab-varillas':`
+<div class="lab">
+  <h4>Probalo: tres varillas</h4>
+  <p class="sub">Antes de tocar nada, apostá: ¿con estas tres medidas se puede armar un
+    triángulo? Después probá.</p>
+  <div class="taller">
+    <div class="lienzo">
+      <svg id="svg-var" viewBox="0 0 420 300" role="img"
+        aria-label="Tres varillas, y el triángulo que forman cuando se puede"></svg>
+    </div>
+    <div>
+      <div class="campos">
+        <div class="campo"><label for="var-a">Varilla</label><input id="var-a" type="number" min="1" max="20" step="1" value="3"></div>
+        <div class="campo"><label for="var-b">Varilla</label><input id="var-b" type="number" min="1" max="20" step="1" value="4"></div>
+        <div class="campo"><label for="var-c">Varilla</label><input id="var-c" type="number" min="1" max="20" step="1" value="5"></div>
+      </div>
+      <div class="cuentas" id="var-out"></div>
+    </div>
+  </div>
+</div>`
+};
+
+document.getElementById('pasos').innerHTML = PASOS.map(p => `
+<article class="caso" id="paso${p.n}">
+  <div class="caso-cab">
+    <div class="numero">${p.n}</div>
+    <div class="caso-tit">
+      <h3>${p.nombre}</h3>
+      <div class="paginas">${p.pag}</div>
+    </div>
+  </div>
+
+  ${p.serie ? `
+  <div class="serie">
+    ${p.serie.map(c => `<div class="caja">
+      <span class="caja-rot">${c.rot}</span>${c.ec ? `<span class="ec">${c.ec}</span>` : `<span class="caja-txt">${c.txt}</span>`}
+    </div>`).join('')}
+  </div>` : `
+  <div class="forma">
+    <span class="rotulo">La idea</span>
+    ${p.forma ? `<span class="ec">${p.forma}</span>` : `<span class="forma-txt">${p.formaTxt}</span>`}
+  </div>`}
+
+  <div class="ejemplo" data-bloque="${p.n}">
+    <div class="ejemplo-cab">
+      <span class="rotulo-chico">Ejemplo — ${p.accion}</span>
+      <button class="boton" type="button" data-accion="revelar" data-bloque="${p.n}">Siguiente paso</button>
+    </div>
+    <div class="enunciado frase">${p.enun}</div>
+    <ol class="pasos" id="pasos${p.n}"></ol>
+  </div>
+
+  <div class="gancho">
+    <p class="gancho-tit">${p.gancho.tit}</p>
+    ${p.gancho.html}
+  </div>
+
+  ${p.lab ? LABS[p.lab] : ''}
+</article>`).join('');
+
+/* ——— revelar pasos ———
+   El atributo NO puede llamarse data-paso: el panel de proyección usa ese
+   nombre para las flechas de diapositiva y un clic acá saltaría de lámina. */
+const estado = {};
+PASOS.forEach(p => { estado[p.n] = 0; });
+
+function siguientePaso(n){
+  const p = PASOS.find(k => k.n === n);
+  const total = p.pasos.length + 1;
+  if (estado[n] >= total) return;
+  const i = estado[n];
+  const ultimo = (i === p.pasos.length);
+  const li = document.createElement('li');
+  if (ultimo) li.className = 'final';
+  li.innerHTML = ultimo
+    ? `<span class="n">=</span><span class="t"><span class="ec">${p.final}</span></span>`
+    : `<span class="n">${i+1}</span><span class="t">${p.pasos[i]}</span>`;
+  document.getElementById('pasos' + n).appendChild(li);
+  estado[n] = i + 1;
+  if (estado[n] >= total){
+    const b = document.querySelector(`[data-accion="revelar"][data-bloque="${n}"]`);
+    b.disabled = true; b.textContent = 'Completo';
+  }
+}
+
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-accion="revelar"]');
+  if (b) siguientePaso(Number(b.dataset.bloque));
+});
+
+/* ═══ números: raíces exactas, no decimales ═══
+   √27 se muestra como 3√3 y no como 5,196. La aproximación aparece al
+   lado, con ≈, solo cuando la raíz no es exacta. */
+const mcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a || 1; };
+
+function raiz(n){
+  // saca del radical todo lo que se pueda: devuelve [afuera, adentro]
+  let afuera = 1, adentro = n;
+  for (let d = 2; d * d <= adentro; d++){
+    while (adentro % (d * d) === 0){ adentro /= d * d; afuera *= d; }
+  }
+  return [afuera, adentro];
+}
+
+function txtRaiz(n){
+  const [a, dentro] = raiz(n);
+  if (dentro === 1) return String(a);
+  return (a === 1 ? '' : a) + '√' + dentro;
+}
+const aprox = n => Math.sqrt(n).toFixed(2).replace('.', ',');
+
+/* una fracción exacta, para los ángulos que no dan entero */
+function txtFraccion(num, den){
+  const g = mcd(num, den);
+  const a = num / g, b = den / g;
+  return b === 1 ? String(a) : a + '/' + b;
+}
+
+function dato(rotulo, valor){
+  return `<div class="dato"><span>${rotulo}</span><b>${valor}</b></div>`;
+}
+
+/* ═══ laboratorio del polígono ═══ */
+const svgPoli = document.getElementById('svg-poli');
+
+function dibujaPoligono(){
+  const n = Math.min(14, Math.max(3, parseInt(document.getElementById('poli-n').value, 10) || 5));
+  const cx = 210, cy = 185, R = 145;
+  const pt = k => {
+    const a = -Math.PI / 2 + k * 2 * Math.PI / n;
+    return [cx + R * Math.cos(a), cy + R * Math.sin(a)];
+  };
+  const P = [];
+  for (let k = 0; k < n; k++) P.push(pt(k));
+
+  let g = '';
+  // los n−2 triángulos que salen del vértice 0
+  for (let k = 1; k < n - 1; k++){
+    g += `<polygon class="triangulado" points="${P[0]} ${P[k]} ${P[k+1]}"/>`;
+  }
+  g += `<polygon class="figura" style="fill:none" points="${P.join(' ')}"/>`;
+  // las diagonales desde el vértice 0
+  for (let k = 2; k < n - 1; k++){
+    g += `<line class="diagonal" x1="${P[0][0]}" y1="${P[0][1]}" x2="${P[k][0]}" y2="${P[k][1]}"/>`;
+  }
+  P.forEach((p, k) => {
+    g += `<circle class="vertice${k === 0 ? ' foco' : ''}" cx="${p[0]}" cy="${p[1]}" r="5"/>`;
+  });
+  // el rótulo va en una esquina: encima de la figura tapa los triángulos
+  g += `<text class="rotulo dest" x="12" y="24">${n - 2} triángulos</text>`;
+  svgPoli.innerHTML = g;
+
+  const suma = (n - 2) * 180;
+  document.getElementById('poli-out').innerHTML =
+    dato('lados', n) +
+    dato('diagonales', n * (n - 3) / 2) +
+    dato('triángulos', n - 2) +
+    dato('suman por dentro', suma + '°') +
+    dato('cada ángulo', txtFraccion(suma, n) + '°') +
+    dato('suman por fuera', '360°') +
+    dato('cada exterior', txtFraccion(360, n) + '°');
+}
+
+/* ═══ laboratorio de Pitágoras ═══ */
+const svgPit = document.getElementById('svg-pit');
+
+function dibujaPitagoras(){
+  const a = Math.min(12, Math.max(1, parseInt(document.getElementById('pit-a').value, 10) || 3));
+  const b = Math.min(12, Math.max(1, parseInt(document.getElementById('pit-b').value, 10) || 4));
+  const c2 = a * a + b * b;
+
+  // el triángulo en coordenadas de la figura: ángulo recto en el origen
+  const O = [0, 0], A = [a, 0], B = [0, b];
+  const nx = b, ny = a;                       // normal hacia afuera de la hipotenusa
+  const cuadA = [O, A, [a, -a], [0, -a]];                       // sobre el cateto a
+  const cuadB = [O, B, [-b, b], [-b, 0]];                       // sobre el cateto b
+  const cuadC = [A, B, [B[0] + nx, B[1] + ny], [A[0] + nx, A[1] + ny]];
+
+  const todos = [].concat(cuadA, cuadB, cuadC, [O, A, B]);
+  const xs = todos.map(p => p[0]), ys = todos.map(p => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs);
+  const y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const k = Math.min(400 / (x1 - x0), 400 / (y1 - y0));
+  const px = x => 30 + (x - x0) * k;
+  const py = y => 30 + (y1 - y) * k;          // el eje y va al revés en SVG
+  const poli = (pts, cls) =>
+    `<polygon class="${cls}" points="${pts.map(p => px(p[0]) + ',' + py(p[1])).join(' ')}"/>`;
+  const centro = pts => {
+    const mx = pts.reduce((s, p) => s + px(p[0]), 0) / pts.length;
+    const my = pts.reduce((s, p) => s + py(p[1]), 0) / pts.length;
+    return [mx, my];
+  };
+
+  let g = poli(cuadA, 'cuad-a') + poli(cuadB, 'cuad-b') + poli(cuadC, 'cuad-c');
+  g += poli([O, A, B], 'tri-recto');
+  const e = Math.min(16, k * Math.min(a, b) * 0.28);
+  g += `<path class="escuadra" d="M ${px(0) + e} ${py(0)} L ${px(0) + e} ${py(0) - e} L ${px(0)} ${py(0) - e}"/>`;
+  [[cuadA, a * a], [cuadB, b * b], [cuadC, c2]].forEach(([pts, area]) => {
+    const [mx, my] = centro(pts);
+    g += `<text class="rotulo dest" x="${mx}" y="${my + 5}" text-anchor="middle">${area}</text>`;
+  });
+  svgPit.innerHTML = g;
+
+  const exacta = raiz(c2)[1] === 1;
+  document.getElementById('pit-out').innerHTML =
+    dato('cateto', a) + dato('cateto', b) +
+    dato('cuadrados chicos', `${a * a} + ${b * b} = ${c2}`) +
+    dato('cuadrado grande', c2) +
+    dato('hipotenusa', txtRaiz(c2) + (exacta ? '' : ` ≈ ${aprox(c2)}`)) +
+    (exacta ? dato('trío pitagórico', 'sí') : '');
+}
+
+/* ═══ laboratorio de las varillas ═══ */
+const svgVar = document.getElementById('svg-var');
+
+function dibujaVarillas(){
+  const leo = id => Math.min(20, Math.max(1, parseInt(document.getElementById(id).value, 10) || 1));
+  const a = leo('var-a'), b = leo('var-b'), c = leo('var-c');
+  const lados = [a, b, c].slice().sort((x, y) => x - y);
+  const [p, q, r] = lados;                    // r es la más larga
+  const hay = p + q > r;
+  const justo = p + q === r;
+  const k = 330 / (p + q + r) * 1.6;
+
+  let g = '';
+  if (hay){
+    // triángulo con la más larga de base
+    const cx = (q * q + r * r - p * p) / (2 * r);
+    const cy = Math.sqrt(Math.max(0, q * q - cx * cx));
+    const esc = Math.min(340 / r, 210 / (cy || 1));
+    const ox = (420 - r * esc) / 2, oy = 250;
+    const X = x => ox + x * esc, Y = y => oy - y * esc;
+    g += `<polygon class="figura" points="${X(0)},${Y(0)} ${X(r)},${Y(0)} ${X(cx)},${Y(cy)}"/>`;
+    g += `<line class="varilla varilla-1" x1="${X(0)}" y1="${Y(0)}" x2="${X(r)}" y2="${Y(0)}"/>`;
+    g += `<line class="varilla varilla-2" x1="${X(0)}" y1="${Y(0)}" x2="${X(cx)}" y2="${Y(cy)}"/>`;
+    g += `<line class="varilla varilla-3" x1="${X(r)}" y1="${Y(0)}" x2="${X(cx)}" y2="${Y(cy)}"/>`;
+    g += `<text class="rotulo" x="${X(r / 2)}" y="${Y(0) + 24}" text-anchor="middle">${r}</text>`;
+    g += `<text class="rotulo" x="${X(cx / 2) - 14}" y="${Y(cy / 2)}" text-anchor="end">${q}</text>`;
+    g += `<text class="rotulo" x="${X((r + cx) / 2) + 14}" y="${Y(cy / 2)}">${p}</text>`;
+  } else {
+    // la larga abajo y las dos cortas puestas en fila arriba: no llegan
+    const esc = Math.min(340 / r, 26);
+    const ox = (420 - r * esc) / 2;
+    const X = x => ox + x * esc;
+    g += `<line class="varilla varilla-1" x1="${X(0)}" y1="200" x2="${X(r)}" y2="200"/>`;
+    g += `<text class="rotulo" x="${X(r / 2)}" y="228" text-anchor="middle">${r}</text>`;
+    g += `<line class="varilla varilla-2" x1="${X(0)}" y1="130" x2="${X(q)}" y2="130"/>`;
+    g += `<line class="varilla varilla-3" x1="${X(q)}" y1="130" x2="${X(q + p)}" y2="130"/>`;
+    g += `<text class="rotulo" x="${X(q / 2)}" y="118" text-anchor="middle">${q}</text>`;
+    g += `<text class="rotulo" x="${X(q + p / 2)}" y="118" text-anchor="middle">${p}</text>`;
+    g += `<line class="medida" x1="${X(q + p)}" y1="120" x2="${X(q + p)}" y2="210"/>`;
+    g += `<line class="medida" x1="${X(r)}" y1="120" x2="${X(r)}" y2="210"/>`;
+    g += `<text class="rotulo dest" x="${X((q + p + r) / 2)}" y="${justo ? 96 : 96}" text-anchor="middle">${justo ? 'llegan justo' : 'no llegan'}</text>`;
+  }
+  svgVar.innerHTML = g;
+
+  const recto = p * p + q * q === r * r;
+  document.getElementById('var-out').innerHTML =
+    dato('las dos cortas', `${p} + ${q} = ${p + q}`) +
+    dato('la más larga', r) +
+    dato('¿hay triángulo?', hay ? 'sí' : (justo ? 'no: queda aplastado' : 'no')) +
+    (hay ? dato('¿es rectángulo?', recto ? `sí: ${p * p} + ${q * q} = ${r * r}` : 'no') : '');
+}
+
+['poli-n'].forEach(id => document.getElementById(id).addEventListener('input', dibujaPoligono));
+['pit-a','pit-b'].forEach(id => document.getElementById(id).addEventListener('input', dibujaPitagoras));
+['var-a','var-b','var-c'].forEach(id => document.getElementById(id).addEventListener('input', dibujaVarillas));
+dibujaPoligono();
+dibujaPitagoras();
+dibujaVarillas();
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+</body>
+</html>

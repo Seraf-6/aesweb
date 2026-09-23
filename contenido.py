@@ -39,12 +39,14 @@ GRADOS = [
     {'n': '8+9', 'titulo': 'Polígonos', 'pags': '152–192',
      'nota': 'Unidades 8 y 9 fusionadas en una sola, en ocho pasos.',
      'material': [
+       {'tipo': 'diapositiva', 'titulo': 'Todo se corta en triángulos',
+        'desc': 'La unidad entera en ocho pasos, con Pitágoras una sola vez y aplicado '
+                'después a triángulos y a cuadriláteros. Tres talleres para proyectar.',
+        'url': 'matematica/7mo/poligonos.html'},
        {'tipo': 'ficha', 'titulo': 'Polígonos y clasificación',
         'desc': 'Ficha 10.', 'url': 'fichas/index.html#7mo'},
        {'tipo': 'ficha', 'titulo': 'Triángulos y sus ángulos',
         'desc': 'Ficha 11.', 'url': 'fichas/index.html#7mo'},
-       {'tipo': 'pendiente', 'titulo': 'Diapositivas de Pitágoras',
-        'desc': 'El teorema una sola vez, aplicado después a triángulos y cuadriláteros.'},
      ]},
     {'n': 10, 'titulo': 'Estadística', 'pags': '194–212',
      'nota': 'Proyecto de Google Forms, compartido con 8.º y 9.º.',
