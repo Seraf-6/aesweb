@@ -121,6 +121,13 @@ def tema1():
     aparece(f'el número que falta es {falta}', 'tema 1, recuadro')
     print(f'   4 · 7 + 2 = 5 · □ → □ = {falta}')
 
+    # la pregunta del observador: sin paréntesis el · 2 solo le toca al 3
+    sin_parentesis = 2 * 6 + 3 * 2
+    if sin_parentesis == (2 * 6 + 3) * 2:
+        mal('sin paréntesis da lo mismo: la pregunta del observador no muestra nada')
+    aparece(f'da {sin_parentesis}, no {(2 * 6 + 3) * 2}', 'tema 1, observador: paréntesis')
+    print(f'   2 · 6 + 3 · 2 = {sin_parentesis}, no {(2 * 6 + 3) * 2}: el paréntesis hace falta')
+
     # dividir por cero no es una propiedad: con 0 · 3 = 0 · 5 se llegaría a 3 = 5
     if 0 * 3 != 0 * 5 or 3 == 5:
         mal('el ejemplo del cero no muestra lo que dice')
@@ -217,6 +224,7 @@ def tema3():
 # ══════════════════════════════════════════════════════════════════
 def tema4():
     print('Tema 4 · Representación gráfica')
+    todos = []
     # (rótulo, ecuación general en sympy, la despejada como función de Fraction, xs)
     ejemplos = [
         ('y = 2x − 1',          sp.Eq(y, 2 * x - 1),       lambda t: 2 * t - 1,        (0, 2, 1)),
@@ -242,8 +250,19 @@ def tema4():
             mal(f'tema 4, {rotulo}: el tercer punto no está alineado')
         for px_, py_ in pts:
             aparece(f'({html_num(px_)}, {html_num(py_)})', f'tema 4, {rotulo}')
+        todos.append((rotulo, f))
         print(f'   {rotulo} → y = {despejada} · puntos ' +
               ', '.join(f'({a}, {b})' for a, b in pts) + ' · alineados')
+
+
+def tema4_cruce():
+    """La pregunta del observador: las rectas 1 y 2 pasan las dos por (1, 1)."""
+    sol = sp.solve([sp.Eq(y, 2 * x - 1), sp.Eq(y, -2 * x + 3)], [x, y])
+    if (sol[x], sol[y]) != (1, 1):
+        mal(f'las rectas de los ejemplos 1 y 2 se cortan en {sol}, no en (1, 1)')
+    if 2 * F(1) - 1 != 1 or -2 * F(1) + 3 != 1:
+        mal('(1, 1) no cumple las dos ecuaciones')
+    print('   y = 2x − 1 e y = −2x + 3 se cortan en (1, 1)')
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -408,11 +427,18 @@ def verifica_pagina():
     for parte in ('concepto', 'ejemplos', 'preguntas', 'notas'):
         if f'{parte}:' not in cuerpo:
             mal(f'los temas no declaran la parte «{parte}»')
+    # las notas y el observador son botones flotantes que siguen al tema
+    for pieza in ('assets/clase.js', 'window.CLASE', 'data-tema='):
+        if pieza not in cuerpo:
+            mal(f'falta «{pieza}»: sin eso no hay botones de notas ni de observador')
+    # cada paso se puede recorrer para atrás
+    if 'data-accion="atras"' not in cuerpo:
+        mal('los ejemplos no tienen botón para volver un paso')
 
 
 def main():
     print(f'Verificando {PAGINA.relative_to(RAIZ).as_posix()}\n')
-    arranque(); tema1(); tema2(); tema3(); tema4(); tema5(); tema6(); tema7()
+    arranque(); tema1(); tema2(); tema3(); tema4(); tema4_cruce(); tema5(); tema6(); tema7()
     diofanto(); diofanto_por_84()
     verifica_pagina()
     print()

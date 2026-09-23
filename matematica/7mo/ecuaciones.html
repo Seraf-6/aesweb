@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ecuaciones lineales · AESWeb</title>
-<meta name="description" content="La unidad 7 de 7.º en los siete temas del libro: cada uno con su concepto, varios ejemplos resueltos, preguntas frecuentes y notas del docente.">
+<meta name="description" content="La unidad 7 de 7.º en los siete temas del libro: cada uno con su concepto y varios ejemplos resueltos paso a paso, más las notas del docente y las preguntas de un alumno observador.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
@@ -49,7 +49,7 @@ body[data-solo="1"] .final-txt{font-size:1.35em}
 body[data-solo="1"] .recorrido .t{font-size:.95em}
 </style>
 </head>
-<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .faq, .desafio">
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
 <nav class="sitio-nav">
   <div class="sitio-nav-int">
     <a class="sitio-marca" href="../../index.html">AESWeb</a>
@@ -79,7 +79,7 @@ body[data-solo="1"] .recorrido .t{font-size:.95em}
     <div class="nav-int" id="nav"></div>
   </nav>
 
-  <section class="intro" id="inicio">
+  <section class="intro" id="inicio" data-tema="unidad">
     <p class="cinta">Unidad 7 · págs. 132–150</p>
     <h2>Una ecuación es una pregunta</h2>
     <ul class="puntos">
@@ -88,26 +88,6 @@ body[data-solo="1"] .recorrido .t{font-size:.95em}
       <li>Y la respuesta <b>se controla sola</b>: se la devuelve a la pregunta y ella contesta si acertaste.</li>
     </ul>
     <div class="recorrido" id="recorrido"></div>
-    <button class="notas-btn" type="button" data-notas="unidad" aria-expanded="false">Notas del docente</button>
-    <div class="notas-panel" id="notas-unidad" hidden>
-      <p><b>La unidad sigue los siete temas del libro</b>, en su orden, y cada tema coincide
-        con una ficha: igualdades es la 2, expresión algebraica la 3 y así hasta problemas,
-        que es la 8. Los ejemplos son todos originales; los del libro quedan para que los
-        trabajen ellos.</p>
-      <p>Cada tema tiene la misma forma: el <b>concepto</b> en pocas líneas, entre tres y cinco
-        <b>ejemplos resueltos</b> y las <b>preguntas frecuentes</b>. Los ejemplos de un tema
-        están en secuencia: cada uno cambia una sola cosa respecto del anterior, y el título
-        dice cuál. Conviene leer el título en voz alta y preguntar qué creen que va a cambiar
-        antes de tocar <b>Siguiente paso</b>.</p>
-      <p>Las preguntas frecuentes están pensadas para hacerlas en voz alta, dejar que
-        contesten y recién después abrirlas.</p>
-      <p>La idea que sostiene toda la unidad: <b>una ecuación no afirma nada, pregunta</b>. Y
-        es la única parte de la matemática donde la respuesta se corrige sola, porque para
-        saber si acertaste alcanza con devolvérsela a la pregunta. El control no es un
-        trámite del final: es lo que vuelve innecesario preguntar "¿está bien, profe?".</p>
-      <p>La unidad se dicta con <b>enseñanza entre pares</b>: estas diapositivas son el
-        respaldo del docente, no el guion de los alumnos.</p>
-    </div>
   </section>
 
   <main id="temas"></main>
@@ -240,6 +220,11 @@ const LABS = {
 };
 
 
+/* N() resalta lo nuevo: lo que se agrega a los dos miembros, el valor que
+   se reemplaza, la palabra que cambió respecto del ejemplo anterior. Va
+   siempre adentro de M() o de un .ec: no pone cursivas por su cuenta. */
+const N = s => `<span class="nuevo">${s}</span>`;
+
 /* ═══════════════════════════════════════════════════════════════
    Los siete temas del libro
    Toda respuesta que aparece acá está calculada y verificada en
@@ -265,53 +250,57 @@ const TEMAS = [
   ejemplos:[
     { titulo:'sumar lo mismo', enun:`A ${M('2 · 6 + 3 = 15')} le sumo 5 en los dos miembros`,
       pasos:[
-        `Escribo el +5 en los dos miembros: ${M('2 · 6 + 3 + 5 = 15 + 5')}`,
+        `Escribo el +5 en los dos miembros: ${M(`2 · 6 + 3 ${N('+ 5')} = 15 ${N('+ 5')}`)}`,
         'Calculo cada miembro por separado: a la izquierda 12 + 3 + 5, a la derecha 15 + 5.',
       ], final:'20 = 20 — sigue siendo igualdad' },
     { titulo:'cambio la operación: multiplicar', enun:`A ${M('2 · 6 + 3 = 15')} la multiplico por 2`,
       pasos:[
-        `El primer miembro entero va entre paréntesis: ${M('(2 · 6 + 3) · 2 = 15 · 2')}`,
+        `El · 2 tiene que multiplicar al miembro entero, así que el miembro va entre paréntesis: ${M(`(2 · 6 + 3) ${N('· 2')} = 15 ${N('· 2')}`)}`,
         'Izquierda: 15 · 2. Derecha: 15 · 2. Son la misma cuenta.',
       ], final:'30 = 30' },
     { titulo:'cambio la operación: dividir', enun:`A ${M('2 · 6 + 3 = 15')} la divido por 3`,
       pasos:[
-        `Otra vez, el miembro entero entre paréntesis: ${M('(2 · 6 + 3) : 3 = 15 : 3')}`,
+        `Otra vez, el miembro entero entre paréntesis: ${M(`(2 · 6 + 3) ${N(': 3')} = 15 ${N(': 3')}`)}`,
         'Izquierda: 15 : 3. Derecha: 15 : 3.',
       ], final:'5 = 5' },
     { titulo:'cambio la operación: elevar', enun:`A ${M('2 · 6 + 3 = 15')} la elevo al cuadrado`,
       pasos:[
-        `${M('(2 · 6 + 3)<sup>2</sup> = 15<sup>2</sup>')}`,
+        `${M(`(2 · 6 + 3)${N('<sup>2</sup>')} = 15${N('<sup>2</sup>')}`)}`,
         'Izquierda: 15 · 15. Derecha: 15 · 15.',
       ], final:'225 = 225' },
     { titulo:'y ahora falta un número', enun:M('4 · 7 + 2 = 5 · □'),
       pasos:[
         'Calculo el miembro que está completo: 4 · 7 + 2 = 30.',
-        `Entonces ${M('30 = 5 · □')}: busco qué número multiplicado por 5 da 30.`,
-        'Es el 6, porque 5 · 6 = 30.',
+        `Entonces ${M(`30 = 5 · ${N('□')}`)}: busco qué número multiplicado por 5 da 30.`,
+        `Es el ${N('6')}, porque 5 · 6 = 30.`,
       ], final:'el número que falta es 6' },
   ],
   preguntas:[
-    { p:'¿Por qué el signo igual son dos rayitas?',
-      r:'Lo inventó el galés Robert Recorde en 1557. Eligió dos rectas paralelas porque, según escribió, no hay dos cosas más iguales.' },
-    { p:'¿El signo = quiere decir "da"?',
-      r:`No: quiere decir <b>"vale lo mismo que"</b>. ${M('15 = 2 · 6 + 3')} es tan correcta como ${M('2 · 6 + 3 = 15')}.` },
+    { p:'¿Por qué cuando multiplicamos pusimos paréntesis y cuando sumamos no?',
+      r:`Porque sin paréntesis el · 2 solo le tocaría al 3: ${M('2 · 6 + 3 · 2')} da 18, no 30. Con la suma no hace falta: sumar 5 al final ya se lo suma a todo el miembro.` },
+    { p:'¿Y si le sumo 5 a un solo miembro?',
+      r:'Deja de ser igualdad: un miembro vale 20 y el otro sigue valiendo 15.' },
+    { p:`¿Está bien escribir ${I('15 = 2 · 6 + 3')}, con el resultado adelante?`,
+      r:'Sí. El signo = no quiere decir "da": quiere decir <b>"vale lo mismo que"</b>, y eso se lee para los dos lados.' },
     { p:'¿Puedo dividir los dos miembros por cualquier número?',
       r:`Por cualquiera <b>menos el 0</b>. ${M('0 · 3 = 0 · 5')} es cierta, y si "dividís por 0" llegás a 3 = 5.` },
-    { p:'¿Y si le sumo algo a un solo miembro?',
-      r:'Deja de ser igualdad. Si al 15 le sumás 5 y al otro miembro no, un lado vale 20 y el otro 15.' },
-    { p:'El recuadro del último ejemplo, ¿qué es?',
-      r:'Una <b>incógnita</b>: un número que no conocemos. Cuando en lugar del recuadro escribamos una letra, eso va a ser una ecuación.' },
+    { p:'¿Por qué el signo igual son dos rayitas?',
+      r:'Lo inventó el galés Robert Recorde en 1557. Eligió dos rectas paralelas porque, según escribió, no hay dos cosas más iguales.' },
+    { p:'El recuadro del último ejemplo, ¿es como una letra?',
+      r:'Sí: es una <b>incógnita</b>, un número que no conocemos. Cuando en lugar del recuadro escribamos una letra, eso va a ser una ecuación.' },
   ],
   notas:`<p>Conviene arrancar por el <b>Explora</b> del libro (pág. 134), completando los
       recuadros en voz alta: ya es resolver ecuaciones, sin letras.</p>
-    <p>El error que hay que desarmar en este tema es leer el signo = como "da". Quien lo lee
-      así escribe <span class="ec">3 + 4 = 7 + 2 = 9</span>, que es falso: 3 + 4 no vale 9.
-      Que lo lean siempre como <b>"vale lo mismo que"</b>.</p>
+    <p>El error que hay que desarmar es leer el signo = como "da". Quien lo lee así escribe
+      <span class="ec">3 + 4 = 7 + 2 = 9</span>, que es falso: 3 + 4 no vale 9. Que lo lean
+      siempre como <b>"vale lo mismo que"</b>.</p>
     <p>Los cuatro primeros ejemplos usan <b>la misma igualdad</b> y cambian solo la
-      operación. La intención es que vean que las propiedades no son cuatro reglas sino una
-      sola idea: lo que le hacés a un miembro se lo hacés al otro.</p>
-    <p>La excepción del cero se retoma en el tema 3, con <span class="ec">3<i>x</i> = 5<i>x</i></span>,
-      donde dividir por <span class="ec"><i>x</i></span> lleva a 3 = 5.</p>`
+      operación, que aparece resaltada en los dos miembros. La intención es que vean que las
+      propiedades no son cuatro reglas sino una sola idea: lo que le hacés a un miembro se lo
+      hacés al otro.</p>
+    <p>En el ejemplo 2 aparece el paréntesis y en el 1 no: es la primera pregunta del
+      observador, y conviene esperar a que alguien lo note. Si nadie lo nota, preguntarlo.</p>
+    <p>La excepción del cero se retoma en el tema 3, con <span class="ec">3<i>x</i> = 5<i>x</i></span>.</p>`
 },
 
 /* ─────────────────────────── 2 ─────────────────────────── */
@@ -332,49 +321,53 @@ const TEMAS = [
   ejemplos:[
     { titulo:'la de partida', enun:M('3(x + 2) = 3x + 6'),
       pasos:[
-        `Pruebo con ${M('x = 1')}: izquierda 3 · 3, derecha 3 + 6. <b>9 = 9</b>`,
-        `Con ${M('x = 2')}: 3 · 4 y 6 + 6. <b>12 = 12</b>`,
-        `Con ${M('x = −2')}: 3 · 0 y −6 + 6. <b>0 = 0</b>`,
+        `Reemplazo ${M('x')} por 1: ${M(`3(${N('1')} + 2) = 3 · ${N('1')} + 6`)}. <b>9 = 9</b>`,
+        `Por 2: ${M(`3(${N('2')} + 2) = 3 · ${N('2')} + 6`)}. <b>12 = 12</b>`,
+        `Por −2: ${M(`3(${N('−2')} + 2) = 3 · (${N('−2')}) + 6`)}. <b>0 = 0</b>`,
         `Siempre da lo mismo: el 3 multiplica a la ${M('x')} y al 2.`,
       ], final:'es una identidad' },
-    { titulo:'cambio el último número: 6 por 2', enun:M('3(x + 2) = 3x + 2'),
+    { titulo:'cambio el último número: 6 por 2', enun:M(`3(x + 2) = 3x + ${N('2')}`),
       pasos:[
-        `Pruebo con ${M('x = 1')}: izquierda 9, derecha 5. No.`,
-        `Reparto el 3: queda ${M('3x + 6 = 3x + 2')}.`,
+        `Reemplazo por 1: ${M(`3(${N('1')} + 2) = 3 · ${N('1')} + 2`)}, o sea 9 y 5. No.`,
+        `Reparto el 3: ${M('3x + 6 = 3x + 2')}.`,
         `Los dos miembros tienen ${M('3x')}, pero a uno le suman 6 y al otro 2: nunca pueden valer lo mismo.`,
       ], final:'no se cumple para ningún número' },
-    { titulo:'cambio el coeficiente: 3x por 2x', enun:M('3(x + 2) = 2x + 6'),
+    { titulo:'cambio el coeficiente: 3x por 2x', enun:M(`3(x + 2) = ${N('2x')} + 6`),
       pasos:[
-        `Pruebo con ${M('x = 1')}: 9 y 8. No.`,
-        `Pruebo con ${M('x = 0')}: 6 y 6. Sí.`,
+        `Por 1: ${M(`3(${N('1')} + 2) = 2 · ${N('1')} + 6`)}, o sea 9 y 8. No.`,
+        `Por 0: ${M(`3(${N('0')} + 2) = 2 · ${N('0')} + 6`)}, o sea 6 y 6. Sí.`,
         'Con cualquier otro número, la izquierda crece más rápido: se cumple una sola vez.',
       ], final:'se cumple solo si <i>x</i> = 0 — es una ecuación' },
     { titulo:'encontrarlo probando', enun:M('x + 7 = 2x + 4'),
       pasos:[
-        `Pruebo con ${M('x = 1')}: 8 y 6. La izquierda gana por 2.`,
-        `Con ${M('x = 2')}: 9 y 8. Gana por 1: se están acercando.`,
-        `Con ${M('x = 3')}: 10 y 10.`,
+        `Por 1: ${M(`${N('1')} + 7 = 2 · ${N('1')} + 4`)}, o sea 8 y 6. La izquierda gana por 2.`,
+        `Por 2: ${M(`${N('2')} + 7 = 2 · ${N('2')} + 4`)}, o sea 9 y 8. Gana por 1: se están acercando.`,
+        `Por 3: ${M(`${N('3')} + 7 = 2 · ${N('3')} + 4`)}, o sea 10 y 10.`,
       ], final:'<i>x</i> = 3' },
   ],
   preguntas:[
-    { p:'¿Cuál es la diferencia entre incógnita y variable?',
-      r:'Es la misma letra usada de dos maneras. <b>Incógnita</b> cuando hay un valor que buscar; <b>variable</b> cuando puede tomar muchos valores, como en una identidad.' },
-    { p:'¿Con cuántos valores tengo que probar?',
+    { p:'¿Cómo puede ser que cambiando un solo número deje de cumplirse siempre?',
+      r:`Porque ${M('3(x + 2)')} vale siempre lo mismo que ${M('3x + 6')}. Si del otro lado ponés ${M('3x + 2')}, estás diciendo que 6 = 2, disfrazado con letras.` },
+    { p:'¿Con cuántos valores tengo que probar para estar seguro?',
       r:'Para decir que <b>no</b> es identidad alcanza con uno que falle. Para asegurar que sí lo es, en estas igualdades alcanzan dos valores distintos que funcionen.' },
-    { p:`¿Por qué ${I('2x + 3')} no es ${I('5x')}?`,
-      r:`Porque ${M('x')} no vale siempre 1. Con ${M('x = 10')}: ${M('2x + 3')} da 23 y ${M('5x')} da 50.` },
+    { p:`¿${I('2x + 3')} no es lo mismo que ${I('5x')}?`,
+      r:`No: ${M('x')} no vale siempre 1. Con ${M('x = 10')}, ${M('2x + 3')} da 23 y ${M('5x')} da 50.` },
+    { p:'¿Incógnita y variable son lo mismo?',
+      r:'Es la misma letra usada de dos maneras. <b>Incógnita</b> cuando hay un valor que buscar; <b>variable</b> cuando puede tomar muchos valores, como en una identidad.' },
     { p:'¿De dónde viene la palabra "ecuación"?',
       r:'Del latín <i>aequalis</i>, que significa "igual".' },
   ],
   notas:`<p>Los tres primeros ejemplos son <b>la misma igualdad cambiando un solo número</b>
-      cada vez: primero se cumple siempre, después nunca, después una sola vez. Conviene
-      mostrar el enunciado nuevo y preguntar qué va a pasar antes de probar. Que descubran
-      que un cambio chiquito cambia la naturaleza de la igualdad es el centro del tema.</p>
+      cada vez, y ese número aparece resaltado en el enunciado: primero se cumple siempre,
+      después nunca, después una sola vez. Conviene mostrar el enunciado nuevo y preguntar
+      qué va a pasar antes de probar.</p>
+    <p>El valor que se reemplaza también va resaltado en cada paso. Es la forma de que vean
+      qué quiere decir "reemplazar": la letra desaparece y en su lugar entra un número.</p>
     <p>El libro solo distingue identidad de ecuación; el segundo ejemplo agrega el caso
-      "nunca", que va a volver en el tema 3 y en 8.º como rectas paralelas.</p>
+      "nunca", que va a volver en 8.º como rectas paralelas.</p>
     <p>"Por simple inspección" (el cuarto ejemplo, y el ejercicio 3 de la pág. 137) es
       tantear, y vale la pena no apurarlo: fijarse que la diferencia se achica de a uno es
-      sentido numérico, y es lo que después permite anticipar si un resultado es razonable.</p>`
+      sentido numérico.</p>`
 },
 
 /* ─────────────────────────── 3 ─────────────────────────── */
@@ -398,63 +391,69 @@ const TEMAS = [
   ejemplos:[
     { titulo:'la forma ax = b', enun:M('6x = 42'),
       pasos:[
-        `Divido los dos miembros por 6: ${M('6x : 6 = 42 : 6')}`,
+        `Divido los dos miembros por 6: ${M(`6x ${N(': 6')} = 42 ${N(': 6')}`)}`,
         'Control en la ecuación original: 6 · 7 = 42 ✓',
       ], final:'<i>x</i> = 7' },
-    { titulo:'agrego un término: ax + b = c', enun:M('6x − 5 = 25'),
+    { titulo:'agrego un término: ax + b = c', enun:M(`6x ${N('− 5')} = 25`),
       pasos:[
-        `Sumo 5 a los dos miembros: ${M('6x − 5 + 5 = 25 + 5')}, o sea ${M('6x = 30')}.`,
-        'Divido los dos miembros por 6.',
+        `Sumo 5 a los dos miembros: ${M(`6x − 5 ${N('+ 5')} = 25 ${N('+ 5')}`)}`,
+        `Queda ${M('6x = 30')}. Divido por 6: ${M(`6x ${N(': 6')} = 30 ${N(': 6')}`)}`,
         'Control: 6 · 5 − 5 = 25 ✓',
       ], final:'<i>x</i> = 5' },
-    { titulo:'la x en los dos miembros: ax + b = cx + d', enun:M('6x − 5 = 2x + 11'),
+    { titulo:'la x en los dos miembros: ax + b = cx + d', enun:M(`6x − 5 = ${N('2x +')} 11`),
       pasos:[
-        `Resto ${M('2x')} a los dos miembros: ${M('4x − 5 = 11')}.`,
-        `Sumo 5: ${M('4x = 16')}.`,
-        'Divido por 4.',
+        `Resto ${M('2x')} a los dos miembros: ${M(`6x − 5 ${N('− 2x')} = 2x + 11 ${N('− 2x')}`)}`,
+        `Queda ${M('4x − 5 = 11')}. Sumo 5: ${M(`4x − 5 ${N('+ 5')} = 11 ${N('+ 5')}`)}`,
+        `Queda ${M('4x = 16')}. Divido por 4: ${M(`4x ${N(': 4')} = 16 ${N(': 4')}`)}`,
         'Control: izquierda 6 · 4 − 5 = 19, derecha 2 · 4 + 11 = 19 ✓',
       ], final:'<i>x</i> = 4' },
     { titulo:'aparece un paréntesis', enun:M('3(x − 2) = x + 10'),
       pasos:[
-        `Distributiva: el 3 multiplica a los dos términos del paréntesis. ${M('3x − 6 = x + 10')}`,
-        `Resto ${M('x')}: ${M('2x − 6 = 10')}. Sumo 6: ${M('2x = 16')}.`,
-        'Divido por 2.',
+        `Distributiva: el 3 multiplica a los dos términos. ${M(`${N('3 · x − 3 · 2')} = x + 10`)}, o sea ${M('3x − 6 = x + 10')}`,
+        `Resto ${M('x')}: ${M(`3x − 6 ${N('− x')} = x + 10 ${N('− x')}`)}, queda ${M('2x − 6 = 10')}`,
+        `Sumo 6: ${M(`2x − 6 ${N('+ 6')} = 10 ${N('+ 6')}`)}, queda ${M('2x = 16')}`,
+        `Divido por 2: ${M(`2x ${N(': 2')} = 16 ${N(': 2')}`)}`,
         'Control: 3 · (8 − 2) = 18 y 8 + 10 = 18 ✓',
       ], final:'<i>x</i> = 8' },
-    { titulo:'un menos delante del paréntesis', enun:M('10 − (x + 4) = 2x'),
+    { titulo:'un menos delante del paréntesis', enun:M(`10 ${N('−')} (x + 4) = 2x`),
       pasos:[
-        `El menos cambia el signo de todo lo de adentro: ${M('10 − x − 4 = 2x')}.`,
-        `Reduzco: ${M('6 − x = 2x')}.`,
-        `Sumo ${M('x')} a los dos miembros: ${M('6 = 3x')}. Divido por 3.`,
+        `El menos cambia el signo de todo lo de adentro: ${M(`10 ${N('− x − 4')} = 2x`)}`,
+        `Reduzco: ${M('6 − x = 2x')}`,
+        `Sumo ${M('x')}: ${M(`6 − x ${N('+ x')} = 2x ${N('+ x')}`)}, queda ${M('6 = 3x')}`,
+        `Divido por 3: ${M(`6 ${N(': 3')} = 3x ${N(': 3')}`)}`,
         'Control: 10 − (2 + 4) = 4 y 2 · 2 = 4 ✓',
       ], final:'<i>x</i> = 2' },
   ],
   taller:'lab-balanza',
   preguntas:[
-    { p:'¿Qué quiere decir "pasa restando"?',
-      r:'Es el nombre corto de <b>restar a los dos miembros</b>. Nada cruza al otro lado: se hizo lo mismo en los dos, y de un lado se anuló.' },
-    { p:'¿Qué son ecuaciones equivalentes?',
-      r:`Las que tienen la misma solución. En el ejemplo 2, ${M('6x − 5 = 25')} y ${M('6x = 30')} son equivalentes: las dos dan ${M('x = 5')}.` },
-    { p:'¿A qué miembro llevo las x?',
-      r:'Al que tenga el coeficiente más grande. Así casi nunca trabajás con negativos.' },
-    { p:'¿Puedo "simplificar" la x si está en los dos miembros?',
-      r:`No. En ${M('3x = 5x')} la respuesta es <span class="ec"><i>x</i> = 0</span>; si dividís por ${M('x')} llegás a 3 = 5. Dividir por ${M('x')} es dividir por un número que podría ser 0.` },
-    { p:'¿En qué ecuación hago el control?',
-      r:'En la <b>original</b>. Si te equivocaste en un paso, todas las que siguen ya tienen el error adentro.' },
+    { p:'¿"Pasa restando" está mal dicho?',
+      r:'No está mal: es el nombre corto de <b>restar a los dos miembros</b>. Nada cruza al otro lado; se hizo lo mismo en los dos, y de un lado se anuló.' },
+    { p:`En el ejemplo 2, ${I('6x − 5 = 25')} se convirtió en ${I('6x = 30')}. ¿Son la misma ecuación?`,
+      r:`Son <b>equivalentes</b>: distintas, pero con la misma solución, ${M('x = 5')}. Cada paso de la resolución da una equivalente de la anterior.` },
+    { p:'¿Por qué el menos cambia todos los signos del paréntesis y no solo el primero?',
+      r:`Porque restar ${M('(x + 4)')} es restar ${M('x')} y también restar 4. El menos le toca a todo lo que está adentro.` },
+    { p:'¿Por qué llevaste las x al primer miembro y no al segundo?',
+      r:'Porque ahí el coeficiente era más grande. Así casi nunca se trabaja con negativos. Al revés también se puede, y da lo mismo.' },
+    { p:'¿Puedo tachar la x si está en los dos miembros?',
+      r:`No. En ${M('3x = 5x')} la respuesta es <span class="ec"><i>x</i> = 0</span>; si tachás la ${M('x')} llegás a 3 = 5. Tachar es dividir por ${M('x')}, y ${M('x')} podría ser 0.` },
+    { p:'¿El control lo hago en la última ecuación o en la primera?',
+      r:'En la <b>primera</b>, la original. Si te equivocaste en un paso, todas las que siguen ya tienen el error adentro.' },
   ],
   notas:`<p>El libro presenta las tres formas del programa en una tabla (pág. 138). Los tres
-      primeros ejemplos las recorren en orden, y cada una agrega exactamente una cosa a la
-      anterior: un término independiente, y después la incógnita del otro lado.</p>
+      primeros ejemplos las recorren en orden, y lo que cada uno agrega va resaltado en el
+      enunciado: primero un término independiente, después la incógnita del otro lado.</p>
+    <p>En todos los ejemplos, <b>la operación se escribe en los dos miembros antes de
+      resolverla</b>, con el mismo color. Es a propósito: que vean que no se saltea ningún
+      paso, igual que en la balanza.</p>
     <p>Sobre <b>"pasa restando"</b>: no hay que prohibirlo, pero sí mostrar que es el nombre
       corto de una acción. Quien piensa "resté 5 de los dos lados" no se equivoca de signo;
-      quien piensa "el 5 cruzó y cambió de signo", sí. La balanza de este tema solo deja
-      hacer lo primero, y escribe el paso intermedio en los dos miembros antes de resolverlo.</p>
+      quien piensa "el 5 cruzó y cambió de signo", sí.</p>
     <p>Los dos errores que más aparecen: <b>repartir a medias</b> (escribir
       <span class="ec">3<i>x</i> − 2</span> en lugar de <span class="ec">3<i>x</i> − 6</span>)
       y <b>el menos delante del paréntesis</b> que solo cambia el primer signo. El control en
-      la ecuación original detecta los dos sin necesidad de revisar el procedimiento.</p>
+      la ecuación original detecta los dos.</p>
     <p>La pregunta de <span class="ec">3<i>x</i> = 5<i>x</i></span> funciona mejor como
-      desafío: escribirla, dejar que "simplifiquen" y preguntar dónde está el error.</p>`
+      desafío: escribirla, dejar que "tachen" y preguntar dónde está el error.</p>`
 },
 
 /* ─────────────────────────── 4 ─────────────────────────── */
@@ -474,56 +473,61 @@ const TEMAS = [
     ]
   },
   ejemplos:[
-    { titulo:'ya está en la forma y = ax + b', enun:M('y = 2x − 1'), grafica:{ a:[2, 1],  b:[-1, 1], xs:[0, 2, 1] },
+    { titulo:'ya está en la forma y = ax + b', enun:M('y = 2x − 1'),
+      grafica:{ a:[2, 1], b:[-1, 1], xs:[0, 2, 1] },
       pasos:[
-        `Elijo ${M('x = 0')}: ${M('y = 2 · 0 − 1 = −1')}. Punto <b>(0, −1)</b>.`,
-        `Elijo ${M('x = 2')}: ${M('y = 2 · 2 − 1 = 3')}. Punto <b>(2, 3)</b>.`,
-        `Control con ${M('x = 1')}: ${M('y = 1')}. El punto <b>(1, 1)</b> tiene que quedar alineado.`,
+        `Elijo ${M('x = 0')}: ${M(`y = 2 · ${N('0')} − 1 = −1`)}. Punto <b>(0, −1)</b>.`,
+        `Elijo ${M('x = 2')}: ${M(`y = 2 · ${N('2')} − 1 = 3`)}. Punto <b>(2, 3)</b>.`,
+        `Control con ${M('x = 1')}: ${M(`y = 2 · ${N('1')} − 1 = 1`)}. El punto <b>(1, 1)</b> tiene que quedar alineado.`,
       ], final:'una recta que sube: la pendiente, 2, es positiva' },
-    { titulo:'cambio el signo de la pendiente', enun:M('y = −2x + 3'), grafica:{ a:[-2, 1], b:[3, 1],  xs:[0, 2, 1] },
+    { titulo:'cambio el signo de la pendiente', enun:M(`y = ${N('−')}2x + 3`),
+      grafica:{ a:[-2, 1], b:[3, 1], xs:[0, 2, 1] },
       pasos:[
-        `${M('x = 0')}: ${M('y = 3')}. Punto <b>(0, 3)</b>.`,
-        `${M('x = 2')}: ${M('y = −4 + 3 = −1')}. Punto <b>(2, −1)</b>.`,
-        `Control con ${M('x = 1')}: ${M('y = 1')}. Punto (1, 1).`,
+        `${M('x = 0')}: ${M(`y = −2 · ${N('0')} + 3 = 3`)}. Punto <b>(0, 3)</b>.`,
+        `${M('x = 2')}: ${M(`y = −2 · ${N('2')} + 3 = −1`)}. Punto <b>(2, −1)</b>.`,
+        `Control con ${M('x = 1')}: ${M(`y = −2 · ${N('1')} + 3 = 1`)}. Punto (1, 1).`,
       ], final:'una recta que baja: la pendiente, −2, es negativa' },
-    { titulo:'no está despejada', enun:M('3x + y − 5 = 0'), grafica:{ a:[-3, 1], b:[5, 1],  xs:[0, 1, 2] },
+    { titulo:'no está despejada', enun:M('3x + y − 5 = 0'),
+      grafica:{ a:[-3, 1], b:[5, 1], xs:[0, 1, 2] },
       pasos:[
-        `Despejo ${M('y')}: resto ${M('3x')} y sumo 5 a los dos miembros. ${M('y = −3x + 5')}`,
-        `${M('x = 0')} da ${M('y = 5')}: <b>(0, 5)</b>. ${M('x = 1')} da ${M('y = 2')}: <b>(1, 2)</b>.`,
-        `Control con ${M('x = 2')}: ${M('y = −1')}. Punto (2, −1).`,
+        `Despejo ${M('y')}: resto ${M('3x')} y sumo 5 a los dos miembros. ${M(`3x + y − 5 ${N('− 3x + 5')} = 0 ${N('− 3x + 5')}`)}`,
+        `Queda ${M('y = −3x + 5')}. Con ${M('x = 0')}: <b>(0, 5)</b>. Con ${M('x = 1')}: ${M(`y = −3 · ${N('1')} + 5 = 2`)}, <b>(1, 2)</b>.`,
+        `Control con ${M('x = 2')}: ${M(`y = −3 · ${N('2')} + 5 = −1`)}. Punto (2, −1).`,
       ], final:'la recta de <span class="ec"><i>y</i> = −3<i>x</i> + 5</span>, que baja de a 3' },
-    { titulo:'al despejar queda una fracción', enun:M('2x + 3y − 6 = 0'), grafica:{ a:[-2, 3], b:[2, 1],  xs:[0, 3, 6] },
+    { titulo:'al despejar queda una fracción', enun:M('2x + 3y − 6 = 0'),
+      grafica:{ a:[-2, 3], b:[2, 1], xs:[0, 3, 6] },
       pasos:[
-        `Despejo: ${M('3y = −2x + 6')}, y divido por 3. <span class="ec"><i>y</i> = −${Q('2','3')}<i>x</i> + 2</span>`,
+        `Despejo: ${M(`2x + 3y − 6 ${N('− 2x + 6')} = 0 ${N('− 2x + 6')}`)}, queda ${M('3y = −2x + 6')}`,
+        `Divido por 3: <span class="ec"><i>y</i> = −${Q('2','3')}<i>x</i> + 2</span>`,
         `Como hay tercios, elijo ${M('x')} múltiplos de 3. ${M('x = 0')}: <b>(0, 2)</b>. ${M('x = 3')}: <b>(3, 0)</b>.`,
         `Control con ${M('x = 6')}: ${M('y = −2')}. Punto <b>(6, −2)</b>.`,
       ], final:'elegir bien la <i>x</i> ahorra las fracciones' },
   ],
   taller:'lab-grafica',
   preguntas:[
-    { p:'¿Cuántos puntos necesito?',
-      r:'Dos. Por dos puntos pasa una única recta. El tercero es un control: si no queda alineado, hay un error en alguna cuenta.' },
-    { p:'¿Qué valores de x conviene elegir?',
+    { p:'Las rectas de los ejemplos 1 y 2 pasan las dos por (1, 1). ¿Es casualidad?',
+      r:'No. El punto (1, 1) cumple las dos ecuaciones a la vez. Buscar ese punto se llama <b>resolver un sistema</b>, y lo van a ver en 8.º.' },
+    { p:'¿Por qué con dos puntos alcanza?',
+      r:'Porque por dos puntos pasa una única recta. El tercero es un control: si no queda alineado, hay un error en alguna cuenta.' },
+    { p:'¿Qué números conviene elegir para x?',
       r:'Los que den cuentas fáciles. El 0 siempre. Si la pendiente tiene denominador, múltiplos de ese denominador, como en el ejemplo 4.' },
-    { p:'¿Qué me dice la pendiente?',
-      r:`Cuánto cambia ${M('y')} cada vez que ${M('x')} aumenta 1. En ${M('y = 2x − 1')} sube 2; en ${M('y = −2x + 3')} baja 2.` },
+    { p:'¿Qué dice el número que está adelante de la x?',
+      r:`Cuánto cambia ${M('y')} cada vez que ${M('x')} aumenta 1: es la <b>pendiente</b>. En ${M('y = 2x − 1')} sube 2; en ${M('y = −2x + 3')} baja 2.` },
     { p:'¿Qué tiene que ver esto con resolver ecuaciones?',
       r:`Resolver ${M('2x − 1 = 5')} es buscar en qué ${M('x')} la recta ${M('y = 2x − 1')} llega a la altura 5. Da ${M('x = 3')}.` },
-    { p:'¿Esto se puede hacer en la computadora?',
-      r:'Sí: el libro trae un laboratorio con GeoGebra en la pág. 148, con dos maneras de dibujar una recta.' },
   ],
   notas:`<p>El libro usa <b>tabla de valores</b> y dice que el tercer punto es para controlar
-      (pág. 140): que lo hagan siempre, porque es la versión gráfica de verificar.</p>
-    <p>Los ejemplos 1 y 2 cambian solo el signo de la pendiente, y resulta que <b>las dos
-      rectas pasan por (1, 1)</b>. Si alguien lo nota, vale la pena detenerse: ese punto
-      cumple las dos ecuaciones a la vez, y eso en 8.º se llama sistema de ecuaciones.</p>
+      (pág. 140): que lo hagan siempre, porque es la versión gráfica de verificar. En cada
+      paso va resaltado el valor elegido para <span class="ec"><i>x</i></span>.</p>
+    <p>Los ejemplos 1 y 2 cambian solo el signo de la pendiente, y <b>las dos rectas pasan
+      por (1, 1)</b>. Es la primera pregunta del observador: si alguien lo nota solo, mejor.
+      Ese punto cumple las dos ecuaciones a la vez, y eso en 8.º se llama sistema.</p>
     <p>El ejemplo 4 es la forma general con fracción, como el
       <span class="ec">3<i>x</i> + 5<i>y</i> − 15 = 0</span> del libro. La clave es elegir
       los valores de <span class="ec"><i>x</i></span> después de despejar, mirando el
       denominador.</p>
-    <p>La cuarta pregunta frecuente une este tema con el anterior: resolver
-      <span class="ec"><i>ax</i> + <i>b</i> = <i>c</i></span> es buscar dónde una recta
-      alcanza cierta altura. El taller permite mostrarlo moviendo la ordenada.</p>`
+    <p>El libro trae un laboratorio de GeoGebra en la pág. 148, con dos maneras de dibujar
+      una recta. El taller de esta página hace lo mismo sin salir de la clase.</p>`
 },
 
 /* ─────────────────────────── 5 ─────────────────────────── */
@@ -541,56 +545,59 @@ const TEMAS = [
   ejemplos:[
     { titulo:'la forma ax = b, con fracción', enun:`<span class="ec">${Q('x','4')} = 3</span>`,
       pasos:[
-        'Multiplico los dos miembros por 4.',
-        `El 4 se simplifica con el denominador: ${M('x = 4 · 3')}.`,
+        `Multiplico los dos miembros por 4: <span class="ec">${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 3</span>`,
+        `El 4 se simplifica con el denominador: ${M('x = 12')}.`,
         'Control: 12 : 4 = 3 ✓',
       ], final:'<i>x</i> = 12' },
-    { titulo:'agrego un término: ax + b = c', enun:`<span class="ec">${Q('x','2')} + ${Q('1','3')} = ${Q('5','6')}</span>`,
+    { titulo:'agrego un término: ax + b = c', enun:`<span class="ec">${Q('x','2')} ${N('+ ' + Q('1','3'))} = ${Q('5','6')}</span>`,
       pasos:[
-        'El m.c.m. de 2, 3 y 6 es 6. Multiplico todo por 6.',
-        `6 por cada término: ${M('3x + 2 = 5')}.`,
-        'Resto 2 y divido por 3.',
-        `Control: <span class="ec">${Q('1','2')} + ${Q('1','3')} = ${Q('3','6')} + ${Q('2','6')} = ${Q('5','6')}</span> ✓`,
+        'El m.c.m. de 2, 3 y 6 es 6.',
+        `Multiplico cada término por 6: <span class="ec">${N('6 ·')} ${Q('x','2')} + ${N('6 ·')} ${Q('1','3')} = ${N('6 ·')} ${Q('5','6')}</span>`,
+        `Queda ${M('3x + 2 = 5')}. Resto 2: ${M(`3x + 2 ${N('− 2')} = 5 ${N('− 2')}`)}, o sea ${M('3x = 3')}.`,
+        `Divido por 3. Control: <span class="ec">${Q('1','2')} + ${Q('1','3')} = ${Q('3','6')} + ${Q('2','6')} = ${Q('5','6')}</span> ✓`,
       ], final:'<i>x</i> = 1' },
-    { titulo:'la x en los dos miembros', enun:`<span class="ec">${Q('3','4')}<i>x</i> − 1 = ${Q('x','2')} + 1</span>`,
+    { titulo:'la x en los dos miembros', enun:`<span class="ec">${Q('3','4')}<i>x</i> − 1 = ${N(Q('x','2') + ' +')} 1</span>`,
       pasos:[
         'El m.c.m. de 4 y 2 es 4. Multiplico todo por 4, también el −1 y el +1.',
-        `Queda ${M('3x − 4 = 2x + 4')}.`,
-        `Resto ${M('2x')} y sumo 4.`,
+        `<span class="ec">${N('4 ·')} ${Q('3','4')}<i>x</i> − ${N('4 ·')} 1 = ${N('4 ·')} ${Q('x','2')} + ${N('4 ·')} 1</span>`,
+        `Queda ${M('3x − 4 = 2x + 4')}. Resto ${M('2x')} y sumo 4: ${M(`3x − 4 ${N('− 2x + 4')} = 2x + 4 ${N('− 2x + 4')}`)}`,
         `Control: <span class="ec">${Q('3','4')} · 8 − 1 = 5</span> y <span class="ec">${Q('8','2')} + 1 = 5</span> ✓`,
       ], final:'<i>x</i> = 8' },
     { titulo:'los numeradores tienen dos términos', enun:`<span class="ec">${Q('x + 1','2')} − ${Q('x − 3','5')} = 2</span>`,
       pasos:[
         'm.c.m. de 2 y 5: 10. Multiplico todo por 10.',
-        `10 : 2 = 5 y 10 : 5 = 2, y los numeradores van entre paréntesis: ${M('5(x + 1) − 2(x − 3) = 20')}.`,
-        `Reparto con cuidado el menos: ${M('5x + 5 − 2x + 6 = 20')}, o sea ${M('3x + 11 = 20')}.`,
-        'Resto 11 y divido por 3.',
+        `<span class="ec">${N('10 ·')} ${Q('x + 1','2')} − ${N('10 ·')} ${Q('x − 3','5')} = ${N('10 ·')} 2</span>`,
+        `10 : 2 = 5 y 10 : 5 = 2, y los numeradores van entre paréntesis: ${M('5(x + 1) − 2(x − 3) = 20')}`,
+        `Reparto con cuidado el menos: ${M(`5x + 5 − 2x ${N('+ 6')} = 20`)}, o sea ${M('3x + 11 = 20')}`,
+        `Resto 11: ${M('3x = 9')}. Divido por 3: ${M(`3x ${N(': 3')} = 9 ${N(': 3')}`)}`,
       ], final:'<i>x</i> = 3' },
     { titulo:'fracción en los dos miembros, y la respuesta no es entera', enun:`<span class="ec">${Q('2x − 1','3')} = ${Q('x + 4','4')}</span>`,
       pasos:[
         'm.c.m. de 3 y 4: 12. Multiplico los dos miembros por 12.',
-        `${M('4(2x − 1) = 3(x + 4)')}, o sea ${M('8x − 4 = 3x + 12')}.`,
-        `Resto ${M('3x')} y sumo 4: ${M('5x = 16')}.`,
+        `<span class="ec">${N('12 ·')} ${Q('2x − 1','3')} = ${N('12 ·')} ${Q('x + 4','4')}</span>`,
+        `12 : 3 = 4 y 12 : 4 = 3: ${M('4(2x − 1) = 3(x + 4)')}, o sea ${M('8x − 4 = 3x + 12')}`,
+        `Resto ${M('3x')} y sumo 4: ${M(`8x − 4 ${N('− 3x + 4')} = 3x + 12 ${N('− 3x + 4')}`)}, queda ${M('5x = 16')}`,
         'Divido por 5. No da entero, y está bien: la respuesta es una fracción.',
       ], final:'<i>x</i> = 16/5' },
   ],
   preguntas:[
-    { p:'¿Tengo que usar el m.c.m. o sirve cualquier múltiplo común?',
-      r:'Cualquiera sirve. El m.c.m. deja los números más chicos y ahorra cuentas.' },
-    { p:'¿Multiplico también los términos que no tienen fracción?',
-      r:'Sí, todos. En el ejemplo 3, el −1 y el +1 también se multiplican por 4. Olvidarlos es el error más común del tema.' },
-    { p:'¿Por qué los numeradores van entre paréntesis?',
-      r:'Porque el número multiplica al numerador entero. Y si delante de la fracción hay un menos, cambia el signo de todos sus términos.' },
-    { p:'Me dio 16/5, ¿está mal?',
+    { p:'¿Al −1 también lo tengo que multiplicar, si no tiene fracción?',
+      r:'Sí, a todos. En el ejemplo 3, el −1 y el +1 también se multiplican por 4. Olvidarlos es el error más común del tema.' },
+    { p:'¿Por qué el m.c.m. y no cualquier número?',
+      r:'Cualquier múltiplo común sirve. El m.c.m. deja los números más chicos y ahorra cuentas.' },
+    { p:'¿Por qué pusiste paréntesis en los numeradores?',
+      r:'Porque el número multiplica al numerador entero. Y si delante de la fracción hay un menos, cambia el signo de todos sus términos: por eso en el ejemplo 4 aparece un +6.' },
+    { p:'Me dio 16/5. ¿No estará mal, si no da entero?',
       r:'No. Una fracción es una respuesta tan buena como un entero. No se redondea: se deja exacta.' },
   ],
   notas:`<p>Es el tema donde más se pierde puntaje, y casi nunca por no entender: por no
       multiplicar un término que "no tenía fracción" o por repartir mal un menos. Los
-      ejemplos 3 y 4 apuntan exactamente a esos dos errores.</p>
+      ejemplos 3 y 4 apuntan exactamente a esos dos errores, y el paso de multiplicar se
+      escribe entero, con el m.c.m. resaltado adelante de cada término.</p>
     <p>El libro repasa el m.c.m. por factores primos en el margen de la pág. 142. Si el
       grupo lo tiene flojo, vale la pena hacer dos o tres al pizarrón antes del ejemplo 2.</p>
     <p>El ejemplo 5 da <span class="ec"><i>x</i> = 16/5</span> a propósito: muchos alumnos
-      creen que si no da entero está mal. El control, con fracciones, les muestra que no.</p>`
+      creen que si no da entero está mal.</p>`
 },
 
 /* ─────────────────────────── 6 ─────────────────────────── */
@@ -616,26 +623,26 @@ const TEMAS = [
     { titulo:'el triple', enun:'«el triple de un número»', prosa:true,
       pasos:[
         `"Un número" es ${M('x')}.`,
-        '"El triple" es multiplicar por 3.',
-        `Control con ${M('x = 10')}: da 30.`,
+        `"El triple" es multiplicar por 3: ${M('3 · x')}.`,
+        `Control con ${M('x = 10')}: ${M(`3 · ${N('10')} = 30`)}.`,
       ], final:'3<i>x</i>' },
-    { titulo:'agrego "menos 4"', enun:'«el triple de un número, menos 4»', prosa:true,
+    { titulo:'agrego "menos 4"', enun:`«el triple de un número, ${N('menos 4')}»`, prosa:true,
       pasos:[
         `Primero el triple: ${M('3x')}.`,
-        'Después, a eso, le resto 4.',
-        `Control con ${M('x = 10')}: da 26.`,
+        `Después, a eso, le resto 4: ${M(`3x ${N('− 4')}`)}.`,
+        `Control con ${M('x = 10')}: ${M(`3 · ${N('10')} − 4 = 26`)}.`,
       ], final:'3<i>x</i> − 4' },
-    { titulo:'cambio el orden: "de la diferencia"', enun:'«el triple de la diferencia entre un número y 4»', prosa:true,
+    { titulo:'cambio el orden: "de la diferencia"', enun:`«el triple de ${N('la diferencia entre')} un número y 4»`, prosa:true,
       pasos:[
         `Primero la diferencia: ${M('x − 4')}.`,
-        'Después el triple de todo eso: la diferencia va entre paréntesis.',
-        `Control con ${M('x = 10')}: da 18, no 26. No es lo mismo que el ejemplo anterior.`,
+        `Después el triple de todo eso, que va entre paréntesis: ${M(`3${N('(')}x − 4${N(')')}`)}.`,
+        `Control con ${M('x = 10')}: ${M(`3(${N('10')} − 4) = 18`)}, no 26. No es lo mismo que el ejemplo anterior.`,
       ], final:'3(<i>x</i> − 4)' },
-    { titulo:'cambio "triple" por "tercera parte"', enun:'«la tercera parte de un número, menos 4»', prosa:true,
+    { titulo:'cambio "triple" por "tercera parte"', enun:`«${N('la tercera parte')} de un número, menos 4»`, prosa:true,
       pasos:[
         `La tercera parte de ${M('x')} es <span class="ec">${Q('x','3')}</span>.`,
-        'Le resto 4.',
-        `Control con ${M('x = 10')}: <span class="ec">${Q('10','3')} − 4</span> = −2/3. Una fracción negativa, y está bien.`,
+        `Le resto 4: <span class="ec">${Q('x','3')} ${N('− 4')}</span>.`,
+        `Control con ${M('x = 10')}: <span class="ec">${Q(N('10'),'3')} − 4</span> = −2/3. Una fracción negativa, y está bien.`,
       ], final:`<span class="ec">${Q('x','3')} − 4</span>` },
     { titulo:'al revés: de letras a palabras', enun:M('x + (x + 1)'),
       pasos:[
@@ -646,16 +653,19 @@ const TEMAS = [
   preguntas:[
     { p:'¿"4 menos que un número" es 4 − x?',
       r:`No: es ${M('x − 4')}. "Menos que" da vuelta el orden: el que queda primero es el número.` },
-    { p:'¿Cómo sé si va paréntesis?',
+    { p:'¿Cómo sé cuándo va paréntesis?',
       r:'Si la frase dice "de la suma" o "de la diferencia", la operación se aplica a todo el resultado: va paréntesis.' },
+    { p:'¿Por qué siempre probás con x = 10?',
+      r:'Porque con 10 las cuentas salen de memoria y se nota enseguida si dos expresiones son distintas: en los ejemplos 2 y 3 dio 26 y 18.' },
     { p:'¿Por qué los pares consecutivos van de 2 en 2?',
       r:'Porque entre dos pares seguidos siempre hay un impar: 6, 8, 10.' },
-    { p:'¿Quién empezó a escribir las cuentas con letras?',
+    { p:'¿Quién inventó usar letras en las cuentas?',
       r:'Diofanto de Alejandría, en el siglo III, usaba abreviaturas; por eso el libro lo llama padre del álgebra. Las letras como las usamos hoy las introdujo François Viète en el siglo XVI.' },
   ],
   notas:`<p>La tabla de la pág. 144 del libro es el vocabulario; los ejemplos lo usan en
-      secuencia, <b>cambiando una sola palabra por vez</b>, y el control con
-      <span class="ec"><i>x</i> = 10</span> muestra que cada cambio importa: 30, 26, 18.</p>
+      secuencia, <b>cambiando una sola palabra por vez</b>, y esa palabra va resaltada en el
+      enunciado. El control con <span class="ec"><i>x</i> = 10</span> muestra que cada cambio
+      importa: 30, 26, 18.</p>
     <p>La trampa del tema es el orden. "El triple de un número menos 4" dicho sin pausa es
       ambiguo, y es justamente lo que separa los ejemplos 2 y 3. Vale la pena leerlos en voz
       alta con y sin la coma.</p>
@@ -684,54 +694,55 @@ const TEMAS = [
       enun:'«Compré 3 cuadernos iguales y una regla de ₲ 8000. Pagué ₲ 47 000 en total. ¿Cuánto costó cada cuaderno?»',
       pasos:[
         `${M('x')} = el precio de un cuaderno, en guaraníes.`,
-        `Tres cuadernos más la regla: ${M('3x + 8000 = 47 000')}.`,
-        `Resto 8000: ${M('3x = 39 000')}. Divido por 3.`,
+        `Tres cuadernos más la regla: ${M('3x + 8000 = 47 000')}`,
+        `Resto 8000: ${M(`3x + 8000 ${N('− 8000')} = 47 000 ${N('− 8000')}`)}, queda ${M('3x = 39 000')}`,
+        `Divido por 3: ${M(`3x ${N(': 3')} = 39 000 ${N(': 3')}`)}`,
         'Control en el enunciado: 3 · 13 000 + 8000 = 47 000 ✓',
       ], final:'cada cuaderno costó ₲ 13 000' },
     { titulo:'tres números que se siguen', prosa:true,
       enun:'«Tres números consecutivos suman 51. ¿Cuáles son?»',
       pasos:[
         `${M('x')} = el menor. Los otros dos son ${M('x + 1')} y ${M('x + 2')}.`,
-        `${M('x + (x + 1) + (x + 2) = 51')}, o sea ${M('3x + 3 = 51')}.`,
-        `Resto 3 y divido por 3: ${M('x = 16')}.`,
+        `${M('x + (x + 1) + (x + 2) = 51')}, o sea ${M('3x + 3 = 51')}`,
+        `Resto 3: ${M(`3x + 3 ${N('− 3')} = 51 ${N('− 3')}`)}. Divido por 3: ${M(`3x ${N(': 3')} = 48 ${N(': 3')}`)}`,
         'Control: 16 + 17 + 18 = 51 ✓',
       ], final:'los números son 16, 17 y 18' },
     { titulo:'una figura', prosa:true,
       enun:'«El largo de un rectángulo supera en 4 m al ancho, y el perímetro mide 52 m. ¿Cuánto mide cada lado?»',
       pasos:[
         `${M('x')} = el ancho, en metros. El largo, que depende del ancho, es ${M('x + 4')}.`,
-        `El perímetro son los cuatro lados: ${M('2x + 2(x + 4) = 52')}.`,
-        `${M('4x + 8 = 52')}, ${M('4x = 44')}, ${M('x = 11')}.`,
+        `El perímetro son los cuatro lados: ${M('2x + 2(x + 4) = 52')}, o sea ${M('4x + 8 = 52')}`,
+        `Resto 8: ${M(`4x + 8 ${N('− 8')} = 52 ${N('− 8')}`)}. Divido por 4: ${M(`4x ${N(': 4')} = 44 ${N(': 4')}`)}`,
         'Control en el enunciado: 15 supera en 4 a 11, y 2 · (11 + 15) = 52 ✓',
       ], final:'el ancho mide 11 m y el largo 15 m' },
     { titulo:'una parte de un número', prosa:true,
       enun:'«La diferencia entre un número y su cuarta parte es 18. ¿Cuál es el número?»',
       pasos:[
         `${M('x')} = el número. Su cuarta parte es <span class="ec">${Q('x','4')}</span>.`,
-        `<span class="ec"><i>x</i> − ${Q('x','4')} = 18</span>. Multiplico todo por 4: ${M('4x − x = 72')}.`,
-        `${M('3x = 72')}, ${M('x = 24')}.`,
+        `<span class="ec"><i>x</i> − ${Q('x','4')} = 18</span>. Multiplico todo por 4: <span class="ec">${N('4 ·')} <i>x</i> − ${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 18</span>`,
+        `Queda ${M('4x − x = 72')}, o sea ${M('3x = 72')}. Divido por 3.`,
         'Control: la cuarta parte de 24 es 6, y 24 − 6 = 18 ✓',
       ], final:'el número es 24' },
     { titulo:'edades, hacia atrás y hacia adelante', prosa:true,
       enun:'«Dentro de 4 años, Sofía va a tener el triple de la edad que tenía hace 4 años. ¿Cuántos años tiene?»',
       pasos:[
         `${M('x')} = la edad de Sofía hoy. Dentro de 4 años: ${M('x + 4')}. Hace 4 años: ${M('x − 4')}.`,
-        `${M('x + 4 = 3(x − 4)')}, o sea ${M('x + 4 = 3x − 12')}.`,
-        `Resto ${M('x')} y sumo 12: ${M('16 = 2x')}, ${M('x = 8')}.`,
+        `${M('x + 4 = 3(x − 4)')}, o sea ${M('x + 4 = 3x − 12')}`,
+        `Resto ${M('x')} y sumo 12: ${M(`x + 4 ${N('− x + 12')} = 3x − 12 ${N('− x + 12')}`)}, queda ${M('16 = 2x')}`,
         'Control: hace 4 años tenía 4; dentro de 4 va a tener 12, que es el triple de 4 ✓',
       ], final:'Sofía tiene 8 años' },
   ],
   preguntas:[
-    { p:'¿Qué letra uso?',
-      r:`La que quieras; ${M('x')} es costumbre. Lo que no puede faltar es escribir qué representa, con su unidad.` },
-    { p:'¿Cómo elijo qué es x?',
-      r:`Si una cantidad se describe a partir de otra ("supera en 4 al ancho"), la ${M('x')} es la otra: el ancho.` },
-    { p:'Me dio un ancho negativo, ¿qué hago?',
-      r:'La cuenta puede estar bien y el planteo mal. Volvé a leer el enunciado: una medida no puede ser negativa.' },
-    { p:'¿Por qué controlo en el enunciado y no en la ecuación?',
-      r:'Porque si planteaste mal, la ecuación está mal y el control cierra igual. El enunciado es lo único que no escribiste vos.' },
+    { p:'¿Por qué no controlás metiendo el número en la ecuación, como en los otros temas?',
+      r:'Porque si la planteaste mal, la ecuación está mal y el control cierra igual. El enunciado es lo único que no escribiste vos.' },
+    { p:'¿Cómo elijo qué es x cuando hay dos cantidades?',
+      r:`Si una se describe a partir de la otra ("el largo supera en 4 al ancho"), la ${M('x')} es la otra: el ancho.` },
     { p:'¿Puedo terminar con x = 11?',
       r:'No. Hay que contestar lo que preguntaron: "el ancho mide 11 m y el largo 15 m".' },
+    { p:'¿Y si me da un ancho negativo?',
+      r:'La cuenta puede estar bien y el planteo mal. Volvé a leer el enunciado: una medida no puede ser negativa.' },
+    { p:'¿Tiene que ser x la letra?',
+      r:`No, puede ser cualquiera; ${M('x')} es costumbre. Lo que no puede faltar es escribir qué representa, con su unidad.` },
   ],
   notas:`<p>Los cinco problemas tienen <b>estructuras distintas</b> a propósito: una compra
       (<span class="ec"><i>ax</i> + <i>b</i> = <i>c</i></span>), consecutivos, una figura, una
@@ -739,7 +750,7 @@ const TEMAS = [
       de las formas del tema 3, pero con palabras.</p>
     <p>El paso 4 es el que más importa y el que más se saltea. Controlar metiendo la
       respuesta en la ecuación propia es usar el planteo para corregir el planteo: si estaba
-      mal, cierra igual. El control tiene que volver al enunciado.</p>
+      mal, cierra igual. Es la primera pregunta del observador.</p>
     <p>El último paso, responder con una frase y con unidad, es el que convierte la cuenta
       en respuesta. Conviene no aceptar "<span class="ec"><i>x</i> = 11</span>" como final.</p>`
 },
@@ -752,35 +763,77 @@ const DESAFIO = {
   pasos:[
     `${M('x')} = los años que vivió Diofanto.`,
     `Todas las etapas suman la vida entera: <span class="ec">${Q('x','6')} + ${Q('x','12')} + ${Q('x','7')} + 5 + ${Q('x','2')} + 4 = <i>x</i></span>`,
-    `El m.c.m. de 6, 12, 7 y 2 es 84. Multiplico todo por 84: ${M('14x + 7x + 12x + 420 + 42x + 336 = 84x')}.`,
-    `${M('75x + 756 = 84x')}, o sea ${M('756 = 9x')}.`,
+    `El m.c.m. de 6, 12, 7 y 2 es 84. Multiplico cada término por ${N('84')}: ${M('14x + 7x + 12x + 420 + 42x + 336 = 84x')}`,
+    `Reduzco: ${M('75x + 756 = 84x')}. Resto ${M('75x')}: ${M(`756 = 84x ${N('− 75x')}`)}, o sea ${M('756 = 9x')}`,
     'Control: 14 + 7 + 12 + 5 + 42 + 4 = 84 ✓',
   ],
   final:'Diofanto vivió 84 años',
+  preguntas:[
+    { p:'¿Es casualidad que el m.c.m. y la respuesta sean los dos 84?',
+      r:'No. Para que cada etapa sea un número entero de años, la vida tiene que ser múltiplo de 6, de 12, de 7 y de 2, o sea de 84. Y como nadie vive 168 años, tiene que ser 84.' },
+    { p:'¿Esto estaba escrito de verdad en su tumba?',
+      r:'Es un acertijo de la <i>Antología griega</i>, una colección del siglo VI, que lo cuenta así. No se sabe si estuvo en una tumba de verdad.' },
+  ],
   notas:`<p>Es un problema de la <b>Antología griega</b>, una colección de acertijos del siglo
       VI; el libro lo menciona en el margen de la pág. 144. Junta toda la unidad:
       simbolizar, fracciones, resolver y controlar.</p>
-    <p>Hay un detalle hermoso para preguntar al final: <b>el m.c.m. y la respuesta son los dos
-      84</b>. No es casualidad. Para que cada etapa sea un número entero de años, la vida
-      tiene que ser múltiplo de 6, de 12, de 7 y de 2, o sea de 84. Y como nadie vive 168
-      años, tiene que ser 84. Es una segunda manera de resolverlo, sin ecuación.</p>`
+    <p>La primera pregunta del observador es una segunda manera de resolverlo, sin ecuación:
+      el m.c.m. y la respuesta coinciden porque las etapas tienen que dar años enteros.</p>`
 };
 
-/* ═══════════════════════ el armado ═══════════════════════ */
+/* ─────────────────── la pregunta de arranque ─────────────────── */
 const PREGUNTA_INICIAL = {
   enun:'«Para el reciclaje juntamos tapitas: 3 bolsas iguales y 12 sueltas, 147 en total. ¿Cuántas tapitas trae cada bolsa?»',
   pasos:[
     `${M('x')} = las tapitas de una bolsa.`,
-    `${M('3x + 12 = 147')}. Resto 12: ${M('3x = 135')}.`,
-    'Divido por 3.',
+    `${M('3x + 12 = 147')}. Resto 12: ${M(`3x + 12 ${N('− 12')} = 147 ${N('− 12')}`)}, queda ${M('3x = 135')}`,
+    `Divido por 3: ${M(`3x ${N(': 3')} = 135 ${N(': 3')}`)}`,
     'Control: 3 · 45 + 12 = 147 ✓',
   ],
   final:'cada bolsa trae 45 tapitas'
 };
 
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve una ecuación fuera de la escuela?',
+      r:'Para cualquier situación con un dato que no conocés y una relación que sí: cuánto costó cada cuaderno si sabés el total, cuántos años tiene alguien si sabés cuántos va a tener.' },
+    { p:'¿Hay ecuaciones que no tienen respuesta?',
+      r:'Sí, y también hay igualdades que se cumplen para todos los números. Aparecen las dos en el tema 2.' },
+  ],
+  notas:`<p><b>La unidad sigue los siete temas del libro</b>, en su orden, y cada tema coincide
+      con una ficha: igualdades es la 2, expresión algebraica la 3 y así hasta problemas,
+      que es la 8. Los ejemplos son todos originales; los del libro quedan para que los
+      trabajen ellos.</p>
+    <p>Cada tema tiene la misma forma: el <b>concepto</b> en pocas líneas y entre cuatro y
+      cinco <b>ejemplos resueltos</b> en secuencia. Cada ejemplo cambia una sola cosa
+      respecto del anterior; el título dice cuál y el enunciado la muestra resaltada.
+      Conviene leer el título en voz alta y preguntar qué creen que va a cambiar antes de
+      avanzar.</p>
+    <p>Lo que se agrega a los dos miembros va siempre del mismo color. Los pasos se pueden
+      recorrer hacia adelante y hacia atrás.</p>
+    <p>El botón <b>Observador</b> tiene, para cada tema, las preguntas que haría un alumno
+      atento. Sirve para cuando nadie pregunta: "veamos qué preguntaría alguien que está
+      mirando con cuidado". La respuesta queda tapada hasta que se pide.</p>
+    <p>La idea que sostiene toda la unidad: <b>una ecuación no afirma nada, pregunta</b>. Y
+      es la única parte de la matemática donde la respuesta se corrige sola, porque para
+      saber si acertaste alcanza con devolvérsela a la pregunta.</p>
+    <p>La unidad se dicta con <b>enseñanza entre pares</b>: estas diapositivas son el
+      respaldo del docente, no el guion de los alumnos.</p>`
+};
+
+/* ═══════════════════════ el armado ═══════════════════════ */
 function caja(c){
   const cont = c.ec ? M(c.ec) : c.html ? c.html : `<span class="caja-txt">${c.txt}</span>`;
   return `<div class="caja"><span class="caja-rot">${c.rot}</span>${cont}</div>`;
+}
+
+/* los pasos se recorren para los dos lados */
+function navPasos(clave, total){
+  return `<div class="pasos-nav" data-nav="${clave}">
+      <button class="boton" type="button" data-accion="atras" data-bloque="${clave}" disabled>← Anterior</button>
+      <span class="pasos-cuenta">0 / ${total}</span>
+      <button class="boton" type="button" data-accion="revelar" data-bloque="${clave}">Siguiente →</button>
+    </div>`;
 }
 
 function bloqueEjemplo(clave, ej, rotulo, cinta){
@@ -789,7 +842,7 @@ function bloqueEjemplo(clave, ej, rotulo, cinta){
     <p class="cinta">${cinta}</p>
     <div class="ejemplo-cab">
       <h4 class="ej-titulo"><span class="num">${rotulo}</span>${ej.titulo}</h4>
-      <button class="boton" type="button" data-accion="revelar" data-bloque="${clave}">Siguiente paso</button>
+      ${navPasos(clave, ej.pasos.length + 1)}
     </div>
     <div class="enunciado ${ej.prosa ? 'frase' : ''}">${ej.enun}</div>
     ${ej.grafica
@@ -799,19 +852,14 @@ function bloqueEjemplo(clave, ej, rotulo, cinta){
   </section>`;
 }
 
-function notas(id, html){
-  return `<button class="notas-btn" type="button" data-notas="${id}" aria-expanded="false">Notas del docente</button>
-    <div class="notas-panel" id="notas-${id}" hidden>${html}</div>`;
-}
-
-const BLOQUES = {};         // clave → ejemplo, para revelar los pasos
+const BLOQUES = {};         // clave → ejemplo, para recorrer los pasos
 
 document.getElementById('temas').innerHTML = TEMAS.map(t => {
   const c = t.concepto;
   const total = t.ejemplos.length;
   t.ejemplos.forEach((ej, i) => { BLOQUES[`${t.n}-${i + 1}`] = ej; });
   return `
-<article class="tema" id="tema${t.n}">
+<article class="tema" id="tema${t.n}" data-tema="${t.n}">
   <section class="concepto" id="t${t.n}">
     <p class="cinta"><b>Tema ${t.n} de 7</b> · ${t.pag}</p>
     <div class="caso-cab">
@@ -822,7 +870,6 @@ document.getElementById('temas').innerHTML = TEMAS.map(t => {
     ${c.formaTxt ? `<div class="forma"><span class="rotulo">la idea</span><span class="forma-txt">${c.formaTxt}</span></div>` : ''}
     ${c.serie ? `<div class="serie">${c.serie.map(caja).join('')}</div>` : ''}
     <ul class="puntos">${c.puntos.map(p => `<li>${p}</li>`).join('')}</ul>
-    ${notas(t.n, t.notas)}
   </section>
 
   <div class="ejemplos">
@@ -835,26 +882,19 @@ document.getElementById('temas').innerHTML = TEMAS.map(t => {
     ${LABS[t.taller]}
   </section>` : ''}
 
-  <section class="faq">
-    <p class="cinta"><b>Tema ${t.n}</b> · ${t.corto} · preguntas frecuentes</p>
-    <h4>Preguntas frecuentes</h4>
-    ${t.preguntas.map(q => `<details class="pregunta"><summary>${q.p}</summary>
-      <div class="respuesta"><p>${q.r}</p></div></details>`).join('')}
-    <p class="ficha-link">Para practicar:
-      <a href="../../fichas/pdf/7mo/Ficha_${String(t.ficha).padStart(2, '0')}.pdf">Ficha ${t.ficha}</a></p>
-  </section>
+  <p class="ficha-link">Para practicar:
+    <a href="../../fichas/pdf/7mo/Ficha_${String(t.ficha).padStart(2, '0')}.pdf">Ficha ${t.ficha}</a></p>
 </article>`;
 }).join('') + `
-<section class="desafio" id="desafio">
+<section class="desafio" id="desafio" data-tema="desafio">
   <p class="cinta"><b>Desafío final</b> · toda la unidad junta</p>
   <div class="marco">
     <div class="ejemplo-cab">
       <h4 class="ej-titulo">${DESAFIO.titulo}</h4>
-      <button class="boton" type="button" data-accion="revelar" data-bloque="desafio">Siguiente paso</button>
+      ${navPasos('desafio', DESAFIO.pasos.length + 1)}
     </div>
     <div class="enunciado frase">${DESAFIO.enun}</div>
     <ol class="pasos" id="pasos-desafio"></ol>
-    ${notas('desafio', DESAFIO.notas)}
   </div>
 </section>`;
 BLOQUES['desafio'] = DESAFIO;
@@ -865,7 +905,7 @@ document.getElementById('recorrido').insertAdjacentHTML('beforebegin', `
   <div class="ejemplo" style="margin-top:20px">
     <div class="ejemplo-cab">
       <span class="rotulo-chico">Para arrancar</span>
-      <button class="boton" type="button" data-accion="revelar" data-bloque="inicial">Siguiente paso</button>
+      ${navPasos('inicial', PREGUNTA_INICIAL.pasos.length + 1)}
     </div>
     <div class="enunciado frase">${PREGUNTA_INICIAL.enun}</div>
     <ol class="pasos" id="pasos-inicial"></ol>
@@ -878,16 +918,31 @@ document.getElementById('nav').innerHTML =
   TEMAS.map(t => `<a class="chip" href="#t${t.n}">${t.n}. ${t.corto}</a>`).join('') +
   '<a class="chip" href="#desafio">Desafío</a>';
 
-/* ——— revelar pasos ———
+/* las notas y el observador viven en los botones flotantes de assets/clase.js */
+window.CLASE = { secciones: [
+  { id:'unidad', titulo:'La unidad', notas:UNIDAD.notas, preguntas:UNIDAD.preguntas },
+  ...TEMAS.map(t => ({ id:String(t.n), titulo:`Tema ${t.n} · ${t.corto}`, notas:t.notas, preguntas:t.preguntas })),
+  { id:'desafio', titulo:'Desafío final', notas:DESAFIO.notas, preguntas:DESAFIO.preguntas },
+]};
+
+/* ——— recorrer los pasos ———
    El atributo NO puede llamarse data-paso: el panel de proyección usa ese
    nombre para las flechas de diapositiva y un clic acá saltaría de lámina. */
 const avance = {};
 
+function actualizaNav(clave){
+  const total = BLOQUES[clave].pasos.length + 1;
+  const i = avance[clave] || 0;
+  const nav = document.querySelector(`[data-nav="${clave}"]`);
+  nav.querySelector('[data-accion="atras"]').disabled = (i === 0);
+  nav.querySelector('[data-accion="revelar"]').disabled = (i >= total);
+  nav.querySelector('.pasos-cuenta').textContent = `${i} / ${total}`;
+}
+
 function siguientePaso(clave){
   const ej = BLOQUES[clave];
-  const total = ej.pasos.length + 1;
   const i = avance[clave] || 0;
-  if (i >= total) return;
+  if (i >= ej.pasos.length + 1) return;
   const ultimo = (i === ej.pasos.length);
   const li = document.createElement('li');
   if (ultimo) li.className = 'final';
@@ -896,22 +951,28 @@ function siguientePaso(clave){
     : `<span class="n">${i + 1}</span><span class="t">${ej.pasos[i]}</span>`;
   document.getElementById('pasos-' + clave).appendChild(li);
   avance[clave] = i + 1;
-  if (ultimo){
-    const b = document.querySelector(`[data-accion="revelar"][data-bloque="${clave}"]`);
-    b.disabled = true; b.textContent = 'Completo';
-    if (ej.grafica) muestraGrafica(clave, ej.grafica);
+  if (ultimo && ej.grafica) muestraGrafica(clave, ej.grafica);
+  actualizaNav(clave);
+}
+
+function pasoAtras(clave){
+  const lista = document.getElementById('pasos-' + clave);
+  const li = lista.lastElementChild;
+  if (!li) return;
+  if (li.classList.contains('final')){
+    const g = document.getElementById('graf-' + clave);
+    if (g) g.hidden = true;
   }
+  li.remove();
+  avance[clave] = Math.max(0, (avance[clave] || 0) - 1);
+  actualizaNav(clave);
 }
 
 document.addEventListener('click', ev => {
-  const b = ev.target.closest('[data-accion="revelar"]');
-  if (b){ siguientePaso(b.dataset.bloque); return; }
-  const n = ev.target.closest('[data-notas]');
-  if (n){
-    const panel = document.getElementById('notas-' + n.dataset.notas);
-    panel.hidden = !panel.hidden;
-    n.setAttribute('aria-expanded', String(!panel.hidden));
-  }
+  const b = ev.target.closest('[data-accion]');
+  if (!b || !b.dataset.bloque) return;
+  if (b.dataset.accion === 'revelar') siguientePaso(b.dataset.bloque);
+  if (b.dataset.accion === 'atras') pasoAtras(b.dataset.bloque);
 });
 </script>
 
@@ -1131,5 +1192,6 @@ dibujaRecta();
 
 <script src="../../assets/proyeccion.js" defer></script>
 <script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
 </body>
 </html>

@@ -44,6 +44,7 @@ assets/
   clase.css                 los componentes de las páginas de clase
   sitio.css                 navegación y portadas
   proyeccion.js             el panel de proyección
+  clase.js                  los botones Observador y Notas de las clases
   timer.js                  el timer de pantalla completa, con música generada
   img/                      logos
 citas.md                    las citas de las tapas, con su fuente
@@ -80,35 +81,71 @@ hasta la 74, +2 entre la 76 y la 222, y +1 de la 224 en adelante. Los
 ejemplos de la clase son **propios**: los del libro quedan para que los
 trabajen los alumnos.
 
-**Cada tema tiene cuatro partes, siempre en este orden:**
+**Cada tema tiene dos partes en pantalla y dos en botones:**
 
 1. **Concepto.** La fórmula o el vocabulario en grande (una `forma` o
    cajitas) y entre dos y cuatro líneas cortas. Nada de párrafos: lo que el
    docente dice en voz alta no se proyecta.
-2. **Ejemplos resueltos.** Entre tres y cinco, cada uno revelable paso a
-   paso y con su control. Van **en secuencia**: cada ejemplo cambia una sola
-   cosa respecto del anterior, y el título dice cuál ("cambio el signo de la
-   pendiente"). Dentro de un tema no se repite una respuesta: si se repite,
-   el ejemplo nuevo no está mostrando nada. El verificador lo controla.
-3. **Preguntas frecuentes.** Las que hacen los alumnos, con respuestas de una
-   a tres líneas. Van cerradas: se lee la pregunta, se deja pensar y se abre.
-4. **Notas del docente.** Detrás de un botón. Todo el texto largo va acá: por
-   qué el tema se da así, qué errores esperar, cómo usar el taller, qué
-   preguntar antes de revelar.
+2. **Ejemplos resueltos.** Entre cuatro y cinco, cada uno con su control.
+   Van **en secuencia**: cada ejemplo cambia una sola cosa respecto del
+   anterior, el título dice cuál ("cambio el signo de la pendiente") y el
+   enunciado la muestra **resaltada**. Dentro de un tema no se repite una
+   respuesta: si se repite, el ejemplo nuevo no está mostrando nada. El
+   verificador lo controla.
+3. **Observador** (botón flotante). Las preguntas que haría un alumno que
+   está mirando con cuidado, para cuando nadie pregunta: "veamos qué
+   preguntaría alguien observador". Se muestran de a una, con la respuesta
+   tapada hasta que se pide. Tienen la voz de un alumno y apuntan a **algo
+   que se ve en los ejemplos**: "¿por qué cuando multiplicamos pusimos
+   paréntesis y cuando sumamos no?", "las rectas 1 y 2 pasan las dos por
+   (1, 1), ¿es casualidad?". Respuestas de una a tres líneas.
+4. **Notas** (botón flotante). Todo el texto largo, para el docente: por qué
+   el tema se da así, qué errores esperar, cómo usar el taller, qué
+   preguntar antes de avanzar.
 
 Si corresponde, un **taller** interactivo después de los ejemplos, y al final
 de la unidad un **desafío** que junte todo. La unidad abre con una pregunta
-para arrancar y el recorrido de los temas.
+para arrancar y el recorrido de los temas. La introducción y el desafío
+también tienen sus notas y sus preguntas de observador.
 
-**En el modo "una a la vez" cada parte es una diapositiva**, y cada ejemplo
-también:
+**En el modo "una a la vez" cada parte en pantalla es una diapositiva**, y
+cada ejemplo también:
 
 ```html
-<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .faq, .desafio">
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
 ```
 
-Una unidad completa queda en unas cincuenta diapositivas, que es lo que
-dura de verdad.
+La unidad 7 de 7.º queda en 44 diapositivas.
+
+**Los botones Observador y Notas** los pone `assets/clase.js`, en fila con el
+del timer. Saben en qué tema está la clase —la diapositiva activa, o lo que
+está en pantalla si se hace scroll— y abren ese tema; con las flechas se va a
+los temas vecinos. Mientras no se usen las flechas, el panel abierto acompaña
+a la clase cuando cambia de tema. Con zona libre para escribir, los paneles
+se abren adentro de esa zona y no tapan la clase. La página les pasa el
+contenido así:
+
+```js
+window.CLASE = { secciones: [
+  { id:'3', titulo:'Tema 3 · Ecuaciones lineales', notas:'<p>…</p>',
+    preguntas:[{ p:'…', r:'…' }] }, … ] };
+```
+
+y marca cada bloque con `data-tema="3"` (la introducción es `unidad`, el
+desafío `desafio`).
+
+**Los pasos van y vuelven.** Cada ejemplo tiene "← Anterior", un contador
+("2 / 4") y "Siguiente →". Al llegar al final se puede volver: nunca queda un
+botón muerto.
+
+**Lo nuevo va resaltado** con `N()`: lo que se agrega a los dos miembros (el
+`+ 5`, el `· 2`, el m.c.m. adelante de cada término), el valor que se
+reemplaza en la letra, la palabra que cambió respecto del ejemplo anterior.
+Es un color con fondo, porque el proyector lava los colores y el fondo no.
+
+**No se saltea ningún paso.** La operación se escribe en los dos miembros
+antes de resolverla (`6x − 5 + 5 = 25 + 5`, y recién después `6x = 30`),
+igual que en la balanza.
 
 **La notación es la del libro.** `·` para multiplicar, `:` para dividir,
 fracciones apiladas (`Q(numerador, denominador)` en el guion de la página) y

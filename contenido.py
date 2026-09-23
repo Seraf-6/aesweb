@@ -28,9 +28,9 @@ GRADOS = [
      'nota': 'Se dicta con enseñanza entre pares.',
      'material': [
        {'tipo': 'diapositiva', 'titulo': 'Ecuaciones lineales',
-        'desc': 'Los siete temas del libro, cada uno con su concepto, varios ejemplos '
-                'resueltos, preguntas frecuentes y notas del docente. Con la balanza, '
-                'la tabla de valores y el epitafio de Diofanto como desafío final.',
+        'desc': 'Los siete temas del libro, cada uno con su concepto y varios ejemplos '
+                'resueltos paso a paso. Botones de notas del docente y de preguntas de un '
+                'alumno observador. Con la balanza, la tabla de valores y Diofanto.',
         'url': 'matematica/7mo/ecuaciones.html'},
        {'tipo': 'ficha', 'titulo': 'Fichas de la unidad',
         'desc': 'Igualdades, expresión algebraica, ecuaciones lineales y con fracciones, '

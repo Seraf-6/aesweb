@@ -235,7 +235,7 @@ h2{
 /* el movimiento escrito antes de resolverlo: no se saltea ningún paso */
 .historia li.crudo{border-style:dashed}
 .historia li.crudo .ecu{font-weight:400}
-.historia li .nuevo{color:var(--rojo); font-weight:700}
+/* lo nuevo de la balanza usa el mismo resaltado que los ejemplos (.nuevo, más abajo) */
 .historia li{animation:aparece .3s ease-out}
 .historia li.crudo .nuevo{animation:late .5s ease-out}
 @keyframes aparece{from{opacity:0; transform:translateY(-5px)} to{opacity:1; transform:none}}
@@ -392,3 +392,100 @@ body[data-solo="1"] .ficha-link{display:none}
    navegador pone también overflow-y:auto y aparece una barrita. */
 .pasos li .t,.enunciado,.forma{overflow-y:hidden}
 .pasos li .t{padding-block:2px}
+
+/* ═══════════════════════════════════════════════════════════════
+   Lo nuevo, resaltado
+   Lo que se agrega a los dos miembros (el +5, el · 2, el m.c.m.) y el
+   valor que se reemplaza en una letra van de otro color y con fondo:
+   así se ve de un vistazo qué cambió respecto de la línea anterior. El
+   fondo es a propósito: el proyector lava los colores, el fondo no.
+   ═══════════════════════════════════════════════════════════════ */
+.nuevo{
+  color:var(--acento2); background:var(--acento2-suave); font-weight:700;
+  border-radius:3px; padding:0 .14em; box-decoration-break:clone;
+  -webkit-box-decoration-break:clone}
+
+/* ── pasos: se puede ir y volver ── */
+.pasos-nav{display:flex; align-items:center; gap:8px; flex:0 0 auto}
+.pasos-nav .boton[disabled]{opacity:.35; cursor:default}
+.pasos-cuenta{
+  font-family:var(--mono); font-size:12px; color:var(--lapiz);
+  min-width:3.4em; text-align:center; font-variant-numeric:tabular-nums}
+body[data-solo="1"] .pasos-cuenta{font-size:.62em}
+
+/* ═══════════════════════════════════════════════════════════════
+   Los botones flotantes de la clase (assets/clase.js)
+   El del timer se muda a esta misma fila, para que no se pisen.
+   ═══════════════════════════════════════════════════════════════ */
+.dock{
+  position:fixed; top:calc(14px + env(safe-area-inset-top,0px)); right:14px; z-index:60;
+  display:flex; gap:8px; align-items:center}
+.dock .tmr-btn{position:static}
+.dock-btn{
+  cursor:pointer; border-radius:999px; padding:8px 15px;
+  background:var(--papel); color:var(--tinta); border:1.5px solid var(--tinta);
+  font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.04em;
+  box-shadow:0 2px 12px rgba(0,0,0,.18)}
+.dock-btn[aria-expanded="true"]{background:var(--tinta); color:var(--papel)}
+.dock-btn:focus-visible{outline:2px solid var(--tinta); outline-offset:3px}
+
+.cls-panel{
+  position:fixed; top:calc(58px + env(safe-area-inset-top,0px)); right:14px; z-index:62;
+  width:min(460px, calc(100vw - 28px)); max-height:calc(100vh - 90px);
+  display:flex; flex-direction:column;
+  background:var(--papel); color:var(--tinta);
+  border:1px solid var(--linea-fuerte); border-radius:6px;
+  box-shadow:0 8px 30px rgba(0,0,0,.28)}
+.cls-obs{width:min(600px, calc(100vw - 28px))}
+.cls-cab{
+  display:flex; align-items:center; gap:8px; padding:10px 12px;
+  border-bottom:1px solid var(--linea-fuerte)}
+.cls-tit{flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px}
+.cls-rot{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz)}
+.cls-tit b{font-family:var(--serif); font-size:1.05rem; line-height:1.2}
+.cls-flecha,.cls-cerrar{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%; cursor:pointer;
+  border:1px solid var(--linea-fuerte); background:var(--papel-2); color:var(--tinta);
+  font-size:17px; line-height:1}
+.cls-flecha[disabled]{opacity:.3; cursor:default}
+.cls-cerrar{border:none; background:none; font-size:24px}
+.cls-cuerpo{padding:14px 16px; overflow-y:auto}
+.cls-notas .cls-cuerpo{border-left:4px solid var(--dest); background:var(--dest-suave)}
+.cls-cuerpo p{margin:0 0 10px; max-width:62ch}
+.cls-cuerpo p:last-child{margin-bottom:0}
+
+/* el observador se proyecta: letra grande */
+.obs-pregunta{
+  font-family:var(--serif); font-weight:700; font-size:1.45rem; line-height:1.3; margin:0 0 14px}
+.obs-ver{
+  font-family:var(--sans); font-size:14px; font-weight:700; cursor:pointer;
+  background:var(--acento); color:var(--papel); border:none; border-radius:4px; padding:8px 14px}
+.obs-respuesta{
+  font-size:1.12rem; line-height:1.45; border-left:4px solid var(--acento2);
+  background:var(--acento2-suave); padding:10px 14px; border-radius:0 4px 4px 0}
+.cls-pie{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:9px 12px; border-top:1px solid var(--linea-fuerte);
+  font-family:var(--mono); font-size:12.5px; color:var(--lapiz)}
+.cls-paso{
+  font-family:var(--sans); font-size:13px; font-weight:700; cursor:pointer;
+  background:none; border:1px solid var(--linea-fuerte); border-radius:3px;
+  color:var(--tinta); padding:5px 10px}
+.cls-paso[disabled]{opacity:.35; cursor:default}
+
+body[data-solo="1"] .obs-pregunta{font-size:1.7rem}
+body[data-solo="1"] .obs-respuesta{font-size:1.3rem}
+@media print{.dock,.cls-panel{display:none!important}}
+
+/* Con zona libre para escribir, los paneles viven adentro de ella: el
+   observador se abre justo donde el docente iba a escribir, y la clase
+   queda a la vista. */
+body[data-libre="der"] .cls-panel{width:max(280px, calc(var(--libre) - 28px))}
+body[data-libre="izq"] .cls-panel{width:max(280px, calc(var(--libre) - 28px)); right:auto; left:14px}
+
+/* Espacio al final: sin esto la última sección no puede subir hasta arriba
+   de la pantalla, y clase.js no puede saber si se está mirando ella o la
+   anterior (con la página al fondo, las dos quedan en el mismo lugar). */
+.creditos{padding-bottom:55vh}
