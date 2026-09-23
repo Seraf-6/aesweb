@@ -41,6 +41,7 @@ assets/
   base.css                  colores, tipografía, notación, panel de proyección
   sitio.css                 navegación y portadas
   proyeccion.js             el panel de proyección
+  timer.js                  el timer de pantalla completa, con música generada
   img/                      logos
 contenido.py                EL ÍNDICE DEL SITIO: grados, unidades, material
 build.py                    genera las páginas de índice desde contenido.py
@@ -110,6 +111,26 @@ guardado en `localStorage` de esa computadora.
 **El valor por defecto es el fondo crema.** No es capricho: se probó proyectando
 sobre la pizarra blanca del aula y es el que mejor aguanta el tinte verdoso del
 proyector. No cambiarlo sin volver a probar en el aula.
+
+---
+
+## El timer del aula
+
+`assets/timer.js` pone un botón **Timer** arriba a la derecha de **todas** las
+páginas, generadas y escritas a mano. Se elige de cuántos minutos y la cuenta
+regresiva toma la pantalla entera, con los colores de la paleta que esté
+puesta. Espacio pausa, Escape cierra.
+
+**La música se genera en el navegador**, con Web Audio: notas sueltas de una
+escala pentatónica, sin melodía, a volumen bajo. No hay ningún archivo de
+sonido en el repositorio y no debería haberlo: subir una canción sería
+publicarla. Si alguna vez se quiere usar un archivo propio, va en
+`assets/audio/` y solo si se tienen los derechos.
+
+El aviso del final suena aunque la música esté apagada.
+
+Los atributos del timer empiezan todos con `data-tmr` a propósito: ver la
+sección "Dos nombres reservados".
 
 ---
 

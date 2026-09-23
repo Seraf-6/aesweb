@@ -40,6 +40,7 @@ def pagina(titulo, cuerpo, prof=0, css_extra=(), descripcion=''):
 <body>
 {cuerpo}
 <script src="{sube}assets/proyeccion.js" defer></script>
+<script src="{sube}assets/timer.js" defer></script>
 </body>
 </html>
 """
@@ -123,6 +124,9 @@ def portada():
     se elige el contraste, el color de letra, el tamaño, la cuadrícula, y se puede reservar
     una franja de pantalla en blanco para escribir en la pizarra. También está el modo
     <b>una diapositiva a la vez</b>, que se pasa con las flechas del teclado.</p>
+  <p>Arriba a la derecha, en cualquier página, está el botón <b>Timer</b>: se elige de
+    cuántos minutos y la cuenta regresiva toma la pantalla entera, con música de fondo si
+    se quiere. Al llegar a cero suena un aviso.</p>
   <div class="aviso"><strong>Probado en el aula:</strong> sobre pizarra blanca gana el
     fondo crema, que es el que viene puesto por defecto. Conviene abrir la página en
     pantalla completa con F11 antes de empezar.</div>
