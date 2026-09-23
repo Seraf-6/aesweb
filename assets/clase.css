@@ -298,3 +298,97 @@ body[data-solo="1"] .caja .ec{font-size:1.45em}
   .campo input{width:7.5ch}
   .historia li{flex-wrap:wrap; gap:2px 12px}
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   La anatomía de una clase
+   Cada tema es: concepto → ejemplos resueltos → preguntas frecuentes,
+   y un botón de notas del docente. En el modo "una a la vez" cada
+   parte es una diapositiva propia, y cada ejemplo también.
+   ═══════════════════════════════════════════════════════════════ */
+.tema{border-bottom:2px solid var(--tinta); padding-bottom:10px}
+.concepto,.ejemplo-diapo,.taller-diapo,.faq,.desafio{
+  padding-block:28px; border-bottom:1px solid var(--linea-fuerte); scroll-margin-top:72px}
+
+/* la cinta dice dónde estamos: es lo único que puede ser chico */
+.cinta{
+  margin:0 0 12px; font-family:var(--mono); font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz)}
+.cinta b{color:var(--acento); font-weight:600}
+
+/* lo que el docente explica en voz alta: pocas líneas, grandes */
+.puntos{list-style:none; margin:18px 0 0; padding:0; display:flex; flex-direction:column; gap:10px}
+.puntos li{
+  position:relative; padding-left:22px; font-size:1.12em; line-height:1.45; max-width:60ch}
+.puntos li::before{
+  content:""; position:absolute; left:2px; top:.62em; width:9px; height:9px;
+  border-radius:50%; background:var(--acento)}
+.forma + .serie,.serie + .puntos,.forma + .puntos{margin-top:14px}
+
+/* ejemplos: un título que dice qué cambia respecto del anterior */
+.ej-titulo{
+  font-family:var(--serif); font-weight:700; font-size:1.25rem; margin:0 0 10px; line-height:1.2}
+.ej-titulo .num{color:var(--acento); margin-right:6px}
+.enunciado .fr{font-size:.8em}
+
+/* preguntas frecuentes: se pregunta en voz alta, se deja pensar, se abre */
+.faq h4{font-family:var(--serif); font-weight:800; font-size:1.4rem; margin:0 0 12px}
+.pregunta{
+  border:1px solid var(--linea-fuerte); border-radius:4px; background:var(--papel);
+  margin-bottom:8px}
+.pregunta summary{
+  cursor:pointer; list-style:none; padding:11px 14px 11px 40px; position:relative;
+  font-weight:700; line-height:1.35}
+.pregunta summary::-webkit-details-marker{display:none}
+.pregunta summary::before{
+  content:"+"; position:absolute; left:13px; top:8px; width:18px; text-align:center;
+  font-family:var(--mono); font-size:18px; color:var(--acento)}
+.pregunta[open] summary::before{content:"−"}
+.pregunta summary:focus-visible{outline:2px solid var(--acento); outline-offset:2px}
+.respuesta{padding:0 14px 12px 40px; max-width:64ch}
+.respuesta p{margin:0 0 8px}
+.ficha-link{margin:14px 0 0; font-size:14px; color:var(--lapiz)}
+.ficha-link a{font-weight:700}
+
+/* notas del docente: el texto largo vive detrás de un botón */
+.notas-btn{
+  margin-top:18px; font-family:var(--sans); font-size:13px; font-weight:700;
+  background:none; color:var(--lapiz); border:1px dashed var(--linea-fuerte);
+  border-radius:3px; padding:6px 12px; cursor:pointer}
+.notas-btn:hover,.notas-btn:focus-visible{color:var(--tinta); border-color:var(--tinta)}
+.notas-btn[aria-expanded="true"]{color:var(--tinta); border-style:solid}
+.notas-panel{
+  margin-top:10px; padding:14px 16px; border-left:3px solid var(--dest);
+  background:var(--dest-suave); border-radius:0 4px 4px 0}
+.notas-panel p{margin:0 0 10px; max-width:64ch; font-size:15px}
+.notas-panel p:last-child{margin-bottom:0}
+
+/* fracciones apiladas, como en el libro */
+.fr{
+  display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle;
+  font-size:.9em; line-height:1.12; margin:0 .1em}
+.fr > span{padding:0 .18em; white-space:nowrap}
+.fr > span:first-child{border-bottom:1.5px solid currentColor}
+
+/* el desafío del final */
+.desafio .marco{border:2px solid var(--tinta); padding:20px 22px; background:var(--papel)}
+
+/* ── en proyección ── */
+body[data-solo="1"] .concepto,
+body[data-solo="1"] .ejemplo-diapo,
+body[data-solo="1"] .taller-diapo,
+body[data-solo="1"] .faq,
+body[data-solo="1"] .desafio{border-bottom:none; padding-block:12px}
+body[data-solo="1"] .tema{border-bottom:none; padding-bottom:0}
+body[data-solo="1"] .cinta{font-size:.62em}
+body[data-solo="1"] .puntos li{font-size:1.05em; max-width:none}
+body[data-solo="1"] .ej-titulo{font-size:1.2em}
+body[data-solo="1"] .faq h4{font-size:1.3em}
+body[data-solo="1"] .pregunta summary{font-size:1em}
+body[data-solo="1"] .respuesta{font-size:.95em; max-width:none}
+body[data-solo="1"] .notas-panel p{font-size:.8em; max-width:none}
+body[data-solo="1"] .ficha-link{display:none}
+
+/* una fracción apilada hace la línea más alta; con overflow-x:auto el
+   navegador pone también overflow-y:auto y aparece una barrita. */
+.pasos li .t,.enunciado,.forma{overflow-y:hidden}
+.pasos li .t{padding-block:2px}

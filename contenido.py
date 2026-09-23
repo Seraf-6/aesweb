@@ -27,9 +27,10 @@ GRADOS = [
     {'n': 7, 'titulo': 'Ecuaciones lineales', 'pags': '132–150',
      'nota': 'Se dicta con enseñanza entre pares.',
      'material': [
-       {'tipo': 'diapositiva', 'titulo': 'Preguntarle a un número',
-        'desc': 'La unidad entera en ocho pasos, de las tres clases de igualdad a los '
-                'problemas, con la balanza y la gráfica para probar en clase.',
+       {'tipo': 'diapositiva', 'titulo': 'Ecuaciones lineales',
+        'desc': 'Los siete temas del libro, cada uno con su concepto, varios ejemplos '
+                'resueltos, preguntas frecuentes y notas del docente. Con la balanza, '
+                'la tabla de valores y el epitafio de Diofanto como desafío final.',
         'url': 'matematica/7mo/ecuaciones.html'},
        {'tipo': 'ficha', 'titulo': 'Fichas de la unidad',
         'desc': 'Igualdades, expresión algebraica, ecuaciones lineales y con fracciones, '

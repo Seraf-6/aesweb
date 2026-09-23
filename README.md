@@ -62,6 +62,78 @@ final para que se vea cuáles hay.
 
 ---
 
+## Cómo es una clase
+
+Esto salió de la revisión de la unidad 7 de 7.º, que es el modelo para todas
+las demás: `matematica/7mo/ecuaciones.html`. Una página de clase no es un
+resumen con comentarios al costado: **es una clase**. Las fichas van aparte,
+impresas; la página es lo que se proyecta y se explica.
+
+**Se sigue el libro.** Los temas de la clase son los del libro, en su orden y
+con sus nombres, y como mínimo tiene que estar todo lo que trae cada página.
+Antes de escribir una clase se lee la unidad entera del libro. Los PDF están
+en `Proyecto OMAPA/06-planes semanales/Libros/`, escaneados sin texto: se
+renderizan con PyMuPDF a imagen y se miran. Se cita siempre la página
+impresa, y el PDF está corrido: en 7.º y 8.º, PDF = impresa + 1; en 9.º, +3
+hasta la 74, +2 entre la 76 y la 222, y +1 de la 224 en adelante. Los
+ejemplos de la clase son **propios**: los del libro quedan para que los
+trabajen los alumnos.
+
+**Cada tema tiene cuatro partes, siempre en este orden:**
+
+1. **Concepto.** La fórmula o el vocabulario en grande (una `forma` o
+   cajitas) y entre dos y cuatro líneas cortas. Nada de párrafos: lo que el
+   docente dice en voz alta no se proyecta.
+2. **Ejemplos resueltos.** Entre tres y cinco, cada uno revelable paso a
+   paso y con su control. Van **en secuencia**: cada ejemplo cambia una sola
+   cosa respecto del anterior, y el título dice cuál ("cambio el signo de la
+   pendiente"). Dentro de un tema no se repite una respuesta: si se repite,
+   el ejemplo nuevo no está mostrando nada. El verificador lo controla.
+3. **Preguntas frecuentes.** Las que hacen los alumnos, con respuestas de una
+   a tres líneas. Van cerradas: se lee la pregunta, se deja pensar y se abre.
+4. **Notas del docente.** Detrás de un botón. Todo el texto largo va acá: por
+   qué el tema se da así, qué errores esperar, cómo usar el taller, qué
+   preguntar antes de revelar.
+
+Si corresponde, un **taller** interactivo después de los ejemplos, y al final
+de la unidad un **desafío** que junte todo. La unidad abre con una pregunta
+para arrancar y el recorrido de los temas.
+
+**En el modo "una a la vez" cada parte es una diapositiva**, y cada ejemplo
+también:
+
+```html
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .faq, .desafio">
+```
+
+Una unidad completa queda en unas cincuenta diapositivas, que es lo que
+dura de verdad.
+
+**La notación es la del libro.** `·` para multiplicar, `:` para dividir,
+fracciones apiladas (`Q(numerador, denominador)` en el guion de la página) y
+`₲` para los guaraníes. Los contextos, locales: tapitas para reciclar,
+cuadernos en guaraníes, San Lorenzo antes que Nueva York.
+
+**Tamaños en proyección.** El enunciado del ejemplo es lo más grande de la
+pantalla y la respuesta final lo segundo. Lo único que puede ser chico es la
+cinta de arriba, que dice dónde estamos ("Tema 3 · ejemplo 2 de 5").
+
+**Cómo se habla de los errores.** Se nombra al alumno: "la mayoría de los
+alumnos de 7.º se traba acá", "muchos chicos reparten a medias". Nunca "hay
+una trampa que casi nadie ve". Y no se inventan estadísticas: "6 de cada 10"
+solo si hay de dónde sacarlo.
+
+**Las respuestas finales se escriben en el archivo**, no se arman en tiempo de
+ejecución con una función: el verificador lee el HTML, no la página
+renderizada, y una respuesta que no está escrita no se puede controlar.
+
+**El `·` nunca separa.** Acaban de aprender que multiplica. Para separar
+elementos se usan cajitas; si hace falta un separador en línea, una barra.
+
+**Las citas de la tapa** salen de `citas.md` (ver más abajo).
+
+---
+
 ## Verificar las cuentas de una página
 
 Cada página de clase tiene su guion en `verificacion/`, que se corre solo:
@@ -180,13 +252,19 @@ series originales propias.
 
 ### Diapositivas nuevas
 
-1. Copiar `matematica/8vo/factoreo.html` como punto de partida: ya tiene la
-   barra de navegación, los enlaces a los assets y el `data-diapos`.
-2. Escribir el contenido. Los componentes que ya existen y conviene reusar:
-   `.caso`, `.forma`, `.pasos`, `.gancho`, `.lab`, `.ec`, `.cuenta`.
-3. Agregar la entrada en `contenido.py`, dentro del `material` de la unidad
+1. Leer la unidad en el libro, entera (ver "Cómo es una clase").
+2. Copiar `matematica/7mo/ecuaciones.html` como punto de partida: tiene la
+   anatomía completa. Se reemplaza el arreglo `TEMAS`, y la plantilla que lo
+   dibuja no se toca.
+3. Escribir primero el verificador (`verificacion/<tema>_<grado>.py`) con
+   todos los ejemplos, correrlo, y recién después escribir la página con los
+   números que dio.
+4. Agregar la entrada en `contenido.py`, dentro del `material` de la unidad
    que corresponda, con `'tipo': 'diapositiva'` y su `url`.
-4. `python build.py`.
+5. `python build.py` y el verificador otra vez.
+
+`factoreo.html`, `sistemas.html` y `poligonos.html` son anteriores a esta
+anatomía y todavía no la siguen.
 
 ### Una unidad nueva
 

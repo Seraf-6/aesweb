@@ -1,22 +1,28 @@
-"""Verificación de las diapositivas de ecuaciones lineales de 7.º grado.
+"""Verificación de la clase de ecuaciones lineales de 7.º grado.
 
-Ningún resultado de `matematica/7mo/ecuaciones.html` se escribe a mano: cada
-uno se calcula acá con sympy y se verifica **por un camino distinto del que lo
-produjo**, con aritmética exacta (`Fraction`, nunca `float`).
+Cubre `matematica/7mo/ecuaciones.html`, que sigue los siete temas de la
+unidad 7 del libro (págs. 132–150): igualdades, expresión algebraica,
+ecuaciones lineales, representación gráfica, ecuaciones con fracciones,
+simbolizaciones y resolución de problemas. Los ejemplos son propios; los
+del libro no se copian.
 
-Los tres controles:
+Ningún resultado se escribe a mano. Cada uno se calcula con sympy y se
+comprueba **por un camino distinto del que lo produjo**:
 
-1. sympy resuelve; la comprobación sustituye la raíz en la ecuación original
-   evaluada con `Fraction` y exige que los dos lados den lo mismo.
-2. Las identidades y los casos imposibles se prueban en 120 racionales al azar,
-   no por manipulación simbólica.
-3. El problema del rectángulo se verifica **en la situación** (¿el largo supera
-   al ancho en 4?, ¿el perímetro da 52?), no en la ecuación que lo modela: si
-   el planteo estuviera mal, la ecuación cerraría igual y la situación no.
-
-Al final se abre el HTML y se exige que cada respuesta verificada aparezca
-escrita tal cual. Así una respuesta no puede quedar mal tipeada en la página
-aunque la cuenta de acá esté bien.
+1. sympy resuelve la ecuación; la comprobación sustituye la raíz en la
+   ecuación original evaluada con `Fraction`, sin pasar por sympy.
+2. Las identidades y las ecuaciones imposibles se prueban en 120 racionales
+   al azar, no por manipulación simbólica.
+3. Los puntos de las gráficas se calculan con Fraction y se controla que
+   estén alineados con un tercero, como pide el libro.
+4. Los problemas se verifican **en la situación del enunciado**, no en la
+   ecuación que los modela: si el planteo estuviera mal, la ecuación
+   cerraría igual y la situación no.
+5. Dentro de cada tema, dos ejemplos no pueden dar la misma respuesta: cada
+   uno cambia una sola cosa respecto del anterior, y ese cambio tiene que
+   mostrar algo nuevo.
+6. Al final se abre el HTML y se exige que cada respuesta verificada esté
+   escrita tal cual.
 
     python verificacion/ecuaciones_7mo.py
 """
@@ -34,11 +40,13 @@ import sympy as sp
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
-x = sp.Symbol('x')
+x, y = sp.symbols('x y')
 RAIZ = Path(__file__).resolve().parent.parent
 PAGINA = RAIZ / 'matematica' / '7mo' / 'ecuaciones.html'
+F = Fraction
 
 fallos = []
+esperados = []          # (texto que tiene que aparecer en la página, de dónde sale)
 
 
 def mal(msg):
@@ -46,249 +54,367 @@ def mal(msg):
     print('   FALLA:', msg)
 
 
-# ══════════════════════════════════════════════════════════════════
-#  Las ecuaciones de la página
-#  (rótulo, izquierda, derecha, cómo se muestra la respuesta en el HTML)
-#  Las dos expresiones se escriben como funciones de Fraction para poder
-#  evaluarlas sin pasar por sympy: esa es la segunda vía.
-# ══════════════════════════════════════════════════════════════════
-ECUACIONES = [
-    ('paso 3 · la balanza',
-     3 * x + 5, sp.Integer(20),
-     lambda v: 3 * v + 5, lambda v: Fraction(20),
-     '<i>x</i> = 5'),
-
-    ('paso 4 · paréntesis',
-     2 * (x + 5), sp.Integer(26),
-     lambda v: 2 * (v + 5), lambda v: Fraction(26),
-     '<i>x</i> = 8'),
-
-    ('paso 4 · el atajo falso',
-     2 * x + 5, sp.Integer(26),
-     lambda v: 2 * v + 5, lambda v: Fraction(26),
-     None),
-
-    ('paso 5 · incógnita de los dos lados',
-     7 * x - 4, 3 * x + 20,
-     lambda v: 7 * v - 4, lambda v: 3 * v + 20,
-     '<i>x</i> = 6'),
-
-    ('paso 6 · fracciones',
-     (x + 1) / 2 - (x - 3) / 5, sp.Integer(2),
-     lambda v: Fraction(v + 1, 2) - Fraction(v - 3, 5), lambda v: Fraction(2),
-     '<i>x</i> = 3'),
-
-    ('paso 8 · el rectángulo',
-     2 * x + 2 * (x + 4), sp.Integer(52),
-     lambda v: 2 * v + 2 * (v + 4), lambda v: Fraction(52),
-     '<i>x</i> = 11'),
-
-    ('cierre · 3x = 5x',
-     3 * x, 5 * x,
-     lambda v: 3 * v, lambda v: 5 * v,
-     '<i>x</i> = 0'),
-]
+def aparece(texto, origen):
+    esperados.append((texto, origen))
 
 
-def verifica_ecuaciones():
-    print('1. Ecuaciones: sympy resuelve, Fraction comprueba')
-    for rotulo, izq, der, f_izq, f_der, _ in ECUACIONES:
-        soluciones = sp.solve(sp.Eq(izq, der), x)
-        if len(soluciones) != 1:
-            mal(f'{rotulo}: sympy no devolvió una única solución ({soluciones})')
-            continue
-        raiz = soluciones[0]
-        if not raiz.is_rational:
-            mal(f'{rotulo}: la raíz no es racional ({raiz})')
-            continue
-
-        # segunda vía: sustituir en la ecuación original, sin sympy
-        v = Fraction(int(sp.fraction(raiz)[0]), int(sp.fraction(raiz)[1]))
-        if f_izq(v) != f_der(v):
-            mal(f'{rotulo}: al sustituir {v} los dos lados no coinciden '
-                f'({f_izq(v)} ≠ {f_der(v)})')
-            continue
-        print(f'   {rotulo}: x = {v}  ·  sustituida, los dos lados dan {f_izq(v)}')
+def frac(valor):
+    num, den = sp.fraction(sp.nsimplify(valor))
+    return F(int(num), int(den))
 
 
-def verifica_siempre_y_nunca():
-    """Identidad y caso imposible, probados en puntos al azar."""
-    print('2. Identidad y ecuación imposible: 120 racionales al azar')
-    rnd = random.Random(7)
-
-    def puntos():
-        for _ in range(120):
-            yield Fraction(rnd.randint(-400, 400), rnd.randint(1, 60))
-
-    # identidad: 2(x+3) = 2x+6, cierta para todos
-    fallas = [p for p in puntos() if 2 * (p + 3) != 2 * p + 6]
-    if fallas:
-        mal(f'2(x+3) = 2x+6 falló en {fallas[:3]}')
-    else:
-        print('   2(x+3) = 2x + 6 se cumplió en los 120 puntos: es identidad')
-
-    # imposible: x + 1 = x, falsa para todos
-    aciertos = [p for p in puntos() if p + 1 == p]
-    if aciertos:
-        mal(f'x+1 = x resultó cierta en {aciertos[:3]}')
-    else:
-        print('   x + 1 = x falló en los 120 puntos: no tiene solución')
-
-    # 0x = 0 vale siempre; 0x = 7 nunca
-    if any(0 * p != 0 for p in puntos()):
-        mal('0x = 0 no se cumplió en algún punto')
-    if any(0 * p == 7 for p in puntos()):
-        mal('0x = 7 se cumplió en algún punto')
-    print('   0x = 0 vale en los 120; 0x = 7 en ninguno')
-
-
-def verifica_ambiguedad():
-    """Paso 2: las dos lecturas de 'el doble de un número aumentado en 5'."""
-    print('3. Las dos lecturas de la frase, evaluadas en x = 4')
-    v = Fraction(4)
-    a = 2 * v + 5          # el doble de un número, aumentado en 5
-    b = 2 * (v + 5)        # el doble de (un número aumentado en 5)
-    esperado_a = sp.Integer(2 * 4 + 5)
-    esperado_b = sp.Integer(2 * (4 + 5))
-    if a != int(esperado_a) or b != int(esperado_b):
-        mal(f'las lecturas no dan lo calculado por sympy ({a}, {b})')
-    if a == b:
-        mal('las dos lecturas dieron lo mismo: el ejemplo no muestra nada')
-    print(f'   2x + 5 = {a}   ·   2(x + 5) = {b}   ·   difieren en {b - a}')
-
-
-def verifica_atajo_falso():
-    """Paso 4: sacar el paréntesis mal da otra raíz, y la original la rechaza."""
-    print('4. El atajo falso del paso 4 se rechaza solo')
-    bien = sp.solve(sp.Eq(2 * (x + 5), 26), x)[0]
-    mal_ = sp.solve(sp.Eq(2 * x + 5, 26), x)[0]
-    if bien == mal_:
-        mal('el atajo falso da la misma raíz: el ejemplo no muestra nada')
-    v = Fraction(int(sp.fraction(mal_)[0]), int(sp.fraction(mal_)[1]))
-    izq = 2 * (v + 5)
-    if izq == 26:
-        mal(f'la raíz del atajo falso ({v}) satisface la ecuación original')
-    print(f'   correcta x = {bien}  ·  del atajo x = {v}, y 2(x+5) da {izq}, no 26')
-
-
-def verifica_ganchos():
-    """Lo que afirman los recuadros ámbar, que también son respuestas."""
-    print('5. Las afirmaciones de los ganchos')
-
-    # paso 1: la identidad 3(x−2) = 3x−6 como atajo de cálculo mental.
-    # El truco se comprueba con enteros de Python, que son exactos, y la
-    # identidad en sí con sympy: dos caminos distintos para lo mismo.
-    identidad = sp.expand(3 * (x - 2)) - (3 * x - 6)
-    if sp.simplify(identidad) != 0:
-        mal('3(x−2) no es 3x−6')
-    atajos = [(3, 98, 100), (6, 99, 100), (4, 102, 100)]
-    for k, n, redondo in atajos:
-        derecho = k * n
-        atajo = k * redondo + k * (n - redondo)
-        if derecho != atajo:
-            mal(f'el atajo de {k} · {n} no da lo mismo ({derecho} ≠ {atajo})')
-        if int(sp.Integer(k) * sp.Integer(n)) != derecho:
-            mal(f'sympy no coincide en {k} · {n}')
-    print('   3(x−2) = 3x−6 y los atajos: ' +
-          ', '.join(f'{k}·{n} = {k * n}' for k, n, _ in atajos))
-
-    # paso 4: dividir primero por 2 lleva al mismo lugar
-    otro = sp.solve(sp.Eq(x + 5, 13), x)[0]
-    if otro != sp.solve(sp.Eq(2 * (x + 5), 26), x)[0]:
-        mal('dividir primero por 2 no da la misma raíz')
-    print(f'   2(x+5) = 26 dividido primero por 2 da x + 5 = 13, y de ahí x = {otro}')
-
-    # paso 5: restar 7x en vez de 3x llega al mismo x
-    camino_largo = sp.solve(sp.Eq(-4, -4 * x + 20), x)[0]
-    if camino_largo != sp.solve(sp.Eq(7 * x - 4, 3 * x + 20), x)[0]:
-        mal('el camino con negativos del paso 5 no da la misma raíz')
-    print(f'   −4 = −4x + 20 da x = {camino_largo}: el mismo que el camino corto')
-
-    # paso 6: la distribución del menos, como identidad
-    izq = 5 * (x + 1) - 2 * (x - 3)
-    if sp.simplify(izq - (3 * x + 11)) != 0:
-        mal(f'5(x+1) − 2(x−3) no es 3x + 11 sino {sp.expand(izq)}')
-    if sp.simplify(izq - (3 * x - 1)) == 0:
-        mal('el error del menos daría lo mismo: el gancho no muestra nada')
-    print(f'   5(x+1) − 2(x−3) = {sp.expand(izq)}  ·  con el menos mal repartido daría 3x − 1')
-
-    # paso 6: en x = 3 el segundo término se anula
-    if Fraction(3 - 3, 5) != 0:
-        mal('en x = 3 el segundo término no se anula')
-    print('   en x = 3 el término (x−3)/5 vale 0: el control más barato')
-
-
-def verifica_rectangulo():
-    """Paso 8: se comprueba en la situación, no en la ecuación."""
-    print('6. El rectángulo, verificado en la situación')
-    ancho = sp.solve(sp.Eq(2 * x + 2 * (x + 4), 52), x)[0]
-    a = Fraction(int(ancho))
-    largo = a + 4
-    if largo - a != 4:
-        mal('el largo no supera al ancho en 4 m')
-    if 2 * (a + largo) != 52:
-        mal(f'el perímetro no da 52 sino {2 * (a + largo)}')
-    if a <= 0:
-        mal('el ancho no es positivo: no sirve como medida')
-    print(f'   ancho {a} m, largo {largo} m  ·  {largo} − {a} = 4  ·  '
-          f'2({a} + {largo}) = {2 * (a + largo)}')
-    return a, largo
-
-
-def verifica_grafica():
-    """Paso 7: el cruce de y = 2x − 1 con y = 5 es la raíz de 2x − 1 = 5."""
-    print('7. La gráfica: el cruce es la solución')
-    raiz = sp.solve(sp.Eq(2 * x - 1, 5), x)[0]
-    v = Fraction(int(raiz))
-    altura = 2 * v - 1
-    if altura != 5:
-        mal(f'en x = {v} la recta no pasa por 5 sino por {altura}')
-    print(f'   y = 2x − 1 vale {altura} en x = {v}: ahí cruza a y = 5')
+def resuelve(izq, der, f_izq, f_der, rotulo):
+    """sympy resuelve; Fraction comprueba en la ecuación original."""
+    sol = sp.solve(sp.Eq(izq, der), x)
+    if len(sol) != 1:
+        mal(f'{rotulo}: sympy no dio una única solución ({sol})')
+        return None
+    v = frac(sol[0])
+    if f_izq(v) != f_der(v):
+        mal(f'{rotulo}: al sustituir {v} los miembros dan {f_izq(v)} y {f_der(v)}')
+        return None
     return v
 
 
-def verifica_pagina(rect, cruce):
-    """Que la página muestre exactamente lo verificado."""
-    print('8. La página dice lo mismo que esta verificación')
+def sin_repetir(tema, respuestas):
+    vistos = {}
+    for rotulo, v in respuestas:
+        if v in vistos:
+            mal(f'tema {tema}: «{rotulo}» y «{vistos[v]}» dan lo mismo ({v})')
+        vistos[v] = rotulo
+
+
+def html_num(v):
+    """Cómo escribe la página un racional: negativos con −, fracciones con /."""
+    v = F(v)
+    signo = '−' if v < 0 else ''
+    a = abs(v)
+    return signo + (str(a.numerator) if a.denominator == 1
+                    else f'{a.numerator}/{a.denominator}')
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Tema 1 · Igualdades (págs. 134–135)
+#  La misma igualdad, 2 · 6 + 3 = 15, y una propiedad distinta cada vez.
+# ══════════════════════════════════════════════════════════════════
+def tema1():
+    print('Tema 1 · Igualdades')
+    izq, der = 2 * 6 + 3, 15
+    if izq != der:
+        mal('la igualdad de partida no es cierta')
+    casos = [
+        ('sumar 5',         izq + 5,  der + 5),
+        ('multiplicar por 2', izq * 2, der * 2),
+        ('dividir por 3',   F(izq, 3), F(der, 3)),
+        ('elevar al cuadrado', izq ** 2, der ** 2),
+    ]
+    for rotulo, a, b in casos:
+        if a != b:
+            mal(f'tema 1, {rotulo}: {a} ≠ {b}')
+        aparece(f'{html_num(a)} = {html_num(b)}', f'tema 1, {rotulo}')
+    print('   2 · 6 + 3 = 15 → ' + ' · '.join(f'{r}: {a} = {b}' for r, a, b in casos))
+
+    # el recuadro: 4 · 7 + 2 = 5 · □
+    falta = sp.solve(sp.Eq(4 * 7 + 2, 5 * x), x)[0]
+    if 4 * 7 + 2 != 5 * frac(falta):
+        mal('el recuadro no cierra')
+    aparece(f'el número que falta es {falta}', 'tema 1, recuadro')
+    print(f'   4 · 7 + 2 = 5 · □ → □ = {falta}')
+
+    # dividir por cero no es una propiedad: con 0 · 3 = 0 · 5 se llegaría a 3 = 5
+    if 0 * 3 != 0 * 5 or 3 == 5:
+        mal('el ejemplo del cero no muestra lo que dice')
+    print('   0 · 3 = 0 · 5 es cierta, y dividir por 0 daría 3 = 5')
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Tema 2 · Expresión algebraica (págs. 136–137)
+#  Tres igualdades que difieren en un solo número: identidad, imposible,
+#  ecuación. Después, una por simple inspección.
+# ══════════════════════════════════════════════════════════════════
+def tema2():
+    print('Tema 2 · Expresión algebraica')
+    rnd = random.Random(7)
+    puntos = [F(rnd.randint(-400, 400), rnd.randint(1, 60)) for _ in range(120)]
+
+    # 3(x + 2) = 3x + 6 : se cumple siempre
+    if any(3 * (p + 2) != 3 * p + 6 for p in puntos):
+        mal('3(x+2) = 3x+6 falló en algún punto')
+    for v in (1, 2, -2):
+        aparece(f'{html_num(3 * (v + 2))} = {html_num(3 * v + 6)}', f'tema 2, identidad en {v}')
+    aparece('es una identidad', 'tema 2, ejemplo 1')
+
+    # 3(x + 2) = 3x + 2 : no se cumple nunca (6 = 2 disfrazado)
+    if any(3 * (p + 2) == 3 * p + 2 for p in puntos):
+        mal('3(x+2) = 3x+2 se cumplió en algún punto')
+    aparece('no se cumple para ningún número', 'tema 2, ejemplo 2')
+
+    # 3(x + 2) = 2x + 6 : solo en x = 0
+    v = resuelve(3 * (x + 2), 2 * x + 6, lambda t: 3 * (t + 2), lambda t: 2 * t + 6,
+                 'tema 2, ejemplo 3')
+    if v != 0:
+        mal(f'3(x+2) = 2x+6 no da x = 0 sino {v}')
+    aparece('se cumple solo si <i>x</i> = 0', 'tema 2, ejemplo 3')
+
+    # por simple inspección: x + 7 = 2x + 4
+    w = resuelve(x + 7, 2 * x + 4, lambda t: t + 7, lambda t: 2 * t + 4, 'tema 2, inspección')
+    aparece(f'<i>x</i> = {html_num(w)}', 'tema 2, inspección')
+
+    # el contraejemplo de las preguntas: 2x + 3 no es 5x
+    if 2 * 10 + 3 == 5 * 10:
+        mal('2x + 3 y 5x coinciden en 10')
+    aparece('23', 'tema 2, pregunta de 2x + 3')
+    print(f'   3(x+2) = 3x+6 siempre · = 3x+2 nunca · = 2x+6 solo en x = {v} · '
+          f'x + 7 = 2x + 4 → x = {w}')
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Tema 3 · Ecuaciones lineales (págs. 138–139)
+#  Las tres formas del libro, y después el paréntesis y el menos.
+# ══════════════════════════════════════════════════════════════════
+def tema3():
+    print('Tema 3 · Ecuaciones lineales')
+    ejemplos = [
+        ('ax = b',             6 * x, sp.Integer(42),
+         lambda t: 6 * t, lambda t: F(42)),
+        ('ax + b = c',         6 * x - 5, sp.Integer(25),
+         lambda t: 6 * t - 5, lambda t: F(25)),
+        ('ax + b = cx + d',    6 * x - 5, 2 * x + 11,
+         lambda t: 6 * t - 5, lambda t: 2 * t + 11),
+        ('con paréntesis',     3 * (x - 2), x + 10,
+         lambda t: 3 * (t - 2), lambda t: t + 10),
+        ('menos adelante',     10 - (x + 4), 2 * x,
+         lambda t: 10 - (t + 4), lambda t: 2 * t),
+    ]
+    res = []
+    for rotulo, i, d, fi, fd in ejemplos:
+        v = resuelve(i, d, fi, fd, f'tema 3, {rotulo}')
+        res.append((rotulo, v))
+        aparece(f'<i>x</i> = {html_num(v)}', f'tema 3, {rotulo}')
+    sin_repetir(3, res)
+
+    # el menos delante del paréntesis
+    if sp.expand(-(x + 4)) != -x - 4:
+        mal('−(x + 4) no es −x − 4')
+
+    # equivalentes: 6x − 5 = 25 y 6x = 30 (los del ejemplo 2) tienen la misma solución
+    a = sp.solve(sp.Eq(6 * x - 5, 25), x)[0]
+    b = sp.solve(sp.Eq(6 * x, 30), x)[0]
+    if a != b:
+        mal('las ecuaciones equivalentes no tienen la misma solución')
+
+    # la trampa de simplificar la x: 3x = 5x
+    c = resuelve(3 * x, 5 * x, lambda t: 3 * t, lambda t: 5 * t, 'tema 3, 3x = 5x')
+    if c != 0:
+        mal('3x = 5x no da 0')
+    aparece('<i>x</i> = 0', 'tema 3, pregunta de 3x = 5x')
+    print('   ' + ' · '.join(f'{r} → x = {v}' for r, v in res) + f' · 3x = 5x → x = {c}')
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Tema 4 · Representación gráfica (págs. 140–141)
+#  Tabla de valores, dos puntos y un tercero para controlar.
+# ══════════════════════════════════════════════════════════════════
+def tema4():
+    print('Tema 4 · Representación gráfica')
+    # (rótulo, ecuación general en sympy, la despejada como función de Fraction, xs)
+    ejemplos = [
+        ('y = 2x − 1',          sp.Eq(y, 2 * x - 1),       lambda t: 2 * t - 1,        (0, 2, 1)),
+        ('y = −2x + 3',         sp.Eq(y, -2 * x + 3),      lambda t: -2 * t + 3,       (0, 2, 1)),
+        ('3x + y − 5 = 0',      sp.Eq(3 * x + y - 5, 0),   lambda t: -3 * t + 5,       (0, 1, 2)),
+        ('2x + 3y − 6 = 0',     sp.Eq(2 * x + 3 * y - 6, 0), lambda t: F(-2, 3) * t + 2, (0, 3, 6)),
+    ]
+    for rotulo, ec, f, xs in ejemplos:
+        despejada = sp.solve(ec, y)[0]
+        pts = []
+        for xv in xs:
+            yv = f(F(xv))
+            # segunda vía: el punto tiene que cumplir la ecuación original
+            if ec.lhs.subs({x: xv, y: sp.Rational(yv.numerator, yv.denominator)}) != \
+               ec.rhs.subs({x: xv, y: sp.Rational(yv.numerator, yv.denominator)}):
+                mal(f'tema 4, {rotulo}: el punto ({xv}, {yv}) no cumple la ecuación')
+            if sp.nsimplify(despejada.subs(x, xv)) != sp.Rational(yv.numerator, yv.denominator):
+                mal(f'tema 4, {rotulo}: la despejada no da {yv} en x = {xv}')
+            pts.append((F(xv), yv))
+        # el tercero, alineado con los dos primeros
+        (x1, y1), (x2, y2), (x3, y3) = pts
+        if (y2 - y1) * (x3 - x1) != (y3 - y1) * (x2 - x1):
+            mal(f'tema 4, {rotulo}: el tercer punto no está alineado')
+        for px_, py_ in pts:
+            aparece(f'({html_num(px_)}, {html_num(py_)})', f'tema 4, {rotulo}')
+        print(f'   {rotulo} → y = {despejada} · puntos ' +
+              ', '.join(f'({a}, {b})' for a, b in pts) + ' · alineados')
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Tema 5 · Ecuaciones con fracciones (págs. 142–143)
+# ══════════════════════════════════════════════════════════════════
+def tema5():
+    print('Tema 5 · Ecuaciones con fracciones')
+    ejemplos = [
+        ('ax = b',                 x / 4, sp.Integer(3),
+         lambda t: t / 4, lambda t: F(3)),
+        ('ax + b = c',             x / 2 + sp.Rational(1, 3), sp.Rational(5, 6),
+         lambda t: t / 2 + F(1, 3), lambda t: F(5, 6)),
+        ('ax + b = cx + d',        sp.Rational(3, 4) * x - 1, x / 2 + 1,
+         lambda t: F(3, 4) * t - 1, lambda t: t / 2 + 1),
+        ('numeradores con paréntesis', (x + 1) / 2 - (x - 3) / 5, sp.Integer(2),
+         lambda t: (t + 1) / 2 - (t - 3) / 5, lambda t: F(2)),
+        ('fracción de los dos lados', (2 * x - 1) / 3, (x + 4) / 4,
+         lambda t: (2 * t - 1) / 3, lambda t: (t + 4) / 4),
+    ]
+    res = []
+    for rotulo, i, d, fi, fd in ejemplos:
+        v = resuelve(i, d, fi, fd, f'tema 5, {rotulo}')
+        res.append((rotulo, v))
+        aparece(f'<i>x</i> = {html_num(v)}', f'tema 5, {rotulo}')
+    sin_repetir(5, res)
+
+    # el menos que se reparte en el ejemplo 4
+    if sp.expand(5 * (x + 1) - 2 * (x - 3)) != 3 * x + 11:
+        mal('5(x+1) − 2(x−3) no es 3x + 11')
+    # los mcm que usa la página
+    for dens, m in [((2, 3, 6), 6), ((4, 2), 4), ((2, 5), 10), ((3, 4), 12)]:
+        if sp.ilcm(*dens) != m:
+            mal(f'el mcm de {dens} no es {m}')
+    print('   ' + ' · '.join(f'{r} → x = {v}' for r, v in res))
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Tema 6 · Simbolizaciones algebraicas (págs. 144–145)
+#  Una palabra cambia por vez; en x = 10 se ve que cada cambio importa.
+# ══════════════════════════════════════════════════════════════════
+def tema6():
+    print('Tema 6 · Simbolizaciones')
+    v = F(10)
+    lecturas = [
+        ('el triple de un número',                  3 * v),
+        ('el triple de un número, menos 4',         3 * v - 4),
+        ('el triple de la diferencia con 4',        3 * (v - 4)),
+        ('la tercera parte de un número, menos 4',  v / 3 - 4),
+    ]
+    valores = [b for _, b in lecturas]
+    if len(set(valores)) != len(valores):
+        mal('dos lecturas del tema 6 dan lo mismo en x = 10')
+    for rotulo, b in lecturas:
+        aparece(html_num(b), f'tema 6, {rotulo}')
+    print('   en x = 10: ' + ' · '.join(f'{r} = {b}' for r, b in lecturas))
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Tema 7 · Resolución de problemas (págs. 146–147)
+#  Cada problema se comprueba en su situación.
+# ══════════════════════════════════════════════════════════════════
+def tema7():
+    print('Tema 7 · Problemas, verificados en la situación')
+    res = []
+
+    # compra: 3 cuadernos iguales y una regla de 8 000 salieron 47 000
+    c = frac(sp.solve(sp.Eq(3 * x + 8000, 47000), x)[0])
+    if 3 * c + 8000 != 47000 or c <= 0 or c.denominator != 1:
+        mal(f'la compra no cierra con {c}')
+    aparece('₲ 13 000', 'tema 7, compra'); res.append(('compra', c))
+
+    # tres consecutivos que suman 51
+    p = frac(sp.solve(sp.Eq(x + (x + 1) + (x + 2), 51), x)[0])
+    tres = [p, p + 1, p + 2]
+    if sum(tres) != 51 or any(tres[i + 1] - tres[i] != 1 for i in range(2)):
+        mal(f'los consecutivos no cierran: {tres}')
+    aparece(f'{tres[0]}, {tres[1]} y {tres[2]}', 'tema 7, consecutivos'); res.append(('consecutivos', p))
+
+    # rectángulo: el largo supera en 4 al ancho, perímetro 52
+    a = frac(sp.solve(sp.Eq(2 * x + 2 * (x + 4), 52), x)[0])
+    largo = a + 4
+    if largo - a != 4 or 2 * (a + largo) != 52 or a <= 0:
+        mal('el rectángulo no cierra')
+    aparece(f'{a} m', 'tema 7, ancho'); aparece(f'{largo} m', 'tema 7, largo')
+    res.append(('rectángulo', a))
+
+    # la diferencia entre un número y su cuarta parte es 18
+    n = frac(sp.solve(sp.Eq(x - x / 4, 18), x)[0])
+    if n - n / 4 != 18:
+        mal('lo de la cuarta parte no cierra')
+    aparece(f'el número es {n}', 'tema 7, cuarta parte'); res.append(('cuarta parte', n))
+
+    # dentro de 4 años Sofía tendrá el triple de la edad que tenía hace 4
+    s = frac(sp.solve(sp.Eq(x + 4, 3 * (x - 4)), x)[0])
+    if s + 4 != 3 * (s - 4) or s - 4 <= 0:
+        mal('las edades de Sofía no cierran')
+    aparece(f'Sofía tiene {s} años', 'tema 7, edades'); res.append(('edades', s))
+    sin_repetir(7, res)
+
+    print(f'   cuaderno ₲ {c} · consecutivos {tres} · rectángulo {a} y {largo} · '
+          f'número {n} · Sofía {s} (hace 4: {s - 4}, dentro de 4: {s + 4})')
+
+
+# ══════════════════════════════════════════════════════════════════
+#  Desafío final · el epitafio de Diofanto
+# ══════════════════════════════════════════════════════════════════
+def diofanto():
+    print('Desafío final · Diofanto')
+    partes = sp.Rational(1, 6) + sp.Rational(1, 12) + sp.Rational(1, 7) + sp.Rational(1, 2)
+    vida = frac(sp.solve(sp.Eq(x * partes + 5 + 4, x), x)[0])
+    # en la situación: cada etapa entera en años, y todo suma la vida
+    etapas = [vida / 6, vida / 12, vida / 7, F(5), vida / 2, F(4)]
+    if sum(etapas) != vida:
+        mal(f'las etapas no suman la vida: {sum(etapas)} ≠ {vida}')
+    if any(e.denominator != 1 for e in etapas):
+        mal(f'alguna etapa no da un número entero de años: {etapas}')
+    if sp.ilcm(6, 12, 7, 2) != 84:
+        mal('el mcm de 6, 12, 7 y 2 no es 84')
+    aparece(f'vivió {vida} años', 'Diofanto')
+    print(f'   vivió {vida} años · etapas {[int(e) for e in etapas]} · mcm 84')
+
+
+def arranque():
+    print('La pregunta para arrancar')
+    t = frac(sp.solve(sp.Eq(3 * x + 12, 147), x)[0])
+    if 3 * t + 12 != 147 or t.denominator != 1 or t <= 0:
+        mal(f'las tapitas no cierran: {t}')
+    aparece(f'cada bolsa trae {t} tapitas', 'arranque')
+    print(f'   3x + 12 = 147 → {t} tapitas por bolsa')
+
+
+def diofanto_por_84():
+    """El paso que muestra la página: todo multiplicado por 84."""
+    izq = sp.expand(84 * (x / 6 + x / 12 + x / 7 + 5 + x / 2 + 4))
+    if izq != 75 * x + 756:
+        mal(f'84 por el primer miembro da {izq}, no 75x + 756')
+    for termino, esperado in [(x / 6, 14 * x), (x / 12, 7 * x), (x / 7, 12 * x),
+                              (5, 420), (x / 2, 42 * x), (4, 336)]:
+        if sp.expand(84 * termino) != esperado:
+            mal(f'84 · {termino} no es {esperado}')
+    print('   84 · (x/6 + x/12 + x/7 + 5 + x/2 + 4) = 75x + 756')
+
+
+def verifica_pagina():
+    print('La página dice lo mismo que esta verificación')
     if not PAGINA.exists():
         mal(f'no existe {PAGINA}')
         return
     html = PAGINA.read_text(encoding='utf-8')
-
-    esperados = [t for *_, t in ECUACIONES if t]
-    ancho, largo = rect
-    esperados += [
-        f'{ancho} m', f'{largo} m',
-        f'<i>x</i> = {cruce}',
-        '21/2',    # la raíz del atajo falso del paso 4, escrita como fracción
-        '31',      # lo que da la ecuación original con esa raíz
-        '300 − 6 = <b>294</b>',   # el atajo de cálculo del paso 1
-    ]
-    for t in esperados:
-        if t not in html:
-            mal(f'la página no contiene la respuesta verificada «{t}»')
+    cuerpo = re.sub(r'(?s)<style>.*?</style>', '', html)
+    for texto, origen in esperados:
+        if texto not in cuerpo:
+            mal(f'la página no contiene «{texto}» ({origen})')
     print(f'   {len(esperados)} respuestas buscadas en el HTML')
 
-    # La raíz del atajo falso es 21/2 y así tiene que estar escrita: si aparece
-    # como decimal, alguien redondeó una respuesta exacta. (Se mira solo el
-    # cuerpo de la página: en el CSS los 10.5px son tamaños, no respuestas.)
-    cuerpo = re.sub(r'(?s)<style>.*?</style>', '', html)
-    for sospechoso in ('10.5', '10,5'):
+    # una respuesta exacta nunca aparece redondeada
+    for sospechoso in ('3,2', '3.2 ', '0,66', '0.66', '10,5'):
         if sospechoso in cuerpo:
             mal(f'una respuesta exacta quedó escrita como decimal: «{sospechoso}»')
+
+    # la anatomía de cada tema: concepto, ejemplos, preguntas y notas
+    for parte in ('concepto', 'ejemplos', 'preguntas', 'notas'):
+        if f'{parte}:' not in cuerpo:
+            mal(f'los temas no declaran la parte «{parte}»')
 
 
 def main():
     print(f'Verificando {PAGINA.relative_to(RAIZ).as_posix()}\n')
-    verifica_ecuaciones()
-    verifica_siempre_y_nunca()
-    verifica_ambiguedad()
-    verifica_atajo_falso()
-    verifica_ganchos()
-    rect = verifica_rectangulo()
-    cruce = verifica_grafica()
-    verifica_pagina(rect, cruce)
-
+    arranque(); tema1(); tema2(); tema3(); tema4(); tema5(); tema6(); tema7()
+    diofanto(); diofanto_por_84()
+    verifica_pagina()
     print()
     if fallos:
         print(f'{len(fallos)} problema(s). La página NO está verificada.')
