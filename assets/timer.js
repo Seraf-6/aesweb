@@ -21,13 +21,14 @@
 
   var CLAVE = 'aesweb-timer';
   var PRESETS = [1, 3, 5, 10, 15, 20];
-  var estado = { min: 5, musica: true, vol: 0.5 };
+  var estado = { min: 5, melodia: 'caja', vol: 0.5 };
 
   try {
     var g = JSON.parse(localStorage.getItem(CLAVE) || '{}');
     if (g && typeof g === 'object') {
       if (g.min > 0) estado.min = g.min;
-      if (typeof g.musica === 'boolean') estado.musica = g.musica;
+      if (typeof g.melodia === 'string') estado.melodia = g.melodia;
+      if (typeof g.musica === 'boolean' && !g.musica) estado.melodia = 'silencio';
       if (typeof g.vol === 'number') estado.vol = g.vol;
     }
   } catch (e) { /* sin localStorage el timer anda igual */ }
@@ -43,7 +44,49 @@
 
   // ══════════════════ el sonido ══════════════════
   var audio = null, maestro = null, eco = null, sembrador = null;
-  var ESCALA = [146.83, 164.81, 185.00, 220.00, 246.94,   // re mi fa# la si
+  var sonando = [];          // lo ya programado, para poder cortarlo al pausar
+
+  /* Una nota es un nombre y una duración en tiempos. Las melodías son
+     cortas y se repiten: la idea no es entretener sino marcar que el
+     tiempo corre. Las tres llevan acompañamiento de bajo. */
+  var SEMI = { C:0, 'C#':1, D:2, 'D#':3, E:4, F:5, 'F#':6, G:7, 'G#':8, A:9, 'A#':10, B:11 };
+  function frec(nombre) {
+    if (!nombre) return 0;
+    var m = /^([A-G]#?)(-?\d)$/.exec(nombre);
+    if (!m) return 0;
+    return 440 * Math.pow(2, (12 * (Number(m[2]) + 1) + SEMI[m[1]] - 69) / 12);
+  }
+
+  var MELODIAS = {
+    caja: {
+      nombre: 'Caja de música', bpm: 74, timbre: 'campana',
+      melodia: [['E5',1],['G5',1],['A5',1], ['G5',1.5],['E5',.5],['D5',1],
+                ['C5',1],['D5',1],['E5',1], ['G5',2],[null,1],
+                ['A5',1],['C6',1],['A5',1], ['G5',1.5],['E5',.5],['D5',1],
+                ['E5',1],['C5',1],['D5',1], ['C5',2],[null,1]],
+      bajo:    [['C3',3],['G2',3],['C3',3],['G2',3],
+                ['A2',3],['G2',3],['F2',3],['C3',3]]
+    },
+    canon: {
+      nombre: 'Canon', bpm: 64, timbre: 'cuerda',
+      melodia: [['F#5',2],['E5',2],['D5',2],['C#5',2],
+                ['B4',2],['A4',2],['B4',2],['C#5',2]],
+      bajo:    [['D3',2],['A2',2],['B2',2],['F#2',2],
+                ['G2',2],['D2',2],['G2',2],['A2',2]]
+    },
+    paseo: {
+      nombre: 'Paseo', bpm: 92, timbre: 'redonda',
+      melodia: [['A4',1],['C5',1],['D5',1],['E5',1],
+                ['G5',1.5],['E5',.5],['D5',1],['C5',1],
+                ['A4',1],['C5',1],['E5',1],['D5',1],
+                ['C5',2],['A4',2]],
+      bajo:    [['A2',4],['F2',4],['C3',4],['E2',4]]
+    },
+    ambiente: { nombre: 'Sin melodía', ambiente: true }
+  };
+
+  // la de antes: notas sueltas de una pentatónica, sin melodía
+  var ESCALA = [146.83, 164.81, 185.00, 220.00, 246.94,
                 293.66, 329.63, 369.99, 440.00, 493.88];
 
   function abreAudio() {
@@ -58,73 +101,134 @@
     // un eco largo y apagado: da sensación de sala, no de instrumento
     eco = audio.createDelay(2);
     eco.delayTime.value = 0.47;
-    var realim = audio.createGain(); realim.gain.value = 0.34;
+    var realim = audio.createGain(); realim.gain.value = 0.3;
     var filtro = audio.createBiquadFilter();
-    filtro.type = 'lowpass'; filtro.frequency.value = 1400;
+    filtro.type = 'lowpass'; filtro.frequency.value = 1500;
     eco.connect(realim); realim.connect(eco);
     eco.connect(filtro); filtro.connect(maestro);
     return true;
   }
 
-  function nota(frec, cuando, dur, gan) {
-    var osc = audio.createOscillator();
-    var vol = audio.createGain();
-    osc.type = 'triangle';
-    osc.frequency.value = frec;
-    vol.gain.setValueAtTime(0.0001, cuando);
-    vol.gain.exponentialRampToValueAtTime(gan, cuando + 0.09);
-    vol.gain.exponentialRampToValueAtTime(0.0001, cuando + dur);
-    osc.connect(vol);
-    vol.connect(maestro);
-    vol.connect(eco);
-    osc.start(cuando);
-    osc.stop(cuando + dur + 0.05);
+  /* Cada timbre es una suma de osciladores con su propia envolvente.
+     La campana lleva armónicos y se apaga rápido; la cuerda entra
+     despacio y se sostiene. */
+  function nota(f, cuando, dur, gan, timbre) {
+    if (!f) return;
+    var voces = timbre === 'campana'
+        ? [{ onda: 'sine', mult: 1, g: 1 }, { onda: 'sine', mult: 2, g: 0.34 },
+           { onda: 'sine', mult: 3.01, g: 0.12 }]
+      : timbre === 'cuerda'
+        ? [{ onda: 'triangle', mult: 1, g: 1 }, { onda: 'triangle', mult: 1.005, g: 0.7 }]
+        : [{ onda: 'triangle', mult: 1, g: 1 }];
+    var ataque = timbre === 'cuerda' ? 0.14 : 0.012;
+    voces.forEach(function (v) {
+      var osc = audio.createOscillator();
+      var vol = audio.createGain();
+      osc.type = v.onda;
+      osc.frequency.value = f * v.mult;
+      vol.gain.setValueAtTime(0.0001, cuando);
+      vol.gain.exponentialRampToValueAtTime(gan * v.g, cuando + ataque);
+      vol.gain.exponentialRampToValueAtTime(0.0001, cuando + dur);
+      osc.connect(vol); vol.connect(maestro); vol.connect(eco);
+      osc.start(cuando);
+      osc.stop(cuando + dur + 0.05);
+      sonando.push(osc);
+      osc.onended = function () {
+        var i = sonando.indexOf(osc); if (i >= 0) sonando.splice(i, 1);
+      };
+    });
   }
 
-  /* Notas sueltas de una escala pentatónica: cualquier combinación suena
-     bien, así que no hace falta una melodía. Es a propósito: una melodía
-     se aprende, y lo aprendido distrae. */
-  function siembra() {
+  /* Se programa una vuelta entera de la melodía y se pide la siguiente
+     para cuando termine. Con estos tempos alcanza y sobra, y así los
+     tiempos los lleva el reloj del audio, que no se desfasa. */
+  function vuelta(clave) {
+    var m = MELODIAS[clave];
+    if (!audio || !m || m.ambiente) return 0;
+    var t = 60 / m.bpm, t0 = audio.currentTime + 0.08, cursor = 0, i;
+    for (i = 0; i < m.melodia.length; i++) {
+      var dur = m.melodia[i][1] * t;
+      nota(frec(m.melodia[i][0]), t0 + cursor, Math.min(dur * 2.6, 2.8), 0.1, m.timbre);
+      cursor += dur;
+    }
+    var cb = 0;
+    for (i = 0; i < m.bajo.length; i++) {
+      var db = m.bajo[i][1] * t;
+      nota(frec(m.bajo[i][0]), t0 + cb, db * 1.5, 0.055, m.timbre);
+      cb += db;
+    }
+    return Math.max(cursor, cb) * 1000;
+  }
+
+  function siembraAmbiente() {
     if (!audio) return;
     var ahora = audio.currentTime + 0.05;
     var cuantas = Math.random() < 0.25 ? 2 : 1;
     for (var i = 0; i < cuantas; i++) {
       var f = ESCALA[Math.floor(Math.random() * ESCALA.length)];
-      nota(f, ahora + i * 0.42, 2.6 + Math.random(), 0.09);
+      nota(f, ahora + i * 0.42, 2.6 + Math.random(), 0.09, 'redonda');
     }
-    if (Math.random() < 0.3) nota(73.42, ahora, 4.5, 0.05);   // un re grave de fondo
+    if (Math.random() < 0.3) nota(73.42, ahora, 4.5, 0.05, 'redonda');
   }
 
-  function musicaOn() {
-    if (!estado.musica || !abreAudio()) return;
+  function suena(clave) {
+    if (clave === 'silencio' || !abreAudio()) return;
     if (audio.state === 'suspended') audio.resume();
     maestro.gain.cancelScheduledValues(audio.currentTime);
     maestro.gain.setValueAtTime(Math.max(0.0001, maestro.gain.value), audio.currentTime);
-    maestro.gain.linearRampToValueAtTime(estado.vol * 0.3, audio.currentTime + 1.5);
-    if (!sembrador) { siembra(); sembrador = setInterval(siembra, 2300); }
+    maestro.gain.linearRampToValueAtTime(estado.vol * 0.3, audio.currentTime + 1.2);
+    clearTimeout(sembrador); clearInterval(sembrador);
+    if (MELODIAS[clave] && MELODIAS[clave].ambiente) {
+      siembraAmbiente();
+      sembrador = setInterval(siembraAmbiente, 2300);
+    } else {
+      var otra = function () {
+        var dura = vuelta(clave);
+        sembrador = setTimeout(otra, dura || 4000);
+      };
+      otra();
+    }
   }
 
+  function musicaOn() { suena(estado.melodia); }
+
   function musicaOff(rapido) {
-    clearInterval(sembrador); sembrador = null;
+    clearTimeout(sembrador); clearInterval(sembrador); sembrador = null;
     if (!audio) return;
     maestro.gain.cancelScheduledValues(audio.currentTime);
     maestro.gain.setValueAtTime(maestro.gain.value, audio.currentTime);
-    maestro.gain.linearRampToValueAtTime(0.0001, audio.currentTime + (rapido ? 0.25 : 1.2));
+    maestro.gain.linearRampToValueAtTime(0.0001, audio.currentTime + (rapido ? 0.2 : 1.2));
+    if (rapido) {
+      // cortar lo ya programado, o seguiría sonando solo
+      var t = audio.currentTime + 0.3;
+      sonando.slice().forEach(function (o) { try { o.stop(t); } catch (e) {} });
+    }
+  }
+
+  /* Probar una melodía sin arrancar el timer: nueve segundos y para. */
+  var corteprueba = null;
+  function prueba(clave) {
+    suena(clave);
+    clearTimeout(corteprueba);
+    corteprueba = setTimeout(function () { if (!corriendo) musicaOff(); }, 9000);
   }
 
   /* El aviso del final suena aunque la música esté apagada: es el único
      sonido imprescindible. */
   function campana() {
     if (!abreAudio()) return;
+    musicaOff(true);
     if (audio.state === 'suspended') audio.resume();
-    maestro.gain.cancelScheduledValues(audio.currentTime);
-    maestro.gain.setValueAtTime(0.0001, audio.currentTime);
-    maestro.gain.linearRampToValueAtTime(Math.max(0.25, estado.vol * 0.45), audio.currentTime + 0.05);
-    var t = audio.currentTime + 0.08;
-    [587.33, 880.00, 1174.66].forEach(function (f, i) {
-      nota(f, t + i * 0.16, 2.2 - i * 0.2, 0.22);
-    });
-    setTimeout(function () { musicaOff(); }, 2600);
+    setTimeout(function () {
+      maestro.gain.cancelScheduledValues(audio.currentTime);
+      maestro.gain.setValueAtTime(0.0001, audio.currentTime);
+      maestro.gain.linearRampToValueAtTime(Math.max(0.25, estado.vol * 0.45), audio.currentTime + 0.05);
+      var t = audio.currentTime + 0.08;
+      [587.33, 880.00, 1174.66].forEach(function (f, i) {
+        nota(f, t + i * 0.16, 2.2 - i * 0.2, 0.22, 'campana');
+      });
+      setTimeout(function () { musicaOff(); }, 2600);
+    }, 260);
   }
 
   // ══════════════════ la pantalla ══════════════════
@@ -151,13 +255,17 @@
       '<button class="tmr-op tmr-empezar" type="button" data-tmr-accion="empezar">Empezar</button>' +
     '</div>' +
     '<h5>Música</h5>' +
-    '<div class="tmr-fila">' +
-      '<button class="tmr-op" type="button" data-tmr-musica="1">Con música</button>' +
-      '<button class="tmr-op" type="button" data-tmr-musica="0">En silencio</button>' +
+    '<div class="tmr-fila tmr-musicas">' +
+      Object.keys(MELODIAS).map(function (k) {
+        return '<button class="tmr-op" type="button" data-tmr-melodia="' + k + '">' +
+               MELODIAS[k].nombre + '</button>';
+      }).join('') +
+      '<button class="tmr-op" type="button" data-tmr-melodia="silencio">En silencio</button>' +
     '</div>' +
     '<input class="tmr-vol" id="tmr-vol" type="range" min="0" max="100" step="5" ' +
       'aria-label="Volumen" value="' + Math.round(estado.vol * 100) + '">' +
-    '<p class="tmr-nota">Al terminar suena un aviso, aunque esté en silencio.</p>';
+    '<p class="tmr-nota">Tocá una melodía para escucharla. Al terminar el timer suena un ' +
+      'aviso, aunque esté en silencio.</p>';
 
   var telon = document.createElement('div');
   telon.className = 'tmr-telon';
@@ -196,8 +304,8 @@
     panel.querySelectorAll('[data-tmr-min]').forEach(function (b) {
       b.setAttribute('aria-pressed', String(Number(b.dataset.tmrMin) === estado.min));
     });
-    panel.querySelectorAll('[data-tmr-musica]').forEach(function (b) {
-      b.setAttribute('aria-pressed', String((b.dataset.tmrMusica === '1') === estado.musica));
+    panel.querySelectorAll('[data-tmr-melodia]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.tmrMelodia === estado.melodia));
     });
     var p = telon.querySelector('[data-tmr-accion="pausa"]');
     p.textContent = corriendo ? 'Pausar' : 'Seguir';
@@ -264,16 +372,20 @@
     panel.hidden = !abierto;
     btn.setAttribute('aria-expanded', String(abierto));
     if (abierto) pinta();
+    else if (!corriendo) musicaOff(true);
   });
 
   panel.addEventListener('click', function (ev) {
     var b = ev.target.closest('button');
     if (!b) return;
     if (b.dataset.tmrMin) { arranca(Number(b.dataset.tmrMin)); return; }
-    if (b.dataset.tmrMusica) {
-      estado.musica = b.dataset.tmrMusica === '1'; guardar();
-      if (!estado.musica) musicaOff(true); else if (corriendo) musicaOn();
-      pinta(); return;
+    if (b.dataset.tmrMelodia) {
+      estado.melodia = b.dataset.tmrMelodia; guardar();
+      pinta();
+      if (estado.melodia === 'silencio') musicaOff(true);
+      else if (corriendo) musicaOn();
+      else prueba(estado.melodia);      // elegir es, también, escucharla
+      return;
     }
     if (b.dataset.tmrAccion === 'empezar') {
       var m = Math.min(180, Math.max(1, Math.round(Number(otro.value) || estado.min)));

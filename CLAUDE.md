@@ -43,6 +43,7 @@ assets/
   proyeccion.js             el panel de proyección
   timer.js                  el timer de pantalla completa, con música generada
   img/                      logos
+citas.md                    las citas de las tapas, con su fuente
 contenido.py                EL ÍNDICE DEL SITIO: grados, unidades, material
 build.py                    genera las páginas de índice desde contenido.py
 verificacion/               un guion por página de clase, que comprueba sus cuentas
@@ -111,6 +112,18 @@ guardado en `localStorage` de esa computadora.
 **El valor por defecto es el fondo crema.** No es capricho: se probó proyectando
 sobre la pizarra blanca del aula y es el que mejor aguanta el tinte verdoso del
 proyector. No cambiarlo sin volver a probar en el aula.
+
+---
+
+## Las citas de las tapas
+
+Cada página de clase abre con una cita en vez de una explicación. La lista
+está en `citas.md`, con la fuente de cada una, cuáles son atribuidas y cuáles
+se le cuelgan a Einstein sin serlo. **La firma dice la verdad sobre la
+fuente**: `Albert Einstein` si está documentada, `atribuida a Albert Einstein`
+si no.
+
+Ahí también está qué cita va en cada unidad, para no repetir.
 
 ---
 
