@@ -163,6 +163,35 @@ todavía no hay pasos— y bajan o suben con cada paso; si quedan fuera de la
 pantalla, la página se corre lo justo para mostrarlos, sin quedar debajo
 de los botones flotantes. En un ejemplo largo nunca quedan allá arriba.
 
+**Un ejemplo que construye un gráfico es una pizarra**, como en los videos de
+Khan Academy: a la izquierda, chicos, la ecuación, la tabla de valores y la
+cuenta del momento; a la derecha, el plano grande, **más de la mitad de la
+pantalla** (en proyección la diapositiva usa todo el ancho). La pregunta del
+primer paso queda fija arriba; cada cuenta nueva **se escribe en el mismo
+lugar donde estaba la anterior**, que se borra, en vez de apilarse debajo.
+Lo que ya se sabe queda en la tabla. En el guion es `construye:` con
+`fija: 1`, y la plantilla es `bloquePizarra`.
+
+**El movimiento dice qué cambió y qué quedó igual**, a la manera de las
+animaciones de 3Blue1Brown:
+
+- Nada empuja nada de golpe: una caja nueva se abre desde altura cero y la
+  página se corre suave, lo justo.
+- Lo anterior no desaparece: se atenúa. Lo nuevo entra en su lugar.
+- Los renglones de una cuenta alineada se escriben de a uno, y lo resaltado
+  con `N()` se enciende después, cuando ya se leyó el renglón.
+- En el plano, el punto sube desde la x por sus guías, aparece con un pulso,
+  y el renglón nuevo de la tabla se ilumina al mismo tiempo. La recta se
+  traza de punta a punta, recién con la respuesta.
+- Para atrás es el mismo movimiento al revés.
+- Con "reducir movimiento" del sistema operativo no hay animaciones, solo el
+  estado final.
+
+Toda limpieza que espera el final de una animación tiene además un
+temporizador de respaldo (`alTerminar`): con la ventana oculta o el
+navegador ocupado el evento puede no llegar, y las cajas viejas quedaban
+acumuladas.
+
 **Lo nuevo va resaltado** con `N()`: lo que se agrega a los dos miembros (el
 `+ 5`, el `· 2`, el m.c.m. adelante de cada término), el valor que se
 reemplaza en la letra, la palabra que cambió respecto del ejemplo anterior.

@@ -537,3 +537,93 @@ body[data-solo="1"] .pasos-nav.abajo{font-size:21px}
    sin este espacio, los botones de los pasos no pueden subir por encima de
    los botones flotantes de abajo */
 body[data-solo="1"] .envoltura{padding-bottom:96px}
+
+/* ═══════════════════════════════════════════════════════════════
+   El movimiento
+   Lo que ya está se queda quieto; lo nuevo aparece en su lugar con un
+   movimiento que lleva la mirada ahí. Una caja nueva se abre (no empuja
+   de golpe), sus cuentas se escriben renglón por renglón, lo resaltado
+   se enciende, y lo anterior se atenúa sin irse. En el plano, el punto
+   nuevo sube desde su x y cae con un pulso; la recta se dibuja sola.
+   Con "reducir movimiento" en el sistema, nada de esto se anima.
+   ═══════════════════════════════════════════════════════════════ */
+.pasos li{animation:none}
+.pasos li.pasado:not(.final){opacity:.62}
+.pasos li{transition:opacity .45s ease}
+.nuevo{display:inline-block}
+
+.recien > .t,.recien > .final-txt,.recien > .n{animation:funde .35s ease-out both}
+.recien .alineado > span{animation:escribe .5s cubic-bezier(.22,.8,.24,1) both;
+  animation-delay:calc(.2s + var(--f, 0) * .32s)}
+.recien .nuevo{animation:indica .7s ease-out both; animation-delay:calc(.38s + var(--f, 0) * .32s)}
+.recien.final .final-txt{animation:aterriza .6s cubic-bezier(.3,1.4,.5,1) both .12s}
+@keyframes funde{from{opacity:0}}
+@keyframes escribe{from{opacity:0; transform:translateY(.35em)}}
+@keyframes indica{0%{transform:scale(1)} 45%{transform:scale(1.22)} 100%{transform:scale(1)}}
+@keyframes aterriza{from{opacity:0; transform:scale(.9)}}
+
+/* el plano */
+.dibuja{stroke-dasharray:var(--largo); stroke-dashoffset:var(--largo);
+  animation:traza 1.1s cubic-bezier(.65,0,.35,1) forwards}
+@keyframes traza{to{stroke-dashoffset:0}}
+.guia{stroke:var(--punto); stroke-width:1.6; stroke-dasharray:5 5; fill:none; opacity:.85}
+.guia.sube{animation:creceY .42s cubic-bezier(.22,.8,.24,1) both .42s}
+.guia.cruza{animation:creceX .36s cubic-bezier(.22,.8,.24,1) both .95s}
+@keyframes creceY{from{transform:scaleY(0)}}
+@keyframes creceX{from{transform:scaleX(0)}}
+.marca-x{fill:var(--punto)}
+.marca-x.late{animation:pop .3s cubic-bezier(.3,1.6,.5,1) both .22s}
+.aparece{animation:pop .5s cubic-bezier(.3,1.6,.5,1) both}
+.onda{fill:none; stroke:var(--punto); stroke-width:2; pointer-events:none;
+  animation:onda .95s ease-out both}
+.aparece-rot{animation:funde .4s both}
+@keyframes pop{from{transform:scale(0)}}
+@keyframes onda{from{transform:scale(1); opacity:.8} to{transform:scale(3.4); opacity:0}}
+
+/* ═══════════════════════════════════════════════════════════════
+   La pizarra: un ejemplo que construye un gráfico
+   Como en el pizarrón: a la izquierda la ecuación, la tabla chica y la
+   cuenta del momento, que se borra y se reescribe; a la derecha, el
+   plano grande. Nada empuja nada: cambia solo lo que tiene que cambiar.
+   ═══════════════════════════════════════════════════════════════ */
+.pizarra-grid{display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
+  gap:24px; align-items:start; margin-top:4px}
+@media (max-width:760px){.pizarra-grid{grid-template-columns:minmax(0,1fr)}}
+.pizarra-cab{display:flex; gap:16px; align-items:flex-start}
+.pizarra-cab .enunciado{flex:1 1 auto; margin:0}
+.tabla-mini{flex:0 0 auto}
+.t-mini{border-collapse:collapse; font-family:var(--mono); font-size:16px;
+  font-variant-numeric:tabular-nums}
+.t-mini th,.t-mini td{padding:3px 14px; text-align:center; white-space:nowrap}
+.t-mini th{font-family:var(--serif); font-style:italic; font-size:19px; font-weight:700;
+  border-bottom:2px solid var(--tinta)}
+.t-mini th:first-child,.t-mini td:first-child{border-right:2px solid var(--tinta)}
+.t-mini .fr{font-size:.8em}
+.t-mini tr.control td{color:var(--acento2); font-weight:600}
+.t-mini .vacia td{color:var(--lapiz); font-family:var(--sans); font-size:13px; font-style:italic}
+.fila-nueva td{animation:filanueva 1.8s ease-out both}
+@keyframes filanueva{0%{opacity:0; background:var(--acento2-suave)}
+  20%{opacity:1; background:var(--acento2-suave); color:var(--acento2)} 100%{background:transparent}}
+
+.pizarra-fija .lamina{margin-top:12px; padding:10px 14px; background:var(--papel-2); border-radius:4px}
+.pizarra-trabajo{position:relative; margin-top:12px; padding:12px 14px; background:var(--papel-2);
+  border-radius:4px}
+.pizarra-trabajo:not(:has(.lamina)){background:none; padding:0}
+.lamina{line-height:1.5}
+.lamina.final{background:var(--rojo-suave); border-radius:3px; margin:-6px -8px; padding:10px 12px}
+.lamina.final .final-txt{font-size:1.25em}
+.lamina.control .n,.lamina.final .n{color:var(--acento2); font-weight:700; margin-right:6px}
+.lamina.final .n{color:var(--acento)}
+.pizarra-der{position:sticky; top:64px}
+.pizarra-der .lienzo svg{max-height:calc(100vh - 110px)}
+/* en proyección, la diapositiva de la pizarra usa toda la pantalla */
+body[data-solo="1"] .envoltura:has(.pizarra.activa){max-width:none}
+body[data-solo="1"] .t-mini{font-size:.85em}
+body[data-solo="1"] .t-mini th{font-size:1em}
+
+@media (prefers-reduced-motion:reduce){
+  .recien *,.recien > *,.fila-nueva td,.aparece,.aparece-rot,.onda,.guia,.marca-x{animation:none!important}
+  .dibuja{animation:none; stroke-dasharray:none; stroke-dashoffset:0}
+  .onda{display:none}
+  .pasos li{transition:none}
+}

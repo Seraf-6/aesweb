@@ -276,14 +276,15 @@ const N = s => `<span class="nuevo">${s}</span>`;
    ['izquierda', '3(1 + 2) = 9'] cuando se calcula cada miembro aparte.
    También acepta ≠, para cuando los dos miembros no coinciden. */
 function A(...filas){
-  return '<div class="alineado">' + filas.map(f => {
+  return '<div class="alineado">' + filas.map((f, n) => {
     const [rot, e] = Array.isArray(f) ? f : ['', f];
     const m = / (=|≠) /.exec(' ' + e);
     const izq = m ? e.slice(0, Math.max(0, m.index - 1)) : '';
     const sig = m ? m[1] : '';
     const der = m ? e.slice(m.index + m[0].length - 1) : e;
-    return `<span class="al-rot">${rot}</span><span class="al-izq">${I(izq)}</span>` +
-           `<span class="al-sig">${sig}</span><span class="al-der">${I(der)}</span>`;
+    const f_ = ` style="--f:${n}"`;
+    return `<span class="al-rot"${f_}>${rot}</span><span class="al-izq"${f_}>${I(izq)}</span>` +
+           `<span class="al-sig"${f_}>${sig}</span><span class="al-der"${f_}>${I(der)}</span>`;
   }).join('') + '</div>';
 }
 
@@ -537,7 +538,7 @@ const TEMAS = [
   },
   ejemplos:[
     { titulo:'todos los valores de 2x − 3', enun:M('y = 2x − 3'),
-      construye:{ a:[2, 1], b:[-3, 1], xs:[0, 1, 2, [-1, 2], 5], desde:2, control:3 },
+      construye:{ a:[2, 1], b:[-3, 1], xs:[0, 1, 2, [-1, 2], 5], desde:2, control:3, fija:1 },
       pasos:[
         `¿Qué pregunta esta ecuación? <b>¿Cuáles son todos los valores que puede tomar ${M('2x − 3')}?</b> Cada ${M('x')} da uno, y a ese valor lo llamamos ${M('y')}. Voy armando la tabla.`,
         `Con ${M('x = 0')}:${A(`y = 2 · ${N('0')} − 3`, ' = −3')}Punto <b>(0, −3)</b>.`,
@@ -970,7 +971,32 @@ function navPasos(clave, total){
     </div>`;
 }
 
+/* La pizarra: a la izquierda la ecuación, la tabla chica y la cuenta del
+   momento; a la derecha, el plano grande. */
+function bloquePizarra(clave, ej, rotulo, cinta){
+  return `
+  <section class="ejemplo-diapo pizarra" id="e-${clave}">
+    <p class="cinta">${cinta}</p>
+    <div class="ejemplo-cab">
+      <h4 class="ej-titulo"><span class="num">${rotulo}</span>${ej.titulo}</h4>
+      ${navPasos(clave, totalPasos(ej))}
+    </div>
+    <div class="pizarra-grid">
+      <div class="pizarra-izq">
+        <div class="pizarra-cab">
+          <div class="enunciado">${ej.enun}</div>
+          <div class="tabla-mini" id="tabla-${clave}"></div>
+        </div>
+        <div class="pizarra-fija" id="fija-${clave}"></div>
+        <div class="pizarra-trabajo" id="trabajo-${clave}"></div>
+      </div>
+      <div class="pizarra-der" id="graf-${clave}"></div>
+    </div>
+  </section>`;
+}
+
 function bloqueEjemplo(clave, ej, rotulo, cinta){
+  if (ej.construye) return bloquePizarra(clave, ej, rotulo, cinta);
   return `
   <section class="ejemplo-diapo" id="e-${clave}">
     <p class="cinta">${cinta}</p>
@@ -979,10 +1005,7 @@ function bloqueEjemplo(clave, ej, rotulo, cinta){
       ${navPasos(clave, totalPasos(ej))}
     </div>
     <div class="enunciado ${ej.prosa ? 'frase' : ''}">${ej.enun}</div>
-    ${ej.construye
-      ? `<div class="con-grafica"><ol class="pasos" id="pasos-${clave}"></ol>
-           <div class="mini-grafica construye" id="graf-${clave}"></div></div>`
-      : ej.grafica
+    ${ej.grafica
       ? `<div class="con-grafica"><ol class="pasos" id="pasos-${clave}"></ol>
            <div class="mini-grafica" id="graf-${clave}" hidden></div></div>`
       : `<ol class="pasos" id="pasos-${clave}"></ol>`}
@@ -1059,9 +1082,6 @@ document.getElementById('nav').innerHTML =
   TEMAS.map(t => `<a class="chip" href="#t${idT(t)}">${t.puente ? '3 → 4' : t.n + '.'} ${t.corto}</a>`).join('') +
   '<a class="chip" href="#desafio">Desafío</a>';
 
-/* cada juego de botones, a la esquina de su enunciado */
-Object.keys(BLOQUES).forEach(k => ubicaNav(k));
-
 /* las notas y el observador viven en los botones flotantes de assets/clase.js */
 window.CLASE = { secciones: [
   { id:'unidad', titulo:'La unidad', notas:UNIDAD.notas, preguntas:UNIDAD.preguntas },
@@ -1075,21 +1095,80 @@ window.CLASE = { secciones: [
    nombre para las flechas de diapositiva y un clic acá saltaría de lámina. */
 const avance = {};
 
+/* ═══ el movimiento ═══
+   Lo que ya está se queda quieto; lo nuevo aparece en su lugar. */
+const movimiento = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SUAVE = 'cubic-bezier(.22,.8,.24,1)';
+
+/* Lo que ordena la página al terminar una animación (borrar la cuenta
+   vieja, soltar un alto fijo) no puede depender solo del aviso de fin: si
+   la ventana no está dibujando, ese aviso se demora. Un reloj lo respalda,
+   y lo que sea que llegue primero lo hace, una sola vez. */
+function alTerminar(anim, ms, fn){
+  let hecho = false;
+  const una = () => { if (!hecho){ hecho = true; fn(); } };
+  anim.onfinish = una;
+  setTimeout(una, ms + 80);
+}
+
+/* las cajas que están desapareciendo ya no cuentan como pasos */
+const pasosVivos = lista => [...lista.children].filter(li => !li.dataset.saliendo);
+
+/* Lleva un elemento a la vista, lo justo y con suavidad. Si la ventana no
+   está dibujando (el proyector en otra pantalla) el desplazamiento suave
+   no avanza: a los 700 ms se corrige de una. */
+function llevaAlaVista(el){
+  const r = el.getBoundingClientRect();
+  const abajo = innerHeight - 90, arriba = 80;      // los botones flotantes
+  let delta = 0;
+  if (r.bottom > abajo) delta = r.bottom - abajo;
+  else if (r.top < arriba) delta = r.top - arriba;
+  if (!delta) return;
+  const destino = window.scrollY + delta;
+  window.scrollTo({ top:destino, behavior: movimiento() ? 'smooth' : 'auto' });
+  setTimeout(() => { if (Math.abs(window.scrollY - destino) > 4) window.scrollTo(0, destino); }, 700);
+}
+
+/* una caja nueva se abre desde alto cero: no empuja todo de golpe */
+function abreCaja(el){
+  if (!movimiento() || !el.animate) return;
+  const alto = el.getBoundingClientRect().height;
+  const cs = getComputedStyle(el);
+  el.style.overflow = 'hidden';
+  alTerminar(el.animate([
+    { height:'0px', paddingTop:'0px', paddingBottom:'0px', opacity:0 },
+    { height:alto + 'px', paddingTop:cs.paddingTop, paddingBottom:cs.paddingBottom, opacity:1 }
+  ], { duration:420, easing:SUAVE }), 420, () => { el.style.overflow = ''; });
+}
+
+/* y se cierra igual, antes de irse */
+function cierraCaja(el, listo){
+  if (!movimiento() || !el.animate){ listo(); return; }
+  const alto = el.getBoundingClientRect().height;
+  el.style.overflow = 'hidden';
+  alTerminar(el.animate([
+    { height:alto + 'px', opacity:1 },
+    { height:'0px', paddingTop:'0px', paddingBottom:'0px', marginTop:'0px', opacity:0 }
+  ], { duration:320, easing:'cubic-bezier(.4,0,.6,1)', fill:'forwards' }), 320, listo);
+}
+
 /* Los botones de los pasos viajan con la clase: van en la esquina inferior
    derecha de la última caja que apareció (el enunciado, si todavía no hay
-   ningún paso). Así, en un ejemplo largo, nunca quedan allá arriba. */
-function ubicaNav(clave, sinEste = null, seguir = false){
+   ningún paso). En la pizarra, en la caja de la cuenta, que no se mueve. */
+function ubicaNav(clave){
   const nav = document.querySelector(`[data-nav="${clave}"]`);
+  nav.classList.add('abajo');
+  if (BLOQUES[clave].construye){
+    document.getElementById('trabajo-' + clave).appendChild(nav);
+    return nav;
+  }
   const lista = document.getElementById('pasos-' + clave);
-  const pasos = [...lista.children].filter(li => li !== sinEste);
+  const pasos = pasosVivos(lista);
   const caja = pasos.length
     ? pasos[pasos.length - 1]
     : lista.closest('.ejemplo-diapo, .desafio, .ejemplo').querySelector('.enunciado');
   caja.appendChild(nav);
-  nav.classList.add('abajo');
-  // instantáneo y solo lo justo: el desplazamiento suave depende de que la
-  // ventana esté dibujando, y con el proyector en otra pantalla puede no estarlo
-  if (seguir) nav.scrollIntoView({ block:'nearest' });
+  return nav;
 }
 
 /* El orden es siempre: los pasos, la respuesta, y después el control. El
@@ -1107,8 +1186,10 @@ function actualizaNav(clave){
 
 function siguientePaso(clave){
   const ej = BLOQUES[clave];
+  if (ej.construye) return pasoPizarra(clave, 1);
   const i = avance[clave] || 0;
   if (i >= totalPasos(ej)) return;
+  const lista = document.getElementById('pasos-' + clave);
   const li = document.createElement('li');
   if (i < ej.pasos.length){
     li.innerHTML = `<span class="n">${i + 1}</span><div class="t">${ej.pasos[i]}</div>`;
@@ -1119,32 +1200,102 @@ function siguientePaso(clave){
     li.className = 'control';
     li.innerHTML = `<span class="n">✓</span><div class="t">${ej.control}</div>`;
   }
-  document.getElementById('pasos-' + clave).appendChild(li);
+  // lo anterior se atenúa; lo nuevo entra al frente
+  pasosVivos(lista).forEach(x => { x.classList.remove('recien'); x.classList.add('pasado'); });
+  li.classList.add('recien');
+  lista.appendChild(li);
   avance[clave] = i + 1;
-  if (ej.construye) pintaConstruccion(clave);
-  ubicaNav(clave, null, true);
+  const nav = ubicaNav(clave);
+  llevaAlaVista(nav);            // se mide con la caja ya en su lugar final
+  abreCaja(li);
   if (ej.grafica){
-    // la recta aparece con la respuesta; el punto de control, con el control
-    if (li.classList.contains('final')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
-    if (li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.xs.length);
+    // la recta se dibuja con la respuesta; el punto de control, con el control
+    if (li.classList.contains('final')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2, 'final');
+    if (li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.xs.length, 'control');
   }
   actualizaNav(clave);
 }
 
 function pasoAtras(clave){
   const ej = BLOQUES[clave];
+  if (ej.construye) return pasoPizarra(clave, -1);
   const lista = document.getElementById('pasos-' + clave);
-  const li = lista.lastElementChild;
+  const vivos = pasosVivos(lista);
+  const li = vivos[vivos.length - 1];
   if (!li) return;
-  // la gráfica del tema 4 se esconde o se achica; la construcción del puente
-  // se redibuja entera más abajo, con pintaConstruccion
   const g = ej.grafica && document.getElementById('graf-' + clave);
   if (g && li.classList.contains('final')) g.hidden = true;
   if (g && li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
-  ubicaNav(clave, li, true);
-  li.remove();
+  li.dataset.saliendo = '1';
+  const previo = vivos[vivos.length - 2];
+  if (previo) previo.classList.remove('pasado');
+  const nav = ubicaNav(clave);
+  llevaAlaVista(nav);
+  cierraCaja(li, () => li.remove());
   avance[clave] = Math.max(0, (avance[clave] || 0) - 1);
-  if (ej.construye) pintaConstruccion(clave);
+  actualizaNav(clave);
+}
+
+/* ═══ la pizarra ═══
+   Los primeros `fija` pasos (la pregunta) quedan escritos arriba. Desde
+   ahí, la cuenta de cada paso reemplaza a la anterior en la misma caja,
+   como cuando se borra y se vuelve a escribir. La tabla y el plano
+   crecen de a un punto. */
+function laminaDe(ej, k){
+  const s_ = k - 1;
+  if (s_ < ej.pasos.length) return { cls:'', html:`<div class="t">${ej.pasos[s_]}</div>` };
+  if (s_ === ej.pasos.length) return { cls:'final', html:`<span class="n">=</span><span class="final-txt">${ej.final}</span>` };
+  return { cls:'control', html:`<span class="n">✓</span><div class="t">${ej.control}</div>` };
+}
+
+function cambiaTrabajo(clave, lam){
+  const zona = document.getElementById('trabajo-' + clave);
+  const nav = zona.querySelector('.pasos-nav');
+  const antes = zona.getBoundingClientRect().height;
+  // la cuenta anterior se borra en su lugar, sin empujar
+  zona.querySelectorAll(':scope > .lamina:not(.saliendo)').forEach(v => {
+    v.classList.add('saliendo');
+    if (!movimiento() || !v.animate){ v.remove(); return; }
+    Object.assign(v.style, { position:'absolute', top:v.offsetTop + 'px', left:v.offsetLeft + 'px',
+                             width:v.offsetWidth + 'px', margin:'0' });
+    alTerminar(v.animate([{ opacity:1 }, { opacity:0, transform:'translateY(-10px)' }],
+              { duration:240, easing:'ease-in', fill:'forwards' }), 240, () => v.remove());
+  });
+  if (lam){
+    const nueva = document.createElement('div');
+    nueva.className = `lamina ${lam.cls} recien`;
+    nueva.innerHTML = lam.html;
+    zona.insertBefore(nueva, nav);
+  }
+  const despues = zona.getBoundingClientRect().height;
+  if (movimiento() && zona.animate && Math.abs(antes - despues) > 1){
+    zona.style.overflow = 'hidden';
+    alTerminar(zona.animate([{ height:antes + 'px' }, { height:despues + 'px' }],
+                 { duration:380, easing:SUAVE }), 380, () => { zona.style.overflow = ''; });
+  }
+}
+
+function pasoPizarra(clave, dir){
+  const ej = BLOQUES[clave], c = ej.construye;
+  const k0 = avance[clave] || 0, k = k0 + dir;
+  if (k < 0 || k > totalPasos(ej)) return;
+  avance[clave] = k;
+  const fija = c.fija || 0;
+  const zonaFija = document.getElementById('fija-' + clave);
+  if (dir > 0 && k <= fija){
+    const lam = document.createElement('div');
+    lam.className = 'lamina recien';
+    lam.innerHTML = laminaDe(ej, k).html;
+    zonaFija.appendChild(lam);
+    abreCaja(lam);
+  }
+  if (dir < 0 && k0 <= fija){
+    const u = zonaFija.lastElementChild;
+    if (u) cierraCaja(u, () => u.remove());
+  }
+  if (k > fija || k0 > fija) cambiaTrabajo(clave, k > fija ? laminaDe(ej, k) : null);
+  pintaConstruccion(clave, dir > 0);
+  llevaAlaVista(document.querySelector(`[data-nav="${clave}"]`));
   actualizaNav(clave);
 }
 
@@ -1154,6 +1305,10 @@ document.addEventListener('click', ev => {
   if (b.dataset.accion === 'revelar') siguientePaso(b.dataset.bloque);
   if (b.dataset.accion === 'atras') pasoAtras(b.dataset.bloque);
 });
+
+/* cada juego de botones, a la esquina de su enunciado. Va al final: ubicaNav
+   usa definiciones de más arriba, y antes de ellas el guion se cortaría. */
+Object.keys(BLOQUES).forEach(k => ubicaNav(k));
 </script>
 
 
@@ -1285,7 +1440,10 @@ document.querySelectorAll('[data-ec]').forEach(b => {
 balArranca(6, -5, 2, 11);
 
 /* ═══ la recta: un lienzo que usan el taller y los ejemplos ═══ */
-function lienzoRecta(a, b, puntos, R = 8, tam = 400, destacado = 2, conRecta = true, anterior = null){
+/* op, para animar: pop = [[índice, retraso]] de los puntos que caen;
+   guia = índice del punto con sus guías (animaGuia: si suben ahora);
+   dibujaRecta = si la recta se traza sola, desde retrasoRecta. */
+function lienzoRecta(a, b, puntos, R = 8, tam = 400, destacado = 2, conRecta = true, anterior = null, op = {}){
   const M_ = 22, U = (tam - 2 * M_) / (2 * R);
   const px = u => M_ + (u + R) * U;
   const py = v => M_ + (R - v) * U;
@@ -1304,27 +1462,49 @@ function lienzoRecta(a, b, puntos, R = 8, tam = 400, destacado = 2, conRecta = t
   }
   // una recta, recortada al recuadro
   const dentro = t => t >= -R - 1e-9 && t <= R + 1e-9;
-  const segmento = (av, bv, cls) => {
+  const segmento = (av, bv, cls, traza = false) => {
     const pts = [];
     for (const xx of [-R, R]){ const yy = av * xx + bv; if (dentro(yy)) pts.push([xx, yy]); }
     if (av !== 0) for (const yy of [-R, R]){ const xx = (yy - bv) / av; if (dentro(xx)) pts.push([xx, yy]); }
     const u = pts.filter((p, i) => pts.findIndex(q => Math.abs(q[0] - p[0]) < 1e-9 && Math.abs(q[1] - p[1]) < 1e-9) === i);
-    return u.length >= 2
-      ? `<line class="${cls}" x1="${px(u[0][0])}" y1="${py(u[0][1])}" x2="${px(u[1][0])}" y2="${py(u[1][1])}"/>` : '';
+    if (u.length < 2) return '';
+    // se traza desde la izquierda
+    u.sort((p, q) => p[0] - q[0]);
+    const [x1, y1, x2, y2] = [px(u[0][0]), py(u[0][1]), px(u[1][0]), py(u[1][1])];
+    const estilo = traza
+      ? ` style="--largo:${Math.hypot(x2 - x1, y2 - y1).toFixed(1)}; animation-delay:${op.retrasoRecta || 0}s"` : '';
+    return `<line class="${cls}${traza ? ' dibuja' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"${estilo}/>`;
   };
   // la de antes, en punteado, para que se vea cómo se movió
   if (anterior) g += segmento(valor(anterior.a), valor(anterior.b), 'recta-anterior');
-  if (conRecta) g += segmento(valor(a), valor(b), 'recta1');
+  if (conRecta) g += segmento(valor(a), valor(b), 'recta1', !!op.dibujaRecta);
+  // las guías del punto del momento: desde su x en el eje, sube a su altura
+  if (op.guia != null && puntos[op.guia]){
+    const X = valor(puntos[op.guia][0]), Y = valor(puntos[op.guia][1]);
+    if (dentro(X) && dentro(Y)){
+      const an = op.animaGuia;
+      g += `<line class="guia${an ? ' sube' : ''}" x1="${px(X)}" y1="${py(0)}" x2="${px(X)}" y2="${py(Y)}"
+               style="transform-origin:${px(X)}px ${py(0)}px"/>`;
+      g += `<line class="guia${an ? ' cruza' : ''}" x1="${px(X)}" y1="${py(Y)}" x2="${px(0)}" y2="${py(Y)}"
+               style="transform-origin:${px(X)}px ${py(Y)}px"/>`;
+      g += `<circle class="marca-x${an ? ' late' : ''}" cx="${px(X)}" cy="${py(0)}" r="4"
+               style="transform-origin:${px(X)}px ${py(0)}px"/>`;
+    }
+  }
   puntos.forEach((p, i) => {
     const X = valor(p[0]), Y = valor(p[1]);
     if (!dentro(X) || !dentro(Y)) return;
-    g += `<circle class="${i === destacado ? 'punto-control' : 'punto-tabla'}" cx="${px(X)}" cy="${py(Y)}" r="6.5"/>`;
+    const cae = (op.pop || []).find(q => q[0] === i);
+    const origen = `transform-origin:${px(X)}px ${py(Y)}px`;
+    if (cae) g += `<circle class="onda" cx="${px(X)}" cy="${py(Y)}" r="6.5" style="${origen}; animation-delay:${cae[1] + .05}s"/>`;
+    g += `<circle class="${i === destacado ? 'punto-control' : 'punto-tabla'}${cae ? ' aparece' : ''}" cx="${px(X)}" cy="${py(Y)}" r="6.5"
+             style="${origen}${cae ? `; animation-delay:${cae[1]}s` : ''}"/>`;
     const etiqueta = `(${txtPlano(p[0])}, ${txtPlano(p[1])})`;
     // abajo del eje, el rótulo va abajo del punto: arriba se pisaría con los
     // números del eje; cerca del borde derecho, va a la izquierda
     const yRot = Y < 0 ? py(Y) + 20 : py(Y) - 9;
     const aLaIzq = X > R - 3;
-    g += `<text class="rotulo-punto" x="${aLaIzq ? px(X) - 9 : px(X) + 9}" y="${yRot}"${aLaIzq ? ' text-anchor="end"' : ''}>${etiqueta}</text>`;
+    g += `<text class="rotulo-punto${cae ? ' aparece-rot' : ''}" x="${aLaIzq ? px(X) - 9 : px(X) + 9}" y="${yRot}"${aLaIzq ? ' text-anchor="end"' : ''}${cae ? ` style="animation-delay:${cae[1] + .12}s"` : ''}>${etiqueta}</text>`;
   });
   return g;
 }
@@ -1347,7 +1527,7 @@ function tablaPuntos(a, b){
    desde el paso `desde`, cada paso agrega un renglón a la tabla y un punto
    al plano; con la respuesta aparece la recta, y con el control, el punto
    que nadie calculó. */
-function pintaConstruccion(clave){
+function pintaConstruccion(clave, avanzando = false){
   const ej = BLOQUES[clave], c = ej.construye;
   const k = avance[clave] || 0;
   const a = fr(...c.a), b = fr(...c.b);
@@ -1357,22 +1537,47 @@ function pintaConstruccion(clave){
   const conControl = k >= ej.pasos.length + 2;
   const puntos = c.xs.slice(0, hechos).map(v => [X(v), suma(prod(a, X(v)), b)]);
   if (conControl) puntos.push([fr(c.control), suma(prod(a, fr(c.control)), b)]);
-  const filas = puntos.map((p, i) =>
-    `<tr class="${conControl && i === puntos.length - 1 ? 'control' : ''}"><td>${txt(p[0])}</td><td>${txt(p[1])}</td></tr>`).join('');
-  document.getElementById('graf-' + clave).innerHTML = `
-    <table class="tabla-valores"><tr><th><i>x</i></th><th><i>y</i></th></tr>${filas ||
-      '<tr><td colspan="2" class="tabla-vacia">todavía sin valores</td></tr>'}</table>
-    <div class="lienzo"><svg viewBox="0 0 400 400" role="img"
+  const ultimo = puntos.length - 1;
+
+  // qué acaba de pasar, para animar solo eso
+  const recienPunto = avanzando && !conRecta && hechos > 0 && k - c.desde + 1 === hechos;
+  const recienRecta = avanzando && k === ej.pasos.length + 1;
+  const recienControl = avanzando && k === ej.pasos.length + 2;
+  const op = {};
+  if ((!conRecta && hechos > 0) || conControl){
+    op.guia = ultimo;
+    op.animaGuia = recienPunto || recienControl;
+    if (op.animaGuia) op.pop = [[ultimo, .82]];
+  }
+  if (recienRecta){ op.dibujaRecta = true; op.retrasoRecta = .1; }
+
+  const filas = puntos.map((p, i) => {
+    const cls = [conControl && i === ultimo ? 'control' : '',
+                 (recienPunto || recienControl) && i === ultimo ? 'fila-nueva' : ''].join(' ');
+    return `<tr class="${cls}"><td>${txt(p[0])}</td><td>${txt(p[1])}</td></tr>`;
+  }).join('');
+  document.getElementById('tabla-' + clave).innerHTML =
+    `<table class="t-mini"><tr><th>x</th><th>y</th></tr>${filas ||
+      '<tr class="vacia"><td colspan="2">sin valores</td></tr>'}</table>`;
+  document.getElementById('graf-' + clave).innerHTML = `<div class="lienzo"><svg viewBox="0 0 400 400" role="img"
       aria-label="El plano cartesiano con los puntos de la tabla">${
-      lienzoRecta(a, b, puntos, 8, 400, conControl ? puntos.length - 1 : -1, conRecta)}</svg></div>`;
+      lienzoRecta(a, b, puntos, 8, 400, conControl ? ultimo : -1, conRecta, null, op)}</svg></div>`;
 }
 
-function muestraGrafica(clave, g, cuantos = 3){
+function muestraGrafica(clave, g, cuantos = 3, animar = null){
   const a = fr(...g.a), b = fr(...g.b);
   const puntos = g.xs.slice(0, cuantos).map(x0 => { const X = fr(x0); return [X, suma(prod(a, X), b)]; });
+  const op = {};
+  if (animar === 'final'){
+    // primero caen los puntos de la tabla, de a uno; después se traza la recta
+    op.pop = puntos.map((_, i) => [i, .1 + i * .28]);
+    op.dibujaRecta = true;
+    op.retrasoRecta = .15 + puntos.length * .28;
+  }
+  if (animar === 'control'){ op.guia = puntos.length - 1; op.animaGuia = true; op.pop = [[puntos.length - 1, .82]]; }
   const div = document.getElementById('graf-' + clave);
   div.innerHTML = `<div class="lienzo"><svg viewBox="0 0 400 400" role="img"
-    aria-label="La recta del ejemplo con los puntos de la tabla">${lienzoRecta(a, b, puntos, 8, 400, g.destacar ?? 2)}</svg></div>`;
+    aria-label="La recta del ejemplo con los puntos de la tabla">${lienzoRecta(a, b, puntos, 8, 400, g.destacar ?? 2, true, null, op)}</svg></div>`;
   div.hidden = false;
 }
 
