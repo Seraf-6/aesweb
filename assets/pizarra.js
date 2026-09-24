@@ -29,11 +29,18 @@
    M() e I() se usan solo con matemática pura: en "1 y 13" la y es una
    palabra, y quedaría en cursiva. */
 const Pizarra = { letras:/[xyabcd]/g, lienzos:{} };
+window.Pizarra = Pizarra;
 
 const I = s => String(s).split(/(<[^>]+>)/)
   .map(t => t.startsWith('<') ? t : t.replace(Pizarra.letras, '<i>$&</i>')).join('');
 const M = s => '<span class="ec">' + I(s) + '</span>';
 const Q = (n, d) => `<span class="fr"><span>${I(String(n))}</span><span>${I(String(d))}</span></span>`;
+
+/* Los ángulos con sombrero (Â, B̂, Ĉ, D̂): B̂ y D̂ no existen como una sola
+   letra, y en cursiva el sombrero se corre. Se escriben como siempre y acá
+   se dibujan todos igual (.ang, en clase.css). No va dentro de un SVG. */
+const sombrero = s => String(s).replace(/([A-Z])̂|([ÂÊÎÔÛĈĜĤĴŜŴŶ])/g,
+  (m, l, pre) => `<span class="ang">${l || pre.normalize('NFD')[0]}</span>`);
 
 /* N() resalta lo nuevo: lo que se agrega a los dos miembros, el valor que
    se reemplaza, la palabra que cambió respecto del ejemplo anterior. Va
@@ -44,17 +51,18 @@ const N = s => `<span class="nuevo">${s}</span>`;
    = en la misma columna, como en el cuaderno. Cada fila es una igualdad
    ('3(1 + 2) = 3 · 1 + 6'), una continuación (' = 9'), o un par
    ['rótulo', '3(1 + 2) = 9'] con un rótulo a la izquierda ("izquierda",
-   "con x = 1"). También acepta ≠, cuando los dos miembros no coinciden.
+   "con x = 1"). También alinea ≠ (cuando los dos miembros no coinciden),
+   ≈ (una aproximación, después del valor exacto), < y >.
    El rótulo es texto: no pasa por I(). */
 function celdas(f, n, cls = '', extra = ''){
   const [rot, e] = Array.isArray(f) ? f : ['', f];
-  const m = / (=|≠) /.exec(' ' + e);
+  const m = / (=|≠|≈|<|>) /.exec(' ' + e);
   const izq = m ? e.slice(0, Math.max(0, m.index - 1)) : '';
   const sig = m ? m[1] : '';
   const der = m ? e.slice(m.index + m[0].length - 1) : e;
   const at = k => ` class="${k}${cls ? ' ' + cls : ''}" style="--f:${n}"${extra}`;
-  return `<span${at('al-rot')}>${rot}</span><span${at('al-izq')}>${I(izq)}</span>` +
-         `<span${at('al-sig')}>${sig}</span><span${at('al-der')}>${I(der)}</span>`;
+  return sombrero(`<span${at('al-rot')}>${rot}</span><span${at('al-izq')}>${I(izq)}</span>` +
+         `<span${at('al-sig')}>${{ '<':'&lt;', '>':'&gt;' }[sig] || sig}</span><span${at('al-der')}>${I(der)}</span>`);
 }
 function A(...filas){
   return '<div class="alineado">' + filas.map((f, n) => celdas(f, n)).join('') + '</div>';
@@ -226,8 +234,8 @@ const avance = {};         // clave → cuántos pasos se mostraron
 function totalPasos(ej){ return ej.pasos.length + 1 + (ej.control ? 1 : 0); }
 const textoPaso = p => typeof p === 'string' ? p : p.t;
 const filasPaso = p => typeof p === 'string' ? [] : (p.q || []);
-const usaCuaderno = ej => !ej.construye && !ej.lienzo &&
-  ((ej.inicio && [].concat(ej.inicio).length) || ej.pasos.some(p => filasPaso(p).length));
+const tieneFilas = ej => !!((ej.inicio && [].concat(ej.inicio).length) || ej.pasos.some(p => filasPaso(p).length));
+const usaCuaderno = ej => !ej.construye && !ej.lienzo && tieneFilas(ej);
 
 function navPasos(clave, total){
   return `<div class="pasos-nav abajo" data-nav="${clave}">
@@ -245,12 +253,12 @@ function bloque(clave, ej, o = {}){
   <section class="${o.clase || 'ejemplo-diapo'} pizarra" id="${o.id || 'e-' + clave}"${o.attrs ? ' ' + o.attrs : ''}>
     ${o.cinta ? `<p class="cinta">${o.cinta}</p>` : ''}
     <div class="ejemplo-cab">
-      <h4 class="ej-titulo">${o.rotulo ? `<span class="num">${o.rotulo}</span>` : ''}${ej.titulo}</h4>
+      <h4 class="ej-titulo">${o.rotulo ? `<span class="num">${o.rotulo}</span>` : ''}${sombrero(ej.titulo)}</h4>
     </div>
-    <div class="pizarra-grid${derecha ? '' : ' sola'}${ej.prosa && !ej.construye ? ' prosa' : ''}">
+    <div class="pizarra-grid${derecha ? '' : ' sola'}${ej.prosa && !ej.construye && !ej.lienzo ? ' prosa' : ''}">
       <div class="pizarra-izq">
         <div class="pizarra-cab">
-          <div class="enunciado${ej.prosa ? ' frase' : ''}">${ej.enun}</div>
+          <div class="enunciado${ej.prosa ? ' frase' : ''}">${sombrero(ej.enun)}</div>
           ${ej.construye ? `<div class="tabla-mini" id="tabla-${clave}"></div>` : ''}
         </div>
         <div class="pizarra-fija" id="fija-${clave}"></div>
@@ -335,10 +343,16 @@ function actualizaNav(clave){
   nav.querySelector('.pasos-cuenta').textContent = i ? `paso ${i} de ${total}` : `${total} pasos`;
 }
 
-/* ═══ la izquierda: lo que se dice en este paso ═══ */
+/* ═══ la izquierda: lo que se dice en este paso ═══
+   Si la derecha es un dibujo (el plano, una figura), la cuenta del paso
+   va acá, debajo de lo que se dice: abajo del dibujo no entraría. */
 function laminaDe(ej, k){
   const s = k - 1;
-  if (s < ej.pasos.length) return { cls:'', html:`<div class="t">${textoPaso(ej.pasos[s])}</div>` };
+  if (s < ej.pasos.length){
+    const p = ej.pasos[s], filas = filasPaso(p);
+    const cuenta = filas.length && (ej.lienzo || ej.construye) ? A(...filas) : '';
+    return { cls:'', html:`<div class="t">${textoPaso(p)}${cuenta}</div>` };
+  }
   if (s === ej.pasos.length) return { cls:'final', html:`<span class="n">=</span><span class="final-txt">${ej.final}</span>` };
   return { cls:'control', html:`<span class="n">✓</span><div class="t">${ej.control}</div>` };
 }
@@ -346,7 +360,7 @@ function laminaDe(ej, k){
 function nuevaLamina(lam){
   const d = document.createElement('div');
   d.className = `lamina ${lam.cls} recien`;
-  d.innerHTML = lam.html;
+  d.innerHTML = sombrero(lam.html);
   return d;
 }
 
@@ -394,9 +408,8 @@ function filasHasta(ej, k){
   return filas;
 }
 
-function pintaCuaderno(clave, avanzando, borrados = false){
+function pintaCuaderno(clave, avanzando, borrados = false, div = document.getElementById('der-' + clave)){
   const ej = BLOQUES[clave];
-  const div = document.getElementById('der-' + clave);
   const k = avance[clave] || 0;
   const filas = filasHasta(ej, k);
   // al volver, los renglones que sobran se borran antes de redibujar
@@ -406,7 +419,7 @@ function pintaCuaderno(clave, avanzando, borrados = false){
     div.dataset.borrando = '1';
     let ultima;
     sobran.forEach(s => { ultima = s.animate([{ opacity:1 }, { opacity:0 }], { duration:220, fill:'forwards' }); });
-    alTerminar(ultima, 220, () => { delete div.dataset.borrando; pintaCuaderno(clave, false, true); });
+    alTerminar(ultima, 220, () => { delete div.dataset.borrando; pintaCuaderno(clave, false, true, div); });
     return;
   }
   const ultimo = filas.length ? filas[filas.length - 1].paso : 0;
@@ -469,13 +482,109 @@ function pintaConstruccion(clave, avanzando = false){
 function pintaDerecha(clave, avanzando){
   const ej = BLOQUES[clave];
   if (ej.construye) return pintaConstruccion(clave, avanzando);
+  const der = document.getElementById('der-' + clave);
+  if (!der) return;
   if (ej.lienzo){
     const f = Pizarra.lienzos[ej.lienzo.tipo];
-    if (f) f(clave, ej, avance[clave] || 0, avanzando, document.getElementById('der-' + clave));
+    if (f) f(clave, ej, avance[clave] || 0, avanzando, der);
     return;
   }
-  if (document.getElementById('der-' + clave)) pintaCuaderno(clave, avanzando);
+  pintaCuaderno(clave, avanzando, false, der);
 }
+
+/* ═══ la figura: un dibujo que se arma por capas ═══
+   lienzo:{ tipo:'figura', vb:'0 0 400 300', rot:'…', capas:[[en, svg, hasta], …] }
+   Cada capa se ve desde el paso `en` (0 es desde el principio; también
+   'final' y 'control') hasta antes del paso `hasta`, si lo tiene. La capa
+   que aparece en este paso se dibuja: sus trazos (.traza) se hacen de
+   punta a punta y sus puntos (.pop) caen con un pulso. */
+Pizarra.lienzos.figura = (clave, ej, k, avanzando, div) => {
+  const nP = ej.pasos.length;
+  const num = v => v === 'final' ? nP + 1 : v === 'control' ? nP + 2 : (v == null ? Infinity : v);
+  const capas = ej.lienzo.capas.map(([en, svg, hasta]) => ({ en:num(en), svg, hasta:num(hasta) }));
+  const vis = capas.filter(c => c.en <= k && k < c.hasta);
+  div.innerHTML = `<div class="lienzo figura-lienzo"><svg viewBox="${ej.lienzo.vb || '0 0 400 300'}" role="img"
+      aria-label="${ej.lienzo.rot || 'La figura del ejemplo'}">${
+      vis.map(c => `<g class="capa${avanzando && c.en === k && k > 0 ? ' capa-nueva' : ''}">${c.svg}</g>`).join('')}</svg></div>`;
+};
+
+/* ═══ herramientas para dibujar figuras ═══
+   Coordenadas del SVG: x a la derecha, y hacia abajo. */
+const Geo = {
+  f: v => +v.toFixed(1),
+  pts: ps => ps.map(p => Geo.f(p[0]) + ',' + Geo.f(p[1])).join(' '),
+  medio: (p, q) => [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2],
+  dist: (p, q) => Math.hypot(q[0] - p[0], q[1] - p[1]),
+  /* el pie de la perpendicular desde a a la recta pq */
+  pie(a, p, q){
+    const dx = q[0] - p[0], dy = q[1] - p[1];
+    const t = ((a[0] - p[0]) * dx + (a[1] - p[1]) * dy) / (dx * dx + dy * dy);
+    return [p[0] + t * dx, p[1] + t * dy];
+  },
+  /* un punto a distancia d de p, yendo hacia q */
+  hacia(p, q, d){ const L = Geo.dist(p, q); return [p[0] + (q[0] - p[0]) * d / L, p[1] + (q[1] - p[1]) * d / L]; },
+  regular(n, cx, cy, R, giro = -90){
+    return Array.from({ length:n }, (_, k) => {
+      const a = (giro + k * 360 / n) * Math.PI / 180;
+      return [cx + R * Math.cos(a), cy + R * Math.sin(a)];
+    });
+  },
+  /* lo punteado no se traza: pathLength cambiaría el largo de sus rayitas */
+  traza: cls => /g-diag|g-aux|g-altura/.test(cls) ? `class="${cls}"` : `class="${cls} traza" pathLength="1"`,
+  pol: (ps, cls = 'g-fig') => `<polygon ${Geo.traza(cls)} points="${Geo.pts(ps)}"/>`,
+  linea: (ps, cls = 'g-linea') => `<polyline ${Geo.traza(cls)} points="${Geo.pts(ps)}"/>`,
+  seg: (p, q, cls = 'g-linea') => `<line ${Geo.traza(cls)}
+      x1="${Geo.f(p[0])}" y1="${Geo.f(p[1])}" x2="${Geo.f(q[0])}" y2="${Geo.f(q[1])}"/>`,
+  pto: (p, cls = 'g-vert', r = 5) => `<circle class="${cls} pop" cx="${Geo.f(p[0])}" cy="${Geo.f(p[1])}" r="${r}"/>`,
+  circ: (c, r, cls = 'g-circ') => `<circle ${Geo.traza(cls)} cx="${Geo.f(c[0])}" cy="${Geo.f(c[1])}" r="${Geo.f(r)}"/>`,
+  txt: (p, s, cls = 'g-rot', ancla = 'middle') =>
+    `<text class="${cls}" x="${Geo.f(p[0])}" y="${Geo.f(p[1])}" text-anchor="${ancla}" dominant-baseline="middle">${s}</text>`,
+  /* el ángulo en v entre las semirrectas hacia p y hacia q; grande: el de más de 180° */
+  arco(v, p, q, r = 26, cls = 'g-arco', grande = false){
+    const a1 = Math.atan2(p[1] - v[1], p[0] - v[0]), a2 = Math.atan2(q[1] - v[1], q[0] - v[0]);
+    let d = a2 - a1;
+    while (d <= -Math.PI) d += 2 * Math.PI;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    if (grande) d = d > 0 ? d - 2 * Math.PI : d + 2 * Math.PI;
+    const P1 = [v[0] + r * Math.cos(a1), v[1] + r * Math.sin(a1)];
+    const P2 = [v[0] + r * Math.cos(a1 + d), v[1] + r * Math.sin(a1 + d)];
+    return `<path class="${cls} pop-suave" d="M ${Geo.pts([v])} L ${Geo.pts([P1])} A ${r} ${r} 0 ${Math.abs(d) > Math.PI ? 1 : 0} ${d > 0 ? 1 : 0} ${Geo.pts([P2])} Z"/>`;
+  },
+  /* dónde va el rótulo de un ángulo: sobre su bisectriz */
+  enAngulo(v, p, q, r = 44, grande = false){
+    const u = Geo.hacia(v, p, 1), w = Geo.hacia(v, q, 1);
+    let b = [u[0] - v[0] + w[0] - v[0], u[1] - v[1] + w[1] - v[1]];
+    const L = Math.hypot(b[0], b[1]) || 1;
+    if (grande) b = [-b[0], -b[1]];
+    return [v[0] + b[0] / L * r, v[1] + b[1] / L * r];
+  },
+  /* la escuadrita del ángulo recto en v */
+  recto(v, p, q, s = 14){
+    const u = Geo.hacia(v, p, s), w = Geo.hacia(v, q, s);
+    const x = [u[0] + w[0] - v[0], u[1] + w[1] - v[1]];
+    return `<polyline class="g-recto" points="${Geo.pts([u, x, w])}"/>`;
+  },
+  /* rayitas de lados iguales */
+  marcas(p, q, k = 1){
+    const m = Geo.medio(p, q), L = Geo.dist(p, q);
+    const ux = (q[0] - p[0]) / L, uy = (q[1] - p[1]) / L;
+    let s = '';
+    for (let i = 0; i < k; i++){
+      const o = (i - (k - 1) / 2) * 6;
+      const c = [m[0] + ux * o, m[1] + uy * o];
+      s += `<line class="g-marca" x1="${Geo.f(c[0] - uy * 7)}" y1="${Geo.f(c[1] + ux * 7)}" x2="${Geo.f(c[0] + uy * 7)}" y2="${Geo.f(c[1] - ux * 7)}"/>`;
+    }
+    return s;
+  },
+  /* el rótulo de un lado, afuera de la figura (centro: un punto de adentro) */
+  enLado(p, q, centro, d = 16){
+    const m = Geo.medio(p, q);
+    const L = Geo.dist(p, q);
+    let n = [-(q[1] - p[1]) / L, (q[0] - p[0]) / L];
+    if ((centro[0] - m[0]) * n[0] + (centro[1] - m[1]) * n[1] > 0) n = [-n[0], -n[1]];
+    return [m[0] + n[0] * d, m[1] + n[1] * d];
+  },
+};
 
 /* ═══ un paso, para adelante (dir = 1) o para atrás (dir = −1) ═══ */
 function paso(clave, dir){

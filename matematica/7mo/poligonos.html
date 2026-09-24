@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Todo se corta en triángulos · AESWeb</title>
-<meta name="description" content="La unidad fusionada de polígonos de 7.º en ocho pasos, con Pitágoras una sola vez y aplicado después a triángulos y a cuadriláteros.">
+<title>Polígonos · AESWeb</title>
+<meta name="description" content="Las unidades 8 y 9 de 7.º fusionadas en los quince temas del libro: cada uno con su concepto y ejemplos resueltos paso a paso sobre una figura que se va armando, con Pitágoras una sola vez y aplicado después a triángulos y a cuadriláteros.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
@@ -12,16 +12,15 @@
 <link rel="stylesheet" href="../../assets/sitio.css">
 <link rel="stylesheet" href="../../assets/clase.css">
 <style>
-/* ---------- las figuras ---------- */
-.taller{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,240px);
-  gap:18px; align-items:start}
+/* ---------- solo de esta página: los talleres ---------- */
+.taller{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,240px); gap:18px; align-items:start}
 @media (max-width:700px){.taller{grid-template-columns:minmax(0,1fr)}}
-.figura{fill:var(--acento2-suave); stroke:var(--acento2); stroke-width:2.5;
-  stroke-linejoin:round}
+.taller .lienzo svg{max-height:calc(100vh - 200px)}
+.figura{fill:var(--acento2-suave); stroke:var(--acento2); stroke-width:2.5; stroke-linejoin:round}
 .triangulado{fill:var(--acento-suave); stroke:var(--linea-fuerte); stroke-width:1}
 .diagonal{stroke:var(--acento); stroke-width:2; stroke-dasharray:6 5; fill:none}
 .vertice{fill:var(--acento2); stroke:var(--papel); stroke-width:1.5}
-.vertice.foco{fill:var(--acento); r:7}
+.vertice.foco{fill:var(--acento)}
 .rotulo{fill:var(--lapiz); font-family:'IBM Plex Mono',monospace; font-size:13px}
 .rotulo.dest{fill:var(--acento); font-weight:600}
 .cuad-a{fill:var(--acento2-suave); stroke:var(--acento2); stroke-width:2}
@@ -34,13 +33,6 @@
 .varilla-2{stroke:var(--acento2)}
 .varilla-3{stroke:var(--dest)}
 .medida{stroke:var(--lapiz); stroke-width:1; stroke-dasharray:4 4}
-/* .ec no corta la línea: es para notación. Las palabras van con estas
-   clases, que sí cortan y no desbordan la pantalla del teléfono. */
-.caja-txt{font-family:var(--serif); font-size:1.15em; line-height:1.3}
-.forma-txt{font-family:var(--serif); font-size:1.2em; line-height:1.35}
-body[data-solo="1"] .caja-txt{font-size:1.35em}
-body[data-solo="1"] .forma-txt{font-size:1.45em}
-
 .cuentas{display:flex; flex-direction:column; gap:7px}
 .cuentas .dato{display:flex; justify-content:space-between; gap:10px;
   border-bottom:1px solid var(--linea); padding-bottom:5px;
@@ -48,9 +40,13 @@ body[data-solo="1"] .forma-txt{font-size:1.45em}
 .cuentas .dato b{font-weight:600; color:var(--acento); font-variant-numeric:tabular-nums}
 .cuentas .dato span{color:var(--lapiz)}
 body[data-solo="1"] .cuentas .dato{font-size:.85em}
+/* las varillas de los ejemplos: gruesas, como palitos */
+.g-varilla{stroke-width:9; stroke-linecap:round; fill:none}
+.g-v1{stroke:var(--acento)} .g-v2{stroke:var(--acento2)} .g-v3{stroke:var(--dest)}
+.g-celda{stroke:var(--papel); stroke-width:1; opacity:.8}
 </style>
 </head>
-<body data-diapos=".intro, .caso, .cierre">
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
 <nav class="sitio-nav">
   <div class="sitio-nav-int">
     <a class="sitio-marca" href="../../index.html">AESWeb</a>
@@ -67,7 +63,7 @@ body[data-solo="1"] .cuentas .dato{font-size:.85em}
 
   <header class="tapa">
     <p class="sello">Albert Einstein School · Matemática 7.º grado</p>
-    <h1>Todo se corta en triángulos</h1>
+    <h1>Polígonos</h1>
     <p class="bajada">«No hay camino real hacia la geometría.»<span class="firma">Euclides
       a Ptolomeo, según cuenta Proclo</span></p>
     <div class="pie-tapa">
@@ -76,325 +72,1693 @@ body[data-solo="1"] .cuentas .dato{font-size:.85em}
     </div>
   </header>
 
-  <nav class="nav" aria-label="Ir a un paso">
+  <nav class="nav" aria-label="Ir a un tema">
     <div class="nav-int" id="nav"></div>
   </nav>
 
-  <section class="intro">
-    <div class="prosa">
-      <h2>El triángulo es la pieza</h2>
-      <p>En esta unidad hay muchas fórmulas: cuántas diagonales tiene un polígono, cuánto
-        suman sus ángulos, cuánto mide su área. Parecen seis cosas distintas para memorizar.
-        <b>Son una sola cosa mirada desde seis lugares</b>, y esa cosa es el triángulo.</p>
-      <p>Cualquier polígono se puede cortar en triángulos, y una vez cortado ya no hay nada
-        nuevo que aprender: la suma de sus ángulos es la de los triángulos que salieron, y su
-        área es la suma de esas áreas. El triángulo es la pieza más chica que no se puede
-        deformar, y por eso también es la que usan los puentes y los techos.</p>
-      <p>En el medio de la unidad aparece <b>Pitágoras</b>, que parece hablar de lados y en
-        realidad habla de áreas. Lo vamos a ver una sola vez, en el paso 5, y después lo
-        vamos a usar dos veces seguidas: en los triángulos y en los cuadriláteros.</p>
-      <p>Tocá <b>Siguiente paso</b> en cada ejemplo para verlo desarrollarse.</p>
-    </div>
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Unidades 8 y 9 · págs. 152–192</p>
+    <h2>Todo se corta en triángulos</h2>
+    <ul class="puntos">
+      <li>Un <b>polígono</b> es un camino cerrado de tramos rectos; el más chico, el <b>triángulo</b>, es la pieza de todos los demás.</li>
+      <li>Cortando en triángulos salen las diagonales, la suma de los ángulos y las áreas.</li>
+      <li>En el medio aparece <b>Pitágoras</b>, una sola vez, y se usa enseguida en triángulos y en cuadriláteros.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
   </section>
 
-  <main id="pasos"></main>
-
-  <section class="cierre">
-    <div class="marco">
-      <h2>Pitágoras no es un teorema sobre cuadrados</h2>
-      <div class="prosa">
-        <p>Todo el mundo dibuja el teorema con tres cuadrados. Pero el cuadrado no tiene nada
-          de especial: es solo la figura más fácil de dibujar sobre un lado.</p>
-        <p>Probemos con <b>semicírculos</b>. En el triángulo de 3, 4 y 5, el semicírculo sobre
-          cada lado tiene área <span class="ec">π(<i>L</i>/2)<sup>2</sup>/2</span>:</p>
-        <div class="cuenta">9π/8 &nbsp;+&nbsp; 2π &nbsp;=&nbsp; <b>25π/8</b></div>
-        <p>Cierra. Probemos con <b>triángulos equiláteros</b>, cuya área es
-          <span class="ec">(√3/4)<i>L</i><sup>2</sup></span>:</p>
-        <div class="cuenta">9√3/4 &nbsp;+&nbsp; 4√3 &nbsp;=&nbsp; <b>25√3/4</b></div>
-        <p>También cierra. Y va a cerrar con <b>cualquier figura</b> que dibujes sobre los
-          tres lados, mientras sea la misma figura agrandada o achicada. ¿Por qué?</p>
-        <p>Porque el área de cualquier figura es <span class="ec"><i>k</i> · <i>L</i><sup>2</sup></span>:
-          un número fijo multiplicado por el lado al cuadrado. Para el cuadrado
-          <span class="ec"><i>k</i></span> = 1, para el semicírculo
-          <span class="ec"><i>k</i></span> = π/8, para el equilátero √3/4. Y si
-          <span class="ec"><i>a</i><sup>2</sup> + <i>b</i><sup>2</sup> = <i>c</i><sup>2</sup></span>,
-          multiplicar los tres por el mismo <span class="ec"><i>k</i></span> no rompe nada:</p>
-        <div class="cuenta"><i>ka</i><sup>2</sup> + <i>kb</i><sup>2</sup> = <i>kc</i><sup>2</sup></div>
-        <p>Es <b>hacer lo mismo de los dos lados</b>, que es exactamente lo que aprendieron en
-          la unidad anterior con las ecuaciones. El teorema no habla de cuadrados: habla de
-          que <b>el área crece con el cuadrado del lado</b>. Por eso una pizza de 40 cm no
-          tiene el doble de pizza que una de 20, sino cuatro veces.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="notas">
-    <h2>Notas del docente</h2>
-    <p>Esta es la unidad 8 y la 9 del libro fusionadas. El motivo es que el corte del libro
-      deja a <b>Pitágoras en el medio</b>: aparece recién en la segunda unidad, separado de
-      los triángulos por una evaluación y un Taller de Siembra. Fusionadas, el teorema se
-      presenta una sola vez —paso 5 de 8— y se aplica dos veces seguidas, a triángulos
-      (paso 6) y a cuadriláteros (paso 7). Se ahorra una evaluación.</p>
-    <p>El hilo de toda la unidad es <b>cortar en triángulos</b>: de ahí salen la suma de los
-      ángulos, el área de los regulares y la demostración misma de Pitágoras. Si en algún
-      momento alguien pregunta "¿esta fórmula hay que aprenderla de memoria?", la respuesta
-      de esta unidad es siempre la misma: no, hay que saber cortar.</p>
-    <p>Los tres laboratorios están pensados para proyectar y que pasen ellos: el del paso 4
-      sirve para que descubran la fórmula antes de que aparezca, y el de las varillas del
-      paso 6 funciona mejor si primero apuestan y después prueban.</p>
-    <p>Este bloque no aparece en el modo "una a la vez" del panel de proyección.</p>
-  </section>
+  <main id="temas"></main>
 
   <footer class="creditos">
-    Material de clase · Unidades 8 y 9, <i>Matemática 7</i>, Editorial En Alianza.
-    Las figuras y los ejemplos son originales; las páginas indicadas remiten al libro del
-    alumno. Cada medida de esta página está verificada en
+    Material de clase · Unidades 8 y 9, <i>Matemática 7</i>, Editorial En Alianza. Sigue los
+    quince temas del libro con ejemplos y figuras originales; las páginas indicadas remiten
+    al libro del alumno. Cada medida de esta página está verificada en
     <span class="ec">verificacion/poligonos_7mo.py</span>.
   </footer>
 </div>
 
+<script src="../../assets/pizarra.js"></script>
+
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   Los ocho pasos de la unidad fusionada
-   Toda medida que aparece acá está calculada y verificada en
-   verificacion/poligonos_7mo.py. Ninguna se escribe a mano.
-   ═══════════════════════════════════════════════════════════════ */
-const PASOS = [
-{
-  n:1, corto:'Qué es', nombre:'Un polígono es un camino cerrado', pag:'págs. 152–155',
-  formaTxt:'tantos vértices como lados, tantos ángulos como lados, y además las diagonales',
-  accion:'contar los elementos de',
-  enun:'un pentágono',
-  pasos:[
-    'Tiene <b>5 lados</b>: los tramos rectos del camino.',
-    'Tiene <b>5 vértices</b>: los puntos donde el camino dobla. Siempre hay tantos vértices como lados.',
-    'Tiene <b>5 ángulos interiores</b>, uno en cada vértice.',
-    'Y tiene <b>5 diagonales</b>: los segmentos que unen dos vértices que no son vecinos.',
-  ],
-  final:'5 lados, 5 vértices, 5 ángulos y 5 diagonales',
-  gancho:{
-    tit:'La diagonal que se escapa',
-    html:`<p>Un polígono es <b>convexo</b> si todas sus diagonales quedan adentro, y
-      <b>cóncavo</b> si alguna se escapa afuera. No hace falta medir ningún ángulo para
-      saberlo: alcanza con mirar las diagonales.</p>
-      <p>Hay otra manera de decir lo mismo, y es la que más sirve: en un polígono convexo,
-      <b>si apoyás una regla sobre cualquier lado, toda la figura queda de un solo lado de
-      la regla</b>. En uno cóncavo, siempre hay un lado que si lo prolongás parte la figura
-      en dos.</p>
-      <p>Probá con la letra L, que es un polígono de seis lados. ¿Cuál es el vértice que la
-      hace cóncava? Es el único que "entra" en vez de salir.</p>`
-  }
-},
-{
-  n:2, corto:'La familia', nombre:'Los nombres y la familia', pag:'págs. 156–160',
-  serie:[
-    { rot:'3 y 4 lados', txt:'triángulo, cuadrilátero' },
-    { rot:'5, 6 y 7 lados', txt:'pentágono, hexágono, heptágono' },
-    { rot:'8, 10 y 12 lados', txt:'octógono, decágono, dodecágono' },
-  ],
-  accion:'decidir si es regular',
-  enun:'un rombo que no es cuadrado',
-  pasos:[
-    '¿Tiene todos los lados iguales? <b>Sí</b>: los cuatro miden lo mismo.',
-    '¿Tiene todos los ángulos iguales? <b>No</b>: dos son agudos y dos obtusos.',
-    'Para ser regular hacen falta <b>las dos cosas</b>, no una.',
-  ],
-  final:'no es regular: le faltan los ángulos',
-  gancho:{
-    tit:'Por qué las abejas eligieron el hexágono',
-    html:`<p>Solo tres polígonos regulares embaldosan el plano sin dejar huecos: el
-      <b>triángulo</b>, el <b>cuadrado</b> y el <b>hexágono</b>. Es porque sus ángulos
-      —60°, 90° y 120°— son los únicos que entran una cantidad exacta de veces en los 360°
-      de una vuelta completa: seis, cuatro y tres.</p>
-      <p>De esos tres, el hexágono es el que <b>menos borde usa para encerrar la misma
-      área</b>. Para una abeja eso es cera ahorrada, y la cera cuesta mucho trabajo.</p>
-      <p>Lo notable es que esto último, que cualquiera puede ver en un panal, recién se
-      <b>demostró en 1999</b>. Se lo llama el teorema del panal, y estuvo dos mil años sin
-      demostración: las abejas lo sabían primero.</p>`
-  }
-},
-{
-  n:3, corto:'Diagonales', nombre:'Cuántas diagonales tiene', pag:'págs. 158–161',
-  forma:'<i>n</i>(<i>n</i> − 3)/2',
-  accion:'contar las diagonales de',
-  enun:'un octógono',
-  pasos:[
-    'De cada vértice salen diagonales a todos los demás <b>menos tres</b>: él mismo y sus dos vecinos.',
-    'Entonces de cada uno salen 8 − 3 = <b>5</b>, y hay 8 vértices: 8 · 5 = <b>40</b>.',
-    'Pero así cada diagonal se contó <b>dos veces</b>, una desde cada punta. Divido por 2.',
-  ],
-  final:'40 ÷ 2 = 20 diagonales',
-  gancho:{
-    tit:'Es el mismo número que los saludos de una fiesta',
-    html:`<p>En una reunión de 8 personas donde todos se saludan una vez, ¿cuántos saludos
-      hay? Cada uno saluda a 7, eso da 56, pero cada saludo se contó dos veces: son
-      <b>28</b>.</p>
-      <div class="cuenta">8 · 7 ÷ 2 = <b>28</b> saludos &nbsp;&nbsp;|&nbsp;&nbsp; 28 − 8 = <b>20</b> diagonales</div>
-      <p>Las diagonales son exactamente eso: los saludos <b>menos</b> los que se dan entre
-      vecinos, que son los lados. Por eso las dos fórmulas dan lo mismo, y por eso no hace
-      falta memorizar la segunda si te acordás de la primera.</p>
-      <p>Este truco —contar de más y después dividir por las veces que repetiste— es una de
-      las ideas que más aparecen en la olimpiada.</p>`
-  }
-},
-{
-  n:4, corto:'Los ángulos', nombre:'Cuánto suman los ángulos', pag:'págs. 162–167',
-  forma:'(<i>n</i> − 2) · 180°',
-  accion:'calcular los ángulos de',
-  enun:'un pentágono regular',
-  pasos:[
-    'Elijo un vértice y tiro las diagonales desde ahí: el pentágono queda partido en <b>3 triángulos</b>.',
-    'Siempre salen <b>dos triángulos menos</b> que lados, porque los dos vecinos no cuentan.',
-    'Cada triángulo aporta 180°: 3 · 180 = <b>540°</b> en total.',
-    'Y como es regular, los 5 ángulos son iguales: 540 ÷ 5.',
-  ],
-  final:'suman 540° y cada ángulo mide 108°',
-  lab:'lab-poligono',
-  gancho:{
-    tit:'Por fuera siempre suman 360, tenga los lados que tenga',
-    html:`<p>Los ángulos <b>interiores</b> dependen de cuántos lados haya. Los
-      <b>exteriores</b> no: suman 360° siempre, en el triángulo, en el pentágono y en un
-      polígono de mil lados.</p>
-      <p>La razón es preciosa y no necesita ninguna cuenta. Imaginate que <b>caminás el borde
-      del polígono</b>. En cada vértice girás un poquito —ese giro es el ángulo exterior— y
-      cuando volvés al punto de partida estás mirando otra vez para donde empezaste. Diste
-      una vuelta completa: 360°.</p>
-      <p>Movele los lados al taller de acá arriba y mirá: el interior cambia, el exterior
-      siempre suma lo mismo. De paso, en un regular cada ángulo exterior mide 360/<i>n</i>,
-      que es la forma más rápida de sacar el interior sin la fórmula.</p>`
-  }
-},
-{
-  n:5, corto:'Pitágoras', nombre:'Pitágoras, una sola vez', pag:'págs. 168–174',
-  forma:'<i>a</i><sup>2</sup> + <i>b</i><sup>2</sup> = <i>c</i><sup>2</sup>',
-  accion:'hallar la hipotenusa de',
-  enun:'un triángulo rectángulo de catetos 8 y 15',
-  pasos:[
-    'Los catetos son los dos lados que forman el ángulo recto; la hipotenusa es el que queda enfrente, siempre el más largo.',
-    'Elevo los catetos al cuadrado: 8<sup>2</sup> = 64 y 15<sup>2</sup> = 225.',
-    'Los sumo: 64 + 225 = <b>289</b>. Eso es el cuadrado de la hipotenusa.',
-    'Busco qué número al cuadrado da 289: es 17, porque 17 · 17 = 289.',
-  ],
-  final:'la hipotenusa mide 17',
-  lab:'lab-pitagoras',
-  gancho:{
-    tit:'No son lados: son áreas',
-    html:`<p>Cuando escribimos <span class="ec"><i>a</i><sup>2</sup></span> no estamos
-      diciendo "el lado por sí mismo" como una cuenta cualquiera: estamos diciendo
-      <b>el área del cuadrado que se apoya sobre ese lado</b>. El teorema dice que los dos
-      cuadrados chicos, juntos, tienen exactamente la misma superficie que el grande. Movelo
-      en el taller de arriba y miralo.</p>
-      <p>Y hay una manera de convencerse sin álgebra, recortando. Tomá cuatro triángulos
-      rectángulos iguales y un cuadrado de lado
-      <span class="ec"><i>a</i> + <i>b</i></span>. Acomodá los cuatro triángulos adentro de
-      dos maneras distintas: en una te queda libre un cuadrado de lado
-      <span class="ec"><i>c</i></span>, y en la otra te quedan libres dos, de lados
-      <span class="ec"><i>a</i></span> y <span class="ec"><i>b</i></span>. Mismo cuadrado
-      grande, mismos cuatro triángulos, entonces <b>lo que sobra tiene que ser igual</b>.</p>
-      <p>Los egipcios lo usaban sin escribirlo: una soga con <b>12 nudos</b> a distancias
-      iguales, estirada en 3, 4 y 5 tramos, arma un triángulo con una esquina perfectamente
-      recta. Servía para replantear terrenos después de cada crecida del Nilo, y sigue
-      sirviendo: los albañiles la usan hoy.</p>
-      <div class="cuenta">3<sup>2</sup> + 4<sup>2</sup> = 9 + 16 = 25 = 5<sup>2</sup> &nbsp;&nbsp;|&nbsp;&nbsp; 3 + 4 + 5 = <b>12 nudos</b></div>
-      <p>Eso sí: casi nunca da un número redondo. En un cuadrado de lado 5 la diagonal mide
-      <span class="ec">5√2</span>, que no es ningún número exacto con coma, por más decimales
-      que escribas. Descubrirlo fue una crisis para los griegos, que estaban convencidos de
-      que todo se podía escribir como fracción. El taller de acá arriba te lo muestra: probá
-      con catetos 2 y 3.</p>`
-  }
-},
-{
-  n:6, corto:'En el triángulo', nombre:'Pitágoras adentro del triángulo', pag:'págs. 175–182',
-  formaTxt:'la altura parte al equilátero en dos triángulos rectángulos',
-  accion:'hallar la altura y el área de',
-  enun:'un triángulo equilátero de lado 6',
-  pasos:[
-    'La altura cae al medio de la base y la parte en dos pedazos de <b>3</b> y <b>3</b>.',
-    'Queda un triángulo rectángulo de hipotenusa 6 y un cateto 3: el otro cateto es la altura.',
-    '6<sup>2</sup> − 3<sup>2</sup> = 36 − 9 = <b>27</b>, así que la altura es <span class="ec">√27</span>.',
-    'Y <span class="ec">√27 = √(9 · 3) = 3√3</span>. El área es base por altura sobre dos: 6 · 3√3 ÷ 2.',
-  ],
-  final:'altura 3√3 y área 9√3',
-  lab:'lab-varillas',
-  gancho:{
-    tit:'El teorema al revés es el que usa el albañil',
-    html:`<p>Hasta acá lo usamos así: <i>sé que es rectángulo, entonces vale
-      <span class="ec"><i>a</i><sup>2</sup>+<i>b</i><sup>2</sup>=<i>c</i><sup>2</sup></span></i>.
-      Pero también funciona al revés: <b>si los tres lados cumplen esa cuenta, entonces el
-      triángulo es rectángulo</b>. Eso ya no es el teorema, es su recíproco, y es lo que
-      hace útil a la soga de los egipcios.</p>
-      <div class="cuenta">6, 8, 10 → 36 + 64 = 100 &nbsp;<b>es rectángulo</b> &nbsp;|&nbsp; 6, 8, 11 → 36 + 64 ≠ 121 &nbsp;<b>no</b></div>
-      <p>Hay algo todavía más básico que hay que revisar antes: <b>no cualquier trío de
-      medidas forma un triángulo</b>. Con varillas de 3, 4 y 8 no hay manera, porque 3 + 4
-      no alcanza para llegar de una punta a la otra del 8. Probalo en el taller de arriba.</p>
-      <p>La regla se llama <b>desigualdad triangular</b> y en el fondo dice algo que ya
-      sabés: ir derecho nunca es más largo que dar la vuelta. Con 3, 4 y 7 justo justo
-      llegan, pero el triángulo queda aplastado y no tiene área: son tres puntos en fila.</p>`
-  }
-},
-{
-  n:7, corto:'Cuadriláteros', nombre:'Pitágoras en los cuadriláteros', pag:'págs. 183–188',
-  serie:[
-    { rot:'dos pares de lados paralelos', txt:'paralelogramos' },
-    { rot:'un solo par', txt:'trapecios' },
-    { rot:'ningún par', txt:'trapezoides' },
-  ],
-  accion:'hallar el lado y el área de',
-  enun:'un rombo de diagonales 16 y 12',
-  pasos:[
-    'Las diagonales del rombo se cortan <b>en el medio</b> y <b>en ángulo recto</b>. Eso arma cuatro triángulos rectángulos iguales.',
-    'Los catetos de cada uno son las mitades: 16 ÷ 2 = <b>8</b> y 12 ÷ 2 = <b>6</b>.',
-    'El lado del rombo es la hipotenusa: 8<sup>2</sup> + 6<sup>2</sup> = 64 + 36 = 100, o sea <b>10</b>.',
-    'El área son los cuatro triangulitos, que es lo mismo que diagonal por diagonal sobre dos: 16 · 12 ÷ 2.',
-  ],
-  final:'lado 10 y área 96',
-  gancho:{
-    tit:'Las pulgadas de un televisor son la diagonal',
-    html:`<p>Cuando un televisor dice <b>32 pulgadas</b>, esas pulgadas no son el ancho ni el
-      alto: son la <b>diagonal</b>. Y como la pantalla es un rectángulo, la diagonal es la
-      hipotenusa de un triángulo rectángulo cuyos catetos son el ancho y el alto.</p>
-      <p>En una pantalla de proporción 16:9, una de 32″ mide más o menos <b>27,9″ de ancho y
-      15,7″ de alto</b>. Ninguno de los dos números es 32.</p>
-      <p>Lo interesante viene ahora: dos televisores de "32 pulgadas" con proporciones
-      distintas <b>no tienen la misma superficie</b>. Cuanto más alargada la pantalla, menos
-      área para la misma diagonal. Es exactamente el mismo fenómeno de la pizza del cierre:
-      el número que anuncian es un largo, y lo que mirás es un área.</p>`
-  }
-},
-{
-  n:8, corto:'Área', nombre:'El área vuelve a los triángulos', pag:'págs. 189–192',
-  formaTxt:'el área de un regular es perímetro · apotema ÷ 2',
-  accion:'hallar el área de',
-  enun:'un hexágono regular de lado 6',
-  pasos:[
-    'Uno el centro con cada vértice: el hexágono queda partido en <b>6 triángulos iguales</b>.',
-    'La altura de cada triángulo es la <b>apotema</b>, que va del centro al medio de un lado.',
-    'En el hexágono, esos triángulos son equiláteros de lado 6, así que la apotema sale por Pitágoras: 6<sup>2</sup> − 3<sup>2</sup> = 27 → <span class="ec">3√3</span>.',
-    'Cada triángulo mide 6 · 3√3 ÷ 2, y hay seis. O, lo que es lo mismo, perímetro por apotema sobre dos: 36 · 3√3 ÷ 2.',
-  ],
-  final:'área 54√3',
-  gancho:{
-    tit:'La fórmula que no hay que memorizar',
-    html:`<p><span class="ec">P · a ÷ 2</span> no es una fórmula nueva que aparece en la
-      última página de la unidad. Es "base por altura sobre dos", repetido
-      <span class="ec"><i>n</i></span> veces y escrito corto:</p>
-      <div class="cuenta"><i>n</i> · (lado · apotema ÷ 2) = (<i>n</i> · lado) · apotema ÷ 2 = <b>P · a ÷ 2</b></div>
-      <p>Lo único que se hizo fue sacar factor común, que es lo que van a hacer todo el año
-      que viene en 8.º. Si te olvidás la fórmula, cortás en triángulos y la volvés a armar en
-      diez segundos.</p>
-      <p>Con el trapecio pasa lo mismo. Uno de bases 10 y 4 con lados de 5: los dos pedacitos
-      que sobran a los costados miden (10 − 4) ÷ 2 = 3, y por Pitágoras la altura es
-      <span class="ec">√(5<sup>2</sup> − 3<sup>2</sup>) = 4</span>. Su área da
-      <b>28</b>, y de nuevo no hubo nada nuevo: un rectángulo y dos triángulos.</p>`
-  }
+/* En esta unidad las letras de las cuentas son los lados (a, b, c, d), la
+   altura (h), la cantidad de lados (n) y la incógnita (x). */
+Pizarra.letras = /[abcdhnx]/g;
+
+/* ═══ para dibujar las figuras ═══ */
+const g = Geo;
+const S2 = '<sup>2</sup>';
+const cen = ps => [ps.reduce((s, p) => s + p[0], 0) / ps.length, ps.reduce((s, p) => s + p[1], 0) / ps.length];
+const lejos = (p, c, d = 18) => { const L = g.dist(p, c) || 1; return [p[0] + (p[0] - c[0]) / L * d, p[1] + (p[1] - c[1]) / L * d]; };
+const nombres = (ps, ns, d = 18) => { const c = cen(ps); return ps.map((p, i) => g.txt(lejos(p, c, d), ns[i])).join(''); };
+const vertices = ps => ps.map(p => g.pto(p, 'g-vert', 4.5)).join('');
+const arcos = (ps, cls = 'g-arco', r = 22, grandes = []) =>
+  ps.map((p, i) => g.arco(p, ps[(i + ps.length - 1) % ps.length], ps[(i + 1) % ps.length], r, cls, grandes.includes(i))).join('');
+const angulo = (v, p, q, texto, cls = 'g-arco', r = 26, grande = false, d = 22) =>
+  g.arco(v, p, q, r, cls, grande) + (texto ? g.txt(g.enAngulo(v, p, q, r + d, grande), texto, 'g-dato') : '');
+const rotLado = (p, q, c, s, d = 16, cls = 'g-dato') => g.txt(g.enLado(p, q, c, d), s, cls);
+const diagonalesDesde = (ps, i, cls = 'g-diag') => {
+  const n = ps.length; let s = '';
+  for (let k = 2; k < n - 1; k++) s += g.seg(ps[i], ps[(i + k) % n], cls);
+  return s;
+};
+const todasDiagonales = (ps, cls = 'g-diag') => {
+  const n = ps.length; let s = '';
+  for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) if (!(i === 0 && j === n - 1)) s += g.seg(ps[i], ps[j], cls);
+  return s;
+};
+/* donde se cortan las rectas pq y rs */
+function corte(p, q, r, s){
+  const d = (q[0] - p[0]) * (s[1] - r[1]) - (q[1] - p[1]) * (s[0] - r[0]);
+  const t = ((r[0] - p[0]) * (s[1] - r[1]) - (r[1] - p[1]) * (s[0] - r[0])) / d;
+  return [p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])];
 }
+/* un triángulo por sus lados: base CB horizontal desde C, con CA y BA */
+function triLados(ca, ba, cb, esc, C){
+  const B = [C[0] + cb * esc, C[1]];
+  const x = ((ca * esc) ** 2 - (ba * esc) ** 2 + (cb * esc) ** 2) / (2 * cb * esc);
+  const y = Math.sqrt(Math.max(0, (ca * esc) ** 2 - x * x));
+  return [[C[0] + x, C[1] - y], B, C];
+}
+/* un triángulo por dos ángulos sobre la base CB */
+function triAngulos(C, B, angC, angB){
+  const r = Math.PI / 180;
+  return corte(C, [C[0] + Math.cos(angC * r), C[1] - Math.sin(angC * r)],
+               B, [B[0] - Math.cos(angB * r), B[1] - Math.sin(angB * r)]);
+}
+/* un cuadrado apoyado en el lado pq, del lado contrario a `lejosDe` */
+function cuadradoSobre(p, q, lejosDe){
+  const n = [-(q[1] - p[1]), q[0] - p[0]];
+  const m = g.medio(p, q);
+  const s = (lejosDe[0] - m[0]) * n[0] + (lejosDe[1] - m[1]) * n[1] > 0 ? -1 : 1;
+  return [p, q, [q[0] + s * n[0], q[1] + s * n[1]], [p[0] + s * n[0], p[1] + s * n[1]]];
+}
+/* la cuadrícula de un cuadrado de k por k */
+function cuadricula(cu, k){
+  const [p, q, , r] = cu; let s = '';
+  for (let i = 1; i < k; i++){
+    const t = i / k;
+    s += `<line class="g-celda" x1="${g.f(p[0] + (q[0] - p[0]) * t)}" y1="${g.f(p[1] + (q[1] - p[1]) * t)}" x2="${g.f(r[0] + (q[0] - p[0]) * t)}" y2="${g.f(r[1] + (q[1] - p[1]) * t)}"/>`;
+    s += `<line class="g-celda" x1="${g.f(p[0] + (r[0] - p[0]) * t)}" y1="${g.f(p[1] + (r[1] - p[1]) * t)}" x2="${g.f(q[0] + (r[0] - p[0]) * t)}" y2="${g.f(q[1] + (r[1] - p[1]) * t)}"/>`;
+  }
+  return s;
+}
+const varilla = (p, q, cls, texto, dy = -16) =>
+  `<line class="g-varilla ${cls} traza" pathLength="1" x1="${g.f(p[0])}" y1="${g.f(p[1])}" x2="${g.f(q[0])}" y2="${g.f(q[1])}"/>` +
+  (texto ? g.txt([(p[0] + q[0]) / 2, (p[1] + q[1]) / 2 + dy], texto, 'g-dato') : '');
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+
+/* ═══ las figuras que se repiten ═══ */
+const P5 = g.regular(5, 200, 160, 118);
+const P6 = g.regular(6, 200, 152, 115);
+const P8 = g.regular(8, 200, 152, 122, -112.5);
+const ABCDE = ['A', 'B', 'C', 'D', 'E'], ABCDEF = ['A', 'B', 'C', 'D', 'E', 'F'];
+const ABCDEFGH = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+/* un triángulo acutángulo, el de los elementos y los puntos notables */
+const TA = [[175, 40], [335, 245], [55, 245]];              // A, B, C
+const TAc = cen(TA);
+const baseTA = ps => g.pol(ps) + vertices(ps) + nombres(ps, ['A', 'B', 'C']);
+/* el pie de cada altura y el ortocentro */
+const pieA = g.pie(TA[0], TA[1], TA[2]), pieB = g.pie(TA[1], TA[2], TA[0]), pieC = g.pie(TA[2], TA[0], TA[1]);
+const ORTO = corte(TA[0], pieA, TA[1], pieB);
+/* los puntos medios y el baricentro */
+const mBC = g.medio(TA[1], TA[2]), mCA = g.medio(TA[2], TA[0]), mAB = g.medio(TA[0], TA[1]);
+const BARI = cen(TA);
+/* el incentro: el promedio de los vértices pesado por el lado de enfrente */
+const ladosTA = [g.dist(TA[1], TA[2]), g.dist(TA[2], TA[0]), g.dist(TA[0], TA[1])];
+const INC = [0, 1].map(e => (ladosTA[0] * TA[0][e] + ladosTA[1] * TA[1][e] + ladosTA[2] * TA[2][e]) / (ladosTA[0] + ladosTA[1] + ladosTA[2]));
+const rINC = g.dist(INC, g.pie(INC, TA[1], TA[2]));
+/* el triángulo del circuncentro: cabe entero con su circunferencia */
+const TC = [[200, 50], [310, 228], [90, 228]];
+const CIRC = corte(g.medio(TC[1], TC[2]), [g.medio(TC[1], TC[2])[0], 0], g.medio(TC[2], TC[0]),
+  [g.medio(TC[2], TC[0])[0] + (TC[0][1] - TC[2][1]), g.medio(TC[2], TC[0])[1] - (TC[0][0] - TC[2][0])]);
+const rCIRC = g.dist(CIRC, TC[0]);
+/* la mediatriz de un lado pq, larga */
+const mediatriz = (p, q, largo = 150, cls = 'g-verde') => {
+  const m = g.medio(p, q), L = g.dist(p, q);
+  const n = [-(q[1] - p[1]) / L, (q[0] - p[0]) / L];
+  return g.seg([m[0] - n[0] * largo, m[1] - n[1] * largo], [m[0] + n[0] * largo, m[1] + n[1] * largo], cls);
+};
+/* la bisectriz desde un vértice hasta el lado de enfrente */
+const bisectriz = (v, p, q, cls = 'g-verde') => {
+  const u = g.hacia(v, p, 1), w = g.hacia(v, q, 1);
+  const d = [u[0] + w[0] - 2 * v[0], u[1] + w[1] - 2 * v[1]];
+  return g.seg(v, corte(v, [v[0] + d[0], v[1] + d[1]], p, q), cls);
+};
+/* un cuadrilátero cualquiera, el de los elementos */
+const Q4 = [[80, 60], [320, 45], [345, 245], [55, 230]];
+
+/* ═══════════════════════════════════════════════════════════════
+   Los quince temas de las unidades 8 y 9 del libro
+   El orden es el del libro, con un cambio: los tres temas de
+   clasificación de cuadriláteros (unidad 9, temas 4 a 6) van antes que
+   Pitágoras. Así el teorema aparece una sola vez y se aplica enseguida,
+   dos veces seguidas: a triángulos y a cuadriláteros.
+   Toda medida que aparece acá está calculada y verificada en
+   verificacion/poligonos_7mo.py. No se escribe ninguna a mano.
+   ═══════════════════════════════════════════════════════════════ */
+const TEMAS = [
+/* ─────────────────────────── 1 ─────────────────────────── */
+{
+  n:1, corto:'Polígonos', titulo:'Polígonos', pag:'unidad 8, tema 1 · págs. 154–155',
+  concepto:{
+    formaTxt:'un camino cerrado de tramos rectos que no se cruza',
+    serie:[
+      { rot:'lados', txt:'los tramos rectos' },
+      { rot:'vértices', txt:'donde se unen dos lados' },
+      { rot:'ángulos interiores', txt:'uno en cada vértice, adentro' },
+      { rot:'ángulos exteriores', txt:'un lado y la prolongación del vecino' },
+      { rot:'diagonales', txt:'unen dos vértices no vecinos' },
+    ],
+    puntos:[
+      'Un polígono separa el plano en la <b>región interior</b>, la <b>exterior</b> y la <b>frontera</b>, que son sus lados.',
+      `Tiene tantos vértices y ángulos como lados. Desde un vértice salen ${M('n − 3')} diagonales, y en total son <span class="ec">${Q('n(n − 3)','2')}</span>.`,
+      'El interior y el exterior de un mismo vértice suman <b>180°</b>.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'los elementos de un pentágono', enun:'un pentágono ABCDE', prosa:true,
+      lienzo:F([
+        [0, g.pol(P5)],
+        [1, g.pol(P5, 'g-foco'), 2],
+        [2, vertices(P5) + nombres(P5, ABCDE)],
+        [3, arcos(P5)],
+        [4, todasDiagonales(P5)],
+      ], 'Un pentágono con sus lados, vértices, ángulos y diagonales'),
+      pasos:[
+        'Los <b>lados</b> son los cinco tramos del camino: AB, BC, CD, DE y EA.',
+        'Los <b>vértices</b> son los puntos donde se unen dos lados: A, B, C, D y E.',
+        'Hay un <b>ángulo interior</b> en cada vértice, del lado de adentro.',
+        'Las <b>diagonales</b> unen dos vértices que no son vecinos: AC, AD, BD, BE y CE.',
+      ], final:'5 lados, 5 vértices, 5 ángulos interiores y 5 diagonales',
+      control:`Con la fórmula de las diagonales:${A(`${Q('n(n − 3)','2')} = ${Q('5 · 2','2')}`, ' = 5 ✓')}` },
+    { titulo:'cambio a seis lados: las diagonales de un vértice', enun:`las diagonales que salen del vértice A de un ${N('hexágono')}`, prosa:true,
+      lienzo:F([
+        [0, g.pol(P6) + vertices(P6) + nombres(P6, ABCDEF)],
+        [1, g.pto(P6[0], 'g-pto', 8)],
+        [2, g.seg(P6[0], P6[1], 'g-foco') + g.seg(P6[0], P6[5], 'g-foco')],
+        [3, diagonalesDesde(P6, 0)],
+      ], 'Un hexágono con las diagonales que salen de A'),
+      pasos:[
+        'Desde A no puedo ir a A misma.',
+        'Tampoco a B ni a F: son sus vecinos, y AB y FA ya son lados.',
+        'Quedan C, D y E: son las diagonales AC, AD y AE.',
+      ], final:'desde un vértice del hexágono salen 3 diagonales',
+      control:`Con la regla de las diagonales de un vértice:${A('n − 3 = 6 − 3', ' = 3 ✓')}` },
+    { titulo:'todas las diagonales del hexágono', enun:'todas las diagonales de un hexágono', prosa:true,
+      lienzo:F([
+        [0, g.pol(P6) + vertices(P6) + nombres(P6, ABCDEF)],
+        [1, diagonalesDesde(P6, 0, 'g-diag'), 2],
+        [2, todasDiagonales(P6, 'g-aux') + g.seg(P6[0], P6[2], 'g-roja')],
+        ['final', todasDiagonales(P6)],
+      ], 'Un hexágono con sus nueve diagonales'),
+      pasos:[
+        P('Desde cada uno de los 6 vértices salen 3 diagonales.', '6 · 3 = 18'),
+        'Pero AC y CA son la misma diagonal: así, cada una se contó dos veces, una desde cada punta.',
+        P('Divido por 2.', '18 : 2 = 9'),
+      ], final:'el hexágono tiene 9 diagonales',
+      control:`Por tipo: 6 cortas, que saltan un vértice, y 3 largas, que pasan por el centro:${A('6 + 3 = 9 ✓')}` },
+    { titulo:'cambio a ocho lados, directo con la fórmula', enun:`todas las diagonales de un ${N('octógono')}`, prosa:true,
+      lienzo:F([
+        [0, g.pol(P8) + vertices(P8) + nombres(P8, ABCDEFGH)],
+        [1, diagonalesDesde(P8, 0)],
+        [2, todasDiagonales(P8, 'g-aux')],
+      ], 'Un octógono con sus diagonales'),
+      pasos:[
+        P('Desde cada vértice salen tres menos que la cantidad de lados.', 'n − 3 = 8 − 3', ' = 5'),
+        P('Por los 8 vértices, y dividido por 2, porque cada diagonal tiene dos puntas.',
+          `${Q('n(n − 3)','2')} = ${Q('8 · 5','2')}`, ` = ${Q('40','2')}`, ' = 20'),
+      ], final:'el octógono tiene 20 diagonales',
+      control:`Por tipo: 8 que saltan un vértice, 8 que saltan dos y 4 que pasan por el centro:${A('8 + 8 + 4 = 20 ✓')}` },
+    { titulo:'el ángulo exterior', enun:'En el vértice V el ángulo interior mide 125°. ¿Cuánto mide el exterior?', prosa:true,
+      lienzo:(() => {
+        const V = [210, 210], Pp = [60, 210], Qq = [210 + 140 * Math.cos(55 * Math.PI / 180), 210 - 140 * Math.sin(55 * Math.PI / 180)];
+        const R = [170, 45], Sx = [70, 110], E = [360, 210];
+        return F([
+          [0, g.pol([Pp, V, Qq, R, Sx]) + angulo(V, Pp, Qq, '125°', 'g-arco', 26) + g.pto(V) + g.txt([V[0] - 4, V[1] + 20], 'V')],
+          [1, g.seg(V, E, 'g-aux') + angulo(V, E, Qq, 'β', 'g-arco2', 34, false, 16)],
+          ['final', g.txt(g.enAngulo(V, E, Qq, 88), '= 55°', 'g-num')],
+        ], 'Un polígono con el ángulo interior y el exterior en el vértice V');
+      })(),
+      pasos:[
+        'El exterior lo forman un lado y la <b>prolongación</b> del lado vecino.',
+        P('Interior y exterior, uno al lado del otro, forman un ángulo llano: 180°.',
+          '125° + β = 180°', 'β = 180° − 125°', ' = 55°'),
+      ], final:'el ángulo exterior mide 55°',
+      control:`${A('125° + 55° = 180° ✓')}` },
+  ],
+  taller:'lab-poligono',
+  preguntas:[
+    { p:'¿Un círculo es un polígono?',
+      r:'No: su borde no tiene tramos rectos. Un polígono con muchísimos lados se le parece cada vez más, pero nunca llega a ser un círculo.' },
+    { p:'¿Por qué se resta 3 y no 2 en n − 3?',
+      r:'Porque desde un vértice no se traza diagonal ni a él mismo ni a sus dos vecinos: son tres vértices que no cuentan.' },
+    { p:'¿Por qué se divide por 2 en la fórmula?',
+      r:'Porque al contar desde cada vértice, AC y CA salen dos veces. Es la misma cuenta que los saludos de una fiesta: si cada uno saluda a todos, cada saludo se cuenta dos veces.' },
+    { p:'¿El triángulo tiene diagonales?',
+      r:`No: todos sus vértices son vecinos. La fórmula lo confirma: ${M('3 · 0 : 2 = 0')}.` },
+    { p:'¿El ángulo exterior está afuera o adentro del polígono?',
+      r:'Afuera, entre un lado y la prolongación del lado vecino. Por eso interior y exterior juntos forman una línea recta, 180°.' },
+  ],
+  notas:`<p>El libro define polígono como región limitada por una <b>poligonal cerrada simple</b>
+      (pág. 154): la palabra "simple" es la que deja afuera a las figuras que se cruzan, como
+      una estrella dibujada de un solo trazo. Vale la pena dibujar una y preguntar.</p>
+    <p>Los ejemplos 2, 3 y 4 son la misma idea tres veces: primero las diagonales de un
+      vértice, después todas contando de a una, y recién al final la fórmula. El control de
+      los ejemplos 3 y 4 cuenta <b>por tipo</b> de diagonal, que es otro camino y no repite la
+      cuenta.</p>
+    <p>El error más común con <span class="ec"><i>n</i>(<i>n</i> − 3)/2</span> es olvidar el 2.
+      El ejemplo 3 lo muestra dibujado: AC y CA son la misma.</p>
+    <p>El taller sirve para descubrir la regla antes de escribirla: que cambien la cantidad de
+      lados y miren cuántas diagonales salen de un vértice.</p>`
+},
+
+/* ─────────────────────────── 2 ─────────────────────────── */
+{
+  n:2, corto:'Convexos y cóncavos', titulo:'Clasificación de polígonos según sus ángulos', pag:'unidad 8, tema 2 · págs. 156–157',
+  concepto:{
+    serie:[
+      { rot:'convexo', txt:'todos sus ángulos miden menos de 180°' },
+      { rot:'cóncavo', txt:'tiene al menos un ángulo de más de 180°' },
+      { rot:'regular', txt:'convexo, con lados y ángulos congruentes' },
+      { rot:'irregular', txt:'le falta alguna de las dos cosas' },
+    ],
+    puntos:[
+      'En un <b>convexo</b>, el segmento que une dos puntos de adentro queda siempre adentro.',
+      'En un <b>cóncavo</b> hay dos puntos de adentro cuyo segmento se sale de la figura.',
+      '<b>Congruentes</b> quiere decir que miden lo mismo.',
+    ]
+  },
+  ejemplos:(() => {
+    const P6c = [P6[0], P6[1], P6[2], [200, 152], P6[4], P6[5]];
+    const R4 = [[80, 90], [320, 90], [320, 210], [80, 210]];
+    const RO = [[200, 75], [330, 150], [200, 225], [70, 150]];
+    const CU = [[110, 60], [290, 60], [290, 240], [110, 240]];
+    const rectos = ps => ps.map((p, i) => g.recto(p, ps[(i + 3) % 4], ps[(i + 1) % 4])).join('');
+    return [
+    { titulo:'un hexágono regular', enun:'¿Es convexo o cóncavo este hexágono?', prosa:true,
+      lienzo:F([
+        [0, g.pol(P6)],
+        [1, g.pto([150, 110], 'g-pto') + g.pto([255, 205], 'g-pto') + g.seg([150, 110], [255, 205], 'g-roja')],
+        [2, g.pto([120, 185], 'g-pto2') + g.pto([270, 100], 'g-pto2') + g.seg([120, 185], [270, 100], 'g-verde')],
+        [3, arcos(P6) + g.txt(g.enAngulo(P6[0], P6[5], P6[1], 44), '120°', 'g-dato')],
+      ], 'Un hexágono regular con dos segmentos que quedan adentro'),
+      pasos:[
+        'Tomo dos puntos de adentro y los uno: el segmento queda adentro.',
+        'Pruebo con otros dos: también.',
+        'Todos sus ángulos miden 120°, menos de 180°.',
+      ], final:'es convexo' },
+    { titulo:'empujo un vértice hacia adentro', enun:`¿Y si ${N('empujo el vértice de abajo')} hacia adentro?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(P6c)],
+        [1, g.pto([115, 186], 'g-pto') + g.pto([285, 186], 'g-pto') + g.seg([115, 186], [285, 186], 'g-roja')],
+        [2, angulo(P6c[3], P6c[2], P6c[4], 'α', 'g-arco', 24, true, 16)],
+      ], 'Un hexágono con un vértice hundido: un segmento se sale de la figura'),
+      pasos:[
+        'Tomo dos puntos de adentro, uno en cada punta de abajo, y los uno: el segmento se sale de la figura.',
+        'El ángulo α, en el vértice que empujé, mide más de 180°: es un ángulo cóncavo.',
+      ], final:'es cóncavo' },
+    { titulo:'¿es regular? un rectángulo', enun:'Un rectángulo de 6 por 3, ¿es regular?', prosa:true,
+      lienzo:F([
+        [0, g.pol(R4)],
+        [1, rectos(R4)],
+        [2, rotLado(R4[0], R4[1], cen(R4), '6') + rotLado(R4[1], R4[2], cen(R4), '3') + rotLado(R4[2], R4[3], cen(R4), '6') + rotLado(R4[3], R4[0], cen(R4), '3')
+            + g.marcas(R4[0], R4[1]) + g.marcas(R4[2], R4[3]) + g.marcas(R4[1], R4[2], 2) + g.marcas(R4[3], R4[0], 2)],
+      ], 'Un rectángulo de 6 por 3'),
+      pasos:[
+        'Sus cuatro ángulos miden 90°: es convexo, y los ángulos son congruentes.',
+        'Pero los lados no: dos miden 6 y dos miden 3.',
+        'Para ser regular hacen falta <b>las dos cosas</b>: lados y ángulos congruentes.',
+      ], final:'convexo e irregular: los ángulos son iguales, los lados no' },
+    { titulo:'cambio: un rombo', enun:`Un ${N('rombo')} de lados iguales, ¿es regular?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(RO)],
+        [1, RO.map((p, i) => g.marcas(p, RO[(i + 1) % 4])).join('')],
+        [2, angulo(RO[0], RO[3], RO[1], '120°', 'g-arco', 22) + angulo(RO[1], RO[0], RO[2], '60°', 'g-arco2', 30)
+            + angulo(RO[2], RO[1], RO[3], '120°', 'g-arco', 22) + angulo(RO[3], RO[2], RO[0], '60°', 'g-arco2', 30)],
+      ], 'Un rombo con sus lados iguales y sus ángulos de 120° y 60°'),
+      pasos:[
+        'Es convexo, y sus cuatro lados son congruentes.',
+        'Pero los ángulos no: dos miden 120° y dos miden 60°.',
+      ], final:'convexo e irregular: los lados son iguales, los ángulos no' },
+    { titulo:'cambio: un cuadrado', enun:`Un ${N('cuadrado')}, ¿es regular?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(CU)],
+        [1, CU.map((p, i) => g.marcas(p, CU[(i + 1) % 4])).join('')],
+        [2, rectos(CU)],
+      ], 'Un cuadrado con sus lados iguales y sus ángulos rectos'),
+      pasos:[
+        'Es convexo, y sus cuatro lados son congruentes.',
+        'Y sus cuatro ángulos también: miden 90°.',
+      ], final:'convexo y regular: lados y ángulos iguales' },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Un polígono regular puede ser cóncavo?',
+      r:'No. Si tiene un ángulo de más de 180°, los demás tendrían que medir lo mismo, y no entran en la vuelta. Los regulares son siempre convexos.' },
+    { p:'¿Por qué el rombo no es regular si tiene todos los lados iguales?',
+      r:'Porque regular pide lados <b>y</b> ángulos iguales. El rombo tiene dos ángulos de 120° y dos de 60°.' },
+    { p:'¿Cómo me doy cuenta rápido de que es cóncavo?',
+      r:'Buscando un vértice que "entra" en lugar de salir, como el ángulo de adentro de una L o de una flecha.' },
+    { p:'¿El rectángulo y el rombo son "casi" regulares?',
+      r:'No hay casi: les falta una de las dos condiciones. El único cuadrilátero regular es el cuadrado.' },
+  ],
+  notas:`<p>El libro define convexo con el segmento que une dos puntos interiores
+      (pág. 156). Los ejemplos 1 y 2 muestran las dos caras de esa definición con el mismo
+      hexágono: basta empujar un vértice para que un segmento se salga.</p>
+    <p>Los ejemplos 3, 4 y 5 separan las dos condiciones de "regular": el rectángulo tiene los
+      ángulos y no los lados, el rombo al revés, y el cuadrado las dos. Conviene preguntar
+      antes de avanzar qué le falta a cada uno.</p>
+    <p>Los ángulos de 120° y 60° del rombo están medidos en la figura; que los comprueben
+      con el transportador en el pizarrón si hay tiempo.</p>`
+},
+
+/* ─────────────────────────── 3 ─────────────────────────── */
+{
+  n:3, corto:'Nombres', titulo:'Clasificación de polígonos según el número de lados', pag:'unidad 8, tema 3 · págs. 158–159', ficha:10,
+  concepto:{
+    serie:[
+      { rot:'3 y 4 lados', txt:'triángulo, cuadrilátero' },
+      { rot:'5, 6 y 7', txt:'pentágono, hexágono, heptágono' },
+      { rot:'8, 9 y 10', txt:'octógono, eneágono, decágono' },
+      { rot:'11, 12 y 15', txt:'endecágono, dodecágono, pentadecágono' },
+      { rot:'20 y 100', txt:'icoságono, hectágono' },
+    ],
+    puntos:[
+      'El nombre dice <b>cuántos lados</b> tiene; cada uno puede ser regular o irregular.',
+      'Para nombrar un polígono entero se dicen las tres cosas: lados, convexo o cóncavo, regular o irregular.',
+    ]
+  },
+  ejemplos:(() => {
+    const L = [[110, 40], [170, 40], [170, 200], [290, 200], [290, 260], [110, 260]];
+    const EST = Array.from({ length:10 }, (_, k) => {
+      const r = k % 2 ? 50 : 125, a = (-90 + k * 36) * Math.PI / 180;
+      return [200 + r * Math.cos(a), 160 + r * Math.sin(a)];
+    });
+    const P12 = g.regular(12, 200, 150, 125, -75);
+    const numeros = ps => ps.map((p, i) => g.txt(g.enLado(p, ps[(i + 1) % ps.length], cen(ps), 15), String(i + 1), 'g-num')).join('');
+    return [
+    { titulo:'una señal de «Pare»', enun:'¿Cómo se llama el polígono de una señal de «Pare»?', prosa:true,
+      lienzo:F([[0, g.pol(P8)], [1, numeros(P8)], [2, g.txt([200, 152], 'octógono', 'g-rot')]], 'El octógono de una señal de Pare'),
+      pasos:[
+        'Cuento los lados: 8.',
+        'Ocho lados: <b>octógono</b>. <i>Octo</i> quiere decir ocho, como en octubre, que era el mes ocho del calendario romano.',
+        'Tiene los lados y los ángulos iguales, y ningún ángulo pasa de 180°.',
+      ], final:'octógono regular convexo' },
+    { titulo:'cambio: la letra L', enun:`¿Y el borde de una ${N('letra L')}?`, prosa:true,
+      lienzo:F([[0, g.pol(L)], [1, numeros(L)], [2, angulo(L[2], L[1], L[3], '270°', 'g-arco', 22, true, 18)]], 'La letra L, un hexágono cóncavo'),
+      pasos:[
+        'Cuento los lados: 6.',
+        'Seis lados: <b>hexágono</b>. No hace falta que se parezca a un panal.',
+        'El ángulo de adentro de la L mide 270°: es cóncavo. Y sus lados no son iguales.',
+      ], final:'hexágono irregular cóncavo' },
+    { titulo:'cambio: una estrella', enun:`¿Y el borde de una ${N('estrella de cinco puntas')}?`, prosa:true,
+      lienzo:F([[0, g.pol(EST)], [1, numeros(EST)], [2, angulo(EST[1], EST[0], EST[2], '', 'g-arco', 14, true)]], 'Una estrella de cinco puntas, un decágono'),
+      pasos:[
+        'Cuento los lados, sin saltear los de adentro: 10.',
+        'Diez lados: <b>decágono</b>. Casi nadie lo adivina antes de contar.',
+        'Los lados son iguales, pero los ángulos no: los de adentro miden más de 180°.',
+      ], final:'decágono irregular cóncavo' },
+    { titulo:'cambio: doce lados iguales', enun:`¿Y una baldosa de ${N('doce')} lados iguales y ángulos iguales?`, prosa:true,
+      lienzo:F([[0, g.pol(P12)], [1, numeros(P12)]], 'Un dodecágono regular'),
+      pasos:[
+        'Cuento los lados: 12.',
+        'Doce lados: <b>dodecágono</b>. <i>Dodeca</i> es doce, como en una docena.',
+      ], final:'dodecágono regular convexo' },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Es octógono u octágono?',
+      r:'Las dos formas se usan. El libro escribe octógono.' },
+    { p:'¿Por qué la estrella tiene diez lados si tiene cinco puntas?',
+      r:'Porque cada punta tiene dos lados. Se cuentan los tramos del borde, no las puntas.' },
+    { p:'¿Hay un polígono de mil lados?',
+      r:'Sí, se llama quiliágono. Dibujado, no se distingue de un círculo, pero tiene mil lados rectos.' },
+    { p:'¿Cuál es el polígono con menos lados?',
+      r:'El triángulo. Con dos segmentos no se puede cerrar un camino.' },
+  ],
+  notas:`<p>La tabla de la pág. 158 es el vocabulario; los ejemplos lo usan con figuras que
+      conocen. El ejemplo 3, la estrella, está para sorprender: casi todos dicen "cinco".</p>
+    <p>Cada ejemplo termina nombrando las tres cosas —lados, convexo o cóncavo, regular o
+      irregular—, que es lo que pide el ejercicio 4 de la pág. 159.</p>
+    <p>Para practicar: la Ficha 10 junta los temas 1 a 3.</p>`
+},
+
+/* ─────────────────────────── 4 ─────────────────────────── */
+{
+  n:4, corto:'Triángulo', titulo:'Triángulo', pag:'unidad 8, tema 4 · págs. 160–161',
+  concepto:{
+    serie:[
+      { rot:'lados', txt:'a, b, c: la minúscula del vértice de enfrente' },
+      { rot:'base', txt:'el lado sobre el que se traza la altura' },
+      { rot:'altura h', txt:'perpendicular desde el vértice opuesto' },
+    ],
+    puntos:[
+      '<b>Desigualdad triangular</b>: cada lado es menor que la suma de los otros dos y mayor que su diferencia.',
+      'Los tres ángulos interiores suman <b>180°</b>.',
+    ]
+  },
+  ejemplos:(() => {
+    const T45 = [triAngulos([60, 240], [340, 240], 50, 60), [340, 240], [60, 240]];
+    const tri457 = triLados(4, 5, 7, 40, [60, 255]);
+    return [
+    { titulo:'los elementos del triángulo ABC', enun:'el triángulo ABC', prosa:true,
+      lienzo:F([
+        [0, g.pol(TA)],
+        [1, vertices(TA) + nombres(TA, ['A', 'B', 'C'])],
+        [2, g.txt(g.enLado(TA[1], TA[2], TAc, 18), 'a') + g.txt(g.enLado(TA[2], TA[0], TAc, 18), 'b') + g.txt(g.enLado(TA[0], TA[1], TAc, 18), 'c')],
+        [3, g.seg(TA[1], TA[2], 'g-foco')],
+        [4, g.seg(TA[0], pieA, 'g-altura') + g.recto(pieA, TA[0], TA[1]) + g.txt([pieA[0] + 14, (TA[0][1] + pieA[1]) / 2], 'h')],
+      ], 'El triángulo ABC con sus lados, su base y su altura'),
+      pasos:[
+        'Los <b>vértices</b> son A, B y C.',
+        'Cada <b>lado</b> se nombra con la minúscula del vértice de enfrente: a es BC, b es CA y c es AB.',
+        'Elijo una <b>base</b>: el lado a.',
+        'La <b>altura</b> h sale de A y llega perpendicular a la base.',
+      ], final:'tres vértices, tres lados y, sobre cada base, su altura' },
+    { titulo:'¿se puede armar? varillas de 4, 5 y 7', enun:'Con varillas de 4, 5 y 7, ¿se puede armar un triángulo?', prosa:true,
+      lienzo:F([
+        [0, varilla([40, 250], [264, 250], 'g-v1', '7', 24), 'final'],
+        [0, varilla([40, 60], [168, 60], 'g-v2', '4') + varilla([40, 110], [200, 110], 'g-v3', '5'), 2],
+        [2, varilla([40, 200], [168, 200], 'g-v2', '4') + varilla([168, 200], [328, 200], 'g-v3', '5')
+            + g.seg([264, 180], [264, 262], 'g-aux'), 'final'],
+        ['final', varilla(tri457[2], tri457[1], 'g-v1', '7', 24) + varilla(tri457[2], tri457[0], 'g-v2') + varilla(tri457[1], tri457[0], 'g-v3')
+            + rotLado(tri457[2], tri457[0], cen(tri457), '4', 18) + rotLado(tri457[0], tri457[1], cen(tri457), '5', 18)],
+      ], 'Tres varillas de 4, 5 y 7'),
+      pasos:[
+        'La más larga es la de 7: las otras dos tienen que alcanzar para unir sus puntas.',
+        P('Pongo las otras dos en fila: juntas miden más que 7.', '4 + 5 = 9', ['', '9 > 7']),
+      ], final:'sí se puede: 7 es menor que 4 + 5' },
+    { titulo:'cambio 7 por 10', enun:`Con varillas de 4, 5 y ${N('10')}, ¿se puede?`, prosa:true,
+      lienzo:F([
+        [0, varilla([40, 250], [360, 250], 'g-v1', '10', 24)],
+        [0, varilla([40, 60], [168, 60], 'g-v2', '4') + varilla([40, 110], [200, 110], 'g-v3', '5'), 2],
+        [2, varilla([40, 200], [168, 200], 'g-v2', '4') + varilla([168, 200], [328, 200], 'g-v3', '5')
+            + g.seg([328, 180], [328, 262], 'g-aux') + g.seg([360, 180], [360, 262], 'g-aux') + g.txt([344, 168], 'falta', 'g-num')],
+      ], 'Tres varillas de 4, 5 y 10: las cortas no llegan'),
+      pasos:[
+        'La más larga ahora es la de 10.',
+        P('En fila, las otras dos no la cubren.', '4 + 5 = 9', ['', '9 < 10']),
+      ], final:'no se puede: 4 + 5 no llega a 10' },
+    { titulo:'cambio 10 por 9', enun:`Con varillas de 4, 5 y ${N('9')}, ¿se puede?`, prosa:true,
+      lienzo:F([
+        [0, varilla([40, 250], [328, 250], 'g-v1', '9', 24)],
+        [0, varilla([40, 60], [168, 60], 'g-v2', '4') + varilla([40, 110], [200, 110], 'g-v3', '5'), 2],
+        [2, varilla([40, 234], [168, 234], 'g-v2', '4') + varilla([168, 234], [328, 234], 'g-v3', '5')],
+      ], 'Tres varillas de 4, 5 y 9: quedan acostadas'),
+      pasos:[
+        'La más larga es la de 9.',
+        P('En fila, las otras dos miden justo 9.', '4 + 5 = 9'),
+        'Llegan, pero quedan acostadas sobre la de 9: no encierran nada. La regla pide que el lado sea <b>menor</b> que la suma, no igual.',
+      ], final:'tampoco se puede: el triángulo queda aplastado' },
+    { titulo:'el ángulo que falta', enun:'Dos ángulos de un triángulo miden 50° y 60°. ¿Cuánto mide el tercero?', prosa:true,
+      lienzo:F([
+        [0, g.pol(T45) + angulo(T45[2], T45[1], T45[0], '50°', 'g-arco2') + angulo(T45[1], T45[0], T45[2], '60°', 'g-arco3')],
+        [1, angulo(T45[0], T45[2], T45[1], 'α', 'g-arco', 26, false, 16)],
+        ['final', g.txt(g.enAngulo(T45[0], T45[2], T45[1], 70), '70°', 'g-num')],
+      ], 'Un triángulo con ángulos de 50° y 60°'),
+      pasos:[
+        P('Los tres ángulos suman 180°.', 'α + 50° + 60° = 180°'),
+        P('Sumo los que conozco y resto.', 'α + 110° = 180°', 'α = 180° − 110°', ' = 70°'),
+      ], final:'el tercer ángulo mide 70°',
+      control:`${A('50° + 60° + 70° = 180° ✓')}` },
+    ];
+  })(),
+  taller:'lab-varillas',
+  preguntas:[
+    { p:'¿Por qué con 4, 5 y 9 no se forma un triángulo, si llegan justo?',
+      r:'Porque para doblar en una esquina hace falta que sobre algo. Si llegan justo, quedan acostadas sobre la larga: son tres puntos en fila.' },
+    { p:'¿Hay que revisar las tres desigualdades?',
+      r:'Alcanza con la del lado más largo: si ese es menor que la suma de los otros dos, las otras dos se cumplen solas.' },
+    { p:'¿La altura siempre cae adentro del triángulo?',
+      r:'No. En un triángulo con un ángulo obtuso, dos de las alturas caen afuera. Se ve en el tema 7.' },
+    { p:'¿Por qué los lados se nombran con la letra del vértice de enfrente?',
+      r:'Porque así cada lado y su ángulo opuesto llevan la misma letra: a es el lado que "mira" al ángulo A.' },
+  ],
+  notas:`<p>El libro presenta la desigualdad triangular con "menor que la suma y mayor que la
+      diferencia" (pág. 160). En la práctica alcanza con mirar el lado más largo, y es lo que
+      hacen los ejemplos 2 a 4.</p>
+    <p>Los ejemplos 2, 3 y 4 cambian solo la varilla larga: 7, 10 y 9. El 9 es el caso
+      límite, y es el que más discuten: conviene dejar que apuesten antes de mostrar.</p>
+    <p>El taller de las varillas repite la experiencia con cualquier medida. Funciona mejor si
+      primero apuestan y después prueban.</p>`
+},
+
+/* ─────────────────────────── 5 ─────────────────────────── */
+{
+  n:5, corto:'Clases de triángulos', titulo:'Clasificación de los triángulos', pag:'unidad 8, tema 5 · págs. 162–163',
+  concepto:{
+    serie:[
+      { rot:'escaleno', txt:'tres lados distintos' },
+      { rot:'isósceles', txt:'dos lados iguales' },
+      { rot:'equilátero', txt:'tres lados iguales' },
+      { rot:'acutángulo', txt:'tres ángulos agudos' },
+      { rot:'rectángulo', txt:'un ángulo recto' },
+      { rot:'obtusángulo', txt:'un ángulo obtuso' },
+    ],
+    puntos:[
+      'Un triángulo tiene <b>dos nombres</b>: uno por sus lados y otro por sus ángulos.',
+      'Agudo: menos de 90°. Recto: 90°. Obtuso: más de 90° y menos de 180°.',
+    ]
+  },
+  ejemplos:(() => {
+    const EQ = g.regular(3, 200, 170, 120);
+    const IR = [[110, 70], [290, 250], [110, 250]];                    // recto en C
+    const IO = [[200, 100], [200 + 150 * Math.sin(Math.PI / 3), 175], [200 - 150 * Math.sin(Math.PI / 3), 175]];
+    const T345 = [[90, 90], [290, 240], [90, 240]];
+    const T789 = triLados(8, 7, 9, 30, [65, 245]);
+    const marcas3 = ps => ps.map((p, i) => g.marcas(p, ps[(i + 1) % 3])).join('');
+    return [
+    { titulo:'lados 5, 5 y 5', enun:'Un triángulo con sus tres lados de 5.', prosa:true,
+      lienzo:F([
+        [0, g.pol(EQ)],
+        [1, marcas3(EQ) + [0, 1, 2].map(i => rotLado(EQ[i], EQ[(i + 1) % 3], cen(EQ), '5', 20)).join('')],
+        [2, [0, 1, 2].map(i => angulo(EQ[i], EQ[(i + 2) % 3], EQ[(i + 1) % 3], '60°', 'g-arco2', 22, false, 18)).join('')],
+      ], 'Un triángulo equilátero'),
+      pasos:[
+        'Por sus lados: los tres son iguales, así que es <b>equilátero</b>.',
+        'Por sus ángulos: los tres miden 60°, todos agudos, así que es <b>acutángulo</b>.',
+      ], final:'equilátero y acutángulo' },
+    { titulo:'dos lados de 6 y un ángulo recto', enun:`Dos lados miden 6 y ${N('el ángulo entre ellos es recto')}.`, prosa:true,
+      lienzo:F([
+        [0, g.pol(IR)],
+        [1, g.marcas(IR[2], IR[0]) + g.marcas(IR[2], IR[1]) + rotLado(IR[2], IR[0], cen(IR), '6') + rotLado(IR[1], IR[2], cen(IR), '6')],
+        [2, g.recto(IR[2], IR[0], IR[1], 18)],
+      ], 'Un triángulo isósceles rectángulo'),
+      pasos:[
+        'Por sus lados: dos son iguales, así que es <b>isósceles</b>.',
+        'Por sus ángulos: tiene uno recto, así que es <b>rectángulo</b>.',
+      ], final:'isósceles y rectángulo' },
+    { titulo:'cambio el ángulo: 120°', enun:`Dos lados miden 6 y el ángulo entre ellos ${N('mide 120°')}.`, prosa:true,
+      lienzo:F([
+        [0, g.pol(IO)],
+        [1, g.marcas(IO[0], IO[1]) + g.marcas(IO[0], IO[2])],
+        [2, angulo(IO[0], IO[2], IO[1], '120°', 'g-arco', 22, false, 12)],
+      ], 'Un triángulo isósceles obtusángulo'),
+      pasos:[
+        'Por sus lados: dos iguales, <b>isósceles</b>.',
+        '120° es más que 90°: tiene un ángulo obtuso, así que es <b>obtusángulo</b>.',
+      ], final:'isósceles y obtusángulo' },
+    { titulo:'cambio los lados: 3, 4 y 5', enun:`Lados de ${N('3, 4 y 5')}, con un ángulo recto.`, prosa:true,
+      lienzo:F([
+        [0, g.pol(T345)],
+        [1, rotLado(T345[2], T345[0], cen(T345), '3') + rotLado(T345[1], T345[2], cen(T345), '4') + rotLado(T345[0], T345[1], cen(T345), '5')],
+        [2, g.recto(T345[2], T345[0], T345[1], 18)],
+      ], 'Un triángulo de lados 3, 4 y 5'),
+      pasos:[
+        'Por sus lados: los tres son distintos, <b>escaleno</b>.',
+        'Por sus ángulos: tiene uno recto, <b>rectángulo</b>.',
+      ], final:'escaleno y rectángulo' },
+    { titulo:'cambio el ángulo: todos agudos', enun:`Lados de 7, 8 y 9, ${N('con los tres ángulos agudos')}.`, prosa:true,
+      lienzo:F([
+        [0, g.pol(T789)],
+        [1, rotLado(T789[2], T789[0], cen(T789), '8') + rotLado(T789[0], T789[1], cen(T789), '7') + rotLado(T789[1], T789[2], cen(T789), '9')],
+        [2, arcos(T789, 'g-arco2', 24)],
+      ], 'Un triángulo de lados 7, 8 y 9'),
+      pasos:[
+        'Por sus lados: los tres son distintos, <b>escaleno</b>.',
+        'Por sus ángulos: los tres son agudos, <b>acutángulo</b>.',
+      ], final:'escaleno y acutángulo' },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Un triángulo puede tener dos ángulos rectos?',
+      r:'No: ya sumarían 180° entre los dos, y no quedaría nada para el tercero.' },
+    { p:'¿Todos los equiláteros son acutángulos?',
+      r:'Sí: sus tres ángulos son iguales y suman 180°, así que miden 60° cada uno.' },
+    { p:'¿Un triángulo rectángulo puede ser isósceles?',
+      r:'Sí, como el del ejemplo 2: los dos catetos iguales y los otros dos ángulos de 45°.' },
+    { p:'¿Un equilátero es también isósceles?',
+      r:'Sí: si tiene tres lados iguales, tiene al menos dos. El libro los pone en columnas separadas, pero el equilátero cumple las dos definiciones.' },
+  ],
+  notas:`<p>La doble tabla de la pág. 162 es el centro del tema: cada triángulo tiene un nombre
+      por sus lados y otro por sus ángulos, y cada ejemplo dice los dos.</p>
+    <p>Los ejemplos 2 y 3 dejan fijos los dos lados de 6 y cambian solo el ángulo entre ellos:
+      90° y 120°. Los ejemplos 4 y 5 hacen lo mismo con los escalenos.</p>
+    <p>El Verdadero o Falso de la pág. 163 sale de las preguntas del observador: vale la pena
+      hacerlas en voz alta antes de abrir la respuesta.</p>`
+},
+
+/* ─────────────────────────── 6 ─────────────────────────── */
+{
+  n:6, corto:'Ángulos del triángulo', titulo:'Teoremas sobre los ángulos de un triángulo', pag:'unidad 8, tema 6 · págs. 164–165', ficha:11,
+  concepto:{
+    forma:'α + β + γ = 180°', formaRot:'los ángulos interiores de un triángulo',
+    puntos:[
+      'Es un <b>teorema</b>: algo que se demuestra, no que se mide.',
+      '<b>Corolario</b>: en un triángulo equilátero cada ángulo mide 60°.',
+      'Un <b>ángulo exterior</b> es igual a la suma de los dos interiores que no lo tocan.',
+    ]
+  },
+  ejemplos:(() => {
+    const TD = [[50, 245], [200, 90], [350, 245]];              // A, B, C
+    const EQ = g.regular(3, 200, 170, 120);
+    const IS = [[200, 40], [200 + 220 * Math.sin(20 * Math.PI / 180), 40 + 220 * Math.cos(20 * Math.PI / 180)],
+                [200 - 220 * Math.sin(20 * Math.PI / 180), 40 + 220 * Math.cos(20 * Math.PI / 180)]];
+    const TX = [[340, 240], triAngulos([60, 240], [340, 240], 50, 60), [60, 240]];      // B, A, C
+    const TY = [[60, 240], triAngulos([60, 240], [340, 240], 50, 40), [340, 240]];      // A, B, C
+    return [
+    { titulo:'por qué suman 180°', enun:'¿Por qué los ángulos de cualquier triángulo suman 180°?', prosa:true,
+      lienzo:F([
+        [0, g.pol(TD) + nombres(TD, ['A', 'B', 'C']) + angulo(TD[0], TD[2], TD[1], 'α', 'g-arco', 30, false, 14)
+            + angulo(TD[1], TD[0], TD[2], 'β', 'g-arco2', 26, false, 14) + angulo(TD[2], TD[1], TD[0], 'γ', 'g-arco3', 30, false, 14)],
+        [1, g.seg([15, 90], [385, 90]) + g.txt([360, 76], '∥ AC', 'g-num')],
+        [2, angulo(TD[1], [15, 90], TD[0], 'α', 'g-arco', 26, false, 14)],
+        [3, angulo(TD[1], TD[2], [385, 90], 'γ', 'g-arco3', 26, false, 14)],
+        [4, g.txt([200, 50], '180°', 'g-num')],
+      ], 'Un triángulo con la paralela a la base trazada por el vértice de arriba'),
+      pasos:[
+        'Por B trazo la recta paralela al lado AC.',
+        'El ángulo α se copia arriba, junto a B, del lado de A: entre dos paralelas, los ángulos alternos internos son iguales.',
+        'Lo mismo con γ, del lado de C.',
+        'Sobre la recta, en B, quedaron α, β y γ uno al lado del otro: forman un ángulo llano, 180°.',
+      ], final:'α + β + γ = 180°, en cualquier triángulo' },
+    { titulo:'el equilátero', enun:'¿Cuánto mide cada ángulo de un triángulo equilátero?', prosa:true,
+      lienzo:F([
+        [0, g.pol(EQ) + EQ.map((p, i) => g.marcas(p, EQ[(i + 1) % 3])).join('')],
+        [1, [0, 1, 2].map(i => angulo(EQ[i], EQ[(i + 2) % 3], EQ[(i + 1) % 3], 'α', 'g-arco2', 22, false, 14)).join('')],
+      ], 'Un triángulo equilátero con sus tres ángulos iguales'),
+      pasos:[
+        P('Los tres ángulos son iguales: los llamo α. Y suman 180°.', 'α + α + α = 180°'),
+        P('Junto y divido por 3.', '3α = 180°', 'α = 180° : 3', ' = 60°'),
+      ], final:'cada ángulo mide 60°',
+      control:`${A('60° + 60° + 60° = 180° ✓')}` },
+    { titulo:'cambio: un isósceles', enun:`En un ${N('isósceles')}, el ángulo desigual mide 40°. ¿Cuánto miden los otros dos?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(IS) + g.marcas(IS[0], IS[1]) + g.marcas(IS[0], IS[2]) + angulo(IS[0], IS[2], IS[1], '40°', 'g-arco', 34, false, 18)],
+        [1, angulo(IS[1], IS[0], IS[2], 'β', 'g-arco2', 26, false, 14) + angulo(IS[2], IS[1], IS[0], 'β', 'g-arco2', 26, false, 14)],
+      ], 'Un triángulo isósceles con el ángulo desigual de 40°'),
+      pasos:[
+        P('Los dos ángulos de la base son iguales: los llamo β.', 'β + β + 40° = 180°'),
+        P('Resto 40° y divido por 2.', '2β = 140°', 'β = 70°'),
+      ], final:'los otros dos ángulos miden 70°',
+      control:`${A('70° + 70° + 40° = 180° ✓')}` },
+    { titulo:'el ángulo exterior', enun:'En el triángulo ABC, Â = 70° y Ĉ = 50°. ¿Cuánto mide el ángulo exterior en B?', prosa:true,
+      lienzo:F([
+        [0, g.pol([TX[1], TX[0], TX[2]]) + nombres([TX[1], TX[0], TX[2]], ['A', 'B', 'C'])
+            + angulo(TX[1], TX[2], TX[0], '70°', 'g-arco2', 24, false, 16) + angulo(TX[2], TX[0], TX[1], '50°', 'g-arco3', 30, false, 16)],
+        [1, g.seg(TX[0], [395, 240], 'g-aux') + angulo(TX[0], [395, 240], TX[1], 'δ', 'g-arco', 26, false, 14)],
+        ['final', g.txt(g.enAngulo(TX[0], [395, 240], TX[1], 70), '= 120°', 'g-num')],
+      ], 'Un triángulo con el ángulo exterior en B'),
+      pasos:[
+        'Prolongo el lado CB más allá de B: el ángulo exterior δ queda entre la prolongación y el lado BA.',
+        P('Es igual a la suma de los dos interiores que no lo tocan: Â y Ĉ.', 'δ = 70° + 50°', ' = 120°'),
+      ], final:'el ángulo exterior en B mide 120°',
+      control:`Por otro camino: el interior en B mide 180° − 70° − 50° = 60°, y${A('60° + 120° = 180° ✓')}` },
+    { titulo:'con x', enun:`En el triángulo ABC, Â = ${M('x + 20°')} y B̂ = ${M('3x')}, y el exterior en C mide 140°. ¿Cuánto mide cada ángulo?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(TY) + nombres(TY, ['A', 'B', 'C']) + angulo(TY[0], TY[2], TY[1], 'x + 20°', 'g-arco2', 26, false, 34)
+            + angulo(TY[1], TY[0], TY[2], '3x', 'g-arco3', 22, false, 16)
+            + g.seg(TY[2], [395, 240], 'g-aux') + angulo(TY[2], [395, 240], TY[1], '140°', 'g-arco', 22, false, 18)],
+        ['final', g.recto(TY[1], TY[0], TY[2], 16)],
+      ], 'Un triángulo con dos ángulos en función de x y un ángulo exterior de 140°'),
+      pasos:[
+        P('El exterior en C es la suma de los dos interiores que no lo tocan.', '(x + 20°) + 3x = 140°', '4x + 20° = 140°'),
+        P('Resuelvo como en la unidad de ecuaciones.', `4x + 20° ${N('− 20°')} = 140° ${N('− 20°')}`, '4x = 120°', 'x = 30°'),
+        P('Reemplazo x, y el interior en C es el suplemento de 140°.', 'Â = 30° + 20°', ' = 50°', 'B̂ = 3 · 30°', ' = 90°', 'Ĉ = 180° − 140°', ' = 40°'),
+      ], final:'<i>x</i> = 30°, y los ángulos miden 50°, 90° y 40°',
+      control:`${A('50° + 90° + 40° = 180° ✓')}` },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Por qué no alcanza con medir los ángulos de muchos triángulos?',
+      r:'Porque medir tiene error y nunca se miden todos. La demostración con la paralela vale para cualquier triángulo, también para los que nadie dibujó.' },
+    { p:'¿Qué son los ángulos alternos internos?',
+      r:'Cuando una recta corta a dos paralelas, los ángulos que quedan entre las paralelas, uno de cada lado de la recta que corta, son iguales. Es lo que copia α y γ arriba de B.' },
+    { p:'¿Por qué el exterior es la suma de los otros dos?',
+      r:'Porque el exterior y el interior de B suman 180°, y los tres interiores también. Lo que le falta al interior de B para llegar a 180° es lo mismo en los dos casos.' },
+    { p:'¿Un triángulo puede tener un ángulo de 180°?',
+      r:'No: los otros dos quedarían en 0°. Serían tres puntos en fila, como las varillas de 4, 5 y 9.' },
+  ],
+  notas:`<p>El libro demuestra el teorema con la paralela por B (pág. 164). El ejemplo 1 lo hace
+      en cuatro pasos, con los colores de cada ángulo, para que se vea cómo α y γ "viajan"
+      arriba. Es la primera demostración que ven en el año: vale la pena ir despacio.</p>
+    <p>El ejemplo 5 junta el teorema del ángulo exterior con una ecuación de la unidad
+      anterior. Es el tipo de ejercicio de la evaluación de la pág. 172.</p>
+    <p>Para practicar: la Ficha 11.</p>`
+},
+
+/* ─────────────────────────── 7 ─────────────────────────── */
+{
+  n:7, corto:'Altura y mediatriz', titulo:'Elementos notables de un triángulo (I)', pag:'unidad 8, tema 7 · págs. 166–167',
+  concepto:{
+    serie:[
+      { rot:'altura', txt:'desde un vértice, perpendicular al lado de enfrente' },
+      { rot:'ortocentro', txt:'donde se cortan las tres alturas' },
+      { rot:'mediatriz', txt:'perpendicular a un lado por su punto medio' },
+      { rot:'circuncentro', txt:'donde se cortan las tres mediatrices' },
+    ],
+    puntos:[
+      'Todo triángulo tiene <b>tres alturas</b> y <b>tres mediatrices</b>.',
+      'El circuncentro está a la misma distancia de los tres vértices: es el centro de la <b>circunferencia circunscripta</b>.',
+    ]
+  },
+  ejemplos:(() => {
+    const OB = [[70, 60], [160, 245], [360, 245]];
+    const pieOB = g.pie(OB[0], OB[1], OB[2]);
+    const Pm = [mBC[0], 120];
+    return [
+    { titulo:'la altura desde A', enun:'la altura desde A en el triángulo ABC', prosa:true,
+      lienzo:F([
+        [0, baseTA(TA)],
+        [1, g.seg(TA[0], pieA, 'g-altura') + g.recto(pieA, TA[0], TA[1])],
+        [2, g.pto(pieA, 'g-pto2') + g.txt([pieA[0] - 12, pieA[1] + 18], 'H')],
+      ], 'La altura desde A'),
+      pasos:[
+        'La altura sale de A y llega <b>perpendicular</b> al lado de enfrente, BC.',
+        'Llega a BC en el punto H, el <b>pie</b> de la altura.',
+      ], final:'la altura desde A cae adentro del triángulo' },
+    { titulo:'cambio: un obtusángulo', enun:`la altura desde A en un triángulo ${N('obtusángulo')}`, prosa:true,
+      lienzo:F([
+        [0, baseTA(OB)],
+        [1, g.seg(OB[0], [OB[0][0], 150], 'g-aux')],
+        [2, g.seg(OB[1], [30, 245], 'g-aux') + g.seg(OB[0], pieOB, 'g-altura') + g.recto(pieOB, OB[0], OB[1]) + g.pto(pieOB, 'g-pto2')],
+      ], 'La altura de un obtusángulo, que cae afuera'),
+      pasos:[
+        'Desde A busco la perpendicular a BC… pero debajo de A no hay lado.',
+        'Prolongo BC hacia la izquierda: la altura llega a la <b>prolongación</b>.',
+      ], final:'en un obtusángulo, la altura desde A cae afuera del triángulo' },
+    { titulo:'las tres alturas', enun:'las tres alturas del triángulo ABC', prosa:true,
+      lienzo:F([
+        [0, baseTA(TA)],
+        [1, g.seg(TA[0], pieA, 'g-altura') + g.recto(pieA, TA[0], TA[1])],
+        [2, g.seg(TA[1], pieB, 'g-altura') + g.recto(pieB, TA[1], TA[2])],
+        [3, g.seg(TA[2], pieC, 'g-altura') + g.recto(pieC, TA[2], TA[0])],
+        [4, g.pto(ORTO, 'g-pto', 6.5) + g.txt([ORTO[0] + 16, ORTO[1] - 10], 'O')],
+      ], 'Las tres alturas y el ortocentro'),
+      pasos:[
+        'La altura desde A.',
+        'La altura desde B, perpendicular a CA.',
+        'La altura desde C, perpendicular a AB.',
+        'Las tres se cortan en un mismo punto: el <b>ortocentro</b>, O.',
+      ], final:'las tres alturas se cortan en el ortocentro' },
+    { titulo:'la mediatriz de BC', enun:'la mediatriz del lado BC', prosa:true,
+      lienzo:F([
+        [0, baseTA(TA)],
+        [1, g.pto(mBC, 'g-pto2') + g.marcas(TA[1], mBC) + g.marcas(mBC, TA[2])],
+        [2, mediatriz(TA[1], TA[2], 210) + g.recto(mBC, [mBC[0], 0], TA[1])],
+        [3, g.pto(Pm, 'g-pto') + g.txt([Pm[0] + 14, Pm[1] - 8], 'P') + g.seg(Pm, TA[1], 'g-aux') + g.seg(Pm, TA[2], 'g-aux')],
+      ], 'La mediatriz de BC'),
+      pasos:[
+        'Marco el punto medio de BC: parte al lado en dos pedazos iguales.',
+        'Por ahí trazo la perpendicular a BC: es la <b>mediatriz</b>.',
+        'Cualquier punto P de la mediatriz está a la misma distancia de B que de C.',
+      ], final:'la mediatriz de BC: perpendicular a BC por su punto medio' },
+    { titulo:'las tres mediatrices, con medidas', enun:'En el triángulo ABC, el circuncentro M está a 4 cm de A. ¿A qué distancia está de B y de C?', prosa:true,
+      lienzo:F([
+        [0, baseTA(TC)],
+        [1, mediatriz(TC[1], TC[2], 130) + mediatriz(TC[2], TC[0], 130)],
+        [2, g.pto(CIRC, 'g-pto', 6) + g.txt([CIRC[0] + 16, CIRC[1] + 4], 'M')],
+        [3, mediatriz(TC[0], TC[1], 130)],
+        [4, g.circ(CIRC, rCIRC) + g.seg(CIRC, TC[0], 'g-roja') + g.seg(CIRC, TC[1], 'g-roja') + g.seg(CIRC, TC[2], 'g-roja')],
+      ], 'Las mediatrices, el circuncentro y la circunferencia circunscripta', '0 0 400 305'),
+      pasos:[
+        'Trazo las mediatrices de dos lados.',
+        'Se cortan en M: el <b>circuncentro</b>.',
+        'La tercera mediatriz también pasa por M.',
+        'M está a la misma distancia de los tres vértices: la circunferencia de centro M que pasa por A pasa también por B y por C.',
+      ], final:'M está a 4 cm de B y a 4 cm de C',
+      control:'La circunferencia de centro M y radio 4 cm pasa por los tres vértices ✓' },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿La altura y la mediatriz no son lo mismo?',
+      r:'Las dos son perpendiculares a un lado, pero la altura sale del vértice de enfrente y la mediatriz pasa por el punto medio. En un triángulo isósceles, la del lado desigual coincide.' },
+    { p:'¿El ortocentro puede quedar afuera del triángulo?',
+      r:'Sí, en los obtusángulos: dos alturas caen afuera y se cortan del otro lado.' },
+    { p:'¿Dónde queda el circuncentro de un triángulo rectángulo?',
+      r:'Justo en el punto medio de la hipotenusa. La hipotenusa es un diámetro de la circunferencia.' },
+    { p:'¿Para qué sirve el circuncentro?',
+      r:'Para encontrar el punto que está a la misma distancia de tres lugares: tres casas y un tanque de agua, por ejemplo.' },
+  ],
+  notas:`<p>El libro presenta altura y mediatriz con sus puntos de intersección (págs. 166–167).
+      Los ejemplos 1 y 2 separan lo que confunde: la altura de un obtusángulo cae afuera,
+      sobre la prolongación.</p>
+    <p>El ejemplo 4 muestra la propiedad que hace útil a la mediatriz —cualquier punto de ella
+      está a la misma distancia de los extremos—, y el 5 la usa para el circuncentro.</p>
+    <p>Si hay compás en el aula, trazar la circunferencia circunscripta en el pizarrón
+      convence más que cualquier figura.</p>`
+},
+
+/* ─────────────────────────── 8 ─────────────────────────── */
+{
+  n:8, corto:'Mediana y bisectriz', titulo:'Elementos notables de un triángulo (II)', pag:'unidad 8, tema 8 · págs. 168–169',
+  concepto:{
+    serie:[
+      { rot:'mediana', txt:'de un vértice al punto medio del lado de enfrente' },
+      { rot:'baricentro', txt:'donde se cortan las tres medianas' },
+      { rot:'bisectriz', txt:'parte un ángulo en dos iguales' },
+      { rot:'incentro', txt:'donde se cortan las tres bisectrices' },
+    ],
+    puntos:[
+      'El baricentro es el <b>punto de equilibrio</b>: está al doble de distancia del vértice que del lado.',
+      'El incentro está a la misma distancia de los tres lados: es el centro de la <b>circunferencia inscripta</b>.',
+    ]
+  },
+  ejemplos:(() => {
+    const T = [[60, 240], [340, 240], [60 + 220 * Math.cos(70 * Math.PI / 180), 240 - 220 * Math.sin(70 * Math.PI / 180)]];
+    const tercio = t => [TA[0][0] + (mBC[0] - TA[0][0]) * t, TA[0][1] + (mBC[1] - TA[0][1]) * t];
+    return [
+    { titulo:'la mediana desde A', enun:'la mediana desde A en el triángulo ABC', prosa:true,
+      lienzo:F([
+        [0, baseTA(TA)],
+        [1, g.pto(mBC, 'g-pto2') + g.marcas(TA[1], mBC) + g.marcas(mBC, TA[2]) + g.txt([mBC[0], mBC[1] + 18], 'M')],
+        [2, g.seg(TA[0], mBC, 'g-verde')],
+      ], 'La mediana desde A'),
+      pasos:[
+        'Marco el punto medio de BC: M.',
+        'La <b>mediana</b> une A con M.',
+      ], final:'la mediana AM llega al punto medio del lado de enfrente' },
+    { titulo:'las tres medianas', enun:'las tres medianas del triángulo ABC', prosa:true,
+      lienzo:F([
+        [0, baseTA(TA)],
+        [1, g.seg(TA[0], mBC, 'g-verde') + g.marcas(TA[1], mBC) + g.marcas(mBC, TA[2])],
+        [2, g.seg(TA[1], mCA, 'g-verde') + g.marcas(TA[2], mCA, 2) + g.marcas(mCA, TA[0], 2)],
+        [3, g.seg(TA[2], mAB, 'g-verde') + g.marcas(TA[0], mAB, 3) + g.marcas(mAB, TA[1], 3)],
+        [4, g.pto(BARI, 'g-pto', 6.5) + g.txt([BARI[0] + 16, BARI[1] - 8], 'G')],
+      ], 'Las tres medianas y el baricentro'),
+      pasos:[
+        'La mediana desde A.',
+        'La mediana desde B, al punto medio de CA.',
+        'La mediana desde C, al punto medio de AB.',
+        'Las tres se cortan en G: el <b>baricentro</b>.',
+      ], final:'las tres medianas se cortan en el baricentro G' },
+    { titulo:'con medidas: una mediana de 12 cm', enun:'La mediana AM mide 12 cm. ¿A qué distancia de A está el baricentro G?', prosa:true,
+      lienzo:F([
+        [0, baseTA(TA) + g.seg(TA[0], mBC, 'g-verde') + g.txt([mBC[0], mBC[1] + 18], 'M')],
+        [1, g.pto(BARI, 'g-pto', 6) + g.txt([BARI[0] + 16, BARI[1] - 6], 'G')],
+        [2, g.pto(tercio(1 / 3), 'g-vert', 3.5) + g.pto(tercio(2 / 3), 'g-vert', 3.5)],
+        ['final', g.txt([g.medio(TA[0], BARI)[0] - 16, g.medio(TA[0], BARI)[1]], '8', 'g-num')
+                + g.txt([g.medio(BARI, mBC)[0] - 16, g.medio(BARI, mBC)[1]], '4', 'g-num')],
+      ], 'La mediana AM partida por el baricentro'),
+      pasos:[
+        P('El baricentro está al doble de distancia del vértice que del lado.', 'AG = 2 · GM'),
+        P('Entonces la mediana son tres partes iguales: dos de A a G y una de G a M.', 'AM = 3 · GM', '12 = 3 · GM', 'GM = 4'),
+        P('Y AG es el doble.', 'AG = 2 · 4', ' = 8'),
+      ], final:'G está a 8 cm de A y a 4 cm de M',
+      control:`${A('8 + 4 = 12 ✓')}Y 8 es el doble de 4 ✓` },
+    { titulo:'la bisectriz de un ángulo de 70°', enun:'la bisectriz del ángulo A, que mide 70°', prosa:true,
+      lienzo:F([
+        [0, g.pol([T[0], T[1], T[2]]) + nombres([T[0], T[1], T[2]], ['A', 'B', 'C']) + angulo(T[0], T[1], T[2], '70°', 'g-arco', 44, false, 16)],
+        [1, bisectriz(T[0], T[1], T[2])],
+        ['final', angulo(T[0], T[1], [T[0][0] + Math.cos(35 * Math.PI / 180), T[0][1] - Math.sin(35 * Math.PI / 180)], '35°', 'g-arco2', 70, false, 18)
+                + angulo(T[0], [T[0][0] + Math.cos(35 * Math.PI / 180), T[0][1] - Math.sin(35 * Math.PI / 180)], T[2], '35°', 'g-arco3', 70, false, 18)],
+      ], 'Un ángulo de 70° partido por su bisectriz'),
+      pasos:[
+        P('La bisectriz parte al ángulo en dos iguales.', '70° : 2 = 35°'),
+      ], final:'la bisectriz deja dos ángulos de 35°',
+      control:`${A('35° + 35° = 70° ✓')}` },
+    { titulo:'las tres bisectrices', enun:'las tres bisectrices del triángulo ABC', prosa:true,
+      lienzo:F([
+        [0, baseTA(TA)],
+        [1, bisectriz(TA[0], TA[1], TA[2])],
+        [2, bisectriz(TA[1], TA[2], TA[0])],
+        [3, bisectriz(TA[2], TA[0], TA[1])],
+        [4, g.pto(INC, 'g-pto', 6) + g.txt([INC[0] + 16, INC[1] - 8], 'I')],
+        [5, g.circ(INC, rINC) + g.seg(INC, g.pie(INC, TA[1], TA[2]), 'g-roja')],
+      ], 'Las tres bisectrices, el incentro y la circunferencia inscripta'),
+      pasos:[
+        'La bisectriz de Â.',
+        'La bisectriz de B̂.',
+        'La bisectriz de Ĉ.',
+        'Las tres se cortan en I: el <b>incentro</b>.',
+        'I está a la misma distancia de los tres lados: la circunferencia de centro I que toca un lado toca los tres.',
+      ], final:'el incentro es el centro de la circunferencia inscripta' },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Por qué el baricentro es el punto de equilibrio?',
+      r:'Porque si recortás el triángulo en cartón y lo apoyás en la punta de un lápiz justo en G, no se cae. Se puede probar en el aula.' },
+    { p:'¿La mediana y la altura desde un mismo vértice pueden coincidir?',
+      r:'Sí: en un isósceles, desde el vértice de los lados iguales, la mediana, la altura, la mediatriz y la bisectriz son la misma recta.' },
+    { p:'¿Por qué el baricentro divide en 2 y 1 y no en mitades?',
+      r:'Porque las tres medianas tienen que cruzarse en un mismo punto, y eso solo pasa a dos tercios del vértice. Se ve midiendo en la figura.' },
+    { p:'¿Qué diferencia hay entre la circunferencia inscripta y la circunscripta?',
+      r:'La circunscripta pasa por los tres vértices, por afuera. La inscripta queda adentro y toca los tres lados.' },
+  ],
+  notas:`<p>El libro presenta mediana y bisectriz con sus puntos de intersección (págs. 168–169).
+      El dato del baricentro —al doble de distancia del vértice que del lado— es el que se usa
+      en la evaluación de la pág. 172, y es el ejemplo 3.</p>
+    <p>En el ejemplo 3 conviene marcar los tercios con la regla en el pizarrón: la mediana
+      queda en tres pedazos iguales, dos arriba de G y uno abajo.</p>
+    <p>Para el laboratorio de GeoGebra de la pág. 170 (la recta de Euler) hace falta la sala
+      de informática: queda como tarea optativa.</p>`
+},
+
+/* ─────────────────────────── 9 ───────────────────────────
+   Desde acá, la unidad 9 del libro. Los temas 4 a 6 (cuadriláteros) van
+   antes que el 1 (Pitágoras): ver la nota de la unidad. */
+{
+  n:9, corto:'Cuadriláteros', titulo:'Cuadriláteros (I)', pag:'unidad 9, tema 4 · págs. 182–183',
+  concepto:{
+    serie:[
+      { rot:'paralelogramos', txt:'dos pares de lados paralelos' },
+      { rot:'trapecios', txt:'un solo par de lados paralelos' },
+      { rot:'trapezoides', txt:'ningún par de lados paralelos' },
+    ],
+    puntos:[
+      'Un <b>cuadrilátero</b> tiene 4 lados, 4 vértices, 4 ángulos y 2 diagonales.',
+      'Se clasifican según cuántos pares de lados <b>paralelos</b> tienen.',
+      'Sus cuatro ángulos interiores suman <b>360°</b>.',
+    ]
+  },
+  ejemplos:(() => {
+    const PA = [[20, 190], [110, 190], [140, 110], [50, 110]];
+    const TR = [[160, 190], [270, 190], [245, 110], [185, 110]];
+    const TZ = [[295, 190], [395, 170], [380, 95], [310, 125]];
+    const TRr = [[80, 60], [274.5, 60], [340, 240], [80, 240]];
+    return [
+    { titulo:'los elementos de ABCD', enun:'el cuadrilátero ABCD', prosa:true,
+      lienzo:F([
+        [0, g.pol(Q4)],
+        [1, g.pol(Q4, 'g-foco'), 2],
+        [2, vertices(Q4) + nombres(Q4, ['A', 'B', 'C', 'D'])],
+        [3, arcos(Q4)],
+        [4, g.seg(Q4[0], Q4[2], 'g-diag') + g.seg(Q4[1], Q4[3], 'g-diag')],
+      ], 'Un cuadrilátero con sus elementos'),
+      pasos:[
+        'Los <b>lados</b>: AB, BC, CD y DA.',
+        'Los <b>vértices</b>: A, B, C y D.',
+        'Los <b>ángulos</b>: Â, B̂, Ĉ y D̂.',
+        'Las <b>diagonales</b>: AC y BD.',
+      ], final:'4 lados, 4 vértices, 4 ángulos y 2 diagonales',
+      control:`Con la fórmula de las diagonales:${A(`${Q('4 · (4 − 3)','2')} = 2 ✓`)}` },
+    { titulo:'clasificar por los lados paralelos', enun:'¿Cómo se llama cada uno de estos cuadriláteros?', prosa:true,
+      lienzo:F([
+        [0, g.pol(PA) + g.pol(TR) + g.pol(TZ) + g.txt([80, 225], '1', 'g-num') + g.txt([215, 225], '2', 'g-num') + g.txt([345, 225], '3', 'g-num')],
+        [1, g.seg(PA[0], PA[1], 'g-roja') + g.seg(PA[2], PA[3], 'g-roja') + g.seg(PA[1], PA[2], 'g-verde') + g.seg(PA[3], PA[0], 'g-verde')],
+        [2, g.seg(TR[0], TR[1], 'g-roja') + g.seg(TR[2], TR[3], 'g-roja')],
+        [3, g.txt([345, 60], 'ninguno', 'g-num')],
+      ], 'Un paralelogramo, un trapecio y un trapezoide', '0 0 410 250'),
+      pasos:[
+        'El 1 tiene <b>dos pares</b> de lados paralelos: es un paralelogramo.',
+        'El 2 tiene <b>un solo par</b>, el de arriba y el de abajo: es un trapecio.',
+        'El 3 no tiene <b>ninguno</b>: es un trapezoide.',
+      ], final:'paralelogramo, trapecio y trapezoide' },
+    { titulo:'¿por qué suman 360°?', enun:'¿Por qué los ángulos de cualquier cuadrilátero suman 360°?', prosa:true,
+      lienzo:F([
+        [0, g.pol(Q4) + nombres(Q4, ['A', 'B', 'C', 'D'])],
+        [1, g.pol([Q4[0], Q4[1], Q4[2]], 'g-fig3') + g.pol([Q4[0], Q4[2], Q4[3]], 'g-fig2') + g.seg(Q4[0], Q4[2], 'g-linea')],
+      ], 'Un cuadrilátero partido por una diagonal en dos triángulos'),
+      pasos:[
+        'Trazo la diagonal AC: el cuadrilátero queda partido en dos triángulos.',
+        P('Los ángulos de los dos triángulos, juntos, son los del cuadrilátero.', '180° + 180° = 360°'),
+      ], final:'los ángulos de un cuadrilátero suman 360°',
+      control:`En un rectángulo:${A('90° + 90° + 90° + 90° = 360° ✓')}` },
+    { titulo:'el ángulo que falta', enun:'Tres ángulos de un cuadrilátero miden 90°, 90° y 70°. ¿Cuánto mide el cuarto?', prosa:true,
+      lienzo:F([
+        [0, g.pol(TRr) + g.recto(TRr[0], TRr[3], TRr[1]) + g.recto(TRr[3], TRr[2], TRr[0]) + angulo(TRr[2], TRr[3], TRr[1], '70°', 'g-arco2')],
+        [1, angulo(TRr[1], TRr[2], TRr[0], 'δ', 'g-arco', 24, false, 14)],
+        ['final', g.txt(g.enAngulo(TRr[1], TRr[2], TRr[0], 64), '110°', 'g-num')],
+      ], 'Un trapecio rectángulo con un ángulo de 70°'),
+      pasos:[
+        P('Los cuatro suman 360°.', 'δ + 90° + 90° + 70° = 360°'),
+        P('Sumo los que conozco y resto.', 'δ + 250° = 360°', 'δ = 360° − 250°', ' = 110°'),
+      ], final:'el cuarto ángulo mide 110°',
+      control:`${A('90° + 90° + 70° + 110° = 360° ✓')}` },
+    { titulo:'cambio a cinco lados', enun:`¿Cuánto suman los ángulos de un ${N('pentágono')}?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(P5) + nombres(P5, ABCDE)],
+        [1, g.pol([P5[0], P5[1], P5[2]], 'g-fig3') + g.pol([P5[0], P5[2], P5[3]], 'g-fig2') + g.pol([P5[0], P5[3], P5[4]], 'g-fig3')
+            + diagonalesDesde(P5, 0, 'g-linea')],
+      ], 'Un pentágono partido en tres triángulos desde un vértice'),
+      pasos:[
+        'Desde A trazo las diagonales: el pentágono queda partido en 3 triángulos.',
+        P('Cada triángulo aporta 180°.', '3 · 180° = 540°'),
+      ], final:'los ángulos de un pentágono suman 540°',
+      control:'Siempre quedan dos triángulos menos que lados: con 4 lados, 2 triángulos y 360°; con 5, 3 triángulos y 540° ✓' },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Un cuadrado es un paralelogramo?',
+      r:'Sí: tiene dos pares de lados paralelos. Es un paralelogramo muy especial, con todo igual.' },
+    { p:'¿Por qué se corta con una sola diagonal y no con las dos?',
+      r:'Con las dos quedan cuatro triángulos, pero sus ángulos del centro no son ángulos del cuadrilátero y habría que restarlos. Con una, los dos triángulos usan justo los cuatro ángulos.' },
+    { p:'¿Y un polígono de 10 lados?',
+      r:'Desde un vértice salen 8 triángulos, dos menos que lados: 8 · 180° = 1440°.' },
+    { p:'¿Cómo sé si dos lados son paralelos, si no los puedo prolongar hasta el infinito?',
+      r:'Si la distancia entre ellos es la misma en las dos puntas, son paralelos. En la cuadrícula se ve fácil.' },
+  ],
+  notas:`<p>El libro clasifica por paralelismo y enuncia la suma de 360° (pág. 182). El
+      ejemplo 3 muestra por qué, con una diagonal, y el 5 lleva la misma idea al pentágono:
+      es el hilo de toda la unidad, "cortar en triángulos".</p>
+    <p>El ejemplo 5 no está en el libro. Lo dejamos porque es el mismo argumento del 3 con
+      un lado más, y prepara la pregunta del observador sobre los polígonos de muchos
+      lados.</p>`
+},
+
+/* ─────────────────────────── 10 ─────────────────────────── */
+{
+  n:10, corto:'Paralelogramos', titulo:'Cuadriláteros (II)', pag:'unidad 9, tema 5 · págs. 184–185',
+  concepto:{
+    serie:[
+      { rot:'cuadrado', txt:'lados y ángulos iguales' },
+      { rot:'rectángulo', txt:'ángulos rectos, lados opuestos iguales' },
+      { rot:'rombo', txt:'cuatro lados iguales, dos pares de ángulos iguales' },
+      { rot:'paralelogramo', txt:'dos pares de lados iguales y de ángulos iguales' },
+    ],
+    puntos:[
+      'En todo paralelogramo, los lados opuestos son iguales y los ángulos opuestos también.',
+      'Sus diagonales se cortan en el <b>punto medio</b> de cada una.',
+      'Una diagonal lo parte en dos triángulos iguales.',
+    ]
+  },
+  ejemplos:(() => {
+    const PG = [[60, 230], [280, 230], [345, 51.5], [125, 51.5]];
+    const RE = [[80, 230], [320, 230], [320, 70], [80, 70]];
+    const RO = [[80, 150], [200, 240], [320, 150], [200, 60]];
+    const CU = [[110, 240], [290, 240], [290, 60], [110, 60]];
+    const O = [200, 150];
+    const rectos = ps => ps.map((p, i) => g.recto(p, ps[(i + 3) % 4], ps[(i + 1) % 4])).join('');
+    return [
+    { titulo:'un paralelogramo con un ángulo de 70°', enun:'En el paralelogramo ABCD, Â = 70°. ¿Cuánto miden los otros ángulos?', prosa:true,
+      lienzo:F([
+        [0, g.pol(PG) + nombres(PG, ['A', 'B', 'C', 'D']) + angulo(PG[0], PG[1], PG[3], '70°', 'g-arco2', 30, false, 18)],
+        [1, angulo(PG[2], PG[3], PG[1], '70°', 'g-arco2', 30, false, 18)],
+        [2, angulo(PG[1], PG[2], PG[0], '110°', 'g-arco', 22, false, 20)],
+        [3, angulo(PG[3], PG[0], PG[2], '110°', 'g-arco', 22, false, 20)],
+      ], 'Un paralelogramo con un ángulo de 70°'),
+      pasos:[
+        P('Los ángulos opuestos son iguales.', 'Ĉ = Â', ' = 70°'),
+        P('Los cuatro suman 360° y son dos pares iguales: dos vecinos suman la mitad, 180°.', 'B̂ = 180° − 70°', ' = 110°'),
+        'Y D̂, opuesto a B̂, también mide 110°.',
+      ], final:'los ángulos miden 70°, 110°, 70° y 110°',
+      control:`${A('70° + 110° + 70° + 110° = 360° ✓')}` },
+    { titulo:'el rectángulo', enun:`¿Qué tiene de especial un ${N('rectángulo')}?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(RE)],
+        [1, rectos(RE)],
+        [2, g.marcas(RE[0], RE[1]) + g.marcas(RE[2], RE[3]) + g.marcas(RE[1], RE[2], 2) + g.marcas(RE[3], RE[0], 2)],
+        [3, g.seg(RE[0], RE[2], 'g-roja') + g.seg(RE[1], RE[3], 'g-roja') + g.marcas(RE[0], O, 3) + g.marcas(O, RE[2], 3) + g.marcas(RE[1], O, 3) + g.marcas(O, RE[3], 3)],
+      ], 'Un rectángulo con sus diagonales'),
+      pasos:[
+        'Sus cuatro ángulos son rectos.',
+        'Los lados opuestos son iguales.',
+        'Y sus diagonales miden lo mismo, y se cortan en el medio de cada una.',
+      ], final:'ángulos rectos, lados opuestos iguales y diagonales iguales' },
+    { titulo:'el rombo de diagonales 8 y 6', enun:`Un ${N('rombo')} tiene diagonales de 8 y 6. ¿Qué forman al cortarse?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(RO)],
+        [1, RO.map((p, i) => g.marcas(p, RO[(i + 1) % 4])).join('')],
+        [2, g.seg(RO[0], RO[2], 'g-roja') + g.seg(RO[1], RO[3], 'g-verde') + g.txt([140, 138], '4', 'g-num') + g.txt([260, 138], '4', 'g-num')
+            + g.txt([214, 105], '3', 'g-num') + g.txt([214, 195], '3', 'g-num')],
+        [3, g.recto(O, RO[2], RO[3], 14)],
+      ], 'Un rombo con sus diagonales, que se cortan en ángulo recto'),
+      pasos:[
+        'Los cuatro lados son iguales.',
+        P('Las diagonales se cortan en el punto medio de cada una.', '8 : 2 = 4', '6 : 2 = 3'),
+        'Y se cortan en ángulo recto: el rombo queda partido en 4 triángulos rectángulos iguales.',
+      ], final:'cuatro triángulos rectángulos de catetos 4 y 3' },
+    { titulo:'el cuadrado', enun:`¿Y el ${N('cuadrado')}?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(CU)],
+        [1, CU.map((p, i) => g.marcas(p, CU[(i + 1) % 4])).join('')],
+        [2, rectos(CU)],
+        [3, g.seg(CU[0], CU[2], 'g-roja') + g.seg(CU[1], CU[3], 'g-roja') + g.recto(O, CU[1], CU[2], 14)],
+      ], 'Un cuadrado con sus diagonales'),
+      pasos:[
+        'Sus cuatro lados son iguales, como en el rombo.',
+        'Sus cuatro ángulos son rectos, como en el rectángulo.',
+        'Y sus diagonales son iguales y se cortan en ángulo recto.',
+      ], final:'el cuadrado es rectángulo y rombo a la vez' },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Un cuadrado puede ser un rectángulo?',
+      r:'Sí: tiene los cuatro ángulos rectos, que es lo único que pide el rectángulo. Y también es un rombo.' },
+    { p:'¿Por qué dos ángulos vecinos de un paralelogramo suman 180°?',
+      r:'Porque los cuatro suman 360° y los opuestos son iguales: 2 · Â + 2 · B̂ = 360°, entonces Â + B̂ = 180°.' },
+    { p:'¿Las diagonales del rectángulo se cortan en ángulo recto?',
+      r:'No, salvo que sea un cuadrado. Se cortan en el medio, pero en ángulo recto solo las del rombo.' },
+    { p:'¿Cuánto mide el lado del rombo del ejemplo 3?',
+      r:'Es la hipotenusa de un triángulo de catetos 4 y 3. Para calcularlo hace falta Pitágoras: lo hacemos en el tema 15.' },
+  ],
+  notas:`<p>El libro describe cada paralelogramo con sus lados y ángulos, y lista las
+      propiedades en el margen (pág. 184). Los ejemplos las recorren en orden: ángulos
+      opuestos, diagonales que se cortan en el medio y diagonales perpendiculares.</p>
+    <p>El ejemplo 3 deja armado el rombo de diagonales 8 y 6, con sus cuatro triángulos
+      rectángulos de catetos 4 y 3. Vuelve en el tema 15, cuando ya está Pitágoras.</p>`
+},
+
+/* ─────────────────────────── 11 ─────────────────────────── */
+{
+  n:11, corto:'Trapecios', titulo:'Cuadriláteros (III)', pag:'unidad 9, tema 6 · págs. 186–187',
+  concepto:{
+    serie:[
+      { rot:'trapecio rectángulo', txt:'dos ángulos rectos' },
+      { rot:'trapecio isósceles', txt:'lados no paralelos iguales' },
+      { rot:'trapecio escaleno', txt:'lados no paralelos distintos' },
+      { rot:'trapezoide cóncavo', txt:'un ángulo de más de 180°' },
+      { rot:'trapezoide convexo', txt:'todos sus ángulos convexos' },
+    ],
+    puntos:[
+      'En un trapecio, los dos ángulos de un mismo lado no paralelo suman <b>180°</b>, porque están entre las bases paralelas.',
+      'En el isósceles, los ángulos de cada base son iguales.',
+    ]
+  },
+  ejemplos:(() => {
+    const TR = [[80, 60], [236.1, 60], [340, 240], [80, 240]];                 // A, B, C, D
+    const TI = [[140.3, 67.8], [259.7, 67.8], [340, 240], [60, 240]];
+    const TE = [[90, 70], [241, 70], [360, 240], [60, 240]];
+    const CV = [[70, 150], [130, 60], [190, 150], [130, 250]];
+    const CC = [[240, 250], [300, 60], [360, 250], [300, 185]];
+    return [
+    { titulo:'un trapecio rectángulo', enun:'En el trapecio rectángulo ABCD, Ĉ = 60°. ¿Cuánto mide B̂?', prosa:true,
+      lienzo:F([
+        [0, g.pol(TR) + nombres(TR, ['A', 'B', 'C', 'D']) + angulo(TR[2], TR[3], TR[1], '60°', 'g-arco2', 28, false, 16)],
+        [1, g.recto(TR[0], TR[3], TR[1]) + g.recto(TR[3], TR[2], TR[0])],
+        [2, angulo(TR[1], TR[2], TR[0], '?', 'g-arco', 24, false, 14)],
+        ['final', g.txt(g.enAngulo(TR[1], TR[2], TR[0], 62), '120°', 'g-num')],
+      ], 'Un trapecio rectángulo con un ángulo de 60°'),
+      pasos:[
+        'Tiene dos ángulos rectos, en A y en D.',
+        P('Los cuatro suman 360°.', 'B̂ + 90° + 90° + 60° = 360°', 'B̂ = 360° − 240°', ' = 120°'),
+      ], final:'B̂ mide 120°',
+      control:`B̂ y Ĉ están entre las bases paralelas, y${A('120° + 60° = 180° ✓')}` },
+    { titulo:'cambio: un trapecio isósceles', enun:`En un trapecio ${N('isósceles')}, un ángulo de la base mayor mide 65°. ¿Cuánto miden los otros?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(TI) + nombres(TI, ['A', 'B', 'C', 'D']) + g.marcas(TI[0], TI[3]) + g.marcas(TI[1], TI[2])
+            + angulo(TI[3], TI[2], TI[0], '65°', 'g-arco2', 28, false, 16)],
+        [1, angulo(TI[2], TI[1], TI[3], '65°', 'g-arco2', 28, false, 16)],
+        [2, angulo(TI[0], TI[3], TI[1], '?', 'g-arco', 22, false, 14) + angulo(TI[1], TI[0], TI[2], '?', 'g-arco', 22, false, 14)],
+      ], 'Un trapecio isósceles'),
+      pasos:[
+        'Los ángulos de cada base son iguales: Ĉ = D̂ = 65°.',
+        P('Los cuatro suman 360°, y Â = B̂.', '2 · Â + 65° + 65° = 360°', '2 · Â = 230°', 'Â = 115°'),
+      ], final:'los ángulos miden 65°, 65°, 115° y 115°',
+      control:`Â y D̂ están entre las bases paralelas, y${A('115° + 65° = 180° ✓')}` },
+    { titulo:'cambio: un trapecio escaleno', enun:`En un trapecio ${N('escaleno')}, los ángulos de la base mayor miden 80° y 55°. ¿Y los otros?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(TE) + nombres(TE, ['A', 'B', 'C', 'D']) + angulo(TE[3], TE[2], TE[0], '80°', 'g-arco2', 28, false, 16)
+            + angulo(TE[2], TE[1], TE[3], '55°', 'g-arco3', 32, false, 16)],
+        [1, angulo(TE[0], TE[3], TE[1], '?', 'g-arco', 22, false, 14) + angulo(TE[1], TE[0], TE[2], '?', 'g-arco', 22, false, 14)],
+      ], 'Un trapecio escaleno'),
+      pasos:[
+        'Los lados no paralelos son distintos, y los cuatro ángulos también.',
+        P('Cada ángulo de arriba suma 180° con el de abajo de su mismo lado.', 'Â = 180° − 80°', ' = 100°', 'B̂ = 180° − 55°', ' = 125°'),
+      ], final:'los ángulos miden 80°, 55°, 125° y 100°',
+      control:`${A('80° + 55° + 125° + 100° = 360° ✓')}` },
+    { titulo:'dos trapezoides', enun:'Ninguno de estos cuadriláteros tiene lados paralelos. ¿Son convexos o cóncavos?', prosa:true,
+      lienzo:F([
+        [0, g.pol(CV) + g.pol(CC) + g.txt([130, 280], '1', 'g-num') + g.txt([300, 280], '2', 'g-num')],
+        [1, arcos(CV, 'g-arco2', 18)],
+        [2, angulo(CC[3], CC[2], CC[0], '', 'g-arco', 18, true)],
+      ], 'Un trapezoide convexo y uno cóncavo'),
+      pasos:[
+        'En el 1, todos los ángulos miden menos de 180°: es <b>convexo</b>.',
+        'En el 2, el ángulo de abajo, que entra, mide más de 180°: es <b>cóncavo</b>.',
+      ], final:'el 1 es un trapezoide convexo y el 2, uno cóncavo' },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Por qué los ángulos de un mismo lado del trapecio suman 180°?',
+      r:'Porque están entre dos paralelas, las bases, del mismo lado de la recta que las corta. Es la misma idea de la demostración del tema 6.' },
+    { p:'¿Un trapecio puede tener un solo ángulo recto?',
+      r:'No: si un ángulo de la base es recto, el de arriba del mismo lado completa 180° y también es recto.' },
+    { p:'¿Un paralelogramo es un trapecio?',
+      r:'Con la definición del libro, no: el trapecio tiene un solo par de lados paralelos, y el paralelogramo tiene dos.' },
+    { p:'¿El trapezoide cóncavo tiene nombre?',
+      r:'Se lo suele llamar "punta de flecha". El convexo con dos pares de lados vecinos iguales es un "barrilete", como los de papel.' },
+  ],
+  notas:`<p>El libro solo enuncia las clases de trapecios y trapezoides (pág. 186). Los ejemplos
+      les agregan una cuenta de ángulos a cada uno, para que la clasificación no quede en
+      vocabulario.</p>
+    <p>El control del ejemplo 1 introduce la propiedad de los ángulos entre las bases, que el
+      ejemplo 3 usa directamente. Si el grupo no la toma, el ejemplo 3 se puede resolver con
+      la suma de 360° como en los otros dos.</p>`
+},
+
+/* ─────────────────────────── 12 ─────────────────────────── */
+{
+  n:12, corto:'Pitágoras', titulo:'Triángulo rectángulo y teorema de Pitágoras', pag:'unidad 9, tema 1 · págs. 176–177',
+  concepto:{
+    forma:`a${S2} = b${S2} + c${S2}`, formaRot:'el cuadrado de la hipotenusa es la suma de los cuadrados de los catetos',
+    serie:[
+      { rot:'catetos b y c', txt:'los lados que forman el ángulo recto' },
+      { rot:'hipotenusa a', txt:'el lado de enfrente del ángulo recto, el más largo' },
+    ],
+    puntos:[
+      `Para hallar la hipotenusa: <span class="ec"><i>a</i> = √(<i>b</i>${S2} + <i>c</i>${S2})</span>. Para un cateto: <span class="ec"><i>b</i> = √(<i>a</i>${S2} − <i>c</i>${S2})</span>.`,
+      `${M('a<sup>2</sup>')} no es solo una cuenta: es el <b>área del cuadrado</b> apoyado sobre ese lado.`,
+      'Y al revés: si tres lados cumplen la cuenta, el triángulo es rectángulo.',
+    ]
+  },
+  ejemplos:(() => {
+    const C = [160, 230], B = [280, 230], Aa = [160, 140];
+    const qb = cuadradoSobre(C, Aa, B), qc = cuadradoSobre(C, B, Aa), qa = cuadradoSobre(Aa, B, C);
+    const T815 = [[60, 130], [285, 250], [60, 250]];
+    const T135 = [[70, 165], [274, 250], [70, 250]];
+    const T91215 = [[80, 106], [272, 250], [80, 250]];
+    const T91216 = triLados(9, 12, 16, 16, [70, 250]);
+    const rotRect = (T, sb, sc, sa) => rotLado(T[2], T[0], cen(T), sb, 18) + rotLado(T[1], T[2], cen(T), sc, 18) + rotLado(T[0], T[1], cen(T), sa, 18);
+    return [
+    { titulo:'catetos 3 y 4', enun:'Los catetos de un triángulo rectángulo miden 3 y 4. ¿Cuánto mide la hipotenusa?', prosa:true,
+      lienzo:F([
+        [0, g.pol([Aa, B, C], 'g-fig hueco') + g.recto(C, Aa, B, 14) + rotLado(C, Aa, [220, 190], '3', -16) + rotLado(B, C, [220, 190], '4', -16)],
+        [1, g.pol(qb, 'g-fig2 g-cuad') + cuadricula(qb, 3) + g.txt(cen(qb), '9', 'g-num')
+            + g.pol(qc, 'g-fig3 g-cuad') + cuadricula(qc, 4) + g.txt(cen(qc), '16', 'g-num')],
+        [2, g.pol(qa, 'g-fig g-cuad') + cuadricula(qa, 5) + g.txt(cen(qa), '25', 'g-num')],
+        ['final', g.txt(g.enLado(Aa, B, C, -16), '5', 'g-dato')],
+      ], 'Un triángulo rectángulo con un cuadrado apoyado sobre cada lado', '50 5 340 360'),
+      pasos:[
+        P('Elevo cada cateto al cuadrado: es el área del cuadrado apoyado sobre él.', `3${S2} = 9`, `4${S2} = 16`),
+        P('Los sumo: es el área del cuadrado de la hipotenusa.', `a${S2} = 9 + 16`, ' = 25'),
+        P('Busco el número que al cuadrado da 25.', 'a = √25', ' = 5'),
+      ], final:'la hipotenusa mide 5',
+      control:`${A('5 · 5 = 25 ✓')}` },
+    { titulo:'cambio los catetos: 8 y 15', enun:`Los catetos miden ${N('8 y 15')}. ¿Cuánto mide la hipotenusa?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(T815) + g.recto(T815[2], T815[0], T815[1], 16) + rotRect(T815, '8', '15', 'a')],
+        ['final', g.txt(g.enLado(T815[0], T815[1], cen(T815), 36), '= 17', 'g-num')],
+      ], 'Un triángulo rectángulo de catetos 8 y 15'),
+      pasos:[
+        P('La hipotenusa al cuadrado es la suma de los cuadrados de los catetos.', `a${S2} = 8${S2} + 15${S2}`, ' = 64 + 225', ' = 289'),
+        P('Busco el número que al cuadrado da 289.', 'a = √289', ' = 17'),
+      ], final:'la hipotenusa mide 17',
+      control:`${A('17 · 17 = 289 ✓')}` },
+    { titulo:'ahora falta un cateto', enun:`La hipotenusa mide 13 y un cateto mide 5. ¿Cuánto mide ${N('el otro cateto')}?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(T135) + g.recto(T135[2], T135[0], T135[1], 16) + rotRect(T135, '5', 'c', '13')],
+        ['final', g.txt([172, 280], '= 12', 'g-num')],
+      ], 'Un triángulo rectángulo de hipotenusa 13 y un cateto 5', '0 0 400 300'),
+      pasos:[
+        P('Despejo el cateto: es la hipotenusa al cuadrado menos el otro cateto al cuadrado.', `c${S2} = 13${S2} − 5${S2}`, ' = 169 − 25', ' = 144'),
+        P('Busco el número que al cuadrado da 144.', 'c = √144', ' = 12'),
+      ], final:'el otro cateto mide 12',
+      control:`${A(`5${S2} + 12${S2} = 25 + 144`, ' = 169', ` = 13${S2} ✓`)}` },
+    { titulo:'al revés: ¿es rectángulo?', enun:'Un triángulo tiene lados de 9, 12 y 15. ¿Es rectángulo?', prosa:true,
+      lienzo:F([
+        [0, g.pol(T91215) + rotRect(T91215, '9', '12', '15')],
+        ['final', g.recto(T91215[2], T91215[0], T91215[1], 16)],
+      ], 'Un triángulo de lados 9, 12 y 15'),
+      pasos:[
+        'Si es rectángulo, la hipotenusa es el lado más largo, 15.',
+        P('Comparo su cuadrado con la suma de los cuadrados de los otros dos.', `9${S2} + 12${S2} = 81 + 144`, ' = 225', `15${S2} = 225`),
+      ], final:`sí es rectángulo: 9${S2} + 12${S2} = 15${S2}` },
+    { titulo:'cambio 15 por 16', enun:`¿Y uno de lados 9, 12 y ${N('16')}?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(T91216) + rotLado(T91216[2], T91216[0], cen(T91216), '9', 18) + rotLado(T91216[0], T91216[1], cen(T91216), '12', 18)
+            + rotLado(T91216[1], T91216[2], cen(T91216), '16', 18)],
+        ['final', angulo(T91216[0], T91216[2], T91216[1], 'más de 90°', 'g-arco', 22, false, 30)],
+      ], 'Un triángulo de lados 9, 12 y 16'),
+      pasos:[
+        'El más largo es 16.',
+        P('Comparo.', `9${S2} + 12${S2} = 225`, `16${S2} = 256`, ['', '225 ≠ 256']),
+      ], final:`no es rectángulo: 9${S2} + 12${S2} ≠ 16${S2}` },
+    ];
+  })(),
+  taller:'lab-pitagoras',
+  preguntas:[
+    { p:'¿Por qué al cuadrado? ¿No alcanza con sumar los lados?',
+      r:'No: 3 + 4 = 7, y la hipotenusa mide 5. Lo que se suma son las <b>áreas</b> de los cuadrados, 9 + 16 = 25, como se ve en la figura del ejemplo 1.' },
+    { p:'¿Sirve para cualquier triángulo?',
+      r:'Solo para los rectángulos. En el de 9, 12 y 16 la cuenta no cierra, y justamente por eso no es rectángulo.' },
+    { p:'¿Qué pasa si la raíz no da exacta?',
+      r:'Se deja la raíz, como √13, o se escribe aproximada con ≈. Casi nunca da exacto: los tríos como 3, 4 y 5 son la excepción.' },
+    { p:'¿Pitágoras lo inventó?',
+      r:'Los egipcios y los babilonios lo usaban mucho antes. A la escuela de Pitágoras se le atribuye la primera demostración, en el siglo VI antes de Cristo.' },
+    { p:'¿Por qué 225 contra 256 dice que el ángulo es de más de 90°?',
+      r:'Porque el lado más largo quedó más largo de lo que sería con un ángulo recto: el ángulo de enfrente tuvo que abrirse más.' },
+  ],
+  notas:`<p>Es el único tema donde se presenta el teorema. El ejemplo 1 lo muestra con áreas y
+      cuadrícula, como la demostración gráfica del libro (pág. 176), pero con los catetos
+      como pide la figura: primero los cuadrados chicos, después el grande.</p>
+    <p>Los ejemplos 4 y 5 son el recíproco: el libro lo pide en el ejercicio 1 de la pág. 177
+      ("analiza si pueden ser los lados de un triángulo rectángulo"). El 5 cambia un solo
+      número y deja de cerrar.</p>
+    <p>En la notación del libro la hipotenusa es <span class="ec"><i>a</i></span> y los catetos
+      <span class="ec"><i>b</i></span> y <span class="ec"><i>c</i></span>. Conviene no cambiarla,
+      porque las fórmulas del libro están escritas así.</p>`
+},
+
+/* ─────────────────────────── 13 ─────────────────────────── */
+{
+  n:13, corto:'Pitágoras en triángulos', titulo:'Teorema de Pitágoras en triángulos especiales', pag:'unidad 9, tema 2 · págs. 178–179',
+  concepto:{
+    formaTxt:'la altura parte al isósceles y al equilátero en dos triángulos rectángulos iguales',
+    puntos:[
+      `En el equilátero de lado ℓ, la altura es <span class="ec"><i>h</i> = ${Q('√3','2')} · ℓ</span>.`,
+      `En el isósceles, <span class="ec"><i>h</i> = √(ℓ${S2} − (<i>b</i> : 2)${S2})</span>, con <i>b</i> la base.`,
+      'Con la altura sale el área: base por altura sobre dos.',
+    ]
+  },
+  ejemplos:(() => {
+    const IS = [[200, 55], [304, 250], [96, 250]];                  // A, C, B
+    const M = [200, 250];
+    const EQ = g.regular(3, 200, 172, 125);
+    const Meq = g.medio(EQ[1], EQ[2]);
+    return [
+    { titulo:'la altura de un isósceles', enun:'Un triángulo isósceles tiene lados iguales de 17 y base de 16. ¿Cuánto mide su altura?', prosa:true,
+      lienzo:F([
+        [0, g.pol(IS) + rotLado(IS[0], IS[1], cen(IS), '17', 18) + rotLado(IS[2], IS[0], cen(IS), '17', 18) + g.txt([200, 282], '16', 'g-dato')],
+        [1, g.seg(IS[0], M, 'g-altura') + g.recto(M, IS[0], IS[1]) + g.txt([148, 268], '8', 'g-num') + g.txt([252, 268], '8', 'g-num')],
+        [2, g.pol([IS[0], IS[1], M], 'g-fig3') + g.txt([214, 160], 'h', 'g-rot')],
+      ], 'Un triángulo isósceles con su altura', '0 0 400 300'),
+      pasos:[
+        P('La altura cae en el medio de la base.', '16 : 2 = 8'),
+        P('Queda un triángulo rectángulo de hipotenusa 17 y un cateto 8: el otro cateto es la altura.',
+          `h${S2} = 17${S2} − 8${S2}`, ' = 289 − 64', ' = 225', 'h = √225', ' = 15'),
+      ], final:'la altura mide 15',
+      control:`${A(`8${S2} + 15${S2} = 64 + 225`, ' = 289', ` = 17${S2} ✓`)}` },
+    { titulo:'con la altura: perímetro y área', enun:`El mismo triángulo, de lados 17, 17 y 16 y altura 15: ¿${N('perímetro y área')}?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(IS) + rotLado(IS[0], IS[1], cen(IS), '17', 18) + rotLado(IS[2], IS[0], cen(IS), '17', 18) + g.txt([200, 282], '16', 'g-dato')
+            + g.seg(IS[0], M, 'g-altura') + g.recto(M, IS[0], IS[1]) + g.txt([214, 160], '15', 'g-dato')],
+        [1, g.pol(IS, 'g-foco')],
+        [2, g.pol(IS, 'g-fig3')],
+      ], 'Un triángulo isósceles de lados 17, 17 y 16 y altura 15', '0 0 400 300'),
+      pasos:[
+        P('El perímetro es la suma de los tres lados.', 'P = 17 + 17 + 16', ' = 50'),
+        P('El área es base por altura sobre dos.', `A = ${Q('16 · 15','2')}`, ' = 120'),
+      ], final:'perímetro 50 y área 120',
+      control:`Las dos mitades son triángulos rectángulos de 8 por 15:${A(`2 · ${Q('8 · 15','2')} = 2 · 60`, ' = 120 ✓')}` },
+    { titulo:'cambio: un equilátero de lado 6', enun:`La altura y el área de un triángulo ${N('equilátero')} de lado 6.`, prosa:true,
+      lienzo:F([
+        [0, g.pol(EQ) + rotLado(EQ[0], EQ[1], cen(EQ), '6', 20) + rotLado(EQ[2], EQ[0], cen(EQ), '6', 20)],
+        [0, rotLado(EQ[1], EQ[2], cen(EQ), '6', 20), 1],
+        [1, g.seg(EQ[0], Meq, 'g-altura') + g.recto(Meq, EQ[0], EQ[1]) + g.txt([Meq[0] - 50, Meq[1] + 16], '3', 'g-num') + g.txt([Meq[0] + 50, Meq[1] + 16], '3', 'g-num')],
+        [2, g.pol([EQ[0], EQ[1], Meq], 'g-fig3') + g.txt([Meq[0] + 14, (EQ[0][1] + Meq[1]) / 2], 'h', 'g-rot')],
+      ], 'Un triángulo equilátero de lado 6 con su altura'),
+      pasos:[
+        P('La altura parte la base en dos pedazos de 3.', '6 : 2 = 3'),
+        P('Pitágoras en una de las mitades.', `h${S2} = 6${S2} − 3${S2}`, ' = 36 − 9', ' = 27', 'h = √27'),
+        P('Saco de la raíz lo que tiene raíz exacta: 27 es 9 · 3.', ' = √(9 · 3)', ' = 3√3', ' ≈ 5,20'),
+        P('El área: base por altura sobre dos.', `A = ${Q('6 · 3√3','2')}`, ' = 9√3', ' ≈ 15,59'),
+      ], final:'altura 3√3 ≈ 5,20 y área 9√3 ≈ 15,59',
+      control:`Con la fórmula del libro:${A(`h = ${Q('√3','2')} · 6`, ' = 3√3 ✓')}` },
+    { titulo:'cambio el lado: 10, con la fórmula', enun:`La altura, el área y el perímetro de un equilátero de lado ${N('10')}.`, prosa:true,
+      lienzo:F([
+        [0, g.pol(EQ) + [0, 1, 2].map(i => rotLado(EQ[i], EQ[(i + 1) % 3], cen(EQ), '10', 20)).join('')],
+        [1, g.seg(EQ[0], Meq, 'g-altura') + g.recto(Meq, EQ[0], EQ[1]) + g.txt([Meq[0] + 14, (EQ[0][1] + Meq[1]) / 2], 'h', 'g-rot')],
+        [2, g.pol(EQ, 'g-fig3')],
+        [3, g.pol(EQ, 'g-foco')],
+      ], 'Un triángulo equilátero de lado 10'),
+      pasos:[
+        P('La altura, con la fórmula del equilátero.', `h = ${Q('√3','2')} · 10`, ' = 5√3', ' ≈ 8,66'),
+        P('El área.', `A = ${Q('10 · 5√3','2')}`, ' = 25√3', ' ≈ 43,30'),
+        P('El perímetro.', 'P = 3 · 10', ' = 30'),
+      ], final:'altura 5√3 ≈ 8,66, área 25√3 ≈ 43,30 y perímetro 30',
+      control:`Por Pitágoras, con la mitad de la base:${A(`(5√3)${S2} + 5${S2} = 75 + 25`, ' = 100', ` = 10${S2} ✓`)}` },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Por qué se usa la mitad de la base y no la base entera?',
+      r:'Porque el triángulo rectángulo que arma la altura tiene como cateto la mitad de la base. La base entera no es lado de ningún triángulo rectángulo.' },
+    { p:'¿De dónde sale √3/2?',
+      r:`De hacer la cuenta con ℓ en vez de un número: <span class="ec"><i>h</i>${S2} = ℓ${S2} − (ℓ : 2)${S2}</span>, que son tres cuartos de ℓ${S2}, y la raíz de eso es √3/2 · ℓ. Es el ejemplo 3 hecho una sola vez para todos los lados.` },
+    { p:'¿Por qué se deja 3√3 y no 5,196…?',
+      r:'Porque 3√3 es exacto y 5,196… no termina nunca. El ≈ es para saber más o menos cuánto es.' },
+    { p:'¿Siempre se puede sacar algo de la raíz?',
+      r:'Solo si adentro hay un factor que es un cuadrado: 27 = 9 · 3, y 9 = 3 · 3. En √13 no hay nada para sacar.' },
+  ],
+  notas:`<p>El libro deduce las fórmulas del equilátero y del isósceles en una tabla (pág. 178).
+      El ejemplo 3 hace la cuenta con números antes de que aparezca la fórmula, y el 4 ya
+      usa la fórmula: conviene no invertir el orden.</p>
+    <p>Sacar factores de una raíz (√27 = 3√3) no figura como tema aparte, pero el libro lo usa
+      (10√3 en la pág. 179). Si el grupo no lo sigue, alcanza con dejar √27 y su
+      aproximación.</p>`
+},
+
+/* ─────────────────────────── 14 ─────────────────────────── */
+{
+  n:14, corto:'Problemas con Pitágoras', titulo:'Aplicación del teorema de Pitágoras a la resolución de problemas', pag:'unidad 9, tema 3 · págs. 180–181',
+  concepto:{
+    serie:[
+      { rot:'1. comprendo', txt:'los datos, la incógnita y un dibujo' },
+      { rot:'2. planeo', txt:'qué fórmula uso' },
+      { rot:'3. ejecuto', txt:'hago la cuenta' },
+      { rot:'4. examino', txt:'controlo y respondo con una frase' },
+    ],
+    puntos:[
+      'Son los cuatro pasos de George Pólya, un matemático húngaro que estudió cómo se resuelven problemas.',
+      'Lo difícil casi siempre es el paso 1: encontrar el triángulo rectángulo escondido en la situación.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la escalera', prosa:true, fija:1,
+      enun:'«Una escalera de 10 m está apoyada en una pared, con el pie a 6 m de la pared. ¿A qué altura llega?»',
+      lienzo:F([
+        [0, g.seg([40, 260], [360, 260], 'g-linea') + g.seg([320, 260], [320, 30], 'g-linea')],
+        [1, g.seg([176, 260], [320, 68], 'g-roja') + g.recto([320, 260], [320, 68], [176, 260], 16)
+            + g.txt([238, 150], '10', 'g-dato') + g.txt([248, 280], '6', 'g-dato') + g.txt([340, 164], 'h', 'g-rot')],
+        ['final', g.txt([350, 190], '= 8', 'g-num')],
+      ], 'Una escalera apoyada en una pared'),
+      pasos:[
+        'Comprendo: la pared, el piso y la escalera forman un triángulo rectángulo. La escalera es la hipotenusa; los 6 m del piso, un cateto.',
+        P('Planeo: la altura es un cateto, así que resto los cuadrados.', `h = √(10${S2} − 6${S2})`),
+        P('Ejecuto.', ' = √(100 − 36)', ' = √64', ' = 8'),
+      ], final:'la escalera llega a 8 m de altura',
+      control:`${A(`6${S2} + 8${S2} = 36 + 64`, ' = 100', ` = 10${S2} ✓`)}` },
+    { titulo:'la sombra de un poste', prosa:true, fija:1,
+      enun:'«Un poste de 12 m da una sombra de 9 m. ¿Qué distancia hay desde la punta de la sombra hasta la punta del poste?»',
+      lienzo:F([
+        [0, g.seg([30, 250], [370, 250], 'g-linea') + `<line class="g-varilla g-v3" x1="100" y1="250" x2="100" y2="34"/>`],
+        [1, g.seg([100, 250], [262, 250], 'g-verde') + g.seg([262, 250], [100, 34], 'g-diag') + g.recto([100, 250], [100, 34], [262, 250], 16)
+            + g.txt([80, 142], '12', 'g-dato') + g.txt([181, 272], '9', 'g-dato')],
+        ['final', g.txt([205, 128], '15', 'g-num')],
+      ], 'Un poste con su sombra'),
+      pasos:[
+        'Comprendo: el poste y la sombra son los catetos; la distancia que piden, de punta a punta, es la hipotenusa.',
+        P('Planeo: la hipotenusa es la raíz de la suma de los cuadrados.', `d = √(12${S2} + 9${S2})`),
+        P('Ejecuto.', ' = √(144 + 81)', ' = √225', ' = 15'),
+      ], final:'hay 15 m de punta a punta',
+      control:`${A(`9${S2} + 12${S2} = 81 + 144`, ' = 225', ` = 15${S2} ✓`)}` },
+    { titulo:'el barrilete', prosa:true, fija:1,
+      enun:'«Tomás remonta un barrilete con 25 m de hilo bien tirante. El barrilete está justo encima de un árbol que queda a 7 m de Tomás. ¿A qué altura vuela?»',
+      lienzo:F([
+        [0, g.seg([30, 262], [370, 262], 'g-linea') + g.pto([130, 262], 'g-vert', 6) + g.txt([130, 284], 'Tomás', 'g-dato')
+            + `<circle cx="200" cy="232" r="18" class="g-fig3"/>` + g.seg([200, 262], [200, 250], 'g-linea')],
+        [1, g.seg([130, 262], [200, 22], 'g-roja') + `<polygon class="g-fig2" points="200,8 212,22 200,40 188,22"/>`
+            + g.seg([200, 22], [200, 262], 'g-aux') + g.recto([200, 262], [200, 22], [130, 262], 12)
+            + g.txt([144, 130], '25', 'g-dato') + g.txt([165, 250], '7', 'g-dato') + g.txt([218, 140], 'h', 'g-rot')],
+        ['final', g.txt([252, 140], '= 24', 'g-num')],
+      ], 'Un barrilete sobre un árbol'),
+      pasos:[
+        'Comprendo: el hilo es la hipotenusa; los 7 m del piso, un cateto; la altura, el otro cateto.',
+        P('Planeo: la altura es un cateto.', `h = √(25${S2} − 7${S2})`),
+        P('Ejecuto.', ' = √(625 − 49)', ' = √576', ' = 24'),
+      ], final:'el barrilete vuela a 24 m de altura',
+      control:`${A(`7${S2} + 24${S2} = 49 + 576`, ' = 625', ` = 25${S2} ✓`)}` },
+    { titulo:'con una ecuación: los dos catetos iguales', prosa:true, fija:1,
+      enun:'«Los dos catetos de un triángulo rectángulo son iguales, y la hipotenusa mide 10 cm. ¿Cuánto mide cada cateto?»',
+      lienzo:F([
+        [0, g.pol([[120, 40], [320, 240], [120, 240]]) + g.recto([120, 240], [120, 40], [320, 240], 16) + g.marcas([120, 40], [120, 240]) + g.marcas([120, 240], [320, 240])],
+        [1, g.txt([100, 140], 'x', 'g-rot') + g.txt([220, 262], 'x', 'g-rot') + g.txt([236, 124], '10', 'g-dato')],
+      ], 'Un triángulo rectángulo isósceles de hipotenusa 10'),
+      pasos:[
+        'Comprendo: no conozco ningún cateto, pero sé que son iguales. Los llamo x.',
+        P('Planeo: Pitágoras con x en los dos catetos.', `x${S2} + x${S2} = 10${S2}`),
+        P('Ejecuto, como en la unidad de ecuaciones.', `2x${S2} = 100`, `x${S2} = 50`, 'x = √50'),
+        P('Saco de la raíz lo que se puede: 50 es 25 · 2.', ' = √(25 · 2)', ' = 5√2', ' ≈ 7,07'),
+      ], final:'cada cateto mide 5√2 ≈ 7,07 cm',
+      control:`${A(`(5√2)${S2} + (5√2)${S2} = 50 + 50`, ' = 100', ` = 10${S2} ✓`)}` },
+  ],
+  preguntas:[
+    { p:'¿Cómo me doy cuenta de que hay que usar Pitágoras?',
+      r:'Cuando en la situación hay un ángulo recto escondido: una pared y el piso, un poste y el suelo, el ancho y el largo de algo rectangular.' },
+    { p:'¿Por qué el paso 4 es controlar, si la cuenta ya dio?',
+      r:'Porque la cuenta puede estar bien y el planteo mal: haber puesto la hipotenusa donde iba un cateto. El control con los tres lados lo detecta.' },
+    { p:'¿La hipotenusa siempre es lo que preguntan?',
+      r:'No: en la escalera y el barrilete la hipotenusa es un dato, y lo que se busca es un cateto. Por eso hay que restar.' },
+    { p:'¿Y la altura de Tomás?',
+      r:'La dejamos de lado para simplificar. Si Tomás sostiene el hilo a 1 m del piso, el barrilete vuela a 25 m.' },
+  ],
+  notas:`<p>El libro resuelve con los cuatro pasos de Pólya (pág. 180). Los ejemplos los siguen:
+      el primer paso, comprender, queda escrito arriba mientras se hace el resto.</p>
+    <p>Los tres primeros problemas alternan qué se busca: un cateto, la hipotenusa, un cateto.
+      El error más común es sumar cuando hay que restar, y el control con los tres lados lo
+      detecta siempre.</p>
+    <p>El cuarto problema junta Pitágoras con una ecuación, y termina en una raíz no exacta:
+      es el tipo del ejercicio 1d de la pág. 181.</p>`
+},
+
+/* ─────────────────────────── 15 ─────────────────────────── */
+{
+  n:15, corto:'Pitágoras en cuadriláteros', titulo:'Aplicación del teorema de Pitágoras en los cuadriláteros', pag:'unidad 9, tema 7 · págs. 188–189',
+  concepto:{
+    formaTxt:'una diagonal, o una altura, arma un triángulo rectángulo adentro del cuadrilátero',
+    serie:[
+      { rot:'cuadrado', html:'<span class="ec"><i>d</i> = ℓ√2</span>' },
+      { rot:'rectángulo', html:`<span class="ec"><i>d</i> = √(<i>a</i>${S2} + ℓ${S2})</span>` },
+      { rot:'rombo', txt:'las mitades de las diagonales son los catetos' },
+      { rot:'trapecios', txt:'la altura y lo que sobra de la base mayor' },
+    ],
+    puntos:[
+      'Primero se busca el triángulo rectángulo; después, Pitágoras; al final, perímetro y área.',
+    ]
+  },
+  ejemplos:(() => {
+    const RE = [[80, 240], [320, 240], [320, 60], [80, 60]];
+    const CU = [[110, 240], [290, 240], [290, 60], [110, 60]];
+    const RO = [[80, 150], [200, 240], [320, 150], [200, 60]];
+    const TR = [[60, 74], [170, 74], [302, 250], [60, 250]];            // A, B, C, D
+    const TI = [[160, 90], [240, 90], [360, 250], [40, 250]];
+    return [
+    { titulo:'la diagonal de un rectángulo', enun:'Un rectángulo mide 8 por 6. ¿Cuánto mide su diagonal? ¿Y su perímetro y su área?', prosa:true,
+      lienzo:F([
+        [0, g.pol(RE) + rotLado(RE[0], RE[1], cen(RE), '8', 18) + rotLado(RE[1], RE[2], cen(RE), '6', 18)],
+        [1, g.seg(RE[0], RE[2], 'g-roja') + g.pol([RE[0], RE[1], RE[2]], 'g-fig3') + g.recto(RE[1], RE[0], RE[2], 16) + g.txt([188, 138], 'd', 'g-rot')],
+        [2, g.pol(RE, 'g-foco')],
+      ], 'Un rectángulo de 8 por 6 con su diagonal'),
+      pasos:[
+        P('La diagonal es la hipotenusa de un triángulo rectángulo de catetos 8 y 6.', `d${S2} = 8${S2} + 6${S2}`, ' = 64 + 36', ' = 100', 'd = 10'),
+        P('El perímetro y el área.', 'P = 2 · (8 + 6)', ' = 28', 'A = 8 · 6', ' = 48'),
+      ], final:'diagonal 10, perímetro 28 y área 48',
+      control:'6, 8 y 10 es el 3, 4 y 5 multiplicado por 2 ✓' },
+    { titulo:'cambio: un cuadrado de lado 5', enun:`La diagonal de un ${N('cuadrado')} de lado 5.`, prosa:true,
+      lienzo:F([
+        [0, g.pol(CU) + rotLado(CU[0], CU[1], cen(CU), '5', 18) + rotLado(CU[1], CU[2], cen(CU), '5', 18)],
+        [1, g.seg(CU[0], CU[2], 'g-roja') + g.pol([CU[0], CU[1], CU[2]], 'g-fig3') + g.recto(CU[1], CU[0], CU[2], 16) + g.txt([188, 138], 'd', 'g-rot')],
+      ], 'Un cuadrado de lado 5 con su diagonal'),
+      pasos:[
+        P('La diagonal es la hipotenusa de un triángulo de catetos 5 y 5.', `d${S2} = 5${S2} + 5${S2}`, ' = 50', 'd = √50'),
+        P('50 es 25 · 2.', ' = 5√2', ' ≈ 7,07'),
+      ], final:'la diagonal mide 5√2 ≈ 7,07',
+      control:`Con la fórmula del libro:${A('d = 5 · √2', ' = 5√2 ✓')}` },
+    { titulo:'el rombo de diagonales 8 y 6', enun:'El rombo del tema 10, de diagonales 8 y 6: ¿cuánto miden su lado, su perímetro y su área?', prosa:true,
+      lienzo:F([
+        [0, g.pol(RO) + g.seg(RO[0], RO[2], 'g-aux') + g.seg(RO[1], RO[3], 'g-aux') + g.txt([140, 138], '4', 'g-num') + g.txt([214, 105], '3', 'g-num')],
+        [1, g.pol([RO[0], [200, 150], RO[3]], 'g-fig3') + g.recto([200, 150], RO[0], RO[3], 14) + g.txt([126, 92], 'ℓ', 'g-rot')],
+        [2, g.pol(RO, 'g-foco')],
+      ], 'Un rombo de diagonales 8 y 6'),
+      pasos:[
+        P('Cada triángulo tiene catetos 4 y 3, las mitades de las diagonales. El lado es su hipotenusa.', `ℓ${S2} = 4${S2} + 3${S2}`, ' = 25', 'ℓ = 5'),
+        P('El perímetro y el área, que es diagonal por diagonal sobre dos.', 'P = 4 · 5', ' = 20', `A = ${Q('8 · 6','2')}`, ' = 24'),
+      ], final:'lado 5, perímetro 20 y área 24',
+      control:`Son 4 triángulos de catetos 4 y 3:${A(`4 · ${Q('4 · 3','2')} = 4 · 6`, ' = 24 ✓')}` },
+    { titulo:'un trapecio rectángulo', enun:'Un trapecio rectángulo tiene bases de 11 y 5 y altura 8. ¿Cuánto mide el lado oblicuo? ¿Y su perímetro y su área?', prosa:true,
+      lienzo:F([
+        [0, g.pol(TR) + g.recto(TR[0], TR[3], TR[1]) + g.recto(TR[3], TR[2], TR[0]) + g.txt([115, 56], '5', 'g-dato') + g.txt([181, 274], '11', 'g-dato') + g.txt([40, 162], '8', 'g-dato')],
+        [1, g.seg(TR[1], [170, 250], 'g-altura') + g.pol([TR[1], TR[2], [170, 250]], 'g-fig3') + g.txt([236, 238], '6', 'g-num') + g.recto([170, 250], TR[1], TR[2], 14)],
+        [2, g.txt([256, 150], 'ℓ', 'g-rot')],
+        [3, g.pol(TR, 'g-foco')],
+      ], 'Un trapecio rectángulo de bases 11 y 5 y altura 8'),
+      pasos:[
+        P('Desde B bajo la altura: queda un triángulo rectángulo de catetos 8 y lo que sobra de la base mayor.', '11 − 5 = 6'),
+        P('El lado oblicuo es su hipotenusa.', `ℓ${S2} = 8${S2} + 6${S2}`, ' = 100', 'ℓ = 10'),
+        P('El perímetro y el área.', 'P = 11 + 5 + 8 + 10', ' = 34', `A = ${Q('(11 + 5) · 8','2')}`, ' = 64'),
+      ], final:'lado oblicuo 10, perímetro 34 y área 64',
+      control:`Un rectángulo de 5 por 8 y un triángulo de 6 por 8:${A(`5 · 8 + ${Q('6 · 8','2')} = 40 + 24`, ' = 64 ✓')}` },
+    { titulo:'cambio: un trapecio isósceles', enun:`Un trapecio ${N('isósceles')} tiene bases de 16 y 4 y lados de 10. ¿Su altura, su perímetro y su área?`, prosa:true,
+      lienzo:F([
+        [0, g.pol(TI) + g.txt([200, 72], '4', 'g-dato') + g.txt([200, 274], '16', 'g-dato') + rotLado(TI[3], TI[0], cen(TI), '10', 16) + rotLado(TI[1], TI[2], cen(TI), '10', 16)],
+        [1, g.seg(TI[0], [160, 250], 'g-altura') + g.seg(TI[1], [240, 250], 'g-altura') + g.txt([100, 238], '6', 'g-num') + g.txt([300, 238], '6', 'g-num')],
+        [2, g.pol([TI[3], TI[0], [160, 250]], 'g-fig3') + g.recto([160, 250], TI[0], TI[3], 14) + g.txt([174, 170], 'h', 'g-rot')],
+        [3, g.pol(TI, 'g-foco')],
+      ], 'Un trapecio isósceles de bases 16 y 4 y lados 10'),
+      pasos:[
+        P('Bajo las dos alturas: a cada lado sobra un pedazo igual.', '(16 − 4) : 2 = 6'),
+        P('La altura es un cateto; el lado, 10, la hipotenusa.', `h${S2} = 10${S2} − 6${S2}`, ' = 64', 'h = 8'),
+        P('El perímetro y el área.', 'P = 16 + 4 + 10 + 10', ' = 40', `A = ${Q('(16 + 4) · 8','2')}`, ' = 80'),
+      ], final:'altura 8, perímetro 40 y área 80',
+      control:`Un rectángulo de 4 por 8 y dos triángulos de 6 por 8:${A(`4 · 8 + 2 · ${Q('6 · 8','2')} = 32 + 48`, ' = 80 ✓')}` },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Por qué la diagonal del cuadrado es el lado por √2?',
+      r:`Porque <span class="ec"><i>d</i>${S2} = ℓ${S2} + ℓ${S2}</span>, que son 2ℓ${S2}, y la raíz de eso es ℓ√2. Es el ejemplo 2 hecho para cualquier lado.` },
+    { p:'Las pulgadas de un televisor, ¿son el ancho?',
+      r:'No: son la diagonal de la pantalla. Una de 32 pulgadas no mide 32 de ancho ni de alto; su diagonal es la hipotenusa de un triángulo de catetos ancho y alto.' },
+    { p:'¿Por qué el área del rombo es diagonal por diagonal sobre dos?',
+      r:'Porque el rombo son cuatro triángulos de catetos D : 2 y d : 2. Juntos dan exactamente la mitad del rectángulo de D por d.' },
+    { p:'¿Siempre hay que bajar la altura en un trapecio?',
+      r:'Si no te dan la altura o el lado oblicuo, sí: es la única manera de armar un triángulo rectángulo adentro.' },
+  ],
+  notas:`<p>El libro resume en una tabla cada cuadrilátero con sus fórmulas (pág. 188). Los
+      ejemplos llegan a cada fórmula armando primero el triángulo rectángulo, que es lo que
+      se recuerda cuando la fórmula se olvida.</p>
+    <p>El ejemplo 3 retoma el rombo del tema 10, que quedó con la pregunta de cuánto mide su
+      lado: vale la pena volver a esa diapositiva.</p>
+    <p>Los controles de los ejemplos 4 y 5 calculan el área cortando el trapecio en un
+      rectángulo y triángulos: otro camino que no usa la fórmula.</p>`
+},
 ];
 
-/* ——— navegación ——— */
-document.getElementById('nav').innerHTML = PASOS.map(p =>
-  `<a class="chip" href="#paso${p.n}">${p.n}. ${p.corto}</a>`).join('');
+/* ─────────────────────── el desafío ─────────────────────── */
+const DESAFIO = (() => {
+  const O = [200, 152];
+  const m01 = g.medio(P6[0], P6[1]);
+  return {
+    titulo:'El área de un hexágono regular', prosa:true,
+    enun:'¿Cuál es el área de un hexágono regular de lado 4?',
+    lienzo:F([
+      [0, g.pol(P6) + [0, 1, 2, 3, 4, 5].map(i => rotLado(P6[i], P6[(i + 1) % 6], O, '4', 16)).join('')],
+      [1, P6.map(p => g.seg(O, p, 'g-linea')).join('') + g.pto(O, 'g-vert', 4)],
+      [2, g.pol([O, P6[0], P6[1]], 'g-fig3') + g.seg(O, m01, 'g-altura') + g.recto(m01, O, P6[1], 10) + g.txt([m01[0] - 22, m01[1] + 24], 'h', 'g-rot')],
+      ['final', P6.map((p, i) => g.pol([O, p, P6[(i + 1) % 6]], i % 2 ? 'g-fig2' : 'g-fig3')).join('')],
+    ], 'Un hexágono regular partido en seis triángulos equiláteros'),
+    pasos:[
+      'Uno el centro con los seis vértices: quedan 6 triángulos equiláteros de lado 4.',
+      P('La altura de uno, por Pitágoras, con la mitad del lado.', `h${S2} = 4${S2} − 2${S2}`, ' = 12', 'h = √12', ' = 2√3'),
+      P('El área de un triángulo.', `${Q('4 · 2√3','2')} = 4√3`),
+      P('Y son seis.', '6 · 4√3 = 24√3', ' ≈ 41,57'),
+    ],
+    final:'el área del hexágono es 24√3 ≈ 41,57',
+    control:`Cortado de otra manera, son dos trapecios isósceles de bases 8 y 4 y altura 2√3:${A(`2 · ${Q('(8 + 4) · 2√3','2')} = 2 · 12√3`, ' = 24√3 ✓')}`,
+    preguntas:[
+      { p:'¿Por qué los seis triángulos son equiláteros?',
+        r:'Porque los ángulos del centro suman 360° y son seis iguales: 60° cada uno. Y los otros dos ángulos de cada triángulo son iguales entre sí, así que también miden 60°.' },
+      { p:'¿Hay una fórmula para el área de un regular?',
+        r:'Sí: perímetro por apotema sobre dos. La apotema es la altura de cada triángulo. Es "base por altura sobre dos" repetido seis veces.' },
+    ],
+    notas:`<p>El desafío junta la unidad entera: cortar en triángulos (tema 1), triángulos
+        equiláteros (tema 5), Pitágoras en el equilátero (tema 13) y el área.</p>
+      <p>El control lo corta de otra manera, en dos trapecios isósceles: el mismo resultado
+        por otro camino. Si alguien propone un rectángulo con cuatro triangulitos, también
+        funciona.</p>`
+  };
+})();
 
-/* ——— laboratorios ——— */
+/* ─────────────────── la pregunta de arranque ─────────────────── */
+const PREGUNTA_INICIAL = (() => {
+  const C = [100, 240], B = [300, 240], Aa = [100, 90];
+  const nudos = [];
+  for (let i = 0; i < 4; i++) nudos.push([C[0] + i * 50, 240]);
+  for (let i = 0; i < 5; i++) nudos.push([B[0] - i * 40, B[1] - i * 30]);
+  for (let i = 0; i < 3; i++) nudos.push([100, 90 + i * 50]);
+  return {
+    prosa:true, fija:1,
+    enun:'«Con una soga de 12 nudos, a distancias iguales, ¿cómo marca un albañil una esquina perfectamente recta?»',
+    lienzo:F([
+      [0, nudos.map(p => g.pto(p, 'g-vert', 5)).join('')],
+      [1, g.pol([Aa, B, C], 'g-fig hueco') + g.txt([72, 165], '3', 'g-dato') + g.txt([200, 266], '4', 'g-dato') + g.txt([214, 150], '5', 'g-dato')],
+      ['final', g.recto(C, Aa, B, 18)],
+    ], 'Una soga de doce nudos armada como triángulo de 3, 4 y 5'),
+    pasos:[
+      'Con los 12 tramos arma un triángulo de 3, 4 y 5 tramos.',
+      P('Los tramos alcanzan justo.', '3 + 4 + 5 = 12'),
+      P('Y 3, 4 y 5 cumplen la cuenta de Pitágoras, que vamos a ver en la unidad.', `3${S2} + 4${S2} = 9 + 16`, ' = 25', ` = 5${S2}`),
+    ],
+    final:'la esquina entre el lado de 3 y el de 4 queda recta',
+  };
+})();
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Por qué el triángulo es tan importante?',
+      r:'Porque es el único polígono que no se deforma si lo empujás: por eso los techos y los puentes están hechos de triángulos. Y cualquier otro polígono se puede cortar en triángulos.' },
+    { p:'¿Para qué sirve Pitágoras fuera de la escuela?',
+      r:'Para medir lo que no se puede medir directo: la altura a la que llega una escalera, la diagonal de un terreno, las pulgadas de una pantalla.' },
+  ],
+  notas:`<p><b>Esta es la unidad 8 y la 9 del libro fusionadas.</b> El corte del libro deja a
+      Pitágoras en el medio: aparece recién en la segunda unidad, separado de los
+      triángulos por una evaluación y un Taller de Siembra.</p>
+    <p>La clase sigue los quince temas del libro, con un solo cambio de orden: los tres temas
+      de clasificación de cuadriláteros (unidad 9, temas 4 a 6) van antes que Pitágoras
+      (unidad 9, tema 1). Así el teorema se presenta una sola vez, en el tema 12, y se aplica
+      enseguida dos veces seguidas: a triángulos (13 y 14) y a cuadriláteros (15).</p>
+    <p>Cada ejemplo tiene su figura a la derecha, que se va armando con cada paso: primero el
+      polígono, después lo que se marca, y al final la respuesta. Las cuentas, cuando las
+      hay, se escriben debajo de la figura.</p>
+    <p>El hilo de toda la unidad es <b>cortar en triángulos</b>: de ahí salen las diagonales,
+      la suma de los ángulos, las alturas y las áreas. Si alguien pregunta "¿esta fórmula hay
+      que aprenderla de memoria?", la respuesta de esta unidad es siempre la misma: no, hay
+      que saber cortar.</p>
+    <p>Los laboratorios de GeoGebra del libro (págs. 170 y 190) necesitan la sala de
+      informática; los tres talleres de esta página (polígonos, varillas y Pitágoras) hacen
+      algo parecido sin salir del aula.</p>`
+};
+
+/* ═══ los talleres ═══ */
 const LABS = {
 'lab-poligono':`
 <div class="lab">
@@ -459,78 +1823,16 @@ const LABS = {
 </div>`
 };
 
-document.getElementById('pasos').innerHTML = PASOS.map(p => `
-<article class="caso" id="paso${p.n}">
-  <div class="caso-cab">
-    <div class="numero">${p.n}</div>
-    <div class="caso-tit">
-      <h3>${p.nombre}</h3>
-      <div class="paginas">${p.pag}</div>
-    </div>
-  </div>
+/* ═══ el armado ═══
+   La plantilla, los pasos, las figuras y el movimiento están en
+   assets/pizarra.js: esta página trae solo sus datos. */
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'7mo', temasLibro:15 });
+</script>
 
-  ${p.serie ? `
-  <div class="serie">
-    ${p.serie.map(c => `<div class="caja">
-      <span class="caja-rot">${c.rot}</span>${c.ec ? `<span class="ec">${c.ec}</span>` : `<span class="caja-txt">${c.txt}</span>`}
-    </div>`).join('')}
-  </div>` : `
-  <div class="forma">
-    <span class="rotulo">La idea</span>
-    ${p.forma ? `<span class="ec">${p.forma}</span>` : `<span class="forma-txt">${p.formaTxt}</span>`}
-  </div>`}
-
-  <div class="ejemplo" data-bloque="${p.n}">
-    <div class="ejemplo-cab">
-      <span class="rotulo-chico">Ejemplo — ${p.accion}</span>
-      <button class="boton" type="button" data-accion="revelar" data-bloque="${p.n}">Siguiente paso</button>
-    </div>
-    <div class="enunciado frase">${p.enun}</div>
-    <ol class="pasos" id="pasos${p.n}"></ol>
-  </div>
-
-  <div class="gancho">
-    <p class="gancho-tit">${p.gancho.tit}</p>
-    ${p.gancho.html}
-  </div>
-
-  ${p.lab ? LABS[p.lab] : ''}
-</article>`).join('');
-
-/* ——— revelar pasos ———
-   El atributo NO puede llamarse data-paso: el panel de proyección usa ese
-   nombre para las flechas de diapositiva y un clic acá saltaría de lámina. */
-const estado = {};
-PASOS.forEach(p => { estado[p.n] = 0; });
-
-function siguientePaso(n){
-  const p = PASOS.find(k => k.n === n);
-  const total = p.pasos.length + 1;
-  if (estado[n] >= total) return;
-  const i = estado[n];
-  const ultimo = (i === p.pasos.length);
-  const li = document.createElement('li');
-  if (ultimo) li.className = 'final';
-  li.innerHTML = ultimo
-    ? `<span class="n">=</span><span class="t"><span class="ec">${p.final}</span></span>`
-    : `<span class="n">${i+1}</span><span class="t">${p.pasos[i]}</span>`;
-  document.getElementById('pasos' + n).appendChild(li);
-  estado[n] = i + 1;
-  if (estado[n] >= total){
-    const b = document.querySelector(`[data-accion="revelar"][data-bloque="${n}"]`);
-    b.disabled = true; b.textContent = 'Completo';
-  }
-}
-
-document.addEventListener('click', ev => {
-  const b = ev.target.closest('[data-accion="revelar"]');
-  if (b) siguientePaso(Number(b.dataset.bloque));
-});
-
-/* ═══ números: raíces exactas, no decimales ═══
+<script>
+/* ═══ los talleres: raíces exactas, no decimales ═══
    √27 se muestra como 3√3 y no como 5,196. La aproximación aparece al
    lado, con ≈, solo cuando la raíz no es exacta. */
-const mcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a || 1; };
 
 function raiz(n){
   // saca del radical todo lo que se pueda: devuelve [afuera, adentro]
@@ -711,5 +2013,6 @@ dibujaVarillas();
 
 <script src="../../assets/proyeccion.js" defer></script>
 <script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
 </body>
 </html>

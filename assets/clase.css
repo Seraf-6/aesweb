@@ -595,8 +595,12 @@ body[data-solo="1"] .envoltura{padding-bottom:96px}
 body[data-solo="1"] .pizarra .enunciado.frase{font-size:1.05em}
 @media (max-width:760px){.pizarra-grid{grid-template-columns:minmax(0,1fr)}}
 .arranque{margin-top:22px}
-.pizarra-trabajo .lamina,.pizarra-fija .lamina{font-size:1.12em}
+.pizarra-trabajo .lamina{font-size:1.12em}
 .pizarra-trabajo .lamina .alineado,.pizarra-fija .lamina .alineado{font-size:1em}
+/* lo fijo es para recordar, no para leer de nuevo: más chico */
+.pizarra-fija .lamina{padding:7px 12px}
+.lamina.control,.lamina.final{display:flex; gap:10px; align-items:baseline}
+.lamina.control .t{flex:1 1 auto; min-width:0}
 
 /* el cuaderno: la resolución entera, con los = en una columna */
 .cuaderno{
@@ -624,6 +628,43 @@ body[data-solo="1"] .cu-rot{font-size:.55em}
 .rotulo-punto{fill:var(--tinta); font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
   paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
 .recta-anterior{stroke:var(--lapiz); stroke-width:2; stroke-dasharray:6 6; opacity:.7; fill:none}
+
+/* un ángulo con sombrero: B̂ (sombrero() de pizarra.js) */
+.ang{display:inline-block; position:relative; font-style:normal}
+.ang::after{content:"\02C6"; position:absolute; left:0; right:0; top:-.3em; text-align:center;
+  font-style:normal; line-height:1}
+
+/* la figura que se arma por capas (lienzo 'figura' de pizarra.js) */
+.pizarra-der .figura-lienzo svg{max-height:calc(100vh - 175px)}
+.capa-nueva{animation:funde .45s ease both}
+.capa-nueva .traza{stroke-dasharray:1; stroke-dashoffset:1; animation:traza .9s cubic-bezier(.65,0,.35,1) forwards .1s}
+.capa-nueva .pop{transform-box:fill-box; transform-origin:center; animation:pop .5s cubic-bezier(.3,1.6,.5,1) both .25s}
+.capa-nueva .pop-suave{transform-box:fill-box; transform-origin:center; animation:aterriza .5s ease both .2s}
+.g-fig{fill:var(--acento2-suave); stroke:var(--tinta); stroke-width:2.5; stroke-linejoin:round}
+.g-fig.hueco{fill:none}
+.g-fig2{fill:var(--dest-suave); stroke:var(--tinta); stroke-width:2.5; stroke-linejoin:round}
+.g-fig3{fill:var(--acento-suave); stroke:var(--tinta); stroke-width:2.5; stroke-linejoin:round}
+.g-foco{fill:none; stroke:var(--acento); stroke-width:5; stroke-linejoin:round; stroke-linecap:round}
+.g-linea{stroke:var(--tinta); stroke-width:2.2; fill:none; stroke-linecap:round}
+.g-diag{stroke:var(--acento); stroke-width:2.2; stroke-dasharray:8 6; fill:none}
+.g-aux{stroke:var(--lapiz); stroke-width:1.6; stroke-dasharray:5 5; fill:none}
+.g-altura{stroke:var(--acento2); stroke-width:2.4; stroke-dasharray:7 5; fill:none}
+.g-roja{stroke:var(--acento); stroke-width:3; fill:none; stroke-linecap:round}
+.g-verde{stroke:var(--acento2); stroke-width:3; fill:none; stroke-linecap:round}
+.g-circ{fill:none; stroke:var(--dest); stroke-width:2.2}
+.g-vert{fill:var(--tinta)}
+.g-pto{fill:var(--acento); stroke:var(--papel); stroke-width:2}
+.g-pto2{fill:var(--acento2); stroke:var(--papel); stroke-width:2}
+.g-rot,.g-num,.g-dato{paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
+.g-rot{fill:var(--tinta); font-family:var(--serif); font-style:italic; font-weight:700; font-size:18px}
+.g-num{fill:var(--acento); font-family:var(--mono); font-size:15px; font-weight:600}
+.g-dato{fill:var(--tinta); font-family:var(--mono); font-size:15px; font-weight:600}
+.g-arco{fill:var(--dest-suave); stroke:var(--dest); stroke-width:2}
+.g-arco2{fill:var(--acento2-suave); stroke:var(--acento2); stroke-width:2}
+.g-arco3{fill:var(--acento-suave); stroke:var(--acento); stroke-width:2}
+.g-recto{fill:none; stroke:var(--tinta); stroke-width:1.8}
+.g-marca{stroke:var(--tinta); stroke-width:2}
+.g-cuad{fill-opacity:.7}
 
 /* lo que antes vivía en cada página */
 .caja-txt{font-family:var(--serif); font-size:1.08em; line-height:1.3}
@@ -685,7 +726,8 @@ body[data-solo="1"] .t-mini th{font-size:1em}
 
 @media (prefers-reduced-motion:reduce){
   .recien *,.recien > *,.fila-nueva td,.aparece,.aparece-rot,.onda,.guia,.marca-x,
-  .cuaderno *{animation:none!important}
+  .cuaderno *,.capa-nueva,.capa-nueva *{animation:none!important}
+  .capa-nueva .traza{stroke-dasharray:none; stroke-dashoffset:0}
   .dibuja{animation:none; stroke-dasharray:none; stroke-dashoffset:0}
   .onda{display:none}
   .pasos li{transition:none}
