@@ -156,9 +156,13 @@ window.CLASE = { secciones: [
 y marca cada bloque con `data-tema="3"` (la introducción es `unidad`, el
 desafío `desafio`).
 
-**Los pasos van y vuelven.** Cada ejemplo tiene "← Anterior", un contador
-("2 / 4") y "Siguiente →". Al llegar al final se puede volver: nunca queda un
-botón muerto.
+**Los pasos van y vuelven, y los botones viajan con la clase.** Cada ejemplo
+tiene "← Anterior", un contador ("paso 2 de 4") y "Siguiente →". Al llegar al
+final se puede volver: nunca queda un botón muerto. Los tres van en la
+esquina inferior derecha de la última caja que apareció —el enunciado, si
+todavía no hay pasos— y bajan o suben con cada paso; si quedan fuera de la
+pantalla, la página se corre lo justo para mostrarlos, sin quedar debajo
+de los botones flotantes. En un ejemplo largo nunca quedan allá arriba.
 
 **Lo nuevo va resaltado** con `N()`: lo que se agrega a los dos miembros (el
 `+ 5`, el `· 2`, el m.c.m. adelante de cada término), el valor que se

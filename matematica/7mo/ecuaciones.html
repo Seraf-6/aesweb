@@ -1059,6 +1059,9 @@ document.getElementById('nav').innerHTML =
   TEMAS.map(t => `<a class="chip" href="#t${idT(t)}">${t.puente ? '3 → 4' : t.n + '.'} ${t.corto}</a>`).join('') +
   '<a class="chip" href="#desafio">Desafío</a>';
 
+/* cada juego de botones, a la esquina de su enunciado */
+Object.keys(BLOQUES).forEach(k => ubicaNav(k));
+
 /* las notas y el observador viven en los botones flotantes de assets/clase.js */
 window.CLASE = { secciones: [
   { id:'unidad', titulo:'La unidad', notas:UNIDAD.notas, preguntas:UNIDAD.preguntas },
@@ -1071,6 +1074,23 @@ window.CLASE = { secciones: [
    El atributo NO puede llamarse data-paso: el panel de proyección usa ese
    nombre para las flechas de diapositiva y un clic acá saltaría de lámina. */
 const avance = {};
+
+/* Los botones de los pasos viajan con la clase: van en la esquina inferior
+   derecha de la última caja que apareció (el enunciado, si todavía no hay
+   ningún paso). Así, en un ejemplo largo, nunca quedan allá arriba. */
+function ubicaNav(clave, sinEste = null, seguir = false){
+  const nav = document.querySelector(`[data-nav="${clave}"]`);
+  const lista = document.getElementById('pasos-' + clave);
+  const pasos = [...lista.children].filter(li => li !== sinEste);
+  const caja = pasos.length
+    ? pasos[pasos.length - 1]
+    : lista.closest('.ejemplo-diapo, .desafio, .ejemplo').querySelector('.enunciado');
+  caja.appendChild(nav);
+  nav.classList.add('abajo');
+  // instantáneo y solo lo justo: el desplazamiento suave depende de que la
+  // ventana esté dibujando, y con el proyector en otra pantalla puede no estarlo
+  if (seguir) nav.scrollIntoView({ block:'nearest' });
+}
 
 /* El orden es siempre: los pasos, la respuesta, y después el control. El
    control no puede ir antes: controla una respuesta que todavía no está. */
@@ -1102,6 +1122,7 @@ function siguientePaso(clave){
   document.getElementById('pasos-' + clave).appendChild(li);
   avance[clave] = i + 1;
   if (ej.construye) pintaConstruccion(clave);
+  ubicaNav(clave, null, true);
   if (ej.grafica){
     // la recta aparece con la respuesta; el punto de control, con el control
     if (li.classList.contains('final')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
@@ -1120,6 +1141,7 @@ function pasoAtras(clave){
   const g = ej.grafica && document.getElementById('graf-' + clave);
   if (g && li.classList.contains('final')) g.hidden = true;
   if (g && li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
+  ubicaNav(clave, li, true);
   li.remove();
   avance[clave] = Math.max(0, (avance[clave] || 0) - 1);
   if (ej.construye) pintaConstruccion(clave);

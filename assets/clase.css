@@ -519,3 +519,21 @@ body[data-solo="1"] .alineado{font-size:1.2em}
 /* el control va después de la respuesta, con su propia marca */
 .pasos li.control{background:var(--acento2-suave)}
 .pasos li.control .n{color:var(--acento2); font-weight:700; font-size:1em}
+
+/* ── los botones de los pasos, en la esquina de la última caja ──
+   Heredarían la letra de la caja (el enunciado es grande, cursiva en los
+   problemas; la respuesta, en negrita): se les fija la propia. */
+.pasos li{flex-wrap:wrap}
+.pasos-nav.abajo{
+  flex-basis:100%; display:flex; justify-content:flex-end; align-items:center; gap:8px;
+  margin-top:8px; font-family:var(--sans); font-style:normal; font-weight:400;
+  font-size:17px; line-height:1.2; white-space:normal}
+.enunciado .pasos-nav.abajo{margin-top:12px}
+body[data-solo="1"] .pasos-nav.abajo{font-size:21px}
+/* al seguirlos con scroll, que no queden debajo de los botones flotantes
+   de abajo (Proyección, y las flechas del modo una a la vez) */
+.pasos-nav.abajo{scroll-margin-bottom:80px}
+/* en el modo una a la vez la página termina donde termina la diapositiva:
+   sin este espacio, los botones de los pasos no pueden subir por encima de
+   los botones flotantes de abajo */
+body[data-solo="1"] .envoltura{padding-bottom:96px}
