@@ -26,7 +26,15 @@ body[data-solo="1"] .forma-txt{font-size:1.4em}
 .mini-grafica svg{display:block; width:100%; height:auto}
 .punto-tabla{fill:var(--punto); stroke:var(--papel); stroke-width:2}
 .punto-control{fill:var(--papel); stroke:var(--punto); stroke-width:2.5}
-.rotulo-punto{fill:var(--tinta); font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600}
+.rotulo-punto{fill:var(--tinta); font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+  paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
+.mini-grafica.construye .tabla-valores{margin:0 0 10px}
+/* los pasos son largos: la tabla y el plano acompañan mientras se baja, para
+   que el punto nuevo y la recta se vean en el momento en que aparecen */
+.mini-grafica.construye{position:sticky; top:64px; align-self:start}
+.tabla-vacia{color:var(--lapiz); font-style:italic}
+/* un par no se corta entre renglones */
+.pasos li .t b{white-space:nowrap}
 
 .taller{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,260px); gap:18px; align-items:start}
 @media (max-width:720px){.taller{grid-template-columns:minmax(0,1fr)}}
@@ -38,6 +46,23 @@ body[data-solo="1"] .forma-txt{font-size:1.4em}
 
 .final-txt{font-family:var(--serif); font-weight:700; color:var(--acento); line-height:1.35}
 body[data-solo="1"] .final-txt{font-size:1.35em}
+
+.perilla{display:flex; align-items:center; gap:6px; margin-bottom:8px}
+.perilla-rot{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--lapiz); min-width:7.5em}
+.perilla input{font-family:var(--mono); font-size:17px; width:4.6em; text-align:center;
+  background:var(--papel); color:var(--tinta); border:1px solid var(--linea-fuerte);
+  border-radius:3px; padding:7px 6px}
+.perilla input:focus-visible{outline:2px solid var(--rojo); outline-offset:1px}
+.modos{display:flex; gap:6px; margin:12px 0 8px}
+.modos .preset[aria-pressed="true"]{background:var(--tinta); color:var(--papel); border-color:var(--tinta)}
+.cambio{margin-top:6px; font-family:var(--sans); font-size:14px; line-height:1.4; color:var(--acento2)}
+.recta-anterior{stroke:var(--lapiz); stroke-width:2; stroke-dasharray:6 6; opacity:.7; fill:none}
+.quitar{background:none; border:none; color:var(--lapiz); cursor:pointer; font-size:16px; line-height:1}
+.quitar:hover{color:var(--acento)}
+.fuera{color:var(--lapiz); font-size:11px}
+body[data-solo="1"] .perilla input{font-size:1em}
+body[data-solo="1"] .cambio{font-size:.8em}
 
 .recorrido{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0}
 .recorrido a{
@@ -200,20 +225,40 @@ const LABS = {
 'lab-grafica':`
 <div class="lab">
   <h4>Probalo: la tabla y la recta</h4>
-  <p class="sub">Escribí la pendiente y la ordenada al origen. La tabla elige los valores de
-    <span class="ec"><i>x</i></span> que dan cuentas sin fracciones, y el tercer punto queda
-    como control.</p>
+  <p class="sub">Tocá <b>+</b> y <b>−</b> para cambiar la pendiente o la ordenada de a una
+    unidad: la recta anterior queda marcada en punteado, para ver cómo se movió. La tabla
+    puede elegir los valores de <span class="ec"><i>x</i></span> sola, o podés escribir
+    los tuyos.</p>
   <div class="taller">
     <div class="lienzo">
       <svg id="svg-recta" viewBox="0 0 400 400" role="img"
         aria-label="La recta de la ecuación y los puntos de la tabla de valores"></svg>
     </div>
     <div>
-      <div class="campos">
-        <div class="campo"><label for="gr-a">Pendiente <i>a</i></label><input id="gr-a" type="text" value="2"></div>
-        <div class="campo"><label for="gr-b">Ordenada <i>b</i></label><input id="gr-b" type="text" value="-1"></div>
+      <div class="perilla">
+        <span class="perilla-rot">pendiente <i>a</i></span>
+        <button class="op" type="button" data-gr="a" data-gr-d="-1" aria-label="Bajar la pendiente">−</button>
+        <input id="gr-a" type="text" value="2" aria-label="Pendiente">
+        <button class="op" type="button" data-gr="a" data-gr-d="1" aria-label="Subir la pendiente">+</button>
+      </div>
+      <div class="perilla">
+        <span class="perilla-rot">ordenada <i>b</i></span>
+        <button class="op" type="button" data-gr="b" data-gr-d="-1" aria-label="Bajar la ordenada">−</button>
+        <input id="gr-b" type="text" value="-1" aria-label="Ordenada al origen">
+        <button class="op" type="button" data-gr="b" data-gr-d="1" aria-label="Subir la ordenada">+</button>
       </div>
       <div class="salida" id="gr-out"></div>
+      <div class="modos" role="group" aria-label="Cómo se eligen los valores de x">
+        <button class="preset" type="button" data-gr-modo="auto" aria-pressed="true">Automático</button>
+        <button class="preset" type="button" data-gr-modo="manual" aria-pressed="false">Manual</button>
+      </div>
+      <div class="campos" id="gr-manual" hidden>
+        <div class="campo"><label for="gr-x">Valor de <i>x</i></label>
+          <input id="gr-x" type="text" placeholder="3, −2, 1/2" autocomplete="off"></div>
+        <button class="boton" type="button" id="gr-agregar">Agregar</button>
+        <button class="preset" type="button" id="gr-borrar">Borrar todo</button>
+      </div>
+      <div id="gr-tabla"></div>
     </div>
   </div>
 </div>`
@@ -479,82 +524,64 @@ const TEMAS = [
 {
   n:'3→4', id:'puente', puente:true, corto:'Ecuación → función', titulo:'De la ecuación a la función',
   concepto:{
-    forma:'y = 2x − 1', formaRot:'todas las preguntas de la forma 2x − 1 = … juntas',
+    forma:'y = 2x − 3', formaRot:'una ecuación lineal con dos variables',
     serie:[
-      { rot:'en el tema 3', txt:'el resultado es un dato fijo, y se busca la x' },
-      { rot:'desde ahora', txt:'se elige la x y se calcula el resultado, que se llama y' },
+      { rot:'en el tema 3', txt:'una incógnita: una sola respuesta' },
+      { rot:'desde ahora', txt:'dos variables: cada x tiene su y' },
     ],
     puntos:[
-      `Una ecuación como ${M('2x − 1 = 5')} tiene <b>una sola</b> respuesta.`,
-      'Si cambia el resultado, cambia la respuesta: cada resultado es una pregunta distinta.',
-      `Si se da vuelta la pregunta —elijo ${M('x')}, calculo cuánto da— aparece una tabla. Al resultado, que cambia, se le pone nombre: ${M('y')}.`,
+      `${M('y = 2x − 3')} pregunta: <b>¿cuánto vale ${M('2x − 3')}?</b> Y eso depende de la ${M('x')}.`,
+      `Por eso no tiene una respuesta, sino una <b>pareja</b> (${M('x')}, ${M('y')}) para cada ${M('x')}.`,
+      'Las parejas se anotan en una tabla, y cada una es un punto del plano.',
     ]
   },
   ejemplos:[
-    { titulo:'la pregunta de siempre', enun:M('2x − 1 = 5'),
+    { titulo:'todos los valores de 2x − 3', enun:M('y = 2x − 3'),
+      construye:{ a:[2, 1], b:[-3, 1], xs:[0, 1, 2, [-1, 2], 5], desde:2, control:3 },
       pasos:[
-        `Sumo 1 a los dos miembros:${A(`2x − 1 ${N('+ 1')} = 5 ${N('+ 1')}`, '2x = 6')}`,
-        `Divido los dos miembros por 2:${A(`2x ${N(': 2')} = 6 ${N(': 2')}`)}`,
-      ], final:'<i>x</i> = 3',
-      control:`Control:${A('2 · 3 − 1 = 5 ✓')}` },
-    { titulo:'cambio solo el resultado: 5 por 7', enun:M(`2x − 1 = ${N('7')}`),
-      pasos:[
-        `Sumo 1:${A(`2x − 1 ${N('+ 1')} = 7 ${N('+ 1')}`, '2x = 8')}`,
-        `Divido por 2:${A(`2x ${N(': 2')} = 8 ${N(': 2')}`)}`,
-      ], final:'<i>x</i> = 4',
-      control:`Control:${A('2 · 4 − 1 = 7 ✓')}` },
-    { titulo:'y otra vez: 7 por 1', enun:M(`2x − 1 = ${N('1')}`),
-      pasos:[
-        `Sumo 1:${A(`2x − 1 ${N('+ 1')} = 1 ${N('+ 1')}`, '2x = 2')}`,
-        `Divido por 2:${A(`2x ${N(': 2')} = 2 ${N(': 2')}`)}`,
-      ], final:'<i>x</i> = 1',
-      control:`Control:${A('2 · 1 − 1 = 1 ✓')}` },
-    { titulo:'doy vuelta la pregunta: elijo la x y calculo', enun:`¿Cuánto da ${M('2x − 1')} para cada ${M('x')}?`,
-      pasos:[
-        `Con ${M('x = 0')}:${A(`2 · ${N('0')} − 1 = −1`)}`,
-        `Con ${M('x = 1')}, 2, 3 y 4:${A(`2 · ${N('1')} − 1 = 1`, `2 · ${N('2')} − 1 = 3`, `2 · ${N('3')} − 1 = 5`, `2 · ${N('4')} − 1 = 7`)}`,
-        'Ahí están las tres respuestas de antes: el 5 sale con la <i>x</i> = 3, el 7 con la 4 y el 1 con la 1.',
-        `El resultado <b>depende</b> de la ${M('x')} que elijo. Para poder hablar de él, le pongo un nombre: ${M('y')}.`,
-      ], final:'<span class="ec"><i>y</i> = 2<i>x</i> − 1</span>: todas las preguntas juntas' },
-    { titulo:'cada pareja es un punto', enun:`Las parejas (${M('x')}, ${M('y')}) de la tabla, en el plano`,
-      grafica:{ a:[2, 1], b:[-1, 1], xs:[0, 1, 2, 3, 4], enFinal:5, destacar:3 },
-      pasos:[
-        'Cada renglón de la tabla es una pareja: <b>(0, −1)</b>, <b>(1, 1)</b>, <b>(2, 3)</b>, <b>(3, 5)</b> y <b>(4, 7)</b>.',
-        `Cada vez que ${M('x')} aumenta 1, ${M('y')} aumenta 2: el mismo escalón, siempre.`,
-      ], final:'los cinco puntos quedan en una recta',
-      control:`El punto (3, 5) es la respuesta del ejemplo 1: resolver ${M('2x − 1 = 5')} era buscar el punto de la recta que está a la altura 5.${A('2 · 3 − 1 = 5 ✓')}` },
+        `¿Qué pregunta esta ecuación? <b>¿Cuáles son todos los valores que puede tomar ${M('2x − 3')}?</b> Cada ${M('x')} da uno, y a ese valor lo llamamos ${M('y')}. Voy armando la tabla.`,
+        `Con ${M('x = 0')}:${A(`y = 2 · ${N('0')} − 3`, ' = −3')}Punto <b>(0, −3)</b>.`,
+        `Con ${M('x = 1')}:${A(`y = 2 · ${N('1')} − 3`, ' = −1')}Punto <b>(1, −1)</b>.`,
+        `Con ${M('x = 2')}:${A(`y = 2 · ${N('2')} − 3`, ' = 1')}Punto <b>(2, 1)</b>.`,
+        `Con <span class="ec"><i>x</i> = −${Q('1','2')}</span>, que no es entero:${A(`y = 2 · (${N('−' + Q('1','2'))}) − 3`, ' = −1 − 3', ' = −4')}Punto <b>(−1/2, −4)</b>: cae entre dos rayas de la cuadrícula.`,
+        `Con ${M('x = 5')}:${A(`y = 2 · ${N('5')} − 3`, ' = 7')}Punto <b>(5, 7)</b>.`,
+      ], final:'todos los puntos quedan sobre una misma recta',
+      control:`Con un valor que no calculé, ${M('x = 3')}:${A(`y = 2 · ${N('3')} − 3`, ' = 3')}El punto <b>(3, 3)</b> cae justo sobre la recta ✓` },
   ],
   preguntas:[
+    { p:'Esperá: ¿cómo es que pasamos de tener puntos a una línea entera?',
+      r:`Porque no son solo esos cinco. <b>Cualquier</b> ${M('x')} tiene su ${M('y')}: también <span class="ec">${Q('1','2')}</span>, 2,5 o 3,7. Si los calculáramos todos, los puntos quedarían tan pegados que formarían la línea. La recta es el dibujo de todas las parejas a la vez; por eso el control con ${M('x = 3')} cae justo encima.` },
     { p:'¿De dónde salió la y?',
-      r:`No es una incógnita nueva que haya que encontrar. Es el nombre que le pusimos al resultado de ${M('2x − 1')}, que cambia según qué ${M('x')} elijas.` },
-    { p:`¿Entonces ${I('y = 2x − 1')} no tiene una sola respuesta?`,
-      r:`No: tiene una para cada ${M('x')}. No es una pregunta, son todas juntas: ${M('2x − 1 = 5')}, ${M('2x − 1 = 7')}, ${M('2x − 1 = 1')} y todas las demás.` },
-    { p:'¿Por qué ahora hay dos letras, si antes había una?',
-      r:'Porque antes el resultado era un dato fijo, el 5. Ahora dejamos que cambie, y a lo que cambia se le pone una letra.' },
+      r:`Es el nombre del valor de ${M('2x − 3')}. Como ese valor cambia según la ${M('x')}, necesita un nombre propio.` },
+    { p:'¿Por qué elegiste −1/2? ¿Se puede usar cualquier número?',
+      r:'Cualquiera. Lo elegimos para mostrar que entre los enteros también hay puntos: (−1/2, −4) cae en la misma recta, entre dos rayas de la cuadrícula.' },
+    { p:`¿Entonces ${I('y = 2x − 3')} no tiene una sola respuesta?`,
+      r:`No: tiene una pareja para cada ${M('x')}, y son infinitas.` },
     { p:'¿Cuál es la x y cuál es la y?',
       r:`La ${M('x')} es la que elegís vos: por eso se llama <b>independiente</b>. La ${M('y')} es la que sale de la cuenta: <b>depende</b> de la ${M('x')}.` },
-    { p:'¿Por qué los puntos quedan en línea recta?',
-      r:`Porque cada vez que ${M('x')} aumenta 1, ${M('y')} aumenta 2, siempre lo mismo. Un escalón igual, repetido una y otra vez, dibuja una recta. Ese 2 es la <b>pendiente</b> del tema 4.` },
-    { p:'¿Dónde está en el dibujo la respuesta del ejemplo 1?',
-      r:`En el punto (3, 5). Resolver ${M('2x − 1 = 5')} es buscar el punto de la recta que está a la altura 5, y leer su ${M('x')}.` },
-    { p:'¿Cualquier ecuación del tema 3 se puede dibujar así?',
-      r:`Las de la forma ${M('ax + b = c')}, sí: el primer miembro es la recta ${M('y = ax + b')} y el segundo, una altura. Las que tienen la ${M('x')} en los dos miembros son dos rectas que se cruzan, y eso lo van a ver en 8.º.` },
+    { p:'¿Por qué los puntos quedan en línea recta y no en una curva?',
+      r:`Porque cada vez que ${M('x')} aumenta 1, ${M('y')} aumenta 2, siempre lo mismo: de −3 a −1, de −1 a 1. Un escalón igual, repetido, dibuja una recta. Ese 2 es la <b>pendiente</b> del tema 4.` },
+    { p:'¿Y dónde quedaron las ecuaciones del tema 3?',
+      r:`Si a ${M('y')} le damos un valor, por ejemplo 5, la ecuación se convierte en ${M('2x − 3 = 5')}, que es del tema 3 y tiene una sola respuesta, ${M('x = 4')}. En el dibujo es el punto de la recta que está a la altura 5, el (4, 5).` },
   ],
   notas:`<p><b>Este bloque no está en el libro.</b> El libro pasa del tema 3 —una incógnita,
       una respuesta— al tema 4 —<span class="ec"><i>y</i> = <i>ax</i> + <i>b</i></span>, dos
-      variables, infinitas parejas— presentando la función lineal como una definición. Para
-      7.º el salto es grande: la <span class="ec"><i>y</i></span> aparece sin explicación, y la
-      <span class="ec"><i>x</i></span> deja de ser "el número que busco" para pasar a ser
-      "cualquier número".</p>
-    <p>Los tres primeros ejemplos son <b>la misma ecuación cambiando solo el resultado</b>,
-      que va resaltado en el enunciado. Después del tercero conviene preguntar: "¿y si en
-      lugar de darles el resultado les doy la <i>x</i>?". El ejemplo 4 es esa vuelta.</p>
-    <p>El momento clave es el último paso del ejemplo 4: la <span class="ec"><i>y</i></span>
-      no se presenta como una incógnita sino como <b>el nombre de un resultado que
-      cambia</b>. Es la idea de dependencia, que en 8.º y en 9.º se va a llamar función.</p>
-    <p>El control del ejemplo 5 cierra el círculo: la respuesta de la primera ecuación es un
-      punto de la recta. Esa idea vuelve en el tema 4, en 8.º con los sistemas y en 9.º con
-      la parábola.</p>
+      variables, infinitas parejas— presentando la función lineal como una definición.</p>
+    <p>El ejemplo arranca directamente por la ecuación de dos variables y por la pregunta
+      que hace: <b>¿cuáles son todos los valores que puede tomar
+      <span class="ec">2<i>x</i> − 3</span>?</b> A la derecha está solo el plano vacío; cada
+      paso agrega un renglón a la tabla y un punto al plano, y la recta aparece recién con
+      la respuesta.</p>
+    <p>El orden de los valores es a propósito: 0, 1 y 2 para que se vea el escalón;
+      <b>−1/2</b> para que aparezca un punto entre las rayas de la cuadrícula, que es la
+      semilla de la respuesta a la primera pregunta del observador; y 5 para salir lejos y
+      volver a caer en la misma recta.</p>
+    <p>La primera pregunta del observador —"¿cómo pasamos de tener puntos a una línea
+      entera?"— es el centro del bloque. Conviene hacerla antes de abrir el control, y
+      recién después mostrar que <span class="ec"><i>x</i> = 3</span>, que nadie calculó,
+      cae justo sobre la recta.</p>
+    <p>La última pregunta del observador cierra con el tema 3: una ecuación con una
+      incógnita es ponerle un valor a la <span class="ec"><i>y</i></span>.</p>
     <p>No tiene ficha propia: la del tema 4 (ficha 5) ya arranca con tablas de valores.</p>`
 },
 
@@ -952,7 +979,10 @@ function bloqueEjemplo(clave, ej, rotulo, cinta){
       ${navPasos(clave, totalPasos(ej))}
     </div>
     <div class="enunciado ${ej.prosa ? 'frase' : ''}">${ej.enun}</div>
-    ${ej.grafica
+    ${ej.construye
+      ? `<div class="con-grafica"><ol class="pasos" id="pasos-${clave}"></ol>
+           <div class="mini-grafica construye" id="graf-${clave}"></div></div>`
+      : ej.grafica
       ? `<div class="con-grafica"><ol class="pasos" id="pasos-${clave}"></ol>
            <div class="mini-grafica" id="graf-${clave}" hidden></div></div>`
       : `<ol class="pasos" id="pasos-${clave}"></ol>`}
@@ -1071,6 +1101,7 @@ function siguientePaso(clave){
   }
   document.getElementById('pasos-' + clave).appendChild(li);
   avance[clave] = i + 1;
+  if (ej.construye) pintaConstruccion(clave);
   if (ej.grafica){
     // la recta aparece con la respuesta; el punto de control, con el control
     if (li.classList.contains('final')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
@@ -1084,11 +1115,14 @@ function pasoAtras(clave){
   const lista = document.getElementById('pasos-' + clave);
   const li = lista.lastElementChild;
   if (!li) return;
-  const g = document.getElementById('graf-' + clave);
+  // la gráfica del tema 4 se esconde o se achica; la construcción del puente
+  // se redibuja entera más abajo, con pintaConstruccion
+  const g = ej.grafica && document.getElementById('graf-' + clave);
   if (g && li.classList.contains('final')) g.hidden = true;
   if (g && li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
   li.remove();
   avance[clave] = Math.max(0, (avance[clave] || 0) - 1);
+  if (ej.construye) pintaConstruccion(clave);
   actualizaNav(clave);
 }
 
@@ -1229,7 +1263,7 @@ document.querySelectorAll('[data-ec]').forEach(b => {
 balArranca(6, -5, 2, 11);
 
 /* ═══ la recta: un lienzo que usan el taller y los ejemplos ═══ */
-function lienzoRecta(a, b, puntos, R = 8, tam = 400, destacado = 2){
+function lienzoRecta(a, b, puntos, R = 8, tam = 400, destacado = 2, conRecta = true, anterior = null){
   const M_ = 22, U = (tam - 2 * M_) / (2 * R);
   const px = u => M_ + (u + R) * U;
   const py = v => M_ + (R - v) * U;
@@ -1246,20 +1280,29 @@ function lienzoRecta(a, b, puntos, R = 8, tam = 400, destacado = 2){
     g += `<text class="rotulo-eje" x="${px(i)}" y="${py(0) + 14}" text-anchor="middle">${i}</text>`;
     g += `<text class="rotulo-eje" x="${px(0) - 6}" y="${py(i) + 4}" text-anchor="end">${i}</text>`;
   }
-  // la recta, recortada al recuadro
-  const av = valor(a), bv = valor(b);
-  const pts = [];
+  // una recta, recortada al recuadro
   const dentro = t => t >= -R - 1e-9 && t <= R + 1e-9;
-  for (const xx of [-R, R]){ const yy = av * xx + bv; if (dentro(yy)) pts.push([xx, yy]); }
-  if (av !== 0) for (const yy of [-R, R]){ const xx = (yy - bv) / av; if (dentro(xx)) pts.push([xx, yy]); }
-  const u = pts.filter((p, i) => pts.findIndex(q => Math.abs(q[0] - p[0]) < 1e-9 && Math.abs(q[1] - p[1]) < 1e-9) === i);
-  if (u.length >= 2) g += `<line class="recta1" x1="${px(u[0][0])}" y1="${py(u[0][1])}" x2="${px(u[1][0])}" y2="${py(u[1][1])}"/>`;
+  const segmento = (av, bv, cls) => {
+    const pts = [];
+    for (const xx of [-R, R]){ const yy = av * xx + bv; if (dentro(yy)) pts.push([xx, yy]); }
+    if (av !== 0) for (const yy of [-R, R]){ const xx = (yy - bv) / av; if (dentro(xx)) pts.push([xx, yy]); }
+    const u = pts.filter((p, i) => pts.findIndex(q => Math.abs(q[0] - p[0]) < 1e-9 && Math.abs(q[1] - p[1]) < 1e-9) === i);
+    return u.length >= 2
+      ? `<line class="${cls}" x1="${px(u[0][0])}" y1="${py(u[0][1])}" x2="${px(u[1][0])}" y2="${py(u[1][1])}"/>` : '';
+  };
+  // la de antes, en punteado, para que se vea cómo se movió
+  if (anterior) g += segmento(valor(anterior.a), valor(anterior.b), 'recta-anterior');
+  if (conRecta) g += segmento(valor(a), valor(b), 'recta1');
   puntos.forEach((p, i) => {
     const X = valor(p[0]), Y = valor(p[1]);
     if (!dentro(X) || !dentro(Y)) return;
     g += `<circle class="${i === destacado ? 'punto-control' : 'punto-tabla'}" cx="${px(X)}" cy="${py(Y)}" r="6.5"/>`;
     const etiqueta = `(${txtPlano(p[0])}, ${txtPlano(p[1])})`;
-    g += `<text class="rotulo-punto" x="${px(X) + 9}" y="${py(Y) - 9}">${etiqueta}</text>`;
+    // abajo del eje, el rótulo va abajo del punto: arriba se pisaría con los
+    // números del eje; cerca del borde derecho, va a la izquierda
+    const yRot = Y < 0 ? py(Y) + 20 : py(Y) - 9;
+    const aLaIzq = X > R - 3;
+    g += `<text class="rotulo-punto" x="${aLaIzq ? px(X) - 9 : px(X) + 9}" y="${yRot}"${aLaIzq ? ' text-anchor="end"' : ''}>${etiqueta}</text>`;
   });
   return g;
 }
@@ -1278,6 +1321,30 @@ function tablaPuntos(a, b){
 }
 
 /* la mini gráfica que aparece al terminar un ejemplo del tema 4 */
+/* El ejemplo que construye su gráfico: el plano está vacío al principio;
+   desde el paso `desde`, cada paso agrega un renglón a la tabla y un punto
+   al plano; con la respuesta aparece la recta, y con el control, el punto
+   que nadie calculó. */
+function pintaConstruccion(clave){
+  const ej = BLOQUES[clave], c = ej.construye;
+  const k = avance[clave] || 0;
+  const a = fr(...c.a), b = fr(...c.b);
+  const X = v => Array.isArray(v) ? fr(v[0], v[1]) : fr(v);
+  const hechos = Math.max(0, Math.min(c.xs.length, k - c.desde + 1));
+  const conRecta = k >= ej.pasos.length + 1;
+  const conControl = k >= ej.pasos.length + 2;
+  const puntos = c.xs.slice(0, hechos).map(v => [X(v), suma(prod(a, X(v)), b)]);
+  if (conControl) puntos.push([fr(c.control), suma(prod(a, fr(c.control)), b)]);
+  const filas = puntos.map((p, i) =>
+    `<tr class="${conControl && i === puntos.length - 1 ? 'control' : ''}"><td>${txt(p[0])}</td><td>${txt(p[1])}</td></tr>`).join('');
+  document.getElementById('graf-' + clave).innerHTML = `
+    <table class="tabla-valores"><tr><th><i>x</i></th><th><i>y</i></th></tr>${filas ||
+      '<tr><td colspan="2" class="tabla-vacia">todavía sin valores</td></tr>'}</table>
+    <div class="lienzo"><svg viewBox="0 0 400 400" role="img"
+      aria-label="El plano cartesiano con los puntos de la tabla">${
+      lienzoRecta(a, b, puntos, 8, 400, conControl ? puntos.length - 1 : -1, conRecta)}</svg></div>`;
+}
+
 function muestraGrafica(clave, g, cuantos = 3){
   const a = fr(...g.a), b = fr(...g.b);
   const puntos = g.xs.slice(0, cuantos).map(x0 => { const X = fr(x0); return [X, suma(prod(a, X), b)]; });
@@ -1287,30 +1354,134 @@ function muestraGrafica(clave, g, cuantos = 3){
   div.hidden = false;
 }
 
-/* el taller */
+/* ═══ el taller de la recta ═══
+   Las perillas cambian la pendiente o la ordenada de a una unidad y dejan
+   la recta anterior en punteado, con un cartel que dice qué pasó. La tabla
+   elige sola los valores de x (automático) o usa los que escribe el
+   docente (manual); en manual, si cambia la recta, las x se quedan y las y
+   se recalculan. */
+const gr = { modo:'auto', xs:[], anterior:null, cambio:'' };
+
+/* acepta 3, −2, 1/2 y también 2,5 */
+function leeNumero(bruto){
+  const r = lee(bruto);
+  if (r && !r.esx) return r.f;
+  const m = String(bruto).trim().replace(/−/g, '-').match(/^(-?)(\d+)[.,](\d+)$/);
+  if (!m) return null;
+  const den = Math.pow(10, m[3].length);
+  const num = Number(m[2]) * den + Number(m[3]);
+  return fr(m[1] ? -num : num, den);
+}
+
+const signo = v => v > 0 ? 1 : v < 0 ? -1 : 0;
+
+function describeCambio(que, antes, ahora, b){
+  if (que === 'b'){
+    return `La ordenada pasó de ${txtPlano(antes)} a ${txtPlano(ahora)}: la recta se corre hacia ` +
+      `${valor(ahora) > valor(antes) ? 'arriba' : 'abajo'}, paralela a la anterior.`;
+  }
+  const va = Math.abs(valor(antes)), vn = Math.abs(valor(ahora));
+  let t = `La pendiente pasó de ${txtPlano(antes)} a ${txtPlano(ahora)}: la recta gira alrededor del punto (0, ${txtPlano(b)})`;
+  if (signo(valor(ahora)) !== signo(valor(antes))){
+    t += valor(ahora) > 0 ? ' y ahora sube.' : valor(ahora) < 0 ? ' y ahora baja.' : ' y ahora es horizontal.';
+  } else {
+    t += vn > va ? ' y queda más empinada.' : vn < va ? ' y queda menos empinada.' : '.';
+  }
+  return t;
+}
+
 function dibujaRecta(){
-  const a = lee(document.getElementById('gr-a').value);
-  const b = lee(document.getElementById('gr-b').value);
+  const A = leeNumero(document.getElementById('gr-a').value);
+  const B = leeNumero(document.getElementById('gr-b').value);
   const out = document.getElementById('gr-out');
-  if (!a || !b || a.esx || b.esx){
+  const tabla = document.getElementById('gr-tabla');
+  if (!A || !B){
     out.innerHTML = '<span class="dim">Escribí dos números: enteros o fracciones, como 2, −1 o −2/3.</span>';
     return;
   }
-  const A = a.f, B = b.f;
-  const puntos = tablaPuntos(A, B);
-  document.getElementById('svg-recta').innerHTML = lienzoRecta(A, B, puntos);
+  const puntos = gr.modo === 'auto'
+    ? tablaPuntos(A, B)
+    : gr.xs.map(x0 => [x0, suma(prod(A, x0), B)]);
+  document.getElementById('svg-recta').innerHTML =
+    lienzoRecta(A, B, puntos, 8, 400, gr.modo === 'auto' ? 2 : -1, true, gr.anterior);
+
   const forma = cero(A) ? txt(B) : lado(A, B);
   const va = valor(A);
-  out.innerHTML = `<div><span class="ec"><i>y</i> = ${forma}</span></div>
-    <table class="tabla-valores">
+  out.innerHTML = `<div><span class="ec"><i>y</i> = ${forma}</span>
+      <span class="dim"> · la recta</span> <span class="ok">${va > 0 ? 'sube' : va < 0 ? 'baja' : 'es horizontal'}</span></div>
+    ${gr.cambio ? `<div class="cambio">${gr.cambio}</div>` : ''}`;
+
+  const fuera = p => Math.abs(valor(p[0])) > 8 || Math.abs(valor(p[1])) > 8;
+  if (gr.modo === 'auto'){
+    tabla.innerHTML = `<table class="tabla-valores">
       <tr><th><i>x</i></th><th><i>y</i></th><th>punto</th></tr>
       ${puntos.map((p, i) => `<tr class="${i === 2 ? 'control' : ''}"><td>${txt(p[0])}</td><td>${txt(p[1])}</td>
         <td>${i === 2 ? 'control' : '(' + txtPlano(p[0]) + ', ' + txtPlano(p[1]) + ')'}</td></tr>`).join('')}
-    </table>
-    <div style="margin-top:8px"><span class="dim">la recta</span>
-      <span class="ok">${va > 0 ? 'sube' : va < 0 ? 'baja' : 'es horizontal'}</span></div>`;
+    </table>`;
+  } else {
+    tabla.innerHTML = puntos.length
+      ? `<table class="tabla-valores">
+          <tr><th><i>x</i></th><th><i>y</i></th><th>punto</th><th></th></tr>
+          ${puntos.map((p, i) => `<tr><td>${txt(p[0])}</td><td>${txt(p[1])}</td>
+            <td>(${txtPlano(p[0])}, ${txtPlano(p[1])})${fuera(p) ? '<br><span class="fuera">fuera del dibujo</span>' : ''}</td>
+            <td><button class="quitar" type="button" data-gr-quitar="${i}" aria-label="Quitar este valor">×</button></td></tr>`).join('')}
+        </table>`
+      : '<p class="dim" style="margin:6px 0 0">Escribí un valor de <i>x</i> y apretá Enter.</p>';
+  }
 }
-['gr-a','gr-b'].forEach(id => document.getElementById(id).addEventListener('input', dibujaRecta));
+
+function agregaX(){
+  const campo = document.getElementById('gr-x');
+  const v = leeNumero(campo.value);
+  if (!v){ campo.select(); return; }
+  if (!gr.xs.some(x0 => igual(x0, v))) gr.xs.push(v);
+  campo.value = '';
+  campo.focus();
+  dibujaRecta();
+}
+
+document.getElementById('gr-agregar').addEventListener('click', agregaX);
+document.getElementById('gr-x').addEventListener('keydown', ev => {
+  if (ev.key === 'Enter'){ ev.preventDefault(); agregaX(); }
+});
+document.getElementById('gr-borrar').addEventListener('click', () => { gr.xs = []; dibujaRecta(); });
+
+document.querySelector('#svg-recta').closest('.lab').addEventListener('click', ev => {
+  const b = ev.target.closest('button');
+  if (!b) return;
+  if (b.dataset.gr){
+    const campo = document.getElementById('gr-' + b.dataset.gr);
+    const antes = leeNumero(campo.value);
+    const B = leeNumero(document.getElementById('gr-b').value);
+    const A = leeNumero(document.getElementById('gr-a').value);
+    if (!antes || !A || !B) return;
+    const ahora = suma(antes, fr(Number(b.dataset.grD)));
+    gr.anterior = { a:A, b:B };
+    gr.cambio = describeCambio(b.dataset.gr, antes, ahora, B);
+    campo.value = txtPlano(ahora);
+    dibujaRecta();
+  }
+  if (b.dataset.grModo){
+    gr.modo = b.dataset.grModo;
+    b.parentElement.querySelectorAll('[data-gr-modo]').forEach(o =>
+      o.setAttribute('aria-pressed', String(o === b)));
+    document.getElementById('gr-manual').hidden = (gr.modo !== 'manual');
+    dibujaRecta();
+    if (gr.modo === 'manual') document.getElementById('gr-x').focus();
+  }
+  if (b.dataset.grQuitar !== undefined){
+    gr.xs.splice(Number(b.dataset.grQuitar), 1);
+    dibujaRecta();
+  }
+});
+
+/* escribiendo a mano no hay "antes": la recta punteada se va */
+['gr-a','gr-b'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+  gr.anterior = null; gr.cambio = '';
+  dibujaRecta();
+}));
+
+Object.keys(BLOQUES).forEach(k => { if (BLOQUES[k].construye) pintaConstruccion(k); });
 dibujaRecta();
 </script>
 

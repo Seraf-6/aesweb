@@ -85,10 +85,15 @@ trabajen los alumnos.
 copiar sus huecos. Si entre un tema y el siguiente hay un salto que un alumno
 observador preguntaría ("¿de dónde salió la y?"), va un bloque puente entre
 los dos, con la misma anatomía de un tema y marcado "no está en el libro".
-En la unidad 7 de 7.º hay uno entre el tema 3 y el 4: la misma ecuación,
-`2x − 1 = …`, con tres resultados distintos, y después se da vuelta la
-pregunta —elijo la x, calculo— y el resultado que cambia pasa a llamarse y.
-En los datos del guion es un tema con `puente:true` y un `id` propio.
+En la unidad 7 de 7.º hay uno entre el tema 3 y el 4: arranca por
+`y = 2x − 3` y por lo que pregunta —¿cuáles son todos los valores que puede
+tomar `2x − 3`?—; la tabla se llena con x = 0, 1, 2, −1/2 y 5 mientras a la
+derecha, en un plano vacío, aparece un punto por paso, y la recta aparece
+recién con la respuesta. La pregunta del observador es "¿cómo pasamos de
+tener puntos a una línea entera?". En los datos del guion es un tema con
+`puente:true` y un `id` propio, y el ejemplo lleva `construye:` en lugar de
+`grafica:`: el plano se ve desde el principio y crece paso a paso, para
+adelante y para atrás.
 
 **Cada tema tiene dos partes en pantalla y dos en botones:**
 
@@ -125,6 +130,13 @@ cada ejemplo también:
 ```
 
 La unidad 7 de 7.º queda en 44 diapositivas.
+
+**Los talleres dejan experimentar, y muestran el cambio.** Si algo se puede
+variar, tiene botones + y − además del campo, y lo anterior queda a la vista:
+en el taller de la recta, la recta de antes queda en punteado y un cartel
+dice qué pasó ("la recta gira alrededor de (0, −1) y queda más empinada").
+Donde el taller elige valores solo, hay también un modo manual para que el
+docente pruebe los que surjan en clase.
 
 **Los botones Observador y Notas** los pone `assets/clase.js`, en fila con el
 del timer. Saben en qué tema está la clase —la diapositiva activa, o lo que

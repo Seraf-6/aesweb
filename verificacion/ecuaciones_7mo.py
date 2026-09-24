@@ -220,34 +220,44 @@ def tema3():
 
 # ══════════════════════════════════════════════════════════════════
 #  Puente entre el tema 3 y el 4 · no está en el libro
-#  La misma expresión, 2x − 1, con tres resultados distintos; después se
-#  da vuelta la pregunta y aparece la y.
+#  y = 2x − 3: ¿cuáles son todos los valores que puede tomar 2x − 3?
+#  La tabla se arma con x = 0, 1, 2, −1/2 y 5; los puntos van al plano
+#  de a uno, y al final aparece la recta. El control es x = 3.
 # ══════════════════════════════════════════════════════════════════
 def puente():
     print('Puente · de la ecuación a la función')
-    res = []
-    for c in (5, 7, 1):
-        v = resuelve(2 * x - 1, sp.Integer(c), lambda t: 2 * t - 1, lambda t, c=c: F(c),
-                     f'puente, 2x − 1 = {c}')
-        res.append((f'2x − 1 = {c}', v))
-        aparece(f'<i>x</i> = {html_num(v)}', f'puente, 2x − 1 = {c}')
-    sin_repetir('puente', res)
+    f = lambda t: 2 * t - 3
+    xs = [F(0), F(1), F(2), F(-1, 2), F(5)]
+    tabla = []
+    for xv in xs:
+        yv = f(xv)
+        # segunda vía: la y que dice sympy, con la ecuación despejada de otra forma
+        otra = sp.solve(sp.Eq(y - 2 * x, -3), y)[0].subs(x, sp.Rational(xv.numerator, xv.denominator))
+        if sp.Rational(yv.numerator, yv.denominator) != otra:
+            mal(f'puente: en x = {xv} la y no da lo mismo por los dos caminos')
+        tabla.append((xv, yv))
+        aparece(f'({html_num(xv)}, {html_num(yv)})', f'puente, x = {xv}')
 
-    # la tabla: elijo x y calculo 2x − 1
-    tabla = [(F(k), 2 * F(k) - 1) for k in range(5)]
-    for xk, yk in tabla:
-        aparece(f'({html_num(xk)}, {html_num(yk)})', 'puente, tabla')
-    # las tres respuestas de antes están en la tabla
-    for rotulo, v in res:
-        c = int(rotulo.split('= ')[1])
-        if (v, F(c)) not in tabla:
-            mal(f'puente: la respuesta de {rotulo} no está en la tabla')
-    # los cinco puntos, alineados: el escalón es siempre el mismo
-    saltos = {tabla[i + 1][1] - tabla[i][1] for i in range(4)}
-    if saltos != {2}:
-        mal(f'puente: los saltos de y no son todos iguales: {saltos}')
-    print('   ' + ' · '.join(f'{r} → x = {v}' for r, v in res) +
-          ' · tabla ' + ', '.join(f'({a}, {b})' for a, b in tabla) + ' · sube de a 2')
+    # todos los puntos en la misma recta, también el de x = −1/2
+    (x0, y0), (x1, y1) = tabla[0], tabla[1]
+    for xv, yv in tabla[2:]:
+        if (yv - y0) * (x1 - x0) != (y1 - y0) * (xv - x0):
+            mal(f'puente: el punto ({xv}, {yv}) no está alineado')
+
+    # el control: un valor que no se calculó cae sobre la recta
+    c = (F(3), f(F(3)))
+    if c != (3, 3):
+        mal(f'puente: el control con x = 3 da {c}, no (3, 3)')
+    aparece('(3, 3)', 'puente, control')
+
+    # la pregunta del observador que vuelve al tema 3: con y = 5, 2x − 3 = 5
+    x5 = frac(sp.solve(sp.Eq(2 * x - 3, 5), x)[0])
+    if f(x5) != 5 or x5 != 4:
+        mal(f'puente: 2x − 3 = 5 no da x = 4 sino {x5}')
+    aparece('(4, 5)', 'puente, observador')
+
+    print('   y = 2x − 3 · tabla ' + ', '.join(f'({a}, {b})' for a, b in tabla) +
+          ' · alineados · control (3, 3) · con y = 5 queda x = 4')
 
 
 # ══════════════════════════════════════════════════════════════════
