@@ -581,14 +581,76 @@ body[data-solo="1"] .envoltura{padding-bottom:96px}
 @keyframes onda{from{transform:scale(1); opacity:.8} to{transform:scale(3.4); opacity:0}}
 
 /* ═══════════════════════════════════════════════════════════════
-   La pizarra: un ejemplo que construye un gráfico
-   Como en el pizarrón: a la izquierda la ecuación, la tabla chica y la
-   cuenta del momento, que se borra y se reescribe; a la derecha, el
-   plano grande. Nada empuja nada: cambia solo lo que tiene que cambiar.
+   La pizarra: todos los ejemplos (assets/pizarra.js)
+   Como en el pizarrón: a la izquierda el enunciado, lo que queda fijo y
+   lo que se dice en este paso, que se borra y se reescribe; a la
+   derecha, grande, lo que se acumula: el cuaderno o el plano. Nada
+   empuja nada: cambia solo lo que tiene que cambiar.
    ═══════════════════════════════════════════════════════════════ */
 .pizarra-grid{display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);
   gap:24px; align-items:start; margin-top:4px}
+.pizarra-grid.sola{grid-template-columns:minmax(0,1fr)}
+/* un problema con palabras necesita más lugar para el enunciado */
+.pizarra-grid.prosa{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+body[data-solo="1"] .pizarra .enunciado.frase{font-size:1.05em}
 @media (max-width:760px){.pizarra-grid{grid-template-columns:minmax(0,1fr)}}
+.arranque{margin-top:22px}
+.pizarra-trabajo .lamina,.pizarra-fija .lamina{font-size:1.12em}
+.pizarra-trabajo .lamina .alineado,.pizarra-fija .lamina .alineado{font-size:1em}
+
+/* el cuaderno: la resolución entera, con los = en una columna */
+.cuaderno{
+  background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:4px;
+  padding:12px 22px 20px; min-height:9em; overflow-x:auto}
+.cu-rot{
+  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz); margin-bottom:10px}
+.cuaderno .alineado{font-size:1.5em; row-gap:.32em; margin:0; overflow:visible}
+.cuaderno .al-rot{font-size:.62em}
+.cuaderno .cu-antes{opacity:.5; transition:opacity .5s ease}
+.cuaderno .cu-atenua{animation:atenua .7s ease both}
+.cuaderno .cu-nueva{animation:escribe .55s cubic-bezier(.22,.8,.24,1) both;
+  animation-delay:calc(.15s + var(--f, 0) * .34s)}
+.cuaderno .cu-nueva .nuevo{animation:indica .7s ease-out both;
+  animation-delay:calc(.4s + var(--f, 0) * .34s)}
+@keyframes atenua{from{opacity:1}}
+body[data-solo="1"] .cuaderno .alineado{font-size:1.55em}
+@media (max-width:520px){.cuaderno{padding:10px 12px 14px} .cuaderno .alineado{font-size:1.12em}}
+body[data-solo="1"] .cu-rot{font-size:.55em}
+
+/* el plano y sus puntos */
+.punto-tabla{fill:var(--punto); stroke:var(--papel); stroke-width:2}
+.punto-control{fill:var(--papel); stroke:var(--punto); stroke-width:2.5}
+.rotulo-punto{fill:var(--tinta); font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+  paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
+.recta-anterior{stroke:var(--lapiz); stroke-width:2; stroke-dasharray:6 6; opacity:.7; fill:none}
+
+/* lo que antes vivía en cada página */
+.caja-txt{font-family:var(--serif); font-size:1.08em; line-height:1.3}
+.forma-txt{font-family:var(--serif); font-size:1.2em; line-height:1.35}
+body[data-solo="1"] .caja-txt{font-size:1.2em}
+body[data-solo="1"] .forma-txt{font-size:1.4em}
+.final-txt{font-family:var(--serif); font-weight:700; color:var(--acento); line-height:1.35}
+body[data-solo="1"] .final-txt{font-size:1.35em}
+/* un par (0, −3) no se corta entre renglones; una frase en negrita, sí */
+.lamina b:not(:has(*)){white-space:nowrap}
+.tabla-valores{border-collapse:collapse; font-family:var(--mono); font-size:14px; width:100%;
+  font-variant-numeric:tabular-nums; margin-top:10px}
+.tabla-valores th,.tabla-valores td{border:1px solid var(--linea-fuerte); padding:5px 8px; text-align:center}
+.tabla-valores th{background:var(--papel-2); color:var(--lapiz); font-weight:600}
+.tabla-valores tr.control td{color:var(--lapiz); font-style:italic}
+.concepto-figura{margin:0 0 16px; max-width:560px}
+.concepto-figura svg{display:block; width:100%; height:auto}
+
+/* el recorrido de la unidad, en la introducción */
+.recorrido{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0}
+.recorrido a{
+  flex:1 1 9em; text-decoration:none; color:inherit; border:1px solid var(--linea-fuerte);
+  border-radius:4px; padding:9px 11px; background:var(--papel)}
+.recorrido a:hover,.recorrido a:focus-visible{border-color:var(--acento)}
+.recorrido .n{display:block; font-family:var(--mono); font-size:11px; color:var(--acento); font-weight:600}
+.recorrido .t{font-family:var(--serif); font-weight:700; line-height:1.2}
+body[data-solo="1"] .recorrido .t{font-size:.95em}
 .pizarra-cab{display:flex; gap:16px; align-items:flex-start}
 .pizarra-cab .enunciado{flex:1 1 auto; margin:0}
 .tabla-mini{flex:0 0 auto}
@@ -615,14 +677,15 @@ body[data-solo="1"] .envoltura{padding-bottom:96px}
 .lamina.control .n,.lamina.final .n{color:var(--acento2); font-weight:700; margin-right:6px}
 .lamina.final .n{color:var(--acento)}
 .pizarra-der{position:sticky; top:64px}
-.pizarra-der .lienzo svg{max-height:calc(100vh - 110px)}
+.pizarra-der .lienzo svg{max-height:calc(100vh - 150px)}
 /* en proyección, la diapositiva de la pizarra usa toda la pantalla */
 body[data-solo="1"] .envoltura:has(.pizarra.activa){max-width:none}
 body[data-solo="1"] .t-mini{font-size:.85em}
 body[data-solo="1"] .t-mini th{font-size:1em}
 
 @media (prefers-reduced-motion:reduce){
-  .recien *,.recien > *,.fila-nueva td,.aparece,.aparece-rot,.onda,.guia,.marca-x{animation:none!important}
+  .recien *,.recien > *,.fila-nueva td,.aparece,.aparece-rot,.onda,.guia,.marca-x,
+  .cuaderno *{animation:none!important}
   .dibuja{animation:none; stroke-dasharray:none; stroke-dashoffset:0}
   .onda{display:none}
   .pasos li{transition:none}

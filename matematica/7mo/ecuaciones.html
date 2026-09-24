@@ -12,41 +12,10 @@
 <link rel="stylesheet" href="../../assets/sitio.css">
 <link rel="stylesheet" href="../../assets/clase.css">
 <style>
-/* ---------- solo de esta página ---------- */
-.caja-txt{font-family:var(--serif); font-size:1.08em; line-height:1.3}
-.forma-txt{font-family:var(--serif); font-size:1.2em; line-height:1.35}
-body[data-solo="1"] .caja-txt{font-size:1.2em}
-body[data-solo="1"] .forma-txt{font-size:1.4em}
-
-/* en el tema 4 la gráfica va al costado de los pasos: abajo no entra en
-   una pantalla de proyector */
-.con-grafica{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,300px); gap:16px; align-items:start}
-@media (max-width:760px){.con-grafica{grid-template-columns:minmax(0,1fr)}}
-.mini-grafica{max-width:340px}
-.mini-grafica svg{display:block; width:100%; height:auto}
-.punto-tabla{fill:var(--punto); stroke:var(--papel); stroke-width:2}
-.punto-control{fill:var(--papel); stroke:var(--punto); stroke-width:2.5}
-.rotulo-punto{fill:var(--tinta); font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
-  paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
-.mini-grafica.construye .tabla-valores{margin:0 0 10px}
-/* los pasos son largos: la tabla y el plano acompañan mientras se baja, para
-   que el punto nuevo y la recta se vean en el momento en que aparecen */
-.mini-grafica.construye{position:sticky; top:64px; align-self:start}
-.tabla-vacia{color:var(--lapiz); font-style:italic}
-/* un par no se corta entre renglones */
-.pasos li .t b{white-space:nowrap}
-
+/* ---------- solo de esta página: el taller de la recta ---------- */
 .taller{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,260px); gap:18px; align-items:start}
 @media (max-width:720px){.taller{grid-template-columns:minmax(0,1fr)}}
-.tabla-valores{border-collapse:collapse; font-family:var(--mono); font-size:14px; width:100%;
-  font-variant-numeric:tabular-nums; margin-top:10px}
-.tabla-valores th,.tabla-valores td{border:1px solid var(--linea-fuerte); padding:5px 8px; text-align:center}
-.tabla-valores th{background:var(--papel-2); color:var(--lapiz); font-weight:600}
-.tabla-valores tr.control td{color:var(--lapiz); font-style:italic}
-
-.final-txt{font-family:var(--serif); font-weight:700; color:var(--acento); line-height:1.35}
-body[data-solo="1"] .final-txt{font-size:1.35em}
-
+.taller .lienzo svg{max-height:calc(100vh - 200px)}
 .perilla{display:flex; align-items:center; gap:6px; margin-bottom:8px}
 .perilla-rot{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
   color:var(--lapiz); min-width:7.5em}
@@ -57,21 +26,11 @@ body[data-solo="1"] .final-txt{font-size:1.35em}
 .modos{display:flex; gap:6px; margin:12px 0 8px}
 .modos .preset[aria-pressed="true"]{background:var(--tinta); color:var(--papel); border-color:var(--tinta)}
 .cambio{margin-top:6px; font-family:var(--sans); font-size:14px; line-height:1.4; color:var(--acento2)}
-.recta-anterior{stroke:var(--lapiz); stroke-width:2; stroke-dasharray:6 6; opacity:.7; fill:none}
 .quitar{background:none; border:none; color:var(--lapiz); cursor:pointer; font-size:16px; line-height:1}
 .quitar:hover{color:var(--acento)}
 .fuera{color:var(--lapiz); font-size:11px}
 body[data-solo="1"] .perilla input{font-size:1em}
 body[data-solo="1"] .cambio{font-size:.8em}
-
-.recorrido{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 0}
-.recorrido a{
-  flex:1 1 9em; text-decoration:none; color:inherit; border:1px solid var(--linea-fuerte);
-  border-radius:4px; padding:9px 11px; background:var(--papel)}
-.recorrido a:hover,.recorrido a:focus-visible{border-color:var(--acento)}
-.recorrido .n{display:block; font-family:var(--mono); font-size:11px; color:var(--acento); font-weight:600}
-.recorrido .t{font-family:var(--serif); font-weight:700; line-height:1.2}
-body[data-solo="1"] .recorrido .t{font-size:.95em}
 </style>
 </head>
 <body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
@@ -125,69 +84,9 @@ body[data-solo="1"] .recorrido .t{font-size:.95em}
   </footer>
 </div>
 
+<script src="../../assets/pizarra.js"></script>
+
 <script>
-/* ═══ ayudas para escribir matemática ═══
-   M() pone en cursiva las letras sueltas (x, y, a, b…) y envuelve en .ec;
-   Q() arma una fracción apilada, como las del libro. */
-/* M() y I() se usan solo con matemática pura: toda x, y, a, b, c, d que
-   aparezca fuera de una etiqueta HTML es una letra y va en cursiva. Por eso
-   nunca se les pasa una frase: en "1 y 13" la y es una palabra. */
-const I = s => String(s).split(/(<[^>]+>)/)
-  .map(t => t.startsWith('<') ? t : t.replace(/[xyabcd]/g, '<i>$&</i>')).join('');
-const M = s => '<span class="ec">' + I(s) + '</span>';
-const Q = (n, d) => `<span class="fr"><span>${I(String(n))}</span><span>${I(String(d))}</span></span>`;
-
-/* ═══════════════════════════════════════════════════════════════
-   Fracciones exactas, para la balanza y la gráfica
-   Nada de decimales: una ecuación con enteros puede dar 16/5, y
-   escribirlo redondeado sería perder exactitud sin necesidad.
-   ═══════════════════════════════════════════════════════════════ */
-const mcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a || 1; };
-function fr(n, d = 1){
-  if (d === 0) return null;
-  if (d < 0){ n = -n; d = -d; }
-  const g = mcd(n, d);
-  return { n: n / g, d: d / g };
-}
-const suma  = (p, q) => fr(p.n * q.d + q.n * p.d, p.d * q.d);
-const resta = (p, q) => fr(p.n * q.d - q.n * p.d, p.d * q.d);
-const prod  = (p, q) => fr(p.n * q.n, p.d * q.d);
-const coc   = (p, q) => (q.n === 0 ? null : fr(p.n * q.d, p.d * q.n));
-const cero  = p => p.n === 0;
-const igual = (p, q) => p.n === q.n && p.d === q.d;
-const valor = p => p.n / p.d;
-
-/* el signo va adelante, como en todo el material de la casa */
-function txt(p){
-  const s = p.n < 0 ? '−' : '';
-  const a = Math.abs(p.n);
-  return p.d === 1 ? s + a : s + Q(a, p.d);
-}
-
-function lee(bruto){
-  let t = String(bruto).trim().replace(/−/g, '-').replace(/\s+/g, '');
-  const esx = /x$/i.test(t);
-  if (esx) t = t.slice(0, -1);
-  if (t === '' || t === '+') t = '1';
-  if (t === '-') t = '-1';
-  const m = t.match(/^(-?\d+)\/(\d+)$/);
-  if (m) return { f:fr(Number(m[1]), Number(m[2])), esx };
-  if (/^-?\d+$/.test(t)) return { f:fr(Number(t)), esx };
-  return null;
-}
-
-/* un miembro de la ecuación: a·x + b */
-function lado(a, b){
-  if (cero(a)) return txt(b);
-  let s;
-  if (igual(a, fr(1))) s = '<i>x</i>';
-  else if (igual(a, fr(-1))) s = '−<i>x</i>';
-  else s = txt(a) + '<i>x</i>';
-  if (cero(b)) return s;
-  return s + (b.n > 0 ? ' + ' + txt(b) : ' − ' + txt(fr(-b.n, b.d)));
-}
-const ecuacion = e => lado(e.a, e.b) + ' = ' + lado(e.c, e.d);
-
 /* ═══ los talleres ═══ */
 const LABS = {
 'lab-balanza':`
@@ -265,30 +164,6 @@ const LABS = {
 };
 
 
-/* N() resalta lo nuevo: lo que se agrega a los dos miembros, el valor que
-   se reemplaza, la palabra que cambió respecto del ejemplo anterior. Va
-   siempre adentro de M() o de un .ec: no pone cursivas por su cuenta. */
-const N = s => `<span class="nuevo">${s}</span>`;
-
-/* A() alinea una cadena de igualdades: una por renglón y todos los signos
-   = en la misma columna, como en el cuaderno. Cada fila es una igualdad
-   ('3(1 + 2) = 3 · 1 + 6'), una continuación (' = 9'), o un par
-   ['izquierda', '3(1 + 2) = 9'] cuando se calcula cada miembro aparte.
-   También acepta ≠, para cuando los dos miembros no coinciden. */
-function A(...filas){
-  return '<div class="alineado">' + filas.map((f, n) => {
-    const [rot, e] = Array.isArray(f) ? f : ['', f];
-    const m = / (=|≠) /.exec(' ' + e);
-    const izq = m ? e.slice(0, Math.max(0, m.index - 1)) : '';
-    const sig = m ? m[1] : '';
-    const der = m ? e.slice(m.index + m[0].length - 1) : e;
-    const f_ = ` style="--f:${n}"`;
-    return `<span class="al-rot"${f_}>${rot}</span><span class="al-izq"${f_}>${I(izq)}</span>` +
-           `<span class="al-sig"${f_}>${sig}</span><span class="al-der"${f_}>${I(der)}</span>`;
-  }).join('') + '</div>';
-}
-
-
 /* ═══════════════════════════════════════════════════════════════
    Los siete temas del libro
    Toda respuesta que aparece acá está calculada y verificada en
@@ -313,30 +188,35 @@ const TEMAS = [
   },
   ejemplos:[
     { titulo:'sumar lo mismo', enun:`A ${M('2 · 6 + 3 = 15')} le sumo 5 en los dos miembros`,
+      inicio:'2 · 6 + 3 = 15',
       pasos:[
-        `Escribo el +5 en los dos miembros:${A(`2 · 6 + 3 ${N('+ 5')} = 15 ${N('+ 5')}`)}`,
-        `Calculo cada miembro por separado:${A('12 + 3 + 5 = 15 + 5')}`,
+        P('Escribo el +5 en los dos miembros.', `2 · 6 + 3 ${N('+ 5')} = 15 ${N('+ 5')}`),
+        P('Calculo cada miembro por separado.', '12 + 3 + 5 = 15 + 5', '20 = 20'),
       ], final:'20 = 20 — sigue siendo igualdad' },
     { titulo:'cambio la operación: multiplicar', enun:`A ${M('2 · 6 + 3 = 15')} la multiplico por 2`,
+      inicio:'2 · 6 + 3 = 15',
       pasos:[
-        `El · 2 tiene que multiplicar al miembro entero, así que el miembro va entre paréntesis:${A(`(2 · 6 + 3) ${N('· 2')} = 15 ${N('· 2')}`)}`,
-        `Calculo cada miembro:${A('15 · 2 = 15 · 2')}`,
-      ], final:'30 = 30' },
+        P('El · 2 tiene que multiplicar al miembro entero, así que el miembro va entre paréntesis.',
+          `(2 · 6 + 3) ${N('· 2')} = 15 ${N('· 2')}`),
+        P('Calculo cada miembro.', '15 · 2 = 15 · 2', '30 = 30'),
+      ], final:'30 = 30 — sigue siendo igualdad' },
     { titulo:'cambio la operación: dividir', enun:`A ${M('2 · 6 + 3 = 15')} la divido por 3`,
+      inicio:'2 · 6 + 3 = 15',
       pasos:[
-        `Otra vez, el miembro entero entre paréntesis:${A(`(2 · 6 + 3) ${N(': 3')} = 15 ${N(': 3')}`)}`,
-        `Calculo cada miembro:${A('15 : 3 = 15 : 3')}`,
-      ], final:'5 = 5' },
+        P('Otra vez, el miembro entero entre paréntesis.', `(2 · 6 + 3) ${N(': 3')} = 15 ${N(': 3')}`),
+        P('Calculo cada miembro.', '15 : 3 = 15 : 3', '5 = 5'),
+      ], final:'5 = 5 — sigue siendo igualdad' },
     { titulo:'cambio la operación: elevar', enun:`A ${M('2 · 6 + 3 = 15')} la elevo al cuadrado`,
+      inicio:'2 · 6 + 3 = 15',
       pasos:[
-        `Elevo los dos miembros:${A(`(2 · 6 + 3)${N('<sup>2</sup>')} = 15${N('<sup>2</sup>')}`)}`,
-        `Calculo cada miembro:${A('15 · 15 = 15 · 15')}`,
-      ], final:'225 = 225' },
+        P('Elevo los dos miembros.', `(2 · 6 + 3)${N('<sup>2</sup>')} = 15${N('<sup>2</sup>')}`),
+        P('Calculo cada miembro.', '15 · 15 = 15 · 15', '225 = 225'),
+      ], final:'225 = 225 — sigue siendo igualdad' },
     { titulo:'y ahora falta un número', enun:M('4 · 7 + 2 = 5 · □'),
+      inicio:'4 · 7 + 2 = 5 · □',
       pasos:[
-        `Calculo el miembro que está completo:${A('4 · 7 + 2 = 30')}`,
-        `Entonces busco qué número multiplicado por 5 da 30:${A(`30 = 5 · ${N('□')}`)}`,
-        `Es el 6, porque:${A('5 · 6 = 30')}`,
+        P('Calculo el miembro que está completo.', `${N('30')} = 5 · □`),
+        P('Busco qué número multiplicado por 5 da 30. Es el 6, porque 5 · 6 = 30.', `30 = 5 · ${N('6')}`),
       ], final:'el número que falta es 6' },
   ],
   preguntas:[
@@ -383,30 +263,38 @@ const TEMAS = [
     ]
   },
   ejemplos:[
-    { titulo:'la de partida', enun:M('3(x + 2) = 3x + 6'),
+    { titulo:'la de partida', enun:M('3(x + 2) = 3x + 6'), rotCuaderno:'los valores que pruebo',
       pasos:[
-        `Reemplazo ${M('x')} por 1:${A(`3(${N('1')} + 2) = 3 · ${N('1')} + 6`, '9 = 9')}`,
-        `Por 2:${A(`3(${N('2')} + 2) = 3 · ${N('2')} + 6`, '12 = 12')}`,
-        `Por −2:${A(`3(${N('−2')} + 2) = 3 · (${N('−2')}) + 6`, '0 = 0')}`,
+        P(`Reemplazo ${M('x')} por 1 y calculo.`,
+          ['con <i>x</i> = 1', `3(${N('1')} + 2) = 3 · ${N('1')} + 6`], '9 = 9'),
+        P('Ahora por 2.', ['con <i>x</i> = 2', `3(${N('2')} + 2) = 3 · ${N('2')} + 6`], '12 = 12'),
+        P('Y por −2.', ['con <i>x</i> = −2', `3(${N('−2')} + 2) = 3 · (${N('−2')}) + 6`], '0 = 0'),
         `Siempre da lo mismo: el 3 multiplica a la ${M('x')} y al 2.`,
       ], final:'es una identidad' },
     { titulo:'cambio el último número: 6 por 2', enun:M(`3(x + 2) = 3x + ${N('2')}`),
+      rotCuaderno:'los valores que pruebo',
       pasos:[
-        `Reemplazo por 1 y calculo cada miembro por separado:${A(['izquierda', `3(${N('1')} + 2) = 9`], ['derecha', `3 · ${N('1')} + 2 = 5`])}No coinciden.`,
-        `Reparto el 3:${A('3x + 6 = 3x + 2')}`,
+        P('Reemplazo por 1: la izquierda da 9 y la derecha 5. No coinciden.',
+          ['con <i>x</i> = 1', `3(${N('1')} + 2) ≠ 3 · ${N('1')} + 2`], '9 ≠ 5'),
+        P('Reparto el 3.', ['repartiendo', '3x + 6 = 3x + 2']),
         `Los dos miembros tienen ${M('3x')}, pero a uno le suman 6 y al otro 2: nunca pueden valer lo mismo.`,
       ], final:'no se cumple para ningún número' },
     { titulo:'cambio el coeficiente: 3x por 2x', enun:M(`3(x + 2) = ${N('2x')} + 6`),
+      rotCuaderno:'los valores que pruebo',
       pasos:[
-        `Reemplazo por 1:${A(['izquierda', `3(${N('1')} + 2) = 9`], ['derecha', `2 · ${N('1')} + 6 = 8`])}No coinciden.`,
-        `Reemplazo por 0:${A(`3(${N('0')} + 2) = 2 · ${N('0')} + 6`, '6 = 6')}`,
+        P('Reemplazo por 1: la izquierda da 9 y la derecha 8. No coinciden.',
+          ['con <i>x</i> = 1', `3(${N('1')} + 2) ≠ 2 · ${N('1')} + 6`], '9 ≠ 8'),
+        P('Reemplazo por 0.', ['con <i>x</i> = 0', `3(${N('0')} + 2) = 2 · ${N('0')} + 6`], '6 = 6'),
         'Con cualquier otro número, la izquierda crece más rápido: se cumple una sola vez.',
       ], final:'se cumple solo si <i>x</i> = 0 — es una ecuación' },
-    { titulo:'encontrarlo probando', enun:M('x + 7 = 2x + 4'),
+    { titulo:'encontrarlo probando', enun:M('x + 7 = 2x + 4'), rotCuaderno:'los valores que pruebo',
       pasos:[
-        `Pruebo con 1:${A(['izquierda', `${N('1')} + 7 = 8`], ['derecha', `2 · ${N('1')} + 4 = 6`])}La izquierda gana por 2.`,
-        `Con 2:${A(['izquierda', `${N('2')} + 7 = 9`], ['derecha', `2 · ${N('2')} + 4 = 8`])}Gana por 1: se están acercando.`,
-        `Con 3:${A(['izquierda', `${N('3')} + 7 = 10`], ['derecha', `2 · ${N('3')} + 4 = 10`])}Los dos dan 10.`,
+        P('Pruebo con 1: la izquierda da 8 y la derecha 6. La izquierda gana por 2.',
+          ['con <i>x</i> = 1', `${N('1')} + 7 ≠ 2 · ${N('1')} + 4`], '8 ≠ 6'),
+        P('Con 2: 9 contra 8. Gana por 1: se están acercando.',
+          ['con <i>x</i> = 2', `${N('2')} + 7 ≠ 2 · ${N('2')} + 4`], '9 ≠ 8'),
+        P('Con 3: los dos dan 10.',
+          ['con <i>x</i> = 3', `${N('3')} + 7 = 2 · ${N('3')} + 4`], '10 = 10'),
       ], final:'<i>x</i> = 3' },
   ],
   preguntas:[
@@ -453,37 +341,39 @@ const TEMAS = [
     ]
   },
   ejemplos:[
-    { titulo:'la forma ax = b', enun:M('6x = 42'),
+    { titulo:'la forma ax = b', enun:M('6x = 42'), inicio:'6x = 42',
       pasos:[
-        `Divido los dos miembros por 6:${A(`6x ${N(': 6')} = 42 ${N(': 6')}`)}`,
+        P('Divido los dos miembros por 6.', `6x ${N(': 6')} = 42 ${N(': 6')}`, 'x = 7'),
       ], final:'<i>x</i> = 7',
       control:`Control en la ecuación original:${A('6 · 7 = 42 ✓')}` },
-    { titulo:'agrego un término: ax + b = c', enun:M(`6x ${N('− 5')} = 25`),
+    { titulo:'agrego un término: ax + b = c', enun:M(`6x ${N('− 5')} = 25`), inicio:'6x − 5 = 25',
       pasos:[
-        `Sumo 5 a los dos miembros:${A(`6x − 5 ${N('+ 5')} = 25 ${N('+ 5')}`, '6x = 30')}`,
-        `Divido los dos miembros por 6:${A(`6x ${N(': 6')} = 30 ${N(': 6')}`)}`,
+        P('Sumo 5 a los dos miembros.', `6x − 5 ${N('+ 5')} = 25 ${N('+ 5')}`, '6x = 30'),
+        P('Divido los dos miembros por 6.', `6x ${N(': 6')} = 30 ${N(': 6')}`, 'x = 5'),
       ], final:'<i>x</i> = 5',
       control:`Control:${A('6 · 5 − 5 = 25 ✓')}` },
     { titulo:'la x en los dos miembros: ax + b = cx + d', enun:M(`6x − 5 = ${N('2x +')} 11`),
+      inicio:'6x − 5 = 2x + 11',
       pasos:[
-        `Resto ${M('2x')} a los dos miembros:${A(`6x − 5 ${N('− 2x')} = 2x + 11 ${N('− 2x')}`, '4x − 5 = 11')}`,
-        `Sumo 5:${A(`4x − 5 ${N('+ 5')} = 11 ${N('+ 5')}`, '4x = 16')}`,
-        `Divido por 4:${A(`4x ${N(': 4')} = 16 ${N(': 4')}`)}`,
+        P(`Resto ${M('2x')} a los dos miembros.`, `6x − 5 ${N('− 2x')} = 2x + 11 ${N('− 2x')}`, '4x − 5 = 11'),
+        P('Sumo 5.', `4x − 5 ${N('+ 5')} = 11 ${N('+ 5')}`, '4x = 16'),
+        P('Divido por 4.', `4x ${N(': 4')} = 16 ${N(': 4')}`, 'x = 4'),
       ], final:'<i>x</i> = 4',
       control:`Control, miembro por miembro:${A(['izquierda', '6 · 4 − 5 = 19'], ['derecha', '2 · 4 + 11 = 19 ✓'])}` },
-    { titulo:'aparece un paréntesis', enun:M('3(x − 2) = x + 10'),
+    { titulo:'aparece un paréntesis', enun:M('3(x − 2) = x + 10'), inicio:'3(x − 2) = x + 10',
       pasos:[
-        `Distributiva: el 3 multiplica a los dos términos del paréntesis.${A(`${N('3 · x − 3 · 2')} = x + 10`, '3x − 6 = x + 10')}`,
-        `Resto ${M('x')}:${A(`3x − 6 ${N('− x')} = x + 10 ${N('− x')}`, '2x − 6 = 10')}`,
-        `Sumo 6:${A(`2x − 6 ${N('+ 6')} = 10 ${N('+ 6')}`, '2x = 16')}`,
-        `Divido por 2:${A(`2x ${N(': 2')} = 16 ${N(': 2')}`)}`,
+        P('Distributiva: el 3 multiplica a los dos términos del paréntesis.',
+          `${N('3 · x − 3 · 2')} = x + 10`, '3x − 6 = x + 10'),
+        P(`Resto ${M('x')}.`, `3x − 6 ${N('− x')} = x + 10 ${N('− x')}`, '2x − 6 = 10'),
+        P('Sumo 6.', `2x − 6 ${N('+ 6')} = 10 ${N('+ 6')}`, '2x = 16'),
+        P('Divido por 2.', `2x ${N(': 2')} = 16 ${N(': 2')}`, 'x = 8'),
       ], final:'<i>x</i> = 8',
       control:`Control:${A(['izquierda', '3 · (8 − 2) = 18'], ['derecha', '8 + 10 = 18 ✓'])}` },
-    { titulo:'un menos delante del paréntesis', enun:M(`10 ${N('−')} (x + 4) = 2x`),
+    { titulo:'un menos delante del paréntesis', enun:M(`10 ${N('−')} (x + 4) = 2x`), inicio:'10 − (x + 4) = 2x',
       pasos:[
-        `El menos cambia el signo de todo lo de adentro:${A(`10 ${N('− x − 4')} = 2x`, '6 − x = 2x')}`,
-        `Sumo ${M('x')}:${A(`6 − x ${N('+ x')} = 2x ${N('+ x')}`, '6 = 3x')}`,
-        `Divido por 3:${A(`6 ${N(': 3')} = 3x ${N(': 3')}`)}`,
+        P('El menos cambia el signo de todo lo de adentro.', `10 ${N('− x − 4')} = 2x`, '6 − x = 2x'),
+        P(`Sumo ${M('x')}.`, `6 − x ${N('+ x')} = 2x ${N('+ x')}`, '6 = 3x'),
+        P('Divido por 3.', `6 ${N(': 3')} = 3x ${N(': 3')}`, '2 = x'),
       ], final:'<i>x</i> = 2',
       control:`Control:${A(['izquierda', '10 − (2 + 4) = 4'], ['derecha', '2 · 2 = 4 ✓'])}` },
   ],
@@ -523,7 +413,7 @@ const TEMAS = [
    No está en el libro. El libro pasa de una incógnita con una respuesta a
    y = ax + b sin decir de dónde sale la y; este bloque es ese paso. */
 {
-  n:'3→4', id:'puente', puente:true, corto:'Ecuación → función', titulo:'De la ecuación a la función',
+  n:'3→4', id:'puente', puente:true, entre:'el tema 3 y el 4', corto:'Ecuación → función', titulo:'De la ecuación a la función',
   concepto:{
     forma:'y = 2x − 3', formaRot:'una ecuación lineal con dos variables',
     serie:[
@@ -537,8 +427,8 @@ const TEMAS = [
     ]
   },
   ejemplos:[
-    { titulo:'todos los valores de 2x − 3', enun:M('y = 2x − 3'),
-      construye:{ a:[2, 1], b:[-3, 1], xs:[0, 1, 2, [-1, 2], 5], desde:2, control:3, fija:1 },
+    { titulo:'todos los valores de 2x − 3', enun:M('y = 2x − 3'), fija:1,
+      construye:{ a:[2, 1], b:[-3, 1], xs:[0, 1, 2, [-1, 2], 5], desde:2, control:3 },
       pasos:[
         `¿Qué pregunta esta ecuación? <b>¿Cuáles son todos los valores que puede tomar ${M('2x − 3')}?</b> Cada ${M('x')} da uno, y a ese valor lo llamamos ${M('y')}. Voy armando la tabla.`,
         `Con ${M('x = 0')}:${A(`y = 2 · ${N('0')} − 3`, ' = −3')}Punto <b>(0, −3)</b>.`,
@@ -604,35 +494,36 @@ const TEMAS = [
   },
   ejemplos:[
     { titulo:'ya está en la forma y = ax + b', enun:M('y = 2x − 1'),
-      grafica:{ a:[2, 1], b:[-1, 1], xs:[0, 2, 1] },
+      construye:{ a:[2, 1], b:[-1, 1], xs:[0, 2], desde:1, control:1 },
       pasos:[
         `Elijo ${M('x = 0')}:${A(`y = 2 · ${N('0')} − 1`, ' = −1')}Punto <b>(0, −1)</b>.`,
         `Elijo ${M('x = 2')}:${A(`y = 2 · ${N('2')} − 1`, ' = 3')}Punto <b>(2, 3)</b>.`,
       ], final:'una recta que sube: la pendiente, 2, es positiva',
-      control:`Control con ${M('x = 1')}:${A(`y = 2 · ${N('1')} − 1`, ' = 1')}El punto <b>(1, 1)</b> tiene que quedar alineado.` },
+      control:`Control con ${M('x = 1')}:${A(`y = 2 · ${N('1')} − 1`, ' = 1')}El punto <b>(1, 1)</b> cae sobre la recta ✓` },
     { titulo:'cambio el signo de la pendiente', enun:M(`y = ${N('−')}2x + 3`),
-      grafica:{ a:[-2, 1], b:[3, 1], xs:[0, 2, 1] },
+      construye:{ a:[-2, 1], b:[3, 1], xs:[0, 2], desde:1, control:1 },
       pasos:[
         `Elijo ${M('x = 0')}:${A(`y = −2 · ${N('0')} + 3`, ' = 3')}Punto <b>(0, 3)</b>.`,
         `Elijo ${M('x = 2')}:${A(`y = −2 · ${N('2')} + 3`, ' = −1')}Punto <b>(2, −1)</b>.`,
       ], final:'una recta que baja: la pendiente, −2, es negativa',
-      control:`Control con ${M('x = 1')}:${A(`y = −2 · ${N('1')} + 3`, ' = 1')}Punto (1, 1).` },
-    { titulo:'no está despejada', enun:M('3x + y − 5 = 0'),
-      grafica:{ a:[-3, 1], b:[5, 1], xs:[0, 1, 2] },
+      control:`Control con ${M('x = 1')}:${A(`y = −2 · ${N('1')} + 3`, ' = 1')}El punto <b>(1, 1)</b> cae sobre la recta ✓` },
+    { titulo:'no está despejada', enun:M('3x + y − 5 = 0'), fija:1,
+      construye:{ a:[-3, 1], b:[5, 1], xs:[0, 1], desde:2, control:2 },
       pasos:[
         `Despejo ${M('y')}: resto ${M('3x')} y sumo 5 a los dos miembros.${A(`3x + y − 5 ${N('− 3x + 5')} = 0 ${N('− 3x + 5')}`, 'y = −3x + 5')}`,
         `Elijo ${M('x = 0')}:${A(`y = −3 · ${N('0')} + 5`, ' = 5')}Punto <b>(0, 5)</b>.`,
         `Elijo ${M('x = 1')}:${A(`y = −3 · ${N('1')} + 5`, ' = 2')}Punto <b>(1, 2)</b>.`,
       ], final:'la recta de <span class="ec"><i>y</i> = −3<i>x</i> + 5</span>, que baja de a 3',
-      control:`Control con ${M('x = 2')}:${A(`y = −3 · ${N('2')} + 5`, ' = −1')}Punto (2, −1).` },
-    { titulo:'al despejar queda una fracción', enun:M('2x + 3y − 6 = 0'),
-      grafica:{ a:[-2, 3], b:[2, 1], xs:[0, 3, 6] },
+      control:`Control con ${M('x = 2')}:${A(`y = −3 · ${N('2')} + 5`, ' = −1')}El punto <b>(2, −1)</b> cae sobre la recta ✓` },
+    { titulo:'al despejar queda una fracción', enun:M('2x + 3y − 6 = 0'), fija:2,
+      construye:{ a:[-2, 3], b:[2, 1], xs:[0, 3], desde:3, control:6 },
       pasos:[
         `Despejo ${M('3y')}:${A(`2x + 3y − 6 ${N('− 2x + 6')} = 0 ${N('− 2x + 6')}`, '3y = −2x + 6')}`,
-        `Divido los dos miembros por 3:${A(`y = −${Q('2','3')}x + 2`)}`,
-        `Como hay tercios, elijo ${M('x')} múltiplos de 3. Con ${M('x = 0')}: <b>(0, 2)</b>. Con ${M('x = 3')}: <b>(3, 0)</b>.`,
+        `Divido los dos miembros por 3:${A(`y = −${Q('2','3')}x + 2`)}Como hay tercios, elijo ${M('x')} múltiplos de 3.`,
+        `Con ${M('x = 0')}:${A(`y = −${Q('2','3')} · ${N('0')} + 2`, ' = 2')}Punto <b>(0, 2)</b>.`,
+        `Con ${M('x = 3')}:${A(`y = −${Q('2','3')} · ${N('3')} + 2`, ' = −2 + 2', ' = 0')}Punto <b>(3, 0)</b>.`,
       ], final:'elegir bien la <i>x</i> ahorra las fracciones',
-      control:`Control con ${M('x = 6')}:${A(`y = −${Q('2','3')} · ${N('6')} + 2`, ' = −2')}Punto <b>(6, −2)</b>.` },
+      control:`Control con ${M('x = 6')}:${A(`y = −${Q('2','3')} · ${N('6')} + 2`, ' = −2')}El punto <b>(6, −2)</b> cae sobre la recta ✓` },
   ],
   taller:'lab-grafica',
   preguntas:[
@@ -675,41 +566,51 @@ const TEMAS = [
   },
   ejemplos:[
     { titulo:'la forma ax = b, con fracción', enun:`<span class="ec">${Q('x','4')} = 3</span>`,
+      inicio:`${Q('x','4')} = 3`,
       pasos:[
-        `Multiplico los dos miembros por 4:${A(`${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 3`)}`,
-        `El 4 se simplifica con el denominador:${A('x = 4 · 3')}`,
+        P('Multiplico los dos miembros por 4.', `${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 3`),
+        P('El 4 se simplifica con el denominador.', 'x = 4 · 3', ' = 12'),
       ], final:'<i>x</i> = 12',
       control:`Control:${A('12 : 4 = 3 ✓')}` },
     { titulo:'agrego un término: ax + b = c', enun:`<span class="ec">${Q('x','2')} ${N('+ ' + Q('1','3'))} = ${Q('5','6')}</span>`,
+      inicio:`${Q('x','2')} + ${Q('1','3')} = ${Q('5','6')}`,
       pasos:[
         'El m.c.m. de 2, 3 y 6 es 6.',
-        `Multiplico cada término por 6:${A(`${N('6 ·')} ${Q('x','2')} + ${N('6 ·')} ${Q('1','3')} = ${N('6 ·')} ${Q('5','6')}`, '3x + 2 = 5')}`,
-        `Resto 2:${A(`3x + 2 ${N('− 2')} = 5 ${N('− 2')}`, '3x = 3')}`,
-        `Divido los dos miembros por 3:${A(`3x ${N(': 3')} = 3 ${N(': 3')}`)}`,
+        P('Multiplico cada término por 6.',
+          `${N('6 ·')} ${Q('x','2')} + ${N('6 ·')} ${Q('1','3')} = ${N('6 ·')} ${Q('5','6')}`, '3x + 2 = 5'),
+        P('Resto 2.', `3x + 2 ${N('− 2')} = 5 ${N('− 2')}`, '3x = 3'),
+        P('Divido los dos miembros por 3.', `3x ${N(': 3')} = 3 ${N(': 3')}`, 'x = 1'),
       ], final:'<i>x</i> = 1',
       control:`Control en la ecuación original:${A(`${Q('1','2')} + ${Q('1','3')} = ${Q('3','6')} + ${Q('2','6')}`, ` = ${Q('5','6')} ✓`)}` },
     { titulo:'la x en los dos miembros', enun:`<span class="ec">${Q('3','4')}<i>x</i> − 1 = ${N(Q('x','2') + ' +')} 1</span>`,
+      inicio:`${Q('3','4')}x − 1 = ${Q('x','2')} + 1`,
       pasos:[
         'El m.c.m. de 4 y 2 es 4. Multiplico todo por 4, también el −1 y el +1.',
-        `Cada término por 4:${A(`${N('4 ·')} ${Q('3','4')}x − ${N('4 ·')} 1 = ${N('4 ·')} ${Q('x','2')} + ${N('4 ·')} 1`, '3x − 4 = 2x + 4')}`,
-        `Resto ${M('2x')} y sumo 4:${A(`3x − 4 ${N('− 2x + 4')} = 2x + 4 ${N('− 2x + 4')}`)}`,
+        P('Cada término por 4.',
+          `${N('4 ·')} ${Q('3','4')}x − ${N('4 ·')} 1 = ${N('4 ·')} ${Q('x','2')} + ${N('4 ·')} 1`, '3x − 4 = 2x + 4'),
+        P(`Resto ${M('2x')} y sumo 4.`, `3x − 4 ${N('− 2x + 4')} = 2x + 4 ${N('− 2x + 4')}`, 'x = 8'),
       ], final:'<i>x</i> = 8',
       control:`Control:${A(['izquierda', `${Q('3','4')} · 8 − 1 = 5`], ['derecha', `${Q('8','2')} + 1 = 5 ✓`])}` },
     { titulo:'los numeradores tienen dos términos', enun:`<span class="ec">${Q('x + 1','2')} − ${Q('x − 3','5')} = 2</span>`,
+      inicio:`${Q('x + 1','2')} − ${Q('x − 3','5')} = 2`,
       pasos:[
         'm.c.m. de 2 y 5: 10. Multiplico todo por 10.',
-        `Como 10 : 2 = 5 y 10 : 5 = 2, los numeradores quedan entre paréntesis:${A(`${N('10 ·')} ${Q('x + 1','2')} − ${N('10 ·')} ${Q('x − 3','5')} = ${N('10 ·')} 2`, '5(x + 1) − 2(x − 3) = 20')}`,
-        `Reparto con cuidado el menos:${A(`5x + 5 − 2x ${N('+ 6')} = 20`, '3x + 11 = 20')}`,
-        `Resto 11:${A(`3x + 11 ${N('− 11')} = 20 ${N('− 11')}`, '3x = 9')}`,
-        `Divido los dos miembros por 3:${A(`3x ${N(': 3')} = 9 ${N(': 3')}`)}`,
+        P('Como 10 : 2 = 5 y 10 : 5 = 2, los numeradores quedan entre paréntesis.',
+          `${N('10 ·')} ${Q('x + 1','2')} − ${N('10 ·')} ${Q('x − 3','5')} = ${N('10 ·')} 2`, '5(x + 1) − 2(x − 3) = 20'),
+        P('Reparto con cuidado el menos.', `5x + 5 − 2x ${N('+ 6')} = 20`, '3x + 11 = 20'),
+        P('Resto 11.', `3x + 11 ${N('− 11')} = 20 ${N('− 11')}`, '3x = 9'),
+        P('Divido los dos miembros por 3.', `3x ${N(': 3')} = 9 ${N(': 3')}`, 'x = 3'),
       ], final:'<i>x</i> = 3',
       control:`Control en la ecuación original:${A(`${Q('3 + 1','2')} − ${Q('3 − 3','5')} = 2 − 0`, ' = 2 ✓')}` },
     { titulo:'fracción en los dos miembros, y la respuesta no es entera', enun:`<span class="ec">${Q('2x − 1','3')} = ${Q('x + 4','4')}</span>`,
+      inicio:`${Q('2x − 1','3')} = ${Q('x + 4','4')}`,
       pasos:[
         'm.c.m. de 3 y 4: 12. Multiplico los dos miembros por 12.',
-        `Como 12 : 3 = 4 y 12 : 4 = 3:${A(`${N('12 ·')} ${Q('2x − 1','3')} = ${N('12 ·')} ${Q('x + 4','4')}`, '4(2x − 1) = 3(x + 4)', '8x − 4 = 3x + 12')}`,
-        `Resto ${M('3x')} y sumo 4:${A(`8x − 4 ${N('− 3x + 4')} = 3x + 12 ${N('− 3x + 4')}`, '5x = 16')}`,
-        `Divido los dos miembros por 5:${A(`5x ${N(': 5')} = 16 ${N(': 5')}`)}No da entero, y está bien: la respuesta es una fracción.`,
+        P('Como 12 : 3 = 4 y 12 : 4 = 3, los numeradores quedan entre paréntesis.',
+          `${N('12 ·')} ${Q('2x − 1','3')} = ${N('12 ·')} ${Q('x + 4','4')}`, '4(2x − 1) = 3(x + 4)', '8x − 4 = 3x + 12'),
+        P(`Resto ${M('3x')} y sumo 4.`, `8x − 4 ${N('− 3x + 4')} = 3x + 12 ${N('− 3x + 4')}`, '5x = 16'),
+        P('Divido los dos miembros por 5. No da entero, y está bien: la respuesta es una fracción.',
+          `5x ${N(': 5')} = 16 ${N(': 5')}`, `x = ${Q('16','5')}`),
       ], final:'<i>x</i> = 16/5',
       control:`Control en la ecuación original, también con fracciones:${A(['izquierda', `${Q('2 · 16/5 − 1','3')} = ${Q('27/5','3')} = ${Q('9','5')}`], ['derecha', `${Q('16/5 + 4','4')} = ${Q('36/5','4')} = ${Q('9','5')} ✓`])}` },
   ],
@@ -753,34 +654,36 @@ const TEMAS = [
     ]
   },
   ejemplos:[
-    { titulo:'el triple', enun:'«el triple de un número»', prosa:true,
+    { titulo:'el triple', enun:'«el triple de un número»', prosa:true, rotCuaderno:'de palabras a letras',
       pasos:[
-        `"Un número" es ${M('x')}.`,
-        `"El triple" es multiplicar por 3: ${M('3 · x')}.`,
+        P(`"Un número" es ${M('x')}.`, ['un número', 'x']),
+        P('"El triple" es multiplicar por 3.', ['el triple', `${N('3 ·')} x`]),
       ], final:'3<i>x</i>',
       control:`Control con ${M('x = 10')}:${A(`3 · ${N('10')} = 30`)}` },
-    { titulo:'agrego "menos 4"', enun:`«el triple de un número, ${N('menos 4')}»`, prosa:true,
+    { titulo:'agrego "menos 4"', enun:`«el triple de un número, ${N('menos 4')}»`, prosa:true, rotCuaderno:'de palabras a letras',
       pasos:[
-        `Primero el triple: ${M('3x')}.`,
-        `Después, a eso, le resto 4: ${M(`3x ${N('− 4')}`)}.`,
+        P('Primero el triple.', ['el triple', '3x']),
+        P('Después, a eso, le resto 4.', ['menos 4', `3x ${N('− 4')}`]),
       ], final:'3<i>x</i> − 4',
       control:`Control con ${M('x = 10')}:${A(`3 · ${N('10')} − 4 = 26`)}` },
     { titulo:'cambio el orden: "de la diferencia"', enun:`«el triple de ${N('la diferencia entre')} un número y 4»`, prosa:true,
+      rotCuaderno:'de palabras a letras',
       pasos:[
-        `Primero la diferencia: ${M('x − 4')}.`,
-        `Después el triple de todo eso, que va entre paréntesis: ${M(`3${N('(')}x − 4${N(')')}`)}.`,
+        P('Primero la diferencia.', ['la diferencia', 'x − 4']),
+        P('Después el triple de todo eso, que va entre paréntesis.', ['el triple', `3${N('(')}x − 4${N(')')}`]),
       ], final:'3(<i>x</i> − 4)',
       control:`Control con ${M('x = 10')}:${A(`3(${N('10')} − 4) = 18`)}No da 26: no es lo mismo que el ejemplo anterior.` },
     { titulo:'cambio "triple" por "tercera parte"', enun:`«${N('la tercera parte')} de un número, menos 4»`, prosa:true,
+      rotCuaderno:'de palabras a letras',
       pasos:[
-        `La tercera parte de ${M('x')} es <span class="ec">${Q('x','3')}</span>.`,
-        `Le resto 4: <span class="ec">${Q('x','3')} ${N('− 4')}</span>.`,
+        P('Primero la tercera parte.', ['la tercera parte', Q('x','3')]),
+        P('Le resto 4.', ['menos 4', `${Q('x','3')} ${N('− 4')}`]),
       ], final:`<span class="ec">${Q('x','3')} − 4</span>`,
       control:`Control con ${M('x = 10')}:${A(`${Q(N('10'),'3')} − 4 = −2/3`)}Una fracción negativa, y está bien.` },
-    { titulo:'al revés: de letras a palabras', enun:M('x + (x + 1)'),
+    { titulo:'al revés: de letras a palabras', enun:M('x + (x + 1)'), rotCuaderno:'de letras a palabras',
       pasos:[
-        `${M('x')} es un número; ${M('x + 1')} es el que le sigue.`,
-        'Los estoy sumando.',
+        P(`${M('x')} es un número; ${M('x + 1')} es el que le sigue.`, ['un número', 'x'], ['el que le sigue', 'x + 1']),
+        P('Los estoy sumando.', ['la suma', `x ${N('+')} (x + 1)`]),
       ], final:'«la suma de un número y su consecutivo»' },
   ],
   preguntas:[
@@ -823,44 +726,46 @@ const TEMAS = [
     ]
   },
   ejemplos:[
-    { titulo:'una compra', prosa:true,
+    { titulo:'una compra', prosa:true, fija:1,
       enun:'«Compré 3 cuadernos iguales y una regla de ₲ 8000. Pagué ₲ 47 000 en total. ¿Cuánto costó cada cuaderno?»',
       pasos:[
         `${M('x')} es el precio de un cuaderno, en guaraníes.`,
-        `Tres cuadernos más la regla:${A('3x + 8000 = 47 000')}`,
-        `Resto 8000:${A(`3x + 8000 ${N('− 8000')} = 47 000 ${N('− 8000')}`, '3x = 39 000')}`,
-        `Divido por 3:${A(`3x ${N(': 3')} = 39 000 ${N(': 3')}`, 'x = 13 000')}`,
+        P('Tres cuadernos más la regla son el total.', '3x + 8000 = 47 000'),
+        P('Resto 8000.', `3x + 8000 ${N('− 8000')} = 47 000 ${N('− 8000')}`, '3x = 39 000'),
+        P('Divido por 3.', `3x ${N(': 3')} = 39 000 ${N(': 3')}`, 'x = 13 000'),
       ], final:'cada cuaderno costó ₲ 13 000',
       control:`Control en el enunciado:${A('3 · 13 000 + 8000 = 47 000 ✓')}` },
-    { titulo:'tres números que se siguen', prosa:true,
+    { titulo:'tres números que se siguen', prosa:true, fija:1,
       enun:'«Tres números consecutivos suman 51. ¿Cuáles son?»',
       pasos:[
         `${M('x')} es el menor. Los otros dos son ${M('x + 1')} y ${M('x + 2')}.`,
-        `Los tres suman 51:${A('x + (x + 1) + (x + 2) = 51', '3x + 3 = 51')}`,
-        `Resto 3 y divido por 3:${A(`3x + 3 ${N('− 3')} = 51 ${N('− 3')}`, '3x = 48', 'x = 16')}`,
+        P('Los tres suman 51.', 'x + (x + 1) + (x + 2) = 51', '3x + 3 = 51'),
+        P('Resto 3 y divido por 3.', `3x + 3 ${N('− 3')} = 51 ${N('− 3')}`, '3x = 48', 'x = 16'),
       ], final:'los números son 16, 17 y 18',
       control:`Control:${A('16 + 17 + 18 = 51 ✓')}` },
-    { titulo:'una figura', prosa:true,
+    { titulo:'una figura', prosa:true, fija:1,
       enun:'«El largo de un rectángulo supera en 4 m al ancho, y el perímetro mide 52 m. ¿Cuánto mide cada lado?»',
       pasos:[
         `${M('x')} es el ancho, en metros. El largo, que depende del ancho, es ${M('x + 4')}.`,
-        `El perímetro son los cuatro lados:${A('2x + 2(x + 4) = 52', '4x + 8 = 52')}`,
-        `Resto 8 y divido por 4:${A(`4x + 8 ${N('− 8')} = 52 ${N('− 8')}`, '4x = 44', 'x = 11')}`,
+        P('El perímetro son los cuatro lados.', '2x + 2(x + 4) = 52', '4x + 8 = 52'),
+        P('Resto 8 y divido por 4.', `4x + 8 ${N('− 8')} = 52 ${N('− 8')}`, '4x = 44', 'x = 11'),
       ], final:'el ancho mide 11 m y el largo 15 m',
       control:`Control en el enunciado: 15 supera en 4 a 11, y el perímetro da${A('2 · (11 + 15) = 52 ✓')}` },
-    { titulo:'una parte de un número', prosa:true,
+    { titulo:'una parte de un número', prosa:true, fija:1,
       enun:'«La diferencia entre un número y su cuarta parte es 18. ¿Cuál es el número?»',
       pasos:[
-        `${M('x')} es el número. Su cuarta parte es <span class="ec">${Q('x','4')}</span>, así que:${A(`x − ${Q('x','4')} = 18`)}`,
-        `Multiplico todo por 4:${A(`${N('4 ·')} x − ${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 18`, '4x − x = 72', '3x = 72')}Divido por 3.`,
+        `${M('x')} es el número, y su cuarta parte es <span class="ec">${Q('x','4')}</span>.`,
+        P('La diferencia es 18.', `x − ${Q('x','4')} = 18`),
+        P('Multiplico todo por 4 y después divido por 3.',
+          `${N('4 ·')} x − ${N('4 ·')} ${Q('x','4')} = ${N('4 ·')} 18`, '4x − x = 72', '3x = 72', 'x = 24'),
       ], final:'el número es 24',
       control:`Control: la cuarta parte de 24 es 6, y${A('24 − 6 = 18 ✓')}` },
-    { titulo:'edades, hacia atrás y hacia adelante', prosa:true,
+    { titulo:'edades, hacia atrás y hacia adelante', prosa:true, fija:1,
       enun:'«Dentro de 4 años, Sofía va a tener el triple de la edad que tenía hace 4 años. ¿Cuántos años tiene?»',
       pasos:[
         `${M('x')} es la edad de Sofía hoy. Dentro de 4 años tiene ${M('x + 4')}; hace 4 años tenía ${M('x − 4')}.`,
-        `Lo de dentro de 4 es el triple de lo de hace 4:${A('x + 4 = 3(x − 4)', 'x + 4 = 3x − 12')}`,
-        `Resto ${M('x')} y sumo 12:${A(`x + 4 ${N('− x + 12')} = 3x − 12 ${N('− x + 12')}`, '16 = 2x')}Divido por 2.`,
+        P('Lo de dentro de 4 es el triple de lo de hace 4.', 'x + 4 = 3(x − 4)', 'x + 4 = 3x − 12'),
+        P(`Resto ${M('x')}, sumo 12 y divido por 2.`, `x + 4 ${N('− x + 12')} = 3x − 12 ${N('− x + 12')}`, '16 = 2x', '8 = x'),
       ], final:'Sofía tiene 8 años',
       control:'Control: hace 4 años tenía 4; dentro de 4 va a tener 12, que es el triple de 4 ✓' },
   ],
@@ -890,13 +795,16 @@ const TEMAS = [
 
 /* ─────────────────────── el desafío ─────────────────────── */
 const DESAFIO = {
-  titulo:'El epitafio de Diofanto',
+  titulo:'El epitafio de Diofanto', prosa:true,
   enun:'«Diofanto pasó la sexta parte de su vida de niño y la doceava parte de joven. Pasó una séptima parte más y se casó. Cinco años después nació su hijo, que vivió la mitad de lo que vivió su padre. Diofanto murió cuatro años después que su hijo. ¿Cuántos años vivió?»',
+  fija:1,
   pasos:[
     `${M('x')} es la cantidad de años que vivió Diofanto.`,
-    `Todas las etapas suman la vida entera:${A(`${Q('x','6')} + ${Q('x','12')} + ${Q('x','7')} + 5 + ${Q('x','2')} + 4 = x`)}`,
-    `El m.c.m. de 6, 12, 7 y 2 es 84. Multiplico cada término por ${N('84')}:${A('14x + 7x + 12x + 420 + 42x + 336 = 84x', '75x + 756 = 84x')}`,
-    `Resto ${M('75x')}:${A(`75x + 756 ${N('− 75x')} = 84x ${N('− 75x')}`, '756 = 9x')}Divido por 9.`,
+    P('Todas las etapas suman la vida entera.',
+      `${Q('x','6')} + ${Q('x','12')} + ${Q('x','7')} + 5 + ${Q('x','2')} + 4 = x`),
+    P(`El m.c.m. de 6, 12, 7 y 2 es 84. Multiplico cada término por ${N('84')}.`,
+      '14x + 7x + 12x + 420 + 42x + 336 = 84x', '75x + 756 = 84x'),
+    P(`Resto ${M('75x')} y divido por 9.`, `75x + 756 ${N('− 75x')} = 84x ${N('− 75x')}`, '756 = 9x', '84 = x'),
   ],
   final:'Diofanto vivió 84 años',
   control:`Control:${A('14 + 7 + 12 + 5 + 42 + 4 = 84 ✓')}`,
@@ -914,12 +822,13 @@ const DESAFIO = {
 };
 
 /* ─────────────────── la pregunta de arranque ─────────────────── */
-const PREGUNTA_INICIAL = {
+const PREGUNTA_INICIAL = { prosa:true,
   enun:'«Para el reciclaje juntamos tapitas: 3 bolsas iguales y 12 sueltas, 147 en total. ¿Cuántas tapitas trae cada bolsa?»',
+  fija:1,
   pasos:[
     `${M('x')} es la cantidad de tapitas de una bolsa.`,
-    `Tres bolsas y 12 sueltas son 147. Resto 12:${A('3x + 12 = 147', `3x + 12 ${N('− 12')} = 147 ${N('− 12')}`, '3x = 135')}`,
-    `Divido por 3:${A(`3x ${N(': 3')} = 135 ${N(': 3')}`, 'x = 45')}`,
+    P('Tres bolsas y 12 sueltas son 147. Resto 12.', '3x + 12 = 147', `3x + 12 ${N('− 12')} = 147 ${N('− 12')}`, '3x = 135'),
+    P('Divido por 3.', `3x ${N(': 3')} = 135 ${N(': 3')}`, 'x = 45'),
   ],
   final:'cada bolsa trae 45 tapitas',
   control:`Control:${A('3 · 45 + 12 = 147 ✓')}`,
@@ -956,359 +865,10 @@ const UNIDAD = {
       respaldo del docente, no el guion de los alumnos.</p>`
 };
 
-/* ═══════════════════════ el armado ═══════════════════════ */
-function caja(c){
-  const cont = c.ec ? M(c.ec) : c.html ? c.html : `<span class="caja-txt">${c.txt}</span>`;
-  return `<div class="caja"><span class="caja-rot">${c.rot}</span>${cont}</div>`;
-}
-
-/* los pasos se recorren para los dos lados */
-function navPasos(clave, total){
-  return `<div class="pasos-nav" data-nav="${clave}">
-      <button class="boton" type="button" data-accion="atras" data-bloque="${clave}" disabled>← Anterior</button>
-      <span class="pasos-cuenta">${total} pasos</span>
-      <button class="boton" type="button" data-accion="revelar" data-bloque="${clave}">Siguiente →</button>
-    </div>`;
-}
-
-/* La pizarra: a la izquierda la ecuación, la tabla chica y la cuenta del
-   momento; a la derecha, el plano grande. */
-function bloquePizarra(clave, ej, rotulo, cinta){
-  return `
-  <section class="ejemplo-diapo pizarra" id="e-${clave}">
-    <p class="cinta">${cinta}</p>
-    <div class="ejemplo-cab">
-      <h4 class="ej-titulo"><span class="num">${rotulo}</span>${ej.titulo}</h4>
-      ${navPasos(clave, totalPasos(ej))}
-    </div>
-    <div class="pizarra-grid">
-      <div class="pizarra-izq">
-        <div class="pizarra-cab">
-          <div class="enunciado">${ej.enun}</div>
-          <div class="tabla-mini" id="tabla-${clave}"></div>
-        </div>
-        <div class="pizarra-fija" id="fija-${clave}"></div>
-        <div class="pizarra-trabajo" id="trabajo-${clave}"></div>
-      </div>
-      <div class="pizarra-der" id="graf-${clave}"></div>
-    </div>
-  </section>`;
-}
-
-function bloqueEjemplo(clave, ej, rotulo, cinta){
-  if (ej.construye) return bloquePizarra(clave, ej, rotulo, cinta);
-  return `
-  <section class="ejemplo-diapo" id="e-${clave}">
-    <p class="cinta">${cinta}</p>
-    <div class="ejemplo-cab">
-      <h4 class="ej-titulo"><span class="num">${rotulo}</span>${ej.titulo}</h4>
-      ${navPasos(clave, totalPasos(ej))}
-    </div>
-    <div class="enunciado ${ej.prosa ? 'frase' : ''}">${ej.enun}</div>
-    ${ej.grafica
-      ? `<div class="con-grafica"><ol class="pasos" id="pasos-${clave}"></ol>
-           <div class="mini-grafica" id="graf-${clave}" hidden></div></div>`
-      : `<ol class="pasos" id="pasos-${clave}"></ol>`}
-  </section>`;
-}
-
-const BLOQUES = {};         // clave → ejemplo, para recorrer los pasos
-
-/* El puente no es un tema del libro: no tiene número, ni páginas, ni ficha. */
-const idT = t => t.id || String(t.n);
-const etiqueta = t => t.puente ? 'Puente' : `Tema ${t.n}`;
-
-document.getElementById('temas').innerHTML = TEMAS.map(t => {
-  const c = t.concepto;
-  const total = t.ejemplos.length;
-  t.ejemplos.forEach((ej, i) => { BLOQUES[`${idT(t)}-${i + 1}`] = ej; });
-  return `
-<article class="tema${t.puente ? ' puente' : ''}" id="tema${idT(t)}" data-tema="${idT(t)}">
-  <section class="concepto" id="t${idT(t)}">
-    <p class="cinta">${t.puente ? '<b>Puente entre el tema 3 y el 4</b> · no está en el libro' : `<b>Tema ${t.n} de 7</b> · ${t.pag}`}</p>
-    <div class="caso-cab">
-      <div class="numero">${t.puente ? '→' : t.n}</div>
-      <div class="caso-tit"><h3>${t.titulo}</h3></div>
-    </div>
-    ${c.forma ? `<div class="forma"><span class="rotulo">${c.formaRot}</span>${M(c.forma)}</div>` : ''}
-    ${c.formaTxt ? `<div class="forma"><span class="rotulo">la idea</span><span class="forma-txt">${c.formaTxt}</span></div>` : ''}
-    ${c.serie ? `<div class="serie">${c.serie.map(caja).join('')}</div>` : ''}
-    <ul class="puntos">${c.puntos.map(p => `<li>${p}</li>`).join('')}</ul>
-  </section>
-
-  <div class="ejemplos">
-    ${t.ejemplos.map((ej, i) => bloqueEjemplo(`${idT(t)}-${i + 1}`, ej, `Ejemplo ${i + 1}.`,
-        `<b>${etiqueta(t)}</b> · ${t.corto} · ejemplo ${i + 1} de ${total}`)).join('')}
-  </div>
-
-  ${t.taller ? `<section class="taller-diapo">
-    <p class="cinta"><b>${etiqueta(t)}</b> · ${t.corto} · taller</p>
-    ${LABS[t.taller]}
-  </section>` : ''}
-
-  ${t.ficha ? `<p class="ficha-link">Para practicar:
-    <a href="../../fichas/pdf/7mo/Ficha_${String(t.ficha).padStart(2, '0')}.pdf">Ficha ${t.ficha}</a></p>` : ''}
-</article>`;
-}).join('') + `
-<section class="desafio" id="desafio" data-tema="desafio">
-  <p class="cinta"><b>Desafío final</b> · toda la unidad junta</p>
-  <div class="marco">
-    <div class="ejemplo-cab">
-      <h4 class="ej-titulo">${DESAFIO.titulo}</h4>
-      ${navPasos('desafio', totalPasos(DESAFIO))}
-    </div>
-    <div class="enunciado frase">${DESAFIO.enun}</div>
-    <ol class="pasos" id="pasos-desafio"></ol>
-  </div>
-</section>`;
-BLOQUES['desafio'] = DESAFIO;
-
-/* la pregunta de arranque, en la introducción */
-BLOQUES['inicial'] = PREGUNTA_INICIAL;
-document.getElementById('recorrido').insertAdjacentHTML('beforebegin', `
-  <div class="ejemplo" style="margin-top:20px">
-    <div class="ejemplo-cab">
-      <span class="rotulo-chico">Para arrancar</span>
-      ${navPasos('inicial', totalPasos(PREGUNTA_INICIAL))}
-    </div>
-    <div class="enunciado frase">${PREGUNTA_INICIAL.enun}</div>
-    <ol class="pasos" id="pasos-inicial"></ol>
-  </div>`);
-
-/* el recorrido de la unidad y el navegador */
-document.getElementById('recorrido').innerHTML = TEMAS.map(t =>
-  `<a href="#t${idT(t)}"><span class="n">${etiqueta(t)}</span><span class="t">${t.corto}</span></a>`).join('');
-document.getElementById('nav').innerHTML =
-  TEMAS.map(t => `<a class="chip" href="#t${idT(t)}">${t.puente ? '3 → 4' : t.n + '.'} ${t.corto}</a>`).join('') +
-  '<a class="chip" href="#desafio">Desafío</a>';
-
-/* las notas y el observador viven en los botones flotantes de assets/clase.js */
-window.CLASE = { secciones: [
-  { id:'unidad', titulo:'La unidad', notas:UNIDAD.notas, preguntas:UNIDAD.preguntas },
-  ...TEMAS.map(t => ({ id:idT(t), titulo:t.puente ? 'Puente · de la ecuación a la función' : `Tema ${t.n} · ${t.corto}`,
-                        notas:t.notas, preguntas:t.preguntas })),
-  { id:'desafio', titulo:'Desafío final', notas:DESAFIO.notas, preguntas:DESAFIO.preguntas },
-]};
-
-/* ——— recorrer los pasos ———
-   El atributo NO puede llamarse data-paso: el panel de proyección usa ese
-   nombre para las flechas de diapositiva y un clic acá saltaría de lámina. */
-const avance = {};
-
-/* ═══ el movimiento ═══
-   Lo que ya está se queda quieto; lo nuevo aparece en su lugar. */
-const movimiento = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const SUAVE = 'cubic-bezier(.22,.8,.24,1)';
-
-/* Lo que ordena la página al terminar una animación (borrar la cuenta
-   vieja, soltar un alto fijo) no puede depender solo del aviso de fin: si
-   la ventana no está dibujando, ese aviso se demora. Un reloj lo respalda,
-   y lo que sea que llegue primero lo hace, una sola vez. */
-function alTerminar(anim, ms, fn){
-  let hecho = false;
-  const una = () => { if (!hecho){ hecho = true; fn(); } };
-  anim.onfinish = una;
-  setTimeout(una, ms + 80);
-}
-
-/* las cajas que están desapareciendo ya no cuentan como pasos */
-const pasosVivos = lista => [...lista.children].filter(li => !li.dataset.saliendo);
-
-/* Lleva un elemento a la vista, lo justo y con suavidad. Si la ventana no
-   está dibujando (el proyector en otra pantalla) el desplazamiento suave
-   no avanza: a los 700 ms se corrige de una. */
-function llevaAlaVista(el){
-  const r = el.getBoundingClientRect();
-  const abajo = innerHeight - 90, arriba = 80;      // los botones flotantes
-  let delta = 0;
-  if (r.bottom > abajo) delta = r.bottom - abajo;
-  else if (r.top < arriba) delta = r.top - arriba;
-  if (!delta) return;
-  const destino = window.scrollY + delta;
-  window.scrollTo({ top:destino, behavior: movimiento() ? 'smooth' : 'auto' });
-  setTimeout(() => { if (Math.abs(window.scrollY - destino) > 4) window.scrollTo(0, destino); }, 700);
-}
-
-/* una caja nueva se abre desde alto cero: no empuja todo de golpe */
-function abreCaja(el){
-  if (!movimiento() || !el.animate) return;
-  const alto = el.getBoundingClientRect().height;
-  const cs = getComputedStyle(el);
-  el.style.overflow = 'hidden';
-  alTerminar(el.animate([
-    { height:'0px', paddingTop:'0px', paddingBottom:'0px', opacity:0 },
-    { height:alto + 'px', paddingTop:cs.paddingTop, paddingBottom:cs.paddingBottom, opacity:1 }
-  ], { duration:420, easing:SUAVE }), 420, () => { el.style.overflow = ''; });
-}
-
-/* y se cierra igual, antes de irse */
-function cierraCaja(el, listo){
-  if (!movimiento() || !el.animate){ listo(); return; }
-  const alto = el.getBoundingClientRect().height;
-  el.style.overflow = 'hidden';
-  alTerminar(el.animate([
-    { height:alto + 'px', opacity:1 },
-    { height:'0px', paddingTop:'0px', paddingBottom:'0px', marginTop:'0px', opacity:0 }
-  ], { duration:320, easing:'cubic-bezier(.4,0,.6,1)', fill:'forwards' }), 320, listo);
-}
-
-/* Los botones de los pasos viajan con la clase: van en la esquina inferior
-   derecha de la última caja que apareció (el enunciado, si todavía no hay
-   ningún paso). En la pizarra, en la caja de la cuenta, que no se mueve. */
-function ubicaNav(clave){
-  const nav = document.querySelector(`[data-nav="${clave}"]`);
-  nav.classList.add('abajo');
-  if (BLOQUES[clave].construye){
-    document.getElementById('trabajo-' + clave).appendChild(nav);
-    return nav;
-  }
-  const lista = document.getElementById('pasos-' + clave);
-  const pasos = pasosVivos(lista);
-  const caja = pasos.length
-    ? pasos[pasos.length - 1]
-    : lista.closest('.ejemplo-diapo, .desafio, .ejemplo').querySelector('.enunciado');
-  caja.appendChild(nav);
-  return nav;
-}
-
-/* El orden es siempre: los pasos, la respuesta, y después el control. El
-   control no puede ir antes: controla una respuesta que todavía no está. */
-function totalPasos(ej){ return ej.pasos.length + 1 + (ej.control ? 1 : 0); }
-
-function actualizaNav(clave){
-  const total = totalPasos(BLOQUES[clave]);
-  const i = avance[clave] || 0;
-  const nav = document.querySelector(`[data-nav="${clave}"]`);
-  nav.querySelector('[data-accion="atras"]').disabled = (i === 0);
-  nav.querySelector('[data-accion="revelar"]').disabled = (i >= total);
-  nav.querySelector('.pasos-cuenta').textContent = i ? `paso ${i} de ${total}` : `${total} pasos`;
-}
-
-function siguientePaso(clave){
-  const ej = BLOQUES[clave];
-  if (ej.construye) return pasoPizarra(clave, 1);
-  const i = avance[clave] || 0;
-  if (i >= totalPasos(ej)) return;
-  const lista = document.getElementById('pasos-' + clave);
-  const li = document.createElement('li');
-  if (i < ej.pasos.length){
-    li.innerHTML = `<span class="n">${i + 1}</span><div class="t">${ej.pasos[i]}</div>`;
-  } else if (i === ej.pasos.length){
-    li.className = 'final';
-    li.innerHTML = `<span class="n">=</span><span class="t final-txt">${ej.final}</span>`;
-  } else {
-    li.className = 'control';
-    li.innerHTML = `<span class="n">✓</span><div class="t">${ej.control}</div>`;
-  }
-  // lo anterior se atenúa; lo nuevo entra al frente
-  pasosVivos(lista).forEach(x => { x.classList.remove('recien'); x.classList.add('pasado'); });
-  li.classList.add('recien');
-  lista.appendChild(li);
-  avance[clave] = i + 1;
-  const nav = ubicaNav(clave);
-  llevaAlaVista(nav);            // se mide con la caja ya en su lugar final
-  abreCaja(li);
-  if (ej.grafica){
-    // la recta se dibuja con la respuesta; el punto de control, con el control
-    if (li.classList.contains('final')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2, 'final');
-    if (li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.xs.length, 'control');
-  }
-  actualizaNav(clave);
-}
-
-function pasoAtras(clave){
-  const ej = BLOQUES[clave];
-  if (ej.construye) return pasoPizarra(clave, -1);
-  const lista = document.getElementById('pasos-' + clave);
-  const vivos = pasosVivos(lista);
-  const li = vivos[vivos.length - 1];
-  if (!li) return;
-  const g = ej.grafica && document.getElementById('graf-' + clave);
-  if (g && li.classList.contains('final')) g.hidden = true;
-  if (g && li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
-  li.dataset.saliendo = '1';
-  const previo = vivos[vivos.length - 2];
-  if (previo) previo.classList.remove('pasado');
-  const nav = ubicaNav(clave);
-  llevaAlaVista(nav);
-  cierraCaja(li, () => li.remove());
-  avance[clave] = Math.max(0, (avance[clave] || 0) - 1);
-  actualizaNav(clave);
-}
-
-/* ═══ la pizarra ═══
-   Los primeros `fija` pasos (la pregunta) quedan escritos arriba. Desde
-   ahí, la cuenta de cada paso reemplaza a la anterior en la misma caja,
-   como cuando se borra y se vuelve a escribir. La tabla y el plano
-   crecen de a un punto. */
-function laminaDe(ej, k){
-  const s_ = k - 1;
-  if (s_ < ej.pasos.length) return { cls:'', html:`<div class="t">${ej.pasos[s_]}</div>` };
-  if (s_ === ej.pasos.length) return { cls:'final', html:`<span class="n">=</span><span class="final-txt">${ej.final}</span>` };
-  return { cls:'control', html:`<span class="n">✓</span><div class="t">${ej.control}</div>` };
-}
-
-function cambiaTrabajo(clave, lam){
-  const zona = document.getElementById('trabajo-' + clave);
-  const nav = zona.querySelector('.pasos-nav');
-  const antes = zona.getBoundingClientRect().height;
-  // la cuenta anterior se borra en su lugar, sin empujar
-  zona.querySelectorAll(':scope > .lamina:not(.saliendo)').forEach(v => {
-    v.classList.add('saliendo');
-    if (!movimiento() || !v.animate){ v.remove(); return; }
-    Object.assign(v.style, { position:'absolute', top:v.offsetTop + 'px', left:v.offsetLeft + 'px',
-                             width:v.offsetWidth + 'px', margin:'0' });
-    alTerminar(v.animate([{ opacity:1 }, { opacity:0, transform:'translateY(-10px)' }],
-              { duration:240, easing:'ease-in', fill:'forwards' }), 240, () => v.remove());
-  });
-  if (lam){
-    const nueva = document.createElement('div');
-    nueva.className = `lamina ${lam.cls} recien`;
-    nueva.innerHTML = lam.html;
-    zona.insertBefore(nueva, nav);
-  }
-  const despues = zona.getBoundingClientRect().height;
-  if (movimiento() && zona.animate && Math.abs(antes - despues) > 1){
-    zona.style.overflow = 'hidden';
-    alTerminar(zona.animate([{ height:antes + 'px' }, { height:despues + 'px' }],
-                 { duration:380, easing:SUAVE }), 380, () => { zona.style.overflow = ''; });
-  }
-}
-
-function pasoPizarra(clave, dir){
-  const ej = BLOQUES[clave], c = ej.construye;
-  const k0 = avance[clave] || 0, k = k0 + dir;
-  if (k < 0 || k > totalPasos(ej)) return;
-  avance[clave] = k;
-  const fija = c.fija || 0;
-  const zonaFija = document.getElementById('fija-' + clave);
-  if (dir > 0 && k <= fija){
-    const lam = document.createElement('div');
-    lam.className = 'lamina recien';
-    lam.innerHTML = laminaDe(ej, k).html;
-    zonaFija.appendChild(lam);
-    abreCaja(lam);
-  }
-  if (dir < 0 && k0 <= fija){
-    const u = zonaFija.lastElementChild;
-    if (u) cierraCaja(u, () => u.remove());
-  }
-  if (k > fija || k0 > fija) cambiaTrabajo(clave, k > fija ? laminaDe(ej, k) : null);
-  pintaConstruccion(clave, dir > 0);
-  llevaAlaVista(document.querySelector(`[data-nav="${clave}"]`));
-  actualizaNav(clave);
-}
-
-document.addEventListener('click', ev => {
-  const b = ev.target.closest('[data-accion]');
-  if (!b || !b.dataset.bloque) return;
-  if (b.dataset.accion === 'revelar') siguientePaso(b.dataset.bloque);
-  if (b.dataset.accion === 'atras') pasoAtras(b.dataset.bloque);
-});
-
-/* cada juego de botones, a la esquina de su enunciado. Va al final: ubicaNav
-   usa definiciones de más arriba, y antes de ellas el guion se cortaría. */
-Object.keys(BLOQUES).forEach(k => ubicaNav(k));
+/* ═══ el armado ═══
+   La plantilla, los pasos, el cuaderno, el plano y el movimiento están en
+   assets/pizarra.js: esta página trae solo sus datos. */
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'7mo', temasLibro:7 });
 </script>
 
 
@@ -1439,146 +999,11 @@ document.querySelectorAll('[data-ec]').forEach(b => {
 });
 balArranca(6, -5, 2, 11);
 
-/* ═══ la recta: un lienzo que usan el taller y los ejemplos ═══ */
-/* op, para animar: pop = [[índice, retraso]] de los puntos que caen;
-   guia = índice del punto con sus guías (animaGuia: si suben ahora);
-   dibujaRecta = si la recta se traza sola, desde retrasoRecta. */
-function lienzoRecta(a, b, puntos, R = 8, tam = 400, destacado = 2, conRecta = true, anterior = null, op = {}){
-  const M_ = 22, U = (tam - 2 * M_) / (2 * R);
-  const px = u => M_ + (u + R) * U;
-  const py = v => M_ + (R - v) * U;
-  let g = '';
-  for (let i = -R; i <= R; i++){
-    const cls = (i % 4 === 0) ? 'grilla-fuerte' : 'grilla';
-    g += `<line class="${cls}" x1="${px(i)}" y1="${py(-R)}" x2="${px(i)}" y2="${py(R)}"/>`;
-    g += `<line class="${cls}" x1="${px(-R)}" y1="${py(i)}" x2="${px(R)}" y2="${py(i)}"/>`;
-  }
-  g += `<line class="eje" x1="${px(-R)}" y1="${py(0)}" x2="${px(R)}" y2="${py(0)}"/>`;
-  g += `<line class="eje" x1="${px(0)}" y1="${py(-R)}" x2="${px(0)}" y2="${py(R)}"/>`;
-  for (let i = -R; i <= R; i += 2){
-    if (i === 0) continue;
-    g += `<text class="rotulo-eje" x="${px(i)}" y="${py(0) + 14}" text-anchor="middle">${i}</text>`;
-    g += `<text class="rotulo-eje" x="${px(0) - 6}" y="${py(i) + 4}" text-anchor="end">${i}</text>`;
-  }
-  // una recta, recortada al recuadro
-  const dentro = t => t >= -R - 1e-9 && t <= R + 1e-9;
-  const segmento = (av, bv, cls, traza = false) => {
-    const pts = [];
-    for (const xx of [-R, R]){ const yy = av * xx + bv; if (dentro(yy)) pts.push([xx, yy]); }
-    if (av !== 0) for (const yy of [-R, R]){ const xx = (yy - bv) / av; if (dentro(xx)) pts.push([xx, yy]); }
-    const u = pts.filter((p, i) => pts.findIndex(q => Math.abs(q[0] - p[0]) < 1e-9 && Math.abs(q[1] - p[1]) < 1e-9) === i);
-    if (u.length < 2) return '';
-    // se traza desde la izquierda
-    u.sort((p, q) => p[0] - q[0]);
-    const [x1, y1, x2, y2] = [px(u[0][0]), py(u[0][1]), px(u[1][0]), py(u[1][1])];
-    const estilo = traza
-      ? ` style="--largo:${Math.hypot(x2 - x1, y2 - y1).toFixed(1)}; animation-delay:${op.retrasoRecta || 0}s"` : '';
-    return `<line class="${cls}${traza ? ' dibuja' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"${estilo}/>`;
-  };
-  // la de antes, en punteado, para que se vea cómo se movió
-  if (anterior) g += segmento(valor(anterior.a), valor(anterior.b), 'recta-anterior');
-  if (conRecta) g += segmento(valor(a), valor(b), 'recta1', !!op.dibujaRecta);
-  // las guías del punto del momento: desde su x en el eje, sube a su altura
-  if (op.guia != null && puntos[op.guia]){
-    const X = valor(puntos[op.guia][0]), Y = valor(puntos[op.guia][1]);
-    if (dentro(X) && dentro(Y)){
-      const an = op.animaGuia;
-      g += `<line class="guia${an ? ' sube' : ''}" x1="${px(X)}" y1="${py(0)}" x2="${px(X)}" y2="${py(Y)}"
-               style="transform-origin:${px(X)}px ${py(0)}px"/>`;
-      g += `<line class="guia${an ? ' cruza' : ''}" x1="${px(X)}" y1="${py(Y)}" x2="${px(0)}" y2="${py(Y)}"
-               style="transform-origin:${px(X)}px ${py(Y)}px"/>`;
-      g += `<circle class="marca-x${an ? ' late' : ''}" cx="${px(X)}" cy="${py(0)}" r="4"
-               style="transform-origin:${px(X)}px ${py(0)}px"/>`;
-    }
-  }
-  puntos.forEach((p, i) => {
-    const X = valor(p[0]), Y = valor(p[1]);
-    if (!dentro(X) || !dentro(Y)) return;
-    const cae = (op.pop || []).find(q => q[0] === i);
-    const origen = `transform-origin:${px(X)}px ${py(Y)}px`;
-    if (cae) g += `<circle class="onda" cx="${px(X)}" cy="${py(Y)}" r="6.5" style="${origen}; animation-delay:${cae[1] + .05}s"/>`;
-    g += `<circle class="${i === destacado ? 'punto-control' : 'punto-tabla'}${cae ? ' aparece' : ''}" cx="${px(X)}" cy="${py(Y)}" r="6.5"
-             style="${origen}${cae ? `; animation-delay:${cae[1]}s` : ''}"/>`;
-    const etiqueta = `(${txtPlano(p[0])}, ${txtPlano(p[1])})`;
-    // abajo del eje, el rótulo va abajo del punto: arriba se pisaría con los
-    // números del eje; cerca del borde derecho, va a la izquierda
-    const yRot = Y < 0 ? py(Y) + 20 : py(Y) - 9;
-    const aLaIzq = X > R - 3;
-    g += `<text class="rotulo-punto${cae ? ' aparece-rot' : ''}" x="${aLaIzq ? px(X) - 9 : px(X) + 9}" y="${yRot}"${aLaIzq ? ' text-anchor="end"' : ''}${cae ? ` style="animation-delay:${cae[1] + .12}s"` : ''}>${etiqueta}</text>`;
-  });
-  return g;
-}
-
-/* dentro del SVG no hay HTML: la fracción va con barra */
-function txtPlano(p){
-  const s = p.n < 0 ? '−' : '';
-  return p.d === 1 ? s + Math.abs(p.n) : s + Math.abs(p.n) + '/' + p.d;
-}
-
 /* x = 0, k y 2k, con k el denominador de la pendiente: así y no tiene
    fracciones (si b es entero). El tercero es el punto de control. */
 function tablaPuntos(a, b){
   const k = a.d;
   return [0, k, 2 * k].map(x0 => { const X = fr(x0); return [X, suma(prod(a, X), b)]; });
-}
-
-/* la mini gráfica que aparece al terminar un ejemplo del tema 4 */
-/* El ejemplo que construye su gráfico: el plano está vacío al principio;
-   desde el paso `desde`, cada paso agrega un renglón a la tabla y un punto
-   al plano; con la respuesta aparece la recta, y con el control, el punto
-   que nadie calculó. */
-function pintaConstruccion(clave, avanzando = false){
-  const ej = BLOQUES[clave], c = ej.construye;
-  const k = avance[clave] || 0;
-  const a = fr(...c.a), b = fr(...c.b);
-  const X = v => Array.isArray(v) ? fr(v[0], v[1]) : fr(v);
-  const hechos = Math.max(0, Math.min(c.xs.length, k - c.desde + 1));
-  const conRecta = k >= ej.pasos.length + 1;
-  const conControl = k >= ej.pasos.length + 2;
-  const puntos = c.xs.slice(0, hechos).map(v => [X(v), suma(prod(a, X(v)), b)]);
-  if (conControl) puntos.push([fr(c.control), suma(prod(a, fr(c.control)), b)]);
-  const ultimo = puntos.length - 1;
-
-  // qué acaba de pasar, para animar solo eso
-  const recienPunto = avanzando && !conRecta && hechos > 0 && k - c.desde + 1 === hechos;
-  const recienRecta = avanzando && k === ej.pasos.length + 1;
-  const recienControl = avanzando && k === ej.pasos.length + 2;
-  const op = {};
-  if ((!conRecta && hechos > 0) || conControl){
-    op.guia = ultimo;
-    op.animaGuia = recienPunto || recienControl;
-    if (op.animaGuia) op.pop = [[ultimo, .82]];
-  }
-  if (recienRecta){ op.dibujaRecta = true; op.retrasoRecta = .1; }
-
-  const filas = puntos.map((p, i) => {
-    const cls = [conControl && i === ultimo ? 'control' : '',
-                 (recienPunto || recienControl) && i === ultimo ? 'fila-nueva' : ''].join(' ');
-    return `<tr class="${cls}"><td>${txt(p[0])}</td><td>${txt(p[1])}</td></tr>`;
-  }).join('');
-  document.getElementById('tabla-' + clave).innerHTML =
-    `<table class="t-mini"><tr><th>x</th><th>y</th></tr>${filas ||
-      '<tr class="vacia"><td colspan="2">sin valores</td></tr>'}</table>`;
-  document.getElementById('graf-' + clave).innerHTML = `<div class="lienzo"><svg viewBox="0 0 400 400" role="img"
-      aria-label="El plano cartesiano con los puntos de la tabla">${
-      lienzoRecta(a, b, puntos, 8, 400, conControl ? ultimo : -1, conRecta, null, op)}</svg></div>`;
-}
-
-function muestraGrafica(clave, g, cuantos = 3, animar = null){
-  const a = fr(...g.a), b = fr(...g.b);
-  const puntos = g.xs.slice(0, cuantos).map(x0 => { const X = fr(x0); return [X, suma(prod(a, X), b)]; });
-  const op = {};
-  if (animar === 'final'){
-    // primero caen los puntos de la tabla, de a uno; después se traza la recta
-    op.pop = puntos.map((_, i) => [i, .1 + i * .28]);
-    op.dibujaRecta = true;
-    op.retrasoRecta = .15 + puntos.length * .28;
-  }
-  if (animar === 'control'){ op.guia = puntos.length - 1; op.animaGuia = true; op.pop = [[puntos.length - 1, .82]]; }
-  const div = document.getElementById('graf-' + clave);
-  div.innerHTML = `<div class="lienzo"><svg viewBox="0 0 400 400" role="img"
-    aria-label="La recta del ejemplo con los puntos de la tabla">${lienzoRecta(a, b, puntos, 8, 400, g.destacar ?? 2, true, null, op)}</svg></div>`;
-  div.hidden = false;
 }
 
 /* ═══ el taller de la recta ═══
@@ -1588,17 +1013,6 @@ function muestraGrafica(clave, g, cuantos = 3, animar = null){
    docente (manual); en manual, si cambia la recta, las x se quedan y las y
    se recalculan. */
 const gr = { modo:'auto', xs:[], anterior:null, cambio:'' };
-
-/* acepta 3, −2, 1/2 y también 2,5 */
-function leeNumero(bruto){
-  const r = lee(bruto);
-  if (r && !r.esx) return r.f;
-  const m = String(bruto).trim().replace(/−/g, '-').match(/^(-?)(\d+)[.,](\d+)$/);
-  if (!m) return null;
-  const den = Math.pow(10, m[3].length);
-  const num = Number(m[2]) * den + Number(m[3]);
-  return fr(m[1] ? -num : num, den);
-}
 
 const signo = v => v > 0 ? 1 : v < 0 ? -1 : 0;
 
@@ -1708,7 +1122,6 @@ document.querySelector('#svg-recta').closest('.lab').addEventListener('click', e
   dibujaRecta();
 }));
 
-Object.keys(BLOQUES).forEach(k => { if (BLOQUES[k].construye) pintaConstruccion(k); });
 dibujaRecta();
 </script>
 

@@ -45,6 +45,7 @@ assets/
   clase.css                 los componentes de las páginas de clase
   sitio.css                 navegación y portadas
   proyeccion.js             el panel de proyección
+  pizarra.js                el motor de las clases: la pizarra, los pasos, el movimiento
   clase.js                  los botones Observador y Notas de las clases
   timer.js                  el timer de pantalla completa, con música generada
   img/                      logos
@@ -92,9 +93,7 @@ tomar `2x − 3`?—; la tabla se llena con x = 0, 1, 2, −1/2 y 5 mientras a l
 derecha, en un plano vacío, aparece un punto por paso, y la recta aparece
 recién con la respuesta. La pregunta del observador es "¿cómo pasamos de
 tener puntos a una línea entera?". En los datos del guion es un tema con
-`puente:true` y un `id` propio, y el ejemplo lleva `construye:` en lugar de
-`grafica:`: el plano se ve desde el principio y crece paso a paso, para
-adelante y para atrás.
+`puente:true`, un `id` propio y `entre:'el tema 3 y el 4'`.
 
 **Cada tema tiene dos partes en pantalla y dos en botones:**
 
@@ -130,7 +129,7 @@ cada ejemplo también:
 <body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
 ```
 
-La unidad 7 de 7.º queda en 44 diapositivas.
+La unidad 7 de 7.º queda en 46 diapositivas.
 
 **Los talleres dejan experimentar, y muestran el cambio.** Si algo se puede
 variar, tiene botones + y − además del campo, y lo anterior queda a la vista:
@@ -156,42 +155,76 @@ window.CLASE = { secciones: [
 y marca cada bloque con `data-tema="3"` (la introducción es `unidad`, el
 desafío `desafio`).
 
-**Los pasos van y vuelven, y los botones viajan con la clase.** Cada ejemplo
-tiene "← Anterior", un contador ("paso 2 de 4") y "Siguiente →". Al llegar al
-final se puede volver: nunca queda un botón muerto. Los tres van en la
-esquina inferior derecha de la última caja que apareció —el enunciado, si
-todavía no hay pasos— y bajan o suben con cada paso; si quedan fuera de la
-pantalla, la página se corre lo justo para mostrarlos, sin quedar debajo
-de los botones flotantes. En un ejemplo largo nunca quedan allá arriba.
+**Todo ejemplo es una pizarra, haya o no un gráfico.** Es la regla más
+importante de la clase, y salió de ver funcionar el puente. Como en los
+videos de Khan Academy, la pantalla se parte en dos:
 
-**Un ejemplo que construye un gráfico es una pizarra**, como en los videos de
-Khan Academy: a la izquierda, chicos, la ecuación, la tabla de valores y la
-cuenta del momento; a la derecha, el plano grande, **más de la mitad de la
-pantalla** (en proyección la diapositiva usa todo el ancho). La pregunta del
-primer paso queda fija arriba; cada cuenta nueva **se escribe en el mismo
-lugar donde estaba la anterior**, que se borra, en vez de apilarse debajo.
-Lo que ya se sabe queda en la tabla. En el guion es `construye:` con
-`fija: 1`, y la plantilla es `bloquePizarra`.
+- **A la izquierda**, chicos: el enunciado, lo que queda fijo (la pregunta,
+  la incógnita con su nombre: `fija: 1` deja escrito el primer paso) y lo
+  que se dice en este paso. Lo que se dice **se borra y se reescribe en el
+  mismo lugar**, como en el pizarrón: no se apila debajo del anterior.
+- **A la derecha**, grande, **lo que se va acumulando**, más de la mitad de
+  la pantalla (en proyección la diapositiva usa todo el ancho):
+  - **el cuaderno**: la resolución entera, un renglón nuevo por paso y
+    todos los `=` en una columna, como la escribe el alumno. Arranca con la
+    ecuación (`inicio:`); los renglones del paso de ahora se escriben de a
+    uno y los de antes quedan, más tenues. En el tema 2 el cuaderno son los
+    valores que se prueban; en el 6, la traducción de palabras a letras;
+  - **el plano**, si el ejemplo dibuja (`construye:`): vacío al principio,
+    un punto por paso, con su renglón en la tabla chica de la izquierda; la
+    recta aparece recién con la respuesta y el control es un punto más;
+  - **un dibujo propio** de la página (`lienzo:`), cuando el tema lo pide:
+    una figura que se va armando, por ejemplo.
+
+En el guion, un paso que escribe en el cuaderno es
+`P('Sumo 5 a los dos miembros.', '6x − 5 + 5 = 25 + 5', '6x = 30')`: el
+texto va a la izquierda y los renglones al cuaderno. Un paso que es solo un
+texto se escribe como texto. En un ejemplo con plano, la cuenta del punto
+va a la izquierda, con `A()`, porque la derecha es el plano.
+
+La respuesta reemplaza al último paso a la izquierda, y el control se
+escribe **debajo** de la respuesta, que se queda: el control controla algo
+que tiene que estar a la vista.
+
+**Los pasos van y vuelven.** Cada ejemplo tiene "← Anterior", un contador
+("paso 2 de 4") y "Siguiente →". Al llegar al final se puede volver: nunca
+queda un botón muerto. Los botones van en la esquina de la caja de la
+izquierda, la de lo que se dice en este paso, que no se mueve de lugar: no
+hay que ir a buscarlos. Si quedan fuera de la pantalla, la página se corre
+lo justo para mostrarlos, sin dejarlos debajo de los botones flotantes.
 
 **El movimiento dice qué cambió y qué quedó igual**, a la manera de las
 animaciones de 3Blue1Brown:
 
-- Nada empuja nada de golpe: una caja nueva se abre desde altura cero y la
-  página se corre suave, lo justo.
-- Lo anterior no desaparece: se atenúa. Lo nuevo entra en su lugar.
-- Los renglones de una cuenta alineada se escriben de a uno, y lo resaltado
-  con `N()` se enciende después, cuando ya se leyó el renglón.
+- Nada empuja nada de golpe: una caja que cambia de alto lo hace despacio,
+  y la página se corre suave, lo justo.
+- Lo que se dice en el paso anterior se borra en su lugar, y lo nuevo se
+  escribe encima.
+- En el cuaderno, lo anterior no desaparece: se apaga un poco. Los
+  renglones nuevos se escriben de a uno, y lo resaltado con `N()` se
+  enciende después, cuando ya se leyó el renglón.
 - En el plano, el punto sube desde la x por sus guías, aparece con un pulso,
   y el renglón nuevo de la tabla se ilumina al mismo tiempo. La recta se
   traza de punta a punta, recién con la respuesta.
-- Para atrás es el mismo movimiento al revés.
+- Para atrás es el mismo movimiento al revés: lo que sobra se apaga y se va.
 - Con "reducir movimiento" del sistema operativo no hay animaciones, solo el
   estado final.
 
-Toda limpieza que espera el final de una animación tiene además un
-temporizador de respaldo (`alTerminar`): con la ventana oculta o el
-navegador ocupado el evento puede no llegar, y las cajas viejas quedaban
-acumuladas.
+**La pizarra, los botones y el movimiento son de la arquitectura, no de
+cada página.** Viven en `assets/pizarra.js` (y sus estilos en
+`assets/clase.css`). Una página de clase trae **solo sus datos** —los
+temas, los ejemplos, las preguntas del observador, las notas, los
+talleres— y termina con:
+
+```js
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'7mo', temasLibro:7 });
+```
+
+Si algo de la pizarra se cambia, se cambia en el motor y cambia en todas
+las clases a la vez. Toda limpieza que espera el final de una animación
+tiene además un temporizador de respaldo (`alTerminar`): con la ventana
+oculta o el navegador ocupado el aviso de fin puede no llegar, y las cajas
+viejas quedaban acumuladas.
 
 **Lo nuevo va resaltado** con `N()`: lo que se agrega a los dos miembros (el
 `+ 5`, el `· 2`, el m.c.m. adelante de cada término), el valor que se
@@ -223,7 +256,9 @@ cadena no se lee. En el guion de la página eso lo hace `A()`: cada
 argumento es una igualdad, una continuación (`' = −1'`) o un par
 `['izquierda', '3(1 + 2) = 9']` para cuando se calcula cada miembro por
 separado. Si los dos miembros no coinciden se usa `≠`, nunca un `=` falso.
-El verificador rechaza la página si encuentra una cadena en un renglón.
+Los renglones del cuaderno (los de `P()`) siguen la misma regla: cada uno
+es una igualdad, una continuación o un par con rótulo. El verificador
+rechaza la página si encuentra una cadena en un renglón.
 
 **La notación es la del libro.** `·` para multiplicar, `:` para dividir,
 fracciones apiladas (`Q(numerador, denominador)` en el guion de la página) y
@@ -268,9 +303,11 @@ correrlo.
 Falta el de `factoreo.html` y el de `sistemas.html`: son anteriores a esta
 carpeta.
 
-Las páginas de clase enlazan `assets/clase.css`, que tiene los componentes
-compartidos (la tapa, la ficha de cada paso, el enunciado, los ganchos, los
-laboratorios). En su `<style>` propio va solo lo que es de esa página.
+Las páginas de clase cargan `assets/pizarra.js` (sin `defer`, antes de su
+propio guion) y enlazan `assets/clase.css`, que tiene los componentes
+compartidos: la tapa, el concepto, la pizarra, el cuaderno, el plano, los
+laboratorios. En su `<style>` propio va solo lo que es de esa página, como
+los controles de un taller.
 
 ---
 
@@ -399,9 +436,11 @@ series originales propias.
 ### Diapositivas nuevas
 
 1. Leer la unidad en el libro, entera (ver "Cómo es una clase").
-2. Copiar `matematica/7mo/ecuaciones.html` como punto de partida: tiene la
-   anatomía completa. Se reemplaza el arreglo `TEMAS`, y la plantilla que lo
-   dibuja no se toca.
+2. Copiar `matematica/7mo/ecuaciones.html` como punto de partida. La página
+   es solo datos: se reemplazan `TEMAS`, `DESAFIO`, `PREGUNTA_INICIAL`,
+   `UNIDAD` y los talleres. La plantilla, los pasos y el movimiento están
+   en `assets/pizarra.js` y no se copian: si hace falta algo nuevo para
+   todas las clases (un tipo de dibujo, un comportamiento), va ahí.
 3. Escribir primero el verificador (`verificacion/<tema>_<grado>.py`) con
    todos los ejemplos, correrlo, y recién después escribir la página con los
    números que dio.

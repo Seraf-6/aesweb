@@ -478,17 +478,21 @@ def verifica_pagina():
     for parte in ('concepto', 'ejemplos', 'preguntas', 'notas'):
         if f'{parte}:' not in cuerpo:
             mal(f'los temas no declaran la parte «{parte}»')
-    # las notas y el observador son botones flotantes que siguen al tema
-    for pieza in ('assets/clase.js', 'window.CLASE', 'data-tema='):
+    # la pizarra, los botones y el movimiento son del motor compartido
+    # (assets/pizarra.js); las notas y el observador, de assets/clase.js
+    for pieza in ('assets/pizarra.js', 'assets/clase.js', 'Pizarra.unidad('):
         if pieza not in cuerpo:
-            mal(f'falta «{pieza}»: sin eso no hay botones de notas ni de observador')
+            mal(f'falta «{pieza}» en la página')
+    motor = (RAIZ / 'assets' / 'pizarra.js').read_text(encoding='utf-8')
+    for pieza in ('window.CLASE', 'data-tema=', 'function A(', 'function totalPasos(',
+                  'data-accion="atras"'):
+        if pieza not in motor:
+            mal(f'falta «{pieza}» en assets/pizarra.js')
     # cuando una cuenta sigue, sigue en el renglón de abajo (A()), con los =
     # alineados: nunca dos igualdades encadenadas con "o sea", "queda" o un punto
     for encadenado in ('o sea ${M(', 'queda ${M(', 'Queda ${M('):
         if encadenado in cuerpo:
             mal(f'hay cuentas encadenadas en un mismo renglón («{encadenado}»): van en un A()')
-    if 'function A(' not in cuerpo:
-        mal('falta A(), el que alinea las cuentas')
 
     # el control va después de la respuesta: nunca es un paso de la resolución
     for n, linea in enumerate(html.splitlines(), 1):
@@ -500,12 +504,9 @@ def verifica_pagina():
     for n in range(1, len(renglones)):
         if renglones[n].lstrip().startswith('control:') and not renglones[n - 1].rstrip().endswith(','):
             mal(f'línea {n + 1}: falta la coma antes de «control:», y la página no carga')
-    if 'function totalPasos(' not in cuerpo:
-        mal('falta totalPasos(): el control tiene que mostrarse después de la respuesta')
-
-    # cada paso se puede recorrer para atrás
-    if 'data-accion="atras"' not in cuerpo:
-        mal('los ejemplos no tienen botón para volver un paso')
+    # el dato que el motor ya no lee no puede quedar suelto
+    if 'grafica:{' in cuerpo:
+        mal('un ejemplo usa «grafica:», que ya no existe: el plano se arma con «construye:»')
 
 
 def main():
