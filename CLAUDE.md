@@ -82,6 +82,15 @@ hasta la 74, +2 entre la 76 y la 222, y +1 de la 224 en adelante. Los
 ejemplos de la clase son **propios**: los del libro quedan para que los
 trabajen los alumnos.
 
+**Cuando el libro salta, se tiende un puente.** Seguir el libro no quiere decir
+copiar sus huecos. Si entre un tema y el siguiente hay un salto que un alumno
+observador preguntaría ("¿de dónde salió la y?"), va un bloque puente entre
+los dos, con la misma anatomía de un tema y marcado "no está en el libro".
+En la unidad 7 de 7.º hay uno entre el tema 3 y el 4: la misma ecuación,
+`2x − 1 = …`, con tres resultados distintos, y después se da vuelta la
+pregunta —elijo la x, calculo— y el resultado que cambia pasa a llamarse y.
+En los datos del guion es un tema con `puente:true` y un `id` propio.
+
 **Cada tema tiene dos partes en pantalla y dos en botones:**
 
 1. **Concepto.** La fórmula o el vocabulario en grande (una `forma` o

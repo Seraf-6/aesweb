@@ -219,6 +219,38 @@ def tema3():
 
 
 # ══════════════════════════════════════════════════════════════════
+#  Puente entre el tema 3 y el 4 · no está en el libro
+#  La misma expresión, 2x − 1, con tres resultados distintos; después se
+#  da vuelta la pregunta y aparece la y.
+# ══════════════════════════════════════════════════════════════════
+def puente():
+    print('Puente · de la ecuación a la función')
+    res = []
+    for c in (5, 7, 1):
+        v = resuelve(2 * x - 1, sp.Integer(c), lambda t: 2 * t - 1, lambda t, c=c: F(c),
+                     f'puente, 2x − 1 = {c}')
+        res.append((f'2x − 1 = {c}', v))
+        aparece(f'<i>x</i> = {html_num(v)}', f'puente, 2x − 1 = {c}')
+    sin_repetir('puente', res)
+
+    # la tabla: elijo x y calculo 2x − 1
+    tabla = [(F(k), 2 * F(k) - 1) for k in range(5)]
+    for xk, yk in tabla:
+        aparece(f'({html_num(xk)}, {html_num(yk)})', 'puente, tabla')
+    # las tres respuestas de antes están en la tabla
+    for rotulo, v in res:
+        c = int(rotulo.split('= ')[1])
+        if (v, F(c)) not in tabla:
+            mal(f'puente: la respuesta de {rotulo} no está en la tabla')
+    # los cinco puntos, alineados: el escalón es siempre el mismo
+    saltos = {tabla[i + 1][1] - tabla[i][1] for i in range(4)}
+    if saltos != {2}:
+        mal(f'puente: los saltos de y no son todos iguales: {saltos}')
+    print('   ' + ' · '.join(f'{r} → x = {v}' for r, v in res) +
+          ' · tabla ' + ', '.join(f'({a}, {b})' for a, b in tabla) + ' · sube de a 2')
+
+
+# ══════════════════════════════════════════════════════════════════
 #  Tema 4 · Representación gráfica (págs. 140–141)
 #  Tabla de valores, dos puntos y un tercero para controlar.
 # ══════════════════════════════════════════════════════════════════
@@ -468,7 +500,7 @@ def verifica_pagina():
 
 def main():
     print(f'Verificando {PAGINA.relative_to(RAIZ).as_posix()}\n')
-    arranque(); tema1(); tema2(); tema3(); tema4(); tema4_cruce(); tema5(); tema6(); tema7()
+    arranque(); tema1(); tema2(); tema3(); puente(); tema4(); tema4_cruce(); tema5(); tema6(); tema7()
     diofanto(); diofanto_por_84()
     verifica_pagina()
     print()

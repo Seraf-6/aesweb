@@ -473,6 +473,91 @@ const TEMAS = [
       desafío: escribirla, dejar que "tachen" y preguntar dónde está el error.</p>`
 },
 
+/* ─────────────────── puente entre el 3 y el 4 ───────────────────
+   No está en el libro. El libro pasa de una incógnita con una respuesta a
+   y = ax + b sin decir de dónde sale la y; este bloque es ese paso. */
+{
+  n:'3→4', id:'puente', puente:true, corto:'Ecuación → función', titulo:'De la ecuación a la función',
+  concepto:{
+    forma:'y = 2x − 1', formaRot:'todas las preguntas de la forma 2x − 1 = … juntas',
+    serie:[
+      { rot:'en el tema 3', txt:'el resultado es un dato fijo, y se busca la x' },
+      { rot:'desde ahora', txt:'se elige la x y se calcula el resultado, que se llama y' },
+    ],
+    puntos:[
+      `Una ecuación como ${M('2x − 1 = 5')} tiene <b>una sola</b> respuesta.`,
+      'Si cambia el resultado, cambia la respuesta: cada resultado es una pregunta distinta.',
+      `Si se da vuelta la pregunta —elijo ${M('x')}, calculo cuánto da— aparece una tabla. Al resultado, que cambia, se le pone nombre: ${M('y')}.`,
+    ]
+  },
+  ejemplos:[
+    { titulo:'la pregunta de siempre', enun:M('2x − 1 = 5'),
+      pasos:[
+        `Sumo 1 a los dos miembros:${A(`2x − 1 ${N('+ 1')} = 5 ${N('+ 1')}`, '2x = 6')}`,
+        `Divido los dos miembros por 2:${A(`2x ${N(': 2')} = 6 ${N(': 2')}`)}`,
+      ], final:'<i>x</i> = 3',
+      control:`Control:${A('2 · 3 − 1 = 5 ✓')}` },
+    { titulo:'cambio solo el resultado: 5 por 7', enun:M(`2x − 1 = ${N('7')}`),
+      pasos:[
+        `Sumo 1:${A(`2x − 1 ${N('+ 1')} = 7 ${N('+ 1')}`, '2x = 8')}`,
+        `Divido por 2:${A(`2x ${N(': 2')} = 8 ${N(': 2')}`)}`,
+      ], final:'<i>x</i> = 4',
+      control:`Control:${A('2 · 4 − 1 = 7 ✓')}` },
+    { titulo:'y otra vez: 7 por 1', enun:M(`2x − 1 = ${N('1')}`),
+      pasos:[
+        `Sumo 1:${A(`2x − 1 ${N('+ 1')} = 1 ${N('+ 1')}`, '2x = 2')}`,
+        `Divido por 2:${A(`2x ${N(': 2')} = 2 ${N(': 2')}`)}`,
+      ], final:'<i>x</i> = 1',
+      control:`Control:${A('2 · 1 − 1 = 1 ✓')}` },
+    { titulo:'doy vuelta la pregunta: elijo la x y calculo', enun:`¿Cuánto da ${M('2x − 1')} para cada ${M('x')}?`,
+      pasos:[
+        `Con ${M('x = 0')}:${A(`2 · ${N('0')} − 1 = −1`)}`,
+        `Con ${M('x = 1')}, 2, 3 y 4:${A(`2 · ${N('1')} − 1 = 1`, `2 · ${N('2')} − 1 = 3`, `2 · ${N('3')} − 1 = 5`, `2 · ${N('4')} − 1 = 7`)}`,
+        'Ahí están las tres respuestas de antes: el 5 sale con la <i>x</i> = 3, el 7 con la 4 y el 1 con la 1.',
+        `El resultado <b>depende</b> de la ${M('x')} que elijo. Para poder hablar de él, le pongo un nombre: ${M('y')}.`,
+      ], final:'<span class="ec"><i>y</i> = 2<i>x</i> − 1</span>: todas las preguntas juntas' },
+    { titulo:'cada pareja es un punto', enun:`Las parejas (${M('x')}, ${M('y')}) de la tabla, en el plano`,
+      grafica:{ a:[2, 1], b:[-1, 1], xs:[0, 1, 2, 3, 4], enFinal:5, destacar:3 },
+      pasos:[
+        'Cada renglón de la tabla es una pareja: <b>(0, −1)</b>, <b>(1, 1)</b>, <b>(2, 3)</b>, <b>(3, 5)</b> y <b>(4, 7)</b>.',
+        `Cada vez que ${M('x')} aumenta 1, ${M('y')} aumenta 2: el mismo escalón, siempre.`,
+      ], final:'los cinco puntos quedan en una recta',
+      control:`El punto (3, 5) es la respuesta del ejemplo 1: resolver ${M('2x − 1 = 5')} era buscar el punto de la recta que está a la altura 5.${A('2 · 3 − 1 = 5 ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿De dónde salió la y?',
+      r:`No es una incógnita nueva que haya que encontrar. Es el nombre que le pusimos al resultado de ${M('2x − 1')}, que cambia según qué ${M('x')} elijas.` },
+    { p:`¿Entonces ${I('y = 2x − 1')} no tiene una sola respuesta?`,
+      r:`No: tiene una para cada ${M('x')}. No es una pregunta, son todas juntas: ${M('2x − 1 = 5')}, ${M('2x − 1 = 7')}, ${M('2x − 1 = 1')} y todas las demás.` },
+    { p:'¿Por qué ahora hay dos letras, si antes había una?',
+      r:'Porque antes el resultado era un dato fijo, el 5. Ahora dejamos que cambie, y a lo que cambia se le pone una letra.' },
+    { p:'¿Cuál es la x y cuál es la y?',
+      r:`La ${M('x')} es la que elegís vos: por eso se llama <b>independiente</b>. La ${M('y')} es la que sale de la cuenta: <b>depende</b> de la ${M('x')}.` },
+    { p:'¿Por qué los puntos quedan en línea recta?',
+      r:`Porque cada vez que ${M('x')} aumenta 1, ${M('y')} aumenta 2, siempre lo mismo. Un escalón igual, repetido una y otra vez, dibuja una recta. Ese 2 es la <b>pendiente</b> del tema 4.` },
+    { p:'¿Dónde está en el dibujo la respuesta del ejemplo 1?',
+      r:`En el punto (3, 5). Resolver ${M('2x − 1 = 5')} es buscar el punto de la recta que está a la altura 5, y leer su ${M('x')}.` },
+    { p:'¿Cualquier ecuación del tema 3 se puede dibujar así?',
+      r:`Las de la forma ${M('ax + b = c')}, sí: el primer miembro es la recta ${M('y = ax + b')} y el segundo, una altura. Las que tienen la ${M('x')} en los dos miembros son dos rectas que se cruzan, y eso lo van a ver en 8.º.` },
+  ],
+  notas:`<p><b>Este bloque no está en el libro.</b> El libro pasa del tema 3 —una incógnita,
+      una respuesta— al tema 4 —<span class="ec"><i>y</i> = <i>ax</i> + <i>b</i></span>, dos
+      variables, infinitas parejas— presentando la función lineal como una definición. Para
+      7.º el salto es grande: la <span class="ec"><i>y</i></span> aparece sin explicación, y la
+      <span class="ec"><i>x</i></span> deja de ser "el número que busco" para pasar a ser
+      "cualquier número".</p>
+    <p>Los tres primeros ejemplos son <b>la misma ecuación cambiando solo el resultado</b>,
+      que va resaltado en el enunciado. Después del tercero conviene preguntar: "¿y si en
+      lugar de darles el resultado les doy la <i>x</i>?". El ejemplo 4 es esa vuelta.</p>
+    <p>El momento clave es el último paso del ejemplo 4: la <span class="ec"><i>y</i></span>
+      no se presenta como una incógnita sino como <b>el nombre de un resultado que
+      cambia</b>. Es la idea de dependencia, que en 8.º y en 9.º se va a llamar función.</p>
+    <p>El control del ejemplo 5 cierra el círculo: la respuesta de la primera ecuación es un
+      punto de la recta. Esa idea vuelve en el tema 4, en 8.º con los sistemas y en 9.º con
+      la parábola.</p>
+    <p>No tiene ficha propia: la del tema 4 (ficha 5) ya arranca con tablas de valores.</p>`
+},
+
 /* ─────────────────────────── 4 ─────────────────────────── */
 {
   n:4, corto:'Gráfica', titulo:'Representación gráfica de una ecuación lineal', pag:'págs. 140–141', ficha:5,
@@ -531,8 +616,8 @@ const TEMAS = [
       r:'Los que den cuentas fáciles. El 0 siempre. Si la pendiente tiene denominador, múltiplos de ese denominador, como en el ejemplo 4.' },
     { p:'¿Qué dice el número que está adelante de la x?',
       r:`Cuánto cambia ${M('y')} cada vez que ${M('x')} aumenta 1: es la <b>pendiente</b>. En ${M('y = 2x − 1')} sube 2; en ${M('y = −2x + 3')} baja 2.` },
-    { p:'¿Qué tiene que ver esto con resolver ecuaciones?',
-      r:`Resolver ${M('2x − 1 = 5')} es buscar en qué ${M('x')} la recta ${M('y = 2x − 1')} llega a la altura 5. Da ${M('x = 3')}.` },
+    { p:'¿La y siempre tiene que estar despejada?',
+      r:`Para armar la tabla conviene: con la ${M('y')} sola, cada ${M('x')} da directamente su ${M('y')}. Por eso en los ejemplos 3 y 4 lo primero es despejar.` },
   ],
   notas:`<p>El libro usa <b>tabla de valores</b> y dice que el tercer punto es para controlar
       (pág. 140): que lo hagan siempre, porque es la versión gráfica de verificar. En cada
@@ -823,6 +908,9 @@ const UNIDAD = {
       con una ficha: igualdades es la 2, expresión algebraica la 3 y así hasta problemas,
       que es la 8. Los ejemplos son todos originales; los del libro quedan para que los
       trabajen ellos.</p>
+    <p>Entre el tema 3 y el 4 hay un <b>puente</b> que no está en el libro: el libro pasa de
+      una ecuación con una incógnita a <span class="ec"><i>y</i> = <i>ax</i> + <i>b</i></span>
+      sin decir de dónde sale la <span class="ec"><i>y</i></span>. El puente es ese paso.</p>
     <p>Cada tema tiene la misma forma: el <b>concepto</b> en pocas líneas y entre cuatro y
       cinco <b>ejemplos resueltos</b> en secuencia. Cada ejemplo cambia una sola cosa
       respecto del anterior; el título dice cuál y el enunciado la muestra resaltada.
@@ -873,16 +961,20 @@ function bloqueEjemplo(clave, ej, rotulo, cinta){
 
 const BLOQUES = {};         // clave → ejemplo, para recorrer los pasos
 
+/* El puente no es un tema del libro: no tiene número, ni páginas, ni ficha. */
+const idT = t => t.id || String(t.n);
+const etiqueta = t => t.puente ? 'Puente' : `Tema ${t.n}`;
+
 document.getElementById('temas').innerHTML = TEMAS.map(t => {
   const c = t.concepto;
   const total = t.ejemplos.length;
-  t.ejemplos.forEach((ej, i) => { BLOQUES[`${t.n}-${i + 1}`] = ej; });
+  t.ejemplos.forEach((ej, i) => { BLOQUES[`${idT(t)}-${i + 1}`] = ej; });
   return `
-<article class="tema" id="tema${t.n}" data-tema="${t.n}">
-  <section class="concepto" id="t${t.n}">
-    <p class="cinta"><b>Tema ${t.n} de 7</b> · ${t.pag}</p>
+<article class="tema${t.puente ? ' puente' : ''}" id="tema${idT(t)}" data-tema="${idT(t)}">
+  <section class="concepto" id="t${idT(t)}">
+    <p class="cinta">${t.puente ? '<b>Puente entre el tema 3 y el 4</b> · no está en el libro' : `<b>Tema ${t.n} de 7</b> · ${t.pag}`}</p>
     <div class="caso-cab">
-      <div class="numero">${t.n}</div>
+      <div class="numero">${t.puente ? '→' : t.n}</div>
       <div class="caso-tit"><h3>${t.titulo}</h3></div>
     </div>
     ${c.forma ? `<div class="forma"><span class="rotulo">${c.formaRot}</span>${M(c.forma)}</div>` : ''}
@@ -892,17 +984,17 @@ document.getElementById('temas').innerHTML = TEMAS.map(t => {
   </section>
 
   <div class="ejemplos">
-    ${t.ejemplos.map((ej, i) => bloqueEjemplo(`${t.n}-${i + 1}`, ej, `Ejemplo ${i + 1}.`,
-        `<b>Tema ${t.n}</b> · ${t.corto} · ejemplo ${i + 1} de ${total}`)).join('')}
+    ${t.ejemplos.map((ej, i) => bloqueEjemplo(`${idT(t)}-${i + 1}`, ej, `Ejemplo ${i + 1}.`,
+        `<b>${etiqueta(t)}</b> · ${t.corto} · ejemplo ${i + 1} de ${total}`)).join('')}
   </div>
 
   ${t.taller ? `<section class="taller-diapo">
-    <p class="cinta"><b>Tema ${t.n}</b> · ${t.corto} · taller</p>
+    <p class="cinta"><b>${etiqueta(t)}</b> · ${t.corto} · taller</p>
     ${LABS[t.taller]}
   </section>` : ''}
 
-  <p class="ficha-link">Para practicar:
-    <a href="../../fichas/pdf/7mo/Ficha_${String(t.ficha).padStart(2, '0')}.pdf">Ficha ${t.ficha}</a></p>
+  ${t.ficha ? `<p class="ficha-link">Para practicar:
+    <a href="../../fichas/pdf/7mo/Ficha_${String(t.ficha).padStart(2, '0')}.pdf">Ficha ${t.ficha}</a></p>` : ''}
 </article>`;
 }).join('') + `
 <section class="desafio" id="desafio" data-tema="desafio">
@@ -932,15 +1024,16 @@ document.getElementById('recorrido').insertAdjacentHTML('beforebegin', `
 
 /* el recorrido de la unidad y el navegador */
 document.getElementById('recorrido').innerHTML = TEMAS.map(t =>
-  `<a href="#t${t.n}"><span class="n">Tema ${t.n}</span><span class="t">${t.corto}</span></a>`).join('');
+  `<a href="#t${idT(t)}"><span class="n">${etiqueta(t)}</span><span class="t">${t.corto}</span></a>`).join('');
 document.getElementById('nav').innerHTML =
-  TEMAS.map(t => `<a class="chip" href="#t${t.n}">${t.n}. ${t.corto}</a>`).join('') +
+  TEMAS.map(t => `<a class="chip" href="#t${idT(t)}">${t.puente ? '3 → 4' : t.n + '.'} ${t.corto}</a>`).join('') +
   '<a class="chip" href="#desafio">Desafío</a>';
 
 /* las notas y el observador viven en los botones flotantes de assets/clase.js */
 window.CLASE = { secciones: [
   { id:'unidad', titulo:'La unidad', notas:UNIDAD.notas, preguntas:UNIDAD.preguntas },
-  ...TEMAS.map(t => ({ id:String(t.n), titulo:`Tema ${t.n} · ${t.corto}`, notas:t.notas, preguntas:t.preguntas })),
+  ...TEMAS.map(t => ({ id:idT(t), titulo:t.puente ? 'Puente · de la ecuación a la función' : `Tema ${t.n} · ${t.corto}`,
+                        notas:t.notas, preguntas:t.preguntas })),
   { id:'desafio', titulo:'Desafío final', notas:DESAFIO.notas, preguntas:DESAFIO.preguntas },
 ]};
 
@@ -980,8 +1073,8 @@ function siguientePaso(clave){
   avance[clave] = i + 1;
   if (ej.grafica){
     // la recta aparece con la respuesta; el punto de control, con el control
-    if (li.classList.contains('final')) muestraGrafica(clave, ej.grafica, 2);
-    if (li.classList.contains('control')) muestraGrafica(clave, ej.grafica, 3);
+    if (li.classList.contains('final')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
+    if (li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.xs.length);
   }
   actualizaNav(clave);
 }
@@ -993,7 +1086,7 @@ function pasoAtras(clave){
   if (!li) return;
   const g = document.getElementById('graf-' + clave);
   if (g && li.classList.contains('final')) g.hidden = true;
-  if (g && li.classList.contains('control')) muestraGrafica(clave, ej.grafica, 2);
+  if (g && li.classList.contains('control')) muestraGrafica(clave, ej.grafica, ej.grafica.enFinal || 2);
   li.remove();
   avance[clave] = Math.max(0, (avance[clave] || 0) - 1);
   actualizaNav(clave);
@@ -1136,7 +1229,7 @@ document.querySelectorAll('[data-ec]').forEach(b => {
 balArranca(6, -5, 2, 11);
 
 /* ═══ la recta: un lienzo que usan el taller y los ejemplos ═══ */
-function lienzoRecta(a, b, puntos, R = 8, tam = 400){
+function lienzoRecta(a, b, puntos, R = 8, tam = 400, destacado = 2){
   const M_ = 22, U = (tam - 2 * M_) / (2 * R);
   const px = u => M_ + (u + R) * U;
   const py = v => M_ + (R - v) * U;
@@ -1164,7 +1257,7 @@ function lienzoRecta(a, b, puntos, R = 8, tam = 400){
   puntos.forEach((p, i) => {
     const X = valor(p[0]), Y = valor(p[1]);
     if (!dentro(X) || !dentro(Y)) return;
-    g += `<circle class="${i === 2 ? 'punto-control' : 'punto-tabla'}" cx="${px(X)}" cy="${py(Y)}" r="6.5"/>`;
+    g += `<circle class="${i === destacado ? 'punto-control' : 'punto-tabla'}" cx="${px(X)}" cy="${py(Y)}" r="6.5"/>`;
     const etiqueta = `(${txtPlano(p[0])}, ${txtPlano(p[1])})`;
     g += `<text class="rotulo-punto" x="${px(X) + 9}" y="${py(Y) - 9}">${etiqueta}</text>`;
   });
@@ -1190,7 +1283,7 @@ function muestraGrafica(clave, g, cuantos = 3){
   const puntos = g.xs.slice(0, cuantos).map(x0 => { const X = fr(x0); return [X, suma(prod(a, X), b)]; });
   const div = document.getElementById('graf-' + clave);
   div.innerHTML = `<div class="lienzo"><svg viewBox="0 0 400 400" role="img"
-    aria-label="La recta del ejemplo con los tres puntos de la tabla">${lienzoRecta(a, b, puntos)}</svg></div>`;
+    aria-label="La recta del ejemplo con los puntos de la tabla">${lienzoRecta(a, b, puntos, 8, 400, g.destacar ?? 2)}</svg></div>`;
   div.hidden = false;
 }
 
