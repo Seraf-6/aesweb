@@ -37,6 +37,9 @@ const I = s => String(s).replace(/\^(\d+|[a-z])/g, '<sup>$1</sup>').split(/(<[^>
 const M = s => '<span class="ec">' + I(s) + '</span>';
 const Q = (n, d) => `<span class="fr"><span>${I(String(n))}</span><span>${I(String(d))}</span></span>`;
 
+/* S() escribe un sistema de ecuaciones, una debajo de la otra, con su llave. */
+const S = (...ecs) => `<span class="sistema"><span class="llave">{</span><span class="sis-ecs">${ecs.map(M).join('')}</span></span>`;
+
 /* Los ángulos con sombrero (Â, B̂, Ĉ, D̂): B̂ y D̂ no existen como una sola
    letra, y en cursiva el sombrero se corre. Se escriben como siempre y acá
    se dibujan todos igual (.ang, en clase.css). No va dentro de un SVG. */
@@ -435,7 +438,10 @@ function pintaCuaderno(clave, avanzando, borrados = false, div = document.getEle
     return celdas(f, nueva ? n++ : 0, cls, ` data-cu="${paso}"`);
   }).join('');
   const antes = div.getBoundingClientRect().height;
-  div.innerHTML = `<div class="cuaderno"><span class="cu-rot">${ej.rotCuaderno || 'en el cuaderno'}</span>
+  // un cuaderno largo usa letra más chica desde el principio: que entre entero
+  // en la pantalla, sin cambiar de tamaño a mitad del ejemplo
+  const largo = filasHasta(ej, Infinity).length > 9 ? ' largo' : '';
+  div.innerHTML = `<div class="cuaderno${largo}"><span class="cu-rot">${ej.rotCuaderno || 'en el cuaderno'}</span>
       <div class="alineado">${cuerpo}</div></div>`;
   acompanaAlto(div, antes);
 }
@@ -507,6 +513,61 @@ Pizarra.lienzos.figura = (clave, ej, k, avanzando, div) => {
   div.innerHTML = `<div class="lienzo figura-lienzo"><svg viewBox="${ej.lienzo.vb || '0 0 400 300'}" role="img"
       aria-label="${ej.lienzo.rot || 'La figura del ejemplo'}">${
       vis.map(c => `<g class="capa${avanzando && c.en === k && k > 0 ? ' capa-nueva' : ''}">${c.svg}</g>`).join('')}</svg></div>`;
+};
+
+/* ═══ el plano con rectas y puntos, que se arma por capas ═══
+   lienzo:{ tipo:'plano', R:8, capas:[[en, cosa, hasta], …] }, con cosa:
+     { recta:[a, b, c], cls:'recta1', rot:'x + y = 5' }   la recta ax + by = c
+     { punto:[x, y], rot:'(3, 2)', guias:true }           x e y pueden ser [n, d]
+   La recta que aparece en este paso se traza; el punto cae con un pulso. */
+Pizarra.lienzos.plano = (clave, ej, k, avanzando, div) => {
+  const nP = ej.pasos.length, R = ej.lienzo.R || 8, T = 400, Mg = 22, Un = (T - 2 * Mg) / (2 * R);
+  const px = u => Mg + (u + R) * Un, py = v => Mg + (R - v) * Un;
+  const num = v => v === 'final' ? nP + 1 : v === 'control' ? nP + 2 : (v == null ? Infinity : v);
+  const val = v => Array.isArray(v) ? v[0] / v[1] : v;
+  const dentro = t => t >= -R - 1e-9 && t <= R + 1e-9;
+  let g = lienzoRecta(fr(0), fr(0), [], R, T, -1, false);
+  ej.lienzo.capas.forEach(([en, c, hasta]) => {
+    const e = num(en);
+    if (!(e <= k && k < num(hasta))) return;
+    const nueva = avanzando && e === k && k > 0;
+    if (c.recta){
+      const [a, b, cc] = c.recta, pts = [];
+      if (b !== 0) for (const x of [-R, R]){ const y = (cc - a * x) / b; if (dentro(y)) pts.push([x, y]); }
+      if (a !== 0) for (const y of [-R, R]){ const x = (cc - b * y) / a; if (dentro(x)) pts.push([x, y]); }
+      const u = pts.filter((p, i) => pts.findIndex(q => Math.abs(q[0] - p[0]) < 1e-9 && Math.abs(q[1] - p[1]) < 1e-9) === i)
+                   .sort((p, q) => p[0] - q[0] || p[1] - q[1]);
+      if (u.length < 2) return;
+      const [x1, y1, x2, y2] = [px(u[0][0]), py(u[0][1]), px(u[1][0]), py(u[1][1])];
+      const largo = Math.hypot(x2 - x1, y2 - y1);
+      g += `<line class="${c.cls || 'recta1'}${nueva ? ' dibuja' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"${
+             nueva ? ` style="--largo:${largo.toFixed(1)}"` : ''}/>`;
+      if (c.rot){
+        // el nombre de la recta, cerca de la punta de la derecha, corrido hacia afuera
+        const t = .86, lx = x1 + (x2 - x1) * t, ly = y1 + (y2 - y1) * t;
+        const nx = -(y2 - y1) / largo, ny = (x2 - x1) / largo;
+        const s = ny > 0 ? -1 : 1;
+        g += `<text class="rot-recta ${c.cls === 'recta2' ? 'rot-r2' : 'rot-r1'}${nueva ? ' aparece-rot' : ''}" x="${(lx + s * nx * 16).toFixed(1)}"
+               y="${(ly + s * ny * 16).toFixed(1)}" text-anchor="middle">${c.rot}</text>`;
+      }
+    }
+    if (c.punto){
+      const X = val(c.punto[0]), Y = val(c.punto[1]);
+      if (!dentro(X) || !dentro(Y)) return;
+      const o = `transform-origin:${px(X)}px ${py(Y)}px`;
+      if (c.guias){
+        g += `<line class="guia${nueva ? ' sube' : ''}" x1="${px(X)}" y1="${py(0)}" x2="${px(X)}" y2="${py(Y)}" style="transform-origin:${px(X)}px ${py(0)}px"/>`;
+        g += `<line class="guia${nueva ? ' cruza' : ''}" x1="${px(X)}" y1="${py(Y)}" x2="${px(0)}" y2="${py(Y)}" style="transform-origin:${px(X)}px ${py(Y)}px"/>`;
+      }
+      if (nueva) g += `<circle class="onda" cx="${px(X)}" cy="${py(Y)}" r="7" style="${o}; animation-delay:${c.guias ? .85 : .1}s"/>`;
+      g += `<circle class="${c.cls || 'punto-tabla'}${nueva ? ' aparece' : ''}" cx="${px(X)}" cy="${py(Y)}" r="7" style="${o}${nueva ? `; animation-delay:${c.guias ? .8 : .05}s` : ''}"/>`;
+      if (c.rot){
+        const izq = X > R - 3, abajo = Y < 0;
+        g += `<text class="rotulo-punto${nueva ? ' aparece-rot' : ''}" x="${px(X) + (izq ? -10 : 10)}" y="${py(Y) + (abajo ? 22 : -10)}"${izq ? ' text-anchor="end"' : ''}>${c.rot}</text>`;
+      }
+    }
+  });
+  div.innerHTML = `<div class="lienzo"><svg viewBox="0 0 ${T} ${T}" role="img" aria-label="${ej.lienzo.rot || 'Las rectas del sistema en el plano'}">${g}</svg></div>`;
 };
 
 /* ═══ herramientas para dibujar figuras ═══

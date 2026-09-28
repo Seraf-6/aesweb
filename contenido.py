@@ -61,9 +61,9 @@ GRADOS = [
   'unidades': [
     {'n': '5+6', 'titulo': 'Factorización de expresiones algebraicas', 'pags': '94–134',
      'material': [
-       {'tipo': 'diapositiva', 'titulo': 'Los diez casos de factoreo',
-        'desc': 'Cada caso con su ejemplo paso a paso y el truco de cálculo o la regla '
-                'de divisibilidad que explica.',
+       {'tipo': 'diapositiva', 'titulo': 'Factorización',
+        'desc': 'Los catorce temas de las unidades 5 y 6, cada caso con ejemplos paso a paso '
+                'y su control, y los trucos de cálculo en las preguntas del observador.',
         'url': 'matematica/8vo/factoreo.html'},
        {'tipo': 'ficha', 'titulo': 'Fichas de factoreo',
         'desc': 'Cinco fichas, de un caso por vez hasta la miscelánea.',
@@ -79,8 +79,8 @@ GRADOS = [
     {'n': 9, 'titulo': 'Sistemas de dos ecuaciones de primer grado', 'pags': '178–196',
      'nota': 'Se adelanta: va antes que la circunferencia.',
      'material': [
-       {'tipo': 'diapositiva', 'titulo': 'Dos rectas, una solución',
-        'desc': 'Taller del método gráfico, con el puente hacia la geometría analítica.',
+       {'tipo': 'diapositiva', 'titulo': 'Sistemas de ecuaciones',
+        'desc': 'Los siete temas de la unidad: los tres casos, el método gráfico, los tres métodos algebraicos y problemas.',
         'url': 'matematica/8vo/sistemas.html'},
        {'tipo': 'pendiente', 'titulo': 'Ficha de sistemas',
         'desc': 'Los cuatro métodos, con problemas de planteo.'},

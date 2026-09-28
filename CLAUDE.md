@@ -173,8 +173,18 @@ videos de Khan Academy, la pantalla se parte en dos:
   - **el plano**, si el ejemplo dibuja (`construye:`): vacío al principio,
     un punto por paso, con su renglón en la tabla chica de la izquierda; la
     recta aparece recién con la respuesta y el control es un punto más;
-  - **un dibujo propio** de la página (`lienzo:`), cuando el tema lo pide:
-    una figura que se va armando, por ejemplo.
+  - **el plano con varias rectas** (`lienzo:{ tipo:'plano' }`): las rectas y
+    los puntos aparecen por capas, paso a paso. Es el de los sistemas;
+  - **una figura** (`lienzo:{ tipo:'figura' }`): un dibujo por capas, cada
+    una con el paso en que aparece. El triángulo, sus alturas, la
+    circunferencia; los cuadrados de Pitágoras; las piezas de un trinomio.
+    Para dibujarla, el motor trae `Geo` (polígonos regulares, ángulos con su
+    arco, escuadritas, rayitas de lados iguales, pies de perpendiculares).
+
+Cuando la derecha es un dibujo (el plano o una figura), las cuentas del paso
+van a la izquierda, debajo de lo que se dice: abajo del dibujo no entran, y
+la izquierda tiene lugar de sobra. Un cuaderno largo (más de nueve
+renglones) usa letra más chica desde el principio, para entrar entero.
 
 En el guion, un paso que escribe en el cuaderno es
 `P('Sumo 5 a los dos miembros.', '6x − 5 + 5 = 25 + 5', '6x = 30')`: el
@@ -221,7 +231,11 @@ Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'7mo', te
 ```
 
 Si algo de la pizarra se cambia, se cambia en el motor y cambia en todas
-las clases a la vez. Toda limpieza que espera el final de una animación
+las clases a la vez. Para escribir, el motor trae además: `x^2` para los
+exponentes (dentro de `M()`, `A()` y `P()`), `S('x + y = 5', 'x − y = 1')`
+para un sistema con su llave, y los ángulos con sombrero (Â, B̂) que se
+escriben tal cual y se dibujan bien aunque la letra no exista armada.
+Cada página elige sus letras en cursiva con `Pizarra.letras`. Toda limpieza que espera el final de una animación
 tiene además un temporizador de respaldo (`alTerminar`): con la ventana
 oculta o el navegador ocupado el aviso de fin puede no llegar, y las cajas
 viejas quedaban acumuladas.
@@ -300,8 +314,8 @@ cual. Así una respuesta no puede quedar mal tipeada en la página aunque la
 cuenta esté bien. Después de tocar una página de clase hay que volver a
 correrlo.
 
-Falta el de `factoreo.html` y el de `sistemas.html`: son anteriores a esta
-carpeta.
+Hay uno por cada página de clase (ecuaciones y polígonos de 7.º,
+factoreo y sistemas de 8.º) y uno para el módulo de progreso.
 
 Las páginas de clase cargan `assets/pizarra.js` (sin `defer`, antes de su
 propio guion) y enlazan `assets/clase.css`, que tiene los componentes
@@ -448,8 +462,8 @@ series originales propias.
    que corresponda, con `'tipo': 'diapositiva'` y su `url`.
 5. `python build.py` y el verificador otra vez.
 
-`factoreo.html`, `sistemas.html` y `poligonos.html` son anteriores a esta
-anatomía y todavía no la siguen.
+Las cuatro clases que hay (ecuaciones y polígonos de 7.º, factoreo y
+sistemas de 8.º) siguen esta anatomía y usan el mismo motor.
 
 ### Una unidad nueva
 
@@ -492,8 +506,10 @@ las páginas de clase.
 ## Estado actual
 
 Hecho: portada, índices de los tres grados, listado de fichas con 26 PDF,
-las diapositivas de 7.º (ecuaciones lineales y polígonos), las dos de 8.º
-(factoreo y sistemas), el panel de proyección y el timer de aula.
+las diapositivas de 7.º (ecuaciones lineales y polígonos) y las dos de 8.º
+(factoreo y sistemas), todas sobre el motor de la pizarra, con su
+verificador; el panel de proyección, el timer de aula y el módulo de
+progreso.
 
 Pendiente: el proyecto de estadística compartido por los tres grados (falta
 definir el tema), las diapositivas de cuerpos geométricos y de la parábola

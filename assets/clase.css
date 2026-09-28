@@ -601,6 +601,9 @@ body[data-solo="1"] .pizarra .enunciado.frase{font-size:1.05em}
 .pizarra-fija .lamina{padding:7px 12px}
 .lamina.control,.lamina.final{display:flex; gap:10px; align-items:baseline}
 .lamina.control .t{flex:1 1 auto; min-width:0}
+/* una respuesta larga (un polinomio de siete términos) corta la línea en el teléfono */
+.lamina.final .final-txt{min-width:0}
+.lamina.final .final-txt .ec{white-space:normal}
 
 /* el cuaderno: la resolución entera, con los = en una columna */
 .cuaderno{
@@ -619,6 +622,7 @@ body[data-solo="1"] .pizarra .enunciado.frase{font-size:1.05em}
   animation-delay:calc(.4s + var(--f, 0) * .34s)}
 @keyframes atenua{from{opacity:1}}
 body[data-solo="1"] .cuaderno .alineado{font-size:1.55em}
+.cuaderno.largo .alineado,body[data-solo="1"] .cuaderno.largo .alineado{font-size:1.2em; row-gap:.2em}
 @media (max-width:520px){.cuaderno{padding:10px 12px 14px} .cuaderno .alineado{font-size:1.12em}}
 body[data-solo="1"] .cu-rot{font-size:.55em}
 
@@ -628,6 +632,16 @@ body[data-solo="1"] .cu-rot{font-size:.55em}
 .rotulo-punto{fill:var(--tinta); font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
   paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
 .recta-anterior{stroke:var(--lapiz); stroke-width:2; stroke-dasharray:6 6; opacity:.7; fill:none}
+
+/* el nombre de cada recta en el plano, del color de su recta */
+.rot-recta{font-family:var(--serif); font-style:italic; font-weight:700; font-size:16px;
+  paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
+.rot-r1{fill:var(--r1)} .rot-r2{fill:var(--r2)}
+
+/* un sistema de dos ecuaciones, con su llave */
+.sistema{display:inline-flex; align-items:center; gap:.15em; vertical-align:middle}
+.sistema .llave{font-family:var(--serif); font-size:2.3em; line-height:1; font-weight:400; transform:scaleX(.7)}
+.sistema .sis-ecs{display:inline-flex; flex-direction:column; line-height:1.35}
 
 /* un ángulo con sombrero: B̂ (sombrero() de pizarra.js) */
 .ang{display:inline-block; position:relative; font-style:normal}
