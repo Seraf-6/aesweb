@@ -31,7 +31,8 @@
 const Pizarra = { letras:/[xyabcd]/g, lienzos:{} };
 window.Pizarra = Pizarra;
 
-const I = s => String(s).split(/(<[^>]+>)/)
+/* Un exponente se puede escribir con ^: 'x^2 + 5x + 6', '(a + b)^3', 'x^n'. */
+const I = s => String(s).replace(/\^(\d+|[a-z])/g, '<sup>$1</sup>').split(/(<[^>]+>)/)
   .map(t => t.startsWith('<') ? t : t.replace(Pizarra.letras, '<i>$&</i>')).join('');
 const M = s => '<span class="ec">' + I(s) + '</span>';
 const Q = (n, d) => `<span class="fr"><span>${I(String(n))}</span><span>${I(String(d))}</span></span>`;

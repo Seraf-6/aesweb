@@ -3,196 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Los diez casos de factoreo · AESWeb</title>
-<meta name="description" content="Los diez casos de factoreo de 8.º, cada uno con su ejemplo paso a paso y el truco de cálculo o la regla de divisibilidad que explica.">
+<title>Factorización · AESWeb</title>
+<meta name="description" content="Las unidades 5 y 6 de 8.º en los catorce temas del libro: cada caso de factoreo con su concepto y ejemplos resueltos paso a paso, con su control, las notas del docente y las preguntas de un alumno observador.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="../../assets/base.css">
 <link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
 <style>
-/* ---------- encabezado ---------- */
-.tapa{padding-block:44px 28px}
-.sello{
-  font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:.16em;
-  text-transform:uppercase; color:var(--rojo); margin:0 0 14px
-}
-h1{
-  font-family:var(--serif); font-weight:800; font-size:clamp(2.4rem,7vw,4rem);
-  line-height:1.02; margin:0 0 16px; text-wrap:balance; letter-spacing:-.015em;
-}
-.bajada{
-  font-family:var(--serif); font-style:italic; font-size:clamp(1.1rem,2.6vw,1.35rem);
-  color:var(--lapiz); max-width:34em; margin:0 0 20px; line-height:1.45;
-}
-.pie-tapa{
-  font-size:14px; color:var(--lapiz);
-  border-top:1px solid var(--linea-fuerte); padding-top:12px;
-  display:flex; flex-wrap:wrap; gap:6px 18px;
-}
-
-/* ---------- navegador ---------- */
-.nav{
-  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
-  background:var(--papel); border-bottom:1px solid var(--linea-fuerte);
-  margin-inline:-20px; padding-inline:20px;
-}
-.nav-int{display:flex; gap:6px; overflow-x:auto; padding-block:9px; scrollbar-width:thin}
-.chip{
-  flex:0 0 auto; font-family:var(--mono); font-size:12px; font-weight:600;
-  border:1px solid var(--linea-fuerte); background:var(--papel-2); color:var(--lapiz);
-  border-radius:3px; padding:5px 9px; cursor:pointer; text-decoration:none;
-  white-space:nowrap; transition:color .12s,border-color .12s;
-}
-.chip:hover,.chip:focus-visible{color:var(--rojo); border-color:var(--rojo)}
-
-/* ---------- texto corriente ---------- */
-h2{
-  font-family:var(--serif); font-weight:800; font-size:clamp(1.5rem,4vw,2rem);
-  margin:0 0 6px; line-height:1.15; text-wrap:balance;
-}
-.intro{padding-block:26px 34px; border-bottom:2px solid var(--tinta)}
-
-/* ---------- ficha de caso ---------- */
-.caso{
-  padding-block:34px; border-bottom:1px solid var(--linea-fuerte);
-  scroll-margin-top:72px;
-}
-.caso-cab{display:flex; gap:16px; align-items:flex-start; margin-bottom:16px}
-.numero{
-  flex:0 0 auto; font-family:var(--serif); font-weight:800; font-size:2.7rem;
-  line-height:.9; color:var(--rojo); font-variant-numeric:tabular-nums;
-  min-width:1.6em;
-}
-.caso-tit{flex:1 1 auto; min-width:0}
-.caso-tit h3{
-  font-family:var(--serif); font-weight:700; font-size:clamp(1.25rem,3.4vw,1.6rem);
-  margin:0 0 2px; line-height:1.15; text-wrap:balance;
-}
-.paginas{
-  font-family:var(--mono); font-size:11.5px; color:var(--lapiz);
-  letter-spacing:.04em; text-transform:uppercase;
-}
-
-/* ---------- matemática ---------- */
-.forma{
-  background:var(--papel-2); border-left:3px solid var(--tinta);
-  padding:13px 16px; margin:0 0 18px; overflow-x:auto;
-}
-.forma .ec{font-size:1.2em}
-.forma .rotulo{
-  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
-  text-transform:uppercase; color:var(--lapiz); margin-bottom:5px;
-}
-
-/* ---------- ejemplo con pasos ---------- */
-.ejemplo{margin:0 0 18px}
-.ejemplo-cab{
-  display:flex; align-items:baseline; justify-content:space-between;
-  gap:12px; flex-wrap:wrap; margin-bottom:9px;
-}
-.rotulo-chico{
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
-  text-transform:uppercase; color:var(--lapiz);
-}
-.boton{
-  font-family:var(--sans); font-size:13px; font-weight:700;
-  background:none; border:1px solid var(--rojo); color:var(--rojo);
-  border-radius:3px; padding:4px 11px; cursor:pointer;
-  transition:background .12s,color .12s;
-}
-.boton:hover,.boton:focus-visible{background:var(--rojo); color:var(--papel)}
-.boton[disabled]{opacity:.35; cursor:default; background:none; color:var(--rojo)}
-.pasos{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px}
-.pasos li{
-  display:flex; gap:11px; align-items:baseline;
-  padding:7px 11px; background:var(--papel-2); border-radius:3px;
-  animation:entra .22s ease-out;
-}
-.pasos li .n{
-  font-family:var(--mono); font-size:11px; color:var(--lapiz);
-  flex:0 0 auto; padding-top:2px;
-}
-.pasos li .t{flex:1 1 auto; min-width:0; overflow-x:auto}
-.pasos li.final{background:var(--rojo-suave); font-weight:500}
-.pasos li.final .t .ec{color:var(--rojo); font-weight:700}
-@keyframes entra{from{opacity:0; transform:translateY(-4px)} to{opacity:1; transform:none}}
-@media (prefers-reduced-motion:reduce){.pasos li{animation:none}}
-
-/* ---------- panel del gancho ---------- */
-.gancho{
-  background:var(--ambar-suave); border:1px solid var(--ambar-borde);
-  border-radius:4px; padding:15px 17px; margin-top:4px;
-}
-.gancho-tit{
-  font-family:var(--sans); font-weight:700; font-size:13px;
-  letter-spacing:.09em; text-transform:uppercase; color:var(--ambar);
-  margin:0 0 7px; display:flex; align-items:center; gap:8px;
-}
-.gancho-tit::before{
-  content:""; width:16px; height:2px; background:var(--ambar); flex:0 0 auto;
-}
-.gancho p{margin:0 0 10px; max-width:60ch}
-.gancho p:last-child{margin-bottom:0}
-.cuenta{
-  font-family:var(--mono); font-size:15px; background:var(--papel);
-  border:1px solid var(--linea-fuerte); border-radius:3px;
-  padding:9px 12px; margin:10px 0; overflow-x:auto; white-space:nowrap;
-  font-variant-numeric:tabular-nums;
-}
-.cuenta b{color:var(--rojo); font-weight:600}
-
-/* ---------- laboratorios ---------- */
-.lab{
-  background:var(--papel-2); border:1px solid var(--linea-fuerte);
-  border-radius:4px; padding:18px; margin:20px 0 0;
-}
-.lab h4{
-  font-family:var(--serif); font-weight:700; font-size:1.18rem; margin:0 0 4px;
-}
-.lab .sub{font-size:14px; color:var(--lapiz); margin:0 0 14px; max-width:58ch}
-.campos{display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:14px}
-.campo{display:flex; flex-direction:column; gap:4px}
-.campo label{
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
-  text-transform:uppercase; color:var(--lapiz);
-}
-.campo input{
-  font-family:var(--mono); font-size:16px; width:9ch;
-  background:var(--papel); color:var(--tinta);
-  border:1px solid var(--linea-fuerte); border-radius:3px; padding:7px 9px;
-}
-.campo input:focus-visible{outline:2px solid var(--rojo); outline-offset:1px; border-color:var(--rojo)}
-.salida{
-  font-family:var(--mono); font-size:15px; line-height:1.85;
-  background:var(--papel); border:1px solid var(--linea-fuerte); border-radius:3px;
-  padding:12px 14px; overflow-x:auto; font-variant-numeric:tabular-nums;
-}
-.salida .dim{color:var(--lapiz)}
-.salida .ok{color:var(--rojo); font-weight:600}
-.salida .fila{white-space:nowrap}
-
-/* ---------- cierre ---------- */
-.cierre{padding-block:38px 20px}
-.cierre .marco{
-  border:2px solid var(--tinta); padding:22px 24px; background:var(--papel);
-}
-.cierre h2{margin-bottom:10px}
-.cierre .prosa{max-width:58ch}
-.creditos{
-  padding-block:26px 46px; font-size:13.5px; color:var(--lapiz);
-  border-top:1px solid var(--linea-fuerte); margin-top:18px;
-}
-
-@media (max-width:520px){
-  body{font-size:16px}
-  .numero{font-size:2.1rem}
-  .caso-cab{gap:11px}
-  .campo input{width:7.5ch}
-}
+/* ---------- solo de esta página: las piezas de las figuras de áreas ---------- */
+.g-x2{fill:var(--acento2-suave); stroke:var(--tinta); stroke-width:2}
+.g-x1{fill:var(--dest-suave); stroke:var(--tinta); stroke-width:2}
+.g-u{fill:var(--acento-suave); stroke:var(--tinta); stroke-width:2}
 </style>
 </head>
-<body data-diapos=".intro, .caso, .cierre">
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
 <nav class="sitio-nav">
   <div class="sitio-nav-int">
     <a class="sitio-marca" href="../../index.html">AESWeb</a>
@@ -209,299 +35,952 @@ h2{
 
   <header class="tapa">
     <p class="sello">Albert Einstein School · Matemática 8.º grado</p>
-    <h1>Los diez casos de factoreo</h1>
-    <p class="bajada">Cada caso que aprendés para factorizar letras es, al mismo tiempo,
-      un atajo para calcular con números y una razón por la que funcionan las reglas de
-      divisibilidad que usás desde la primaria.</p>
+    <h1>Factorización</h1>
+    <p class="bajada">«La matemática pura es, a su manera, la poesía de las ideas
+      lógicas.»<span class="firma">Albert Einstein</span></p>
     <div class="pie-tapa">
       <span>Unidades 5 y 6 · páginas 94 a 134</span>
       <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
     </div>
   </header>
 
-  <nav class="nav" aria-label="Ir a un caso">
+  <nav class="nav" aria-label="Ir a un tema">
     <div class="nav-int" id="nav"></div>
   </nav>
 
-  <section class="intro">
-    <div class="prosa">
-      <h2>Factorizar es deshacer una multiplicación</h2>
-      <p>Cuando multiplicás <span class="ec">(<i>a</i>+<i>b</i>)(<i>a</i>−<i>b</i>)</span>
-        obtenés <span class="ec"><i>a</i><sup>2</sup>−<i>b</i><sup>2</sup></span>. Factorizar
-        es el camino de vuelta: te dan el resultado y tenés que encontrar los factores.</p>
-      <p>Lo que casi nunca se cuenta es que ese camino de vuelta sirve para algo más.
-        Un número también es una expresión: <b>4271</b> es
-        <span class="ec">4·10<sup>3</sup> + 2·10<sup>2</sup> + 7·10 + 1</span>. Todo lo que
-        aprendas a hacer con letras lo podés hacer con cifras. De ahí salen los trucos de
-        cálculo mental, las reglas de divisibilidad, y hasta un método para factorizar
-        números grandes que tiene casi cuatrocientos años.</p>
-      <p>Tocá <b>Siguiente paso</b> en cada ejemplo para verlo desarrollarse.</p>
-    </div>
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Unidades 5 y 6 · págs. 94–134</p>
+    <h2>Factorizar es deshacer una multiplicación</h2>
+    <ul class="puntos">
+      <li>Multiplicar <span class="ec">(<i>x</i> + 2)(<i>x</i> + 3)</span> da <span class="ec"><i>x</i><sup>2</sup> + 5<i>x</i> + 6</span>. <b>Factorizar</b> es el camino de vuelta.</li>
+      <li>Cada <b>caso</b> reconoce una forma: un factor común, una diferencia de cuadrados, un trinomio.</li>
+      <li>Y toda factorización <b>se controla</b>: se reemplaza la letra por un número y los dos lados tienen que dar lo mismo.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
   </section>
 
-  <main id="casos"></main>
-
-  <section class="cierre">
-    <div class="marco">
-      <h2>Un último, el más lindo</h2>
-      <div class="prosa">
-        <p>Mirá <span class="ec"><i>n</i><sup>4</sup> + 4</span>. No es diferencia de
-          cuadrados, no es suma de cubos, no es trinomio: no es ninguno de los diez casos.
-          Y sin embargo se factoriza, combinando dos de ellos.</p>
-        <p>El truco es sumar y restar lo mismo para armar un cuadrado perfecto:</p>
-        <div class="cuenta"><i>n</i><sup>4</sup> + 4 = <i>n</i><sup>4</sup> + 4<i>n</i><sup>2</sup> + 4 − 4<i>n</i><sup>2</sup> = (<i>n</i><sup>2</sup>+2)<sup>2</sup> − (2<i>n</i>)<sup>2</sup></div>
-        <p>Y eso último ya es diferencia de cuadrados:</p>
-        <div class="cuenta"><b>(<i>n</i><sup>2</sup> − 2<i>n</i> + 2)(<i>n</i><sup>2</sup> + 2<i>n</i> + 2)</b></div>
-        <p>Consecuencia: <b>ningún número de la forma <span class="ec"><i>n</i><sup>4</sup>+4</span>
-          con <span class="ec"><i>n</i> ≥ 2</span> es primo</b>, porque siempre se parte en
-          esos dos pedazos. Probá con <span class="ec"><i>n</i></span> = 5:
-          <span class="ec">5<sup>4</sup>+4 = 629</span>, y la fórmula dice 17 · 37. Es cierto.</p>
-        <p>La versión general se llama <b>identidad de Sophie Germain</b>, por la matemática
-          francesa que tuvo que firmar sus trabajos con nombre de varón para que los leyeran:</p>
-        <div class="cuenta"><i>a</i><sup>4</sup> + 4<i>b</i><sup>4</sup> = (<i>a</i><sup>2</sup> − 2<i>ab</i> + 2<i>b</i><sup>2</sup>)(<i>a</i><sup>2</sup> + 2<i>ab</i> + 2<i>b</i><sup>2</sup>)</div>
-      </div>
-    </div>
-  </section>
+  <main id="temas"></main>
 
   <footer class="creditos">
-    Material de clase · Unidades 5 y 6, <i>Matemática 8</i>, Editorial En Alianza.
-    Los ejemplos son originales; las páginas indicadas remiten al libro del alumno.
+    Material de clase · Unidades 5 y 6, <i>Matemática 8</i>, Editorial En Alianza. Sigue los
+    catorce temas del libro con ejemplos originales; las páginas indicadas remiten al libro
+    del alumno. Cada factorización de esta página está verificada en
+    <span class="ec">verificacion/factoreo_8vo.py</span>.
   </footer>
 </div>
 
-<script>
-/* ——— helpers de notación ——— */
-const E = s => '<span class="ec">' + s + '</span>';
+<script src="../../assets/pizarra.js"></script>
 
-const CASOS = [
+<script>
+/* Las letras de esta unidad. Los exponentes se escriben con ^ (x^2). */
+Pizarra.letras = /[abmnpqxyz]/g;
+
+/* el control de una factorización: se reemplaza la letra por un número y
+   los dos lados tienen que dar lo mismo */
+const ctrl = (valores, izq, der) => `Control con ${valores}:${A(izq, der + ' ✓')}`;
+
+/* ═══ las figuras de áreas ═══
+   x² es un cuadrado de lado x; x, una tira de x por 1; y cada unidad, un
+   cuadradito de 1 por 1. Así se ve por qué un trinomio es un rectángulo. */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const rect = (x, y, w, h, cls) => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+const X2 = 'x<tspan baseline-shift="super" font-size="12">2</tspan>';
+const U = 26, LX = 130;            // una unidad y el largo de x, en la figura
+
+/* ═══════════════════════════════════════════════════════════════
+   Los catorce temas de las unidades 5 y 6 del libro
+   Toda factorización que aparece acá está comprobada en
+   verificacion/factoreo_8vo.py, expandiendo y en puntos al azar.
+   ═══════════════════════════════════════════════════════════════ */
+const TEMAS = [
+/* ─────────────────────────── 1 ─────────────────────────── */
 {
-  n:1, corto:'Factor común', nombre:'Factor común monomio', pag:'págs. 96–97',
-  forma:'<i>ax</i> + <i>ay</i> + <i>az</i> = <i>a</i>(<i>x</i> + <i>y</i> + <i>z</i>)',
-  enun:'12<i>a</i><sup>3</sup><i>b</i> − 18<i>a</i><sup>2</sup><i>b</i><sup>2</sup> + 30<i>a</i><sup>2</sup><i>b</i>',
-  pasos:[
-    'Máximo común divisor de 12, 18 y 30: es <b>6</b>.',
-    'De cada letra, el menor exponente que aparece: <i>a</i><sup>2</sup> y <i>b</i>.',
-    'El factor común es 6<i>a</i><sup>2</sup><i>b</i>. Divido cada término por él.',
-  ],
-  final:'6<i>a</i><sup>2</sup><i>b</i>(2<i>a</i> − 3<i>b</i> + 5)',
-  gancho:{
-    tit:'Decidir sin calcular',
-    html:`<p>¿<span class="ec">4<sup>5</sup> + 4<sup>6</sup></span> es divisible por 5?
-      Nadie quiere calcular eso a mano. Pero sacando factor común:</p>
-      <div class="cuenta">4<sup>5</sup> + 4<sup>6</sup> = 4<sup>5</sup>(1 + 4) = <b>5 · 4<sup>5</sup></b></div>
-      <p>Sí lo es, y ni hizo falta saber cuánto vale. (Vale 5120, por si tenían la duda.)
-      Sacar factor común es la forma más rápida de decidir si un número enorme es
-      divisible por algo.</p>`
-  }
-},
-{
-  n:2, corto:'F. c. polinomio', nombre:'Factor común polinomio', pag:'págs. 98–99',
-  forma:'<i>a</i>(<i>m</i>+<i>n</i>) + <i>b</i>(<i>m</i>+<i>n</i>) = (<i>m</i>+<i>n</i>)(<i>a</i>+<i>b</i>)',
-  enun:'5<i>a</i>(<i>n</i>+3) − 7<i>b</i>(<i>n</i>+3)',
-  pasos:[
-    'El paréntesis (<i>n</i>+3) se repite en los dos términos: ese es el factor común.',
-    'Lo saco afuera, y adentro queda lo que multiplicaba a cada uno.',
-  ],
-  final:'(<i>n</i>+3)(5<i>a</i> − 7<i>b</i>)',
-  gancho:{
-    tit:'Un número que nunca es primo',
-    html:`<p>Tomá <span class="ec"><i>n</i><sup>3</sup> + <i>n</i><sup>2</sup> + <i>n</i> + 1</span>
-      y agrupá de a dos:</p>
-      <div class="cuenta"><i>n</i><sup>2</sup>(<i>n</i>+1) + (<i>n</i>+1) = <b>(<i>n</i>+1)(<i>n</i><sup>2</sup>+1)</b></div>
-      <p>Como se parte en dos factores que valen más que 1, <b>nunca es primo</b> para
-      <span class="ec"><i>n</i> ≥ 2</span>. Probalo con <span class="ec"><i>n</i></span> = 10:
-      da 1111, y la fórmula anuncia 11 · 101. Exacto.</p>`
-  }
-},
-{
-  n:3, corto:'Agrupación', nombre:'Factor común por agrupación de términos', pag:'págs. 100–102',
-  forma:'<i>ax</i> + <i>ay</i> + <i>bx</i> + <i>by</i> = (<i>a</i>+<i>b</i>)(<i>x</i>+<i>y</i>)',
-  enun:'3<i>an</i> − 5<i>bn</i> + 3<i>ab</i> − 5<i>b</i><sup>2</sup>',
-  pasos:[
-    'Agrupo los que comparten letra: (3<i>an</i> − 5<i>bn</i>) + (3<i>ab</i> − 5<i>b</i><sup>2</sup>).',
-    'Saco factor común en cada grupo: <i>n</i>(3<i>a</i> − 5<i>b</i>) + <i>b</i>(3<i>a</i> − 5<i>b</i>).',
-    'Ahora (3<i>a</i> − 5<i>b</i>) se repite: es el caso anterior.',
-  ],
-  final:'(3<i>a</i> − 5<i>b</i>)(<i>n</i> + <i>b</i>)',
-  gancho:{
-    tit:'El truco del bloque repetido',
-    html:`<p>Escribí cualquier número de tres cifras dos veces seguidas: 123123, 847847,
-      506506. Agrupando:</p>
-      <div class="cuenta">123123 = 123·1000 + 123 = 123(1000 + 1) = 123 · <b>1001</b></div>
-      <p>Y 1001 = 7 · 11 · 13. Así que <b>todo número así es divisible por 7, por 11 y por
-      13</b>, sin importar cuál hayas elegido. Probalo con el tuyo.</p>`
-  }
-},
-{
-  n:4, corto:'Dif. cuadrados', nombre:'Diferencia de cuadrados perfectos', pag:'págs. 103–105',
-  forma:'<i>a</i><sup>2</sup> − <i>b</i><sup>2</sup> = (<i>a</i> + <i>b</i>)(<i>a</i> − <i>b</i>)',
-  enun:'49<i>a</i><sup>2</sup> − 64<i>b</i><sup>2</sup>',
-  pasos:[
-    'Raíz cuadrada del primer término: 7<i>a</i>. Del segundo: 8<i>b</i>.',
-    'Uno suma y otro resta.',
-  ],
-  final:'(7<i>a</i> + 8<i>b</i>)(7<i>a</i> − 8<i>b</i>)',
-  gancho:{
-    tit:'Multiplicar de memoria',
-    html:`<p>98 × 102 parece un problema. Pero los dos están a 2 de 100, así que es
-      <span class="ec">(100−2)(100+2)</span>, que es exactamente
-      <span class="ec">100<sup>2</sup> − 2<sup>2</sup></span>:</p>
-      <div class="cuenta">98 × 102 = 10 000 − 4 = <b>9996</b></div>
-      <div class="cuenta">47 × 53 = 50<sup>2</sup> − 3<sup>2</sup> = 2500 − 9 = <b>2491</b></div>
-      <div class="cuenta">995 × 1005 = 1000<sup>2</sup> − 5<sup>2</sup> = <b>999 975</b></div>
-      <p>Funciona siempre que los dos números estén a la misma distancia de un número
-      redondo. El de abajo lo hace solo.</p>`
+  n:1, corto:'Factor común', titulo:'Factor común monomio', pag:'unidad 5, tema 1 · págs. 96–97',
+  concepto:{
+    forma:'ax + ay + az = a(x + y + z)', formaRot:'el factor común sale afuera del paréntesis',
+    puntos:[
+      'Factorizar es escribir un polinomio como un <b>producto</b>: deshacer la distributiva.',
+      'El número del factor común es el <b>MCD</b> de los coeficientes; las letras, las que están en todos los términos, con su <b>menor exponente</b>.',
+      'Adentro del paréntesis va cada término dividido por el factor común.',
+    ]
   },
-  lab:'lab-cuadrados'
-},
-{
-  n:5, corto:'Cubos', nombre:'Suma y diferencia de cubos perfectos', pag:'págs. 106–107',
-  forma:'<i>a</i><sup>3</sup> + <i>b</i><sup>3</sup> = (<i>a</i>+<i>b</i>)(<i>a</i><sup>2</sup> − <i>ab</i> + <i>b</i><sup>2</sup>)',
-  enun:'27<i>a</i><sup>3</sup> + 8<i>b</i><sup>3</sup>',
-  pasos:[
-    'Raíz cúbica de cada término: 3<i>a</i> y 2<i>b</i>.',
-    'Primer paréntesis: la suma de las raíces, (3<i>a</i> + 2<i>b</i>).',
-    'Segundo: cuadrado, menos el producto, más cuadrado.',
+  ejemplos:[
+    { titulo:'la de partida', enun:M('6x + 9'),
+      pasos:[
+        P('El máximo común divisor de 6 y 9 es 3.', 'MCD(6, 9) = 3'),
+        P('Divido cada término por 3, y lo que queda va adentro del paréntesis.',
+          `6x + 9 = ${N('3')} · 2x + ${N('3')} · 3`, ` = ${N('3')}(2x + 3)`),
+      ], final:M('3(2x + 3)'),
+      control:ctrl(M('x = 10'), '6 · 10 + 9 = 69', '3(2 · 10 + 3) = 69') },
+    { titulo:'agrego una letra en los dos términos', enun:M(`6x${N('^2')} + 9${N('x')}`),
+      pasos:[
+        P('Números: el MCD de 6 y 9 es 3.', 'MCD(6, 9) = 3'),
+        `Letras: la ${M('x')} está en los dos términos, y su menor exponente es 1. El factor común es ${M('3x')}.`,
+        P(`Divido cada término por ${M('3x')}.`, `6x^2 + 9x = ${N('3x')} · 2x + ${N('3x')} · 3`, ` = ${N('3x')}(2x + 3)`),
+      ], final:M('3x(2x + 3)'),
+      control:ctrl(M('x = 10'), '6 · 10^2 + 9 · 10 = 690', '3 · 10 · (2 · 10 + 3) = 690') },
+    { titulo:'tres términos y dos letras', enun:M('10a^3b − 15a^2b^2 + 5a^2b'),
+      pasos:[
+        P('Números: el MCD de 10, 15 y 5.', 'MCD(10, 15, 5) = 5'),
+        `Letras: la ${M('a')} está en los tres con menor exponente 2, y la ${M('b')} con exponente 1. El factor común es ${M('5a^2b')}.`,
+        P('Divido cada término. El último es igual al factor común: adentro queda un 1.',
+          `10a^3b − 15a^2b^2 + 5a^2b = ${N('5a^2b')}(2a − 3b + ${N('1')})`),
+      ], final:M('5a^2b(2a − 3b + 1)'),
+      control:ctrl(`${M('a = 2')} y ${M('b = 1')}`, '10 · 8 − 15 · 4 + 5 · 4 = 40', '5 · 4 · (4 − 3 + 1) = 40') },
+    { titulo:'con fracciones', enun:`<span class="ec">${Q('2','3')}${I('x^2')} − ${Q('4','9')}<i>x</i></span>`,
+      pasos:[
+        P('El número común de dos fracciones: el MCD de los numeradores, 2 y 4, sobre el m.c.m. de los denominadores, 3 y 9.',
+          `MCD = ${Q('2','9')}`),
+        P(`Con la ${M('x')}, el factor común es ${M(Q('2','9') + 'x')}. Divido cada término.`,
+          `${Q('2','3')}x^2 − ${Q('4','9')}x = ${N(Q('2','9') + 'x')}(3x − 2)`),
+      ], final:`<span class="ec">${Q('2','9')}<i>x</i>(3<i>x</i> − 2)</span>`,
+      control:ctrl(M('x = 3'), `${Q('2','3')} · 9 − ${Q('4','9')} · 3 = ${Q('14','3')}`, `${Q('2','9')} · 3 · (9 − 2) = ${Q('14','3')}`) },
+    { titulo:'todos los términos negativos', enun:M('−4m^2 − 12m'),
+      pasos:[
+        'Si todos los términos son negativos, conviene sacar el menos afuera, junto con el factor común.',
+        P(`El factor común es ${M('−4m')}. Al dividir, adentro los signos cambian.`, `−4m^2 − 12m = ${N('−4m')}(m + 3)`),
+      ], final:M('−4m(m + 3)'),
+      control:ctrl(M('m = 10'), '−4 · 100 − 12 · 10 = −520', '−4 · 10 · (10 + 3) = −520') },
   ],
-  final:'(3<i>a</i> + 2<i>b</i>)(9<i>a</i><sup>2</sup> − 6<i>ab</i> + 4<i>b</i><sup>2</sup>)',
-  gancho:{
-    tit:'Por qué siempre da múltiplo de 6',
-    html:`<p>Tomá cualquier entero, elevalo al cubo y restale el número original.
-      El resultado siempre es divisible por 6. La razón es una diferencia de cubos
-      seguida de una diferencia de cuadrados:</p>
-      <div class="cuenta"><i>n</i><sup>3</sup> − <i>n</i> = <i>n</i>(<i>n</i><sup>2</sup> − 1) = <b>(<i>n</i>−1) · <i>n</i> · (<i>n</i>+1)</b></div>
-      <p>Son tres enteros consecutivos: entre ellos hay sí o sí un múltiplo de 2 y uno de 3.
-      Con <span class="ec"><i>n</i></span> = 7: 343 − 7 = 336 = 6 · 56.</p>`
-  }
-},
-{
-  n:6, corto:'Suma de potencias', nombre:'Suma de potencias de igual grado', pag:'págs. 108–109',
-  forma:'<i>a</i><sup>5</sup> + <i>b</i><sup>5</sup> = (<i>a</i>+<i>b</i>)(<i>a</i><sup>4</sup> − <i>a</i><sup>3</sup><i>b</i> + <i>a</i><sup>2</sup><i>b</i><sup>2</sup> − <i>ab</i><sup>3</sup> + <i>b</i><sup>4</sup>)',
-  enun:'<i>a</i><sup>5</sup> + 32<i>b</i><sup>5</sup>',
-  pasos:[
-    '32<i>b</i><sup>5</sup> es (2<i>b</i>)<sup>5</sup>, así que las bases son <i>a</i> y 2<i>b</i>.',
-    'El exponente 5 es impar: se puede. Primer factor, la suma de las bases.',
-    'En el segundo, los signos van alternando.',
+  preguntas:[
+    { p:'¿Por qué el menor exponente y no el mayor?',
+      r:`Porque el factor común tiene que estar <b>en todos</b> los términos. En ${M('6x^2 + 9x')}, la ${M('x^2')} no está en ${M('9x')}; la ${M('x')} sí está en los dos.` },
+    { p:'¿Qué pasa si me olvido del 1 del ejemplo 3?',
+      r:`Queda ${M('5a^2b(2a − 3b)')}, que al multiplicar da solo dos términos: se perdió uno. El control con números lo detecta enseguida.` },
+    { p:'¿4^5 + 4^6 es divisible por 5?',
+      r:`Sí, y sin calcularlo: sacando factor común, ${M('4^5 + 4^6 = 4^5(1 + 4)')}, que es ${M('5 · 4^5')}. Sacar factor común sirve para decidir si un número enorme es divisible por algo.` },
+    { p:'¿Por qué se controla con 10?',
+      r:'Porque con 10 las cuentas salen de memoria. Si la factorización está mal, casi siempre da un número distinto.' },
   ],
-  final:'(<i>a</i> + 2<i>b</i>)(<i>a</i><sup>4</sup> − 2<i>a</i><sup>3</sup><i>b</i> + 4<i>a</i><sup>2</sup><i>b</i><sup>2</sup> − 8<i>ab</i><sup>3</sup> + 16<i>b</i><sup>4</sup>)',
-  gancho:{
-    tit:'Atención: solo con exponente impar',
-    html:`<p>Con exponente par no hay caso: <span class="ec"><i>a</i><sup>2</sup>+<i>b</i><sup>2</sup></span>
-      no se factoriza. Con exponente impar, en cambio,
-      <span class="ec"><i>a</i><sup><i>n</i></sup>+<i>b</i><sup><i>n</i></sup></span>
-      siempre es divisible por <span class="ec"><i>a</i>+<i>b</i></span>.</p>
-      <p>Eso deja fuera de carrera a un montón de candidatos a número primo. Tomá
-      <span class="ec">2<sup><i>n</i></sup>+1</span> con <span class="ec"><i>n</i></span> impar:
-      es divisible por <span class="ec">2+1 = 3</span>, así que no puede ser primo.</p>
-      <div class="cuenta">2<sup>5</sup> + 1 = 33 = <b>3 · 11</b> &nbsp;&nbsp; 2<sup>7</sup> + 1 = 129 = <b>3 · 43</b></div>
-      <p>Por eso los únicos <span class="ec">2<sup><i>n</i></sup>+1</span> que tienen chance
-      de ser primos son los que tienen <span class="ec"><i>n</i></span> potencia de 2. Se
-      llaman <b>primos de Fermat</b>, y hasta hoy se conocen solamente cinco.</p>`
-  }
+  notas:`<p>El libro define factorizar como descomponer en un producto de polinomios de menor
+      grado (pág. 96) y resuelve el factor común monomio en cuatro pasos. Los ejemplos
+      siguen esos pasos: primero el número, después las letras, después la división.</p>
+    <p>El ejemplo 3 está para el error del 1 perdido, y el 5 para el signo. Los dos se
+      detectan con el control, que se hace siempre reemplazando la letra por un número:
+      es el mismo "control" de la unidad de ecuaciones, ahora con dos expresiones.</p>
+    <p>Las fracciones (ejemplo 4) aparecen en los ejercicios f y h de la pág. 97. El MCD de
+      fracciones no está explicado en el libro: vale la pena decirlo en voz alta.</p>`
 },
+
+/* ─────────────────────────── 2 ─────────────────────────── */
 {
-  n:7, corto:'Dif. de potencias', nombre:'Diferencia de potencias de igual grado', pag:'págs. 110–111',
-  forma:'<i>a</i><sup><i>n</i></sup> − <i>b</i><sup><i>n</i></sup> = (<i>a</i> − <i>b</i>)(<i>a</i><sup><i>n</i>−1</sup> + <i>a</i><sup><i>n</i>−2</sup><i>b</i> + ⋯ + <i>b</i><sup><i>n</i>−1</sup>)',
-  enun:'<i>a</i><sup>4</sup> − 81<i>b</i><sup>4</sup>',
-  pasos:[
-    'Acá el exponente es par, así que conviene verlo como diferencia de cuadrados: (<i>a</i><sup>2</sup>)<sup>2</sup> − (9<i>b</i><sup>2</sup>)<sup>2</sup>.',
-    'Primera vuelta: (<i>a</i><sup>2</sup> + 9<i>b</i><sup>2</sup>)(<i>a</i><sup>2</sup> − 9<i>b</i><sup>2</sup>).',
-    'El segundo paréntesis vuelve a ser diferencia de cuadrados. El primero no se puede.',
-  ],
-  final:'(<i>a</i><sup>2</sup> + 9<i>b</i><sup>2</sup>)(<i>a</i> + 3<i>b</i>)(<i>a</i> − 3<i>b</i>)',
-  gancho:{
-    tit:'De acá sale la regla del 9',
-    html:`<p>Esta es la más importante de todas. La regla dice
-      <span class="ec"><i>a</i><sup><i>n</i></sup> − <i>b</i><sup><i>n</i></sup></span> es
-      siempre divisible por <span class="ec"><i>a</i> − <i>b</i></span>. Poné
-      <span class="ec"><i>a</i></span> = 10 y <span class="ec"><i>b</i></span> = 1:</p>
-      <div class="cuenta">10<sup><i>n</i></sup> − 1 es divisible por 10 − 1 = <b>9</b></div>
-      <p>O sea: 9, 99, 999, 9999… todos múltiplos de 9. Ahora mirá un número cualquiera,
-      4271, y restale la suma de sus cifras:</p>
-      <div class="cuenta">4271 − (4+2+7+1) = 4·<b>999</b> + 2·<b>99</b> + 7·<b>9</b> = 4257</div>
-      <p>Cada pedazo es múltiplo de 9, así que la resta entera lo es. <b>Entonces el número
-      y la suma de sus cifras dejan el mismo resto al dividir por 9.</b> Eso es, palabra por
-      palabra, la regla que usan desde la primaria — y recién ahora está demostrada.</p>
-      <p>Con <span class="ec"><i>b</i></span> = −1 sale la regla del 11:
-      <span class="ec">10<sup><i>n</i></sup> − (−1)<sup><i>n</i></sup></span> es divisible
-      por 11, y de ahí la suma alternada de cifras.</p>`
+  n:2, corto:'Factor común polinomio', titulo:'Factor común polinomio', pag:'unidad 5, tema 2 · págs. 98–99',
+  concepto:{
+    forma:'a(x + y) + b(x + y) = (x + y)(a + b)', formaRot:'el factor común es un paréntesis entero',
+    puntos:[
+      'El factor común puede ser un <b>polinomio</b>: un paréntesis que se repite en todos los términos.',
+      'Se escribe una vez, y en el otro paréntesis va lo que lo multiplicaba en cada término.',
+      `Si dos paréntesis son opuestos, como ${M('(y − 3)')} y ${M('(3 − y)')}, se saca un menos para igualarlos.`,
+    ]
   },
-  lab:'lab-nueve'
-},
-{
-  n:8, corto:'Trinomio c. p.', nombre:'Trinomio cuadrado perfecto', pag:'págs. 118–119',
-  forma:'<i>a</i><sup>2</sup> ± 2<i>ab</i> + <i>b</i><sup>2</sup> = (<i>a</i> ± <i>b</i>)<sup>2</sup>',
-  enun:'9<i>a</i><sup>2</sup> + 30<i>ab</i> + 25<i>b</i><sup>2</sup>',
-  pasos:[
-    'Raíces de los extremos: 3<i>a</i> y 5<i>b</i>. Los dos extremos son positivos: buena señal.',
-    'Control: el doble producto tiene que ser 2 · 3<i>a</i> · 5<i>b</i> = 30<i>ab</i>. Coincide.',
-    'El signo del binomio es el del término del medio.',
+  ejemplos:[
+    { titulo:'el paréntesis se repite', enun:M('a(x + 2) + 3(x + 2)'),
+      pasos:[
+        `El paréntesis ${M('(x + 2)')} está en los dos términos: es el factor común.`,
+        P('Lo escribo una vez, y en el otro paréntesis va lo que lo multiplicaba.',
+          `a${N('(x + 2)')} + 3${N('(x + 2)')} = ${N('(x + 2)')}(a + 3)`),
+      ], final:M('(x + 2)(a + 3)'),
+      control:ctrl(`${M('a = 10')} y ${M('x = 10')}`, '10 · 12 + 3 · 12 = 156', '12 · 13 = 156') },
+    { titulo:'cambio: el segundo término no tiene número', enun:M(`a(x + 2) ${N('−')} (x + 2)`),
+      pasos:[
+        `El segundo término es ${M('−1 · (x + 2)')}: el 1 está escondido.`,
+        P('Saco el factor común; el −1 no se pierde.', `a(x + 2) − 1 · (x + 2) = (x + 2)(a ${N('− 1')})`),
+      ], final:M('(x + 2)(a − 1)'),
+      control:ctrl(`${M('a = 10')} y ${M('x = 10')}`, '10 · 12 − 12 = 108', '12 · 9 = 108') },
+    { titulo:'dos paréntesis opuestos', enun:M(`m(y − 3) + 2${N('(3 − y)')}`),
+      pasos:[
+        P(`${M('(3 − y)')} es el opuesto de ${M('(y − 3)')}: lo escribo al revés, con un menos adelante.`,
+          `m(y − 3) + 2(3 − y) = m(y − 3) ${N('− 2')}(y − 3)`),
+        P('Ahora sí se repite.', ' = (y − 3)(m − 2)'),
+      ], final:M('(y − 3)(m − 2)'),
+      control:ctrl(`${M('m = 10')} y ${M('y = 10')}`, '10 · 7 + 2 · (−7) = 56', '7 · 8 = 56') },
+    { titulo:'el factor común aparece al cuadrado', enun:M(`x(a + b) + (a + b)${N('^2')}`),
+      pasos:[
+        `${M('(a + b)^2')} es ${M('(a + b)(a + b)')}: el factor común está también ahí.`,
+        P(`Saco un ${M('(a + b)')} de cada término.`, 'x(a + b) + (a + b)(a + b) = (a + b)[x + (a + b)]', ' = (a + b)(x + a + b)'),
+      ], final:M('(a + b)(x + a + b)'),
+      control:ctrl(`${M('a = 2')}, ${M('b = 1')} y ${M('x = 10')}`, '10 · 3 + 3^2 = 39', '3 · (10 + 3) = 39') },
   ],
-  final:'(3<i>a</i> + 5<i>b</i>)<sup>2</sup>',
-  gancho:{
-    tit:'Elevar al cuadrado cualquier número terminado en 5',
-    html:`<p>85 al cuadrado, mentalmente: agarrá el 8, multiplicalo por el que sigue
-      (8 × 9 = 72), y pegale 25 atrás. <b>7225</b>. Listo.</p>
-      <div class="cuenta">35<sup>2</sup> → 3·4 = 12 → <b>1225</b> &nbsp;&nbsp;&nbsp; 115<sup>2</sup> → 11·12 = 132 → <b>13 225</b></div>
-      <p>Funciona por este caso. Todo número terminado en 5 es
-      <span class="ec">10<i>a</i> + 5</span>, y al elevarlo al cuadrado:</p>
-      <div class="cuenta">(10<i>a</i> + 5)<sup>2</sup> = 100<i>a</i><sup>2</sup> + 100<i>a</i> + 25 = <b>100·<i>a</i>(<i>a</i>+1) + 25</b></div>
-      <p>El <span class="ec"><i>a</i>(<i>a</i>+1)</span> es el "multiplicalo por el que sigue",
-      y el 100 es el "pegale 25 atrás".</p>`
-  }
-},
-{
-  n:9, corto:'Trinomios', nombre:'Trinomio de la forma <i>x</i>² + <i>bx</i> + <i>c</i> y <i>ax</i>² + <i>bx</i> + <i>c</i>', pag:'págs. 120–123',
-  forma:'<i>x</i><sup>2</sup> + <i>bx</i> + <i>c</i> = (<i>x</i> + <i>p</i>)(<i>x</i> + <i>q</i>) &nbsp; con &nbsp; <i>p</i> + <i>q</i> = <i>b</i>, &nbsp; <i>p</i> · <i>q</i> = <i>c</i>',
-  enun:'<i>n</i><sup>2</sup> + 9<i>n</i> + 20',
-  pasos:[
-    'Busco dos números que multiplicados den 20 y sumados den 9.',
-    'Los divisores de 20 son 1, 2, 4, 5, 10 y 20. La pareja 4 y 5 cumple las dos cosas.',
-    'Y con <i>a</i> ≠ 1 el mismo razonamiento, repartiendo también el coeficiente: 6<i>n</i><sup>2</sup> + 7<i>n</i> − 3 = (2<i>n</i> + 3)(3<i>n</i> − 1).',
+  preguntas:[
+    { p:'¿Puedo sacar un paréntesis como si fuera una letra?',
+      r:'Sí: un paréntesis que se repite funciona como una sola cantidad. Si ayuda, se lo puede llamar con una letra mientras se factoriza.' },
+    { p:'¿Por qué en el ejemplo 2 aparece un 1 que no estaba?',
+      r:`Porque ${M('(x + 2)')} es ${M('1 · (x + 2)')}. Al sacar el paréntesis afuera, el 1 queda adentro. Si se omite, se pierde un término.` },
+    { p:'¿Cómo me doy cuenta de que dos paréntesis son opuestos?',
+      r:`Porque tienen los mismos términos con todos los signos cambiados: ${M('3 − y')} y ${M('y − 3')}. Uno es el otro por −1.` },
+    { p:'¿n^3 + n^2 + n + 1 puede ser primo?',
+      r:`Nunca, para n ≥ 2: agrupando, ${M('n^2(n + 1) + (n + 1) = (n + 1)(n^2 + 1)')}. Con n = 10 da 1111, que es 11 · 101.` },
   ],
-  final:'(<i>n</i> + 4)(<i>n</i> + 5)',
-  gancho:{
-    tit:'Por qué la búsqueda siempre termina',
-    html:`<p>Podría parecer que hay que probar infinitas parejas. No: si
-      <span class="ec"><i>p</i> · <i>q</i> = <i>c</i></span>, entonces <b><i>p</i> y <i>q</i>
-      son divisores de <i>c</i></b>, y un número entero tiene una cantidad finita de
-      divisores. La lista de candidatos es corta y se agota.</p>
-      <p>Es exactamente la misma idea que usan con la regla de Ruffini: cuando buscan un
-      valor que anule el polinomio, prueban con los divisores del término independiente y
-      no con cualquier número. La factorización y la búsqueda de raíces son el mismo
-      problema mirado de dos maneras.</p>`
-  }
+  notas:`<p>El libro (pág. 98) muestra el caso con el paréntesis a la vista y después con el
+      signo menos adelante. Los ejemplos 2 y 3 son esos dos tropiezos: el 1 escondido y los
+      paréntesis opuestos.</p>
+    <p>La idea de "un paréntesis es una sola cantidad" es la que se va a usar todo el año:
+      vale la pena decirlo con esas palabras.</p>`
 },
+
+/* ─────────────────────────── 3 ─────────────────────────── */
 {
-  n:10, corto:'Cubo perfecto', nombre:'Cuatrinomio cubo perfecto', pag:'págs. 124–125',
-  forma:'<i>a</i><sup>3</sup> + 3<i>a</i><sup>2</sup><i>b</i> + 3<i>ab</i><sup>2</sup> + <i>b</i><sup>3</sup> = (<i>a</i> + <i>b</i>)<sup>3</sup>',
-  enun:'8<i>a</i><sup>3</sup> + 36<i>a</i><sup>2</sup><i>b</i> + 54<i>ab</i><sup>2</sup> + 27<i>b</i><sup>3</sup>',
-  pasos:[
-    'Raíces cúbicas de los extremos: 2<i>a</i> y 3<i>b</i>.',
-    'Control del segundo término: 3 · (2<i>a</i>)<sup>2</sup> · 3<i>b</i> = 36<i>a</i><sup>2</sup><i>b</i>. ✓',
-    'Control del tercero: 3 · 2<i>a</i> · (3<i>b</i>)<sup>2</sup> = 54<i>ab</i><sup>2</sup>. ✓ Los cuatro términos cierran.',
+  n:3, corto:'Agrupación', titulo:'Factor común por agrupación de términos', pag:'unidad 5, tema 3 · págs. 100–102',
+  concepto:{
+    forma:'ax + ay + bx + by = (x + y)(a + b)', formaRot:'se agrupa, se saca factor común en cada grupo, y se repite el paréntesis',
+    puntos:[
+      'Si no hay un factor común a todos, se <b>agrupan</b> los términos: cada grupo con su propio factor común.',
+      'Después de sacar factor común en cada grupo tiene que quedar el <b>mismo paréntesis</b>.',
+      'Se controla multiplicando: tiene que volver el polinomio original.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'cuatro términos', enun:M('ax + ay + 3x + 3y'),
+      pasos:[
+        P(`Agrupo los que comparten un factor: los dos primeros tienen ${M('a')}, los dos últimos 3.`, 'ax + ay + 3x + 3y = (ax + ay) + (3x + 3y)'),
+        P('Factor común en cada grupo.', ' = a(x + y) + 3(x + y)'),
+        P(`El paréntesis ${M('(x + y)')} se repite: es el tema 2.`, ' = (x + y)(a + 3)'),
+      ], final:M('(x + y)(a + 3)'),
+      control:ctrl(`${M('a = 10')}, ${M('x = 2')} y ${M('y = 1')}`, '20 + 10 + 6 + 3 = 39', '3 · 13 = 39') },
+    { titulo:'cambio: con restas', enun:M(`mx ${N('−')} my + 2x ${N('−')} 2y`),
+      pasos:[
+        P('Agrupo de a dos.', 'mx − my + 2x − 2y = (mx − my) + (2x − 2y)'),
+        P('Factor común en cada grupo.', ' = m(x − y) + 2(x − y)'),
+        P(`Se repite ${M('(x − y)')}.`, ' = (x − y)(m + 2)'),
+      ], final:M('(x − y)(m + 2)'),
+      control:ctrl(`${M('m = 10')}, ${M('x = 3')} y ${M('y = 1')}`, '30 − 10 + 6 − 2 = 24', '2 · 12 = 24') },
+    { titulo:'un grupo sin letras', enun:M('ab − 3a + 2b − 6'),
+      pasos:[
+        P('Agrupo de a dos.', 'ab − 3a + 2b − 6 = (ab − 3a) + (2b − 6)'),
+        P('Factor común en cada grupo: en el segundo es un número.', ' = a(b − 3) + 2(b − 3)'),
+        P(`Se repite ${M('(b − 3)')}.`, ' = (b − 3)(a + 2)'),
+      ], final:M('(b − 3)(a + 2)'),
+      control:ctrl(`${M('a = 10')} y ${M('b = 10')}`, '100 − 30 + 20 − 6 = 84', '7 · 12 = 84') },
+    { titulo:'seis términos', enun:M('ax + ay + az + 2x + 2y + 2z'),
+      pasos:[
+        P('Agrupo de a tres.', 'ax + ay + az + 2x + 2y + 2z = (ax + ay + az) + (2x + 2y + 2z)'),
+        P('Factor común en cada grupo.', ' = a(x + y + z) + 2(x + y + z)'),
+        P(`Se repite ${M('(x + y + z)')}.`, ' = (x + y + z)(a + 2)'),
+      ], final:M('(x + y + z)(a + 2)'),
+      control:ctrl(`${M('a = 10')}, ${M('x = 3')}, ${M('y = 2')} y ${M('z = 1')}`, '30 + 20 + 10 + 6 + 4 + 2 = 72', '6 · 12 = 72') },
+    { titulo:'hay que sacar un menos', enun:M('2x^2 − 6x − x + 3'),
+      pasos:[
+        P('En el segundo grupo saco el menos afuera: adentro cambian los signos.', '2x^2 − 6x − x + 3 = (2x^2 − 6x) − (x − 3)'),
+        P('Factor común en el primer grupo.', ' = 2x(x − 3) − (x − 3)'),
+        P(`Se repite ${M('(x − 3)')}. El segundo término es ${M('−1 · (x − 3)')}.`, ' = (x − 3)(2x − 1)'),
+      ], final:M('(x − 3)(2x − 1)'),
+      control:ctrl(M('x = 10'), '200 − 60 − 10 + 3 = 133', '7 · 19 = 133') },
   ],
-  final:'(2<i>a</i> + 3<i>b</i>)<sup>3</sup>',
-  gancho:{
-    tit:'Los coeficientes están en el triángulo de Pascal',
-    html:`<p>El 1, 3, 3, 1 de este caso es la cuarta fila del triángulo de Pascal. Y hay una
-      manera preciosa de verlo: elevá 11 al cubo.</p>
-      <div class="cuenta">11<sup>3</sup> = <b>1331</b> &nbsp;&nbsp;&nbsp; 101<sup>3</sup> = <b>1 03 03 01</b> = 1 030 301</div>
-      <p>Las cifras <i>son</i> los coeficientes. Porque 11 = 10 + 1, y al desarrollar
-      <span class="ec">(10+1)<sup>3</sup></span> cada coeficiente cae en su propia columna
-      de unidades, decenas, centenas. Con 101 hay dos ceros de separación y se ve todavía
-      más claro.</p>
-      <p>El truco se rompe en <span class="ec">11<sup>5</sup></span>, cuando algún
-      coeficiente pasa de 9 y hay que llevarse. Fijate cuál es el primero que falla.</p>`
-  }
-}
+  preguntas:[
+    { p:'¿Cómo sé qué términos agrupar?',
+      r:'Probando: se agrupan los que comparten algo. Si después de sacar factor común los paréntesis no son iguales, se prueba con otra agrupación.' },
+    { p:'¿Por qué el 123123 es divisible por 7, por 11 y por 13?',
+      r:`Porque ${M('123123 = 123 · 1000 + 123 = 123 · 1001')}, y 1001 = 7 · 11 · 13. Es una agrupación con números: vale para cualquier número de tres cifras escrito dos veces.` },
+    { p:'¿Puede haber una cantidad impar de términos?',
+      r:'Sí, si los grupos tienen distinta cantidad, pero el libro los usa con cantidad par: de a dos o de a tres.' },
+    { p:'En el ejemplo 5, ¿por qué −(x − 3) y no −(x + 3)?',
+      r:`Porque el menos de afuera cambia todos los signos de adentro: ${M('−(x − 3) = −x + 3')}, que es lo que había.` },
+  ],
+  notas:`<p>El libro resuelve agrupación en tres o cuatro pasos (pág. 100) y remarca que al
+      final se controla multiplicando. Los controles de esta página reemplazan números, que
+      es más rápido y detecta los mismos errores.</p>
+    <p>El ejemplo 5 junta dos cosas que confunden: el menos delante del paréntesis (de la
+      unidad de 7.º) y el 1 escondido del tema 2.</p>`
+},
+
+/* ─────────────────────────── 4 ─────────────────────────── */
+{
+  n:4, corto:'Diferencia de cuadrados', titulo:'Diferencia de cuadrados perfectos', pag:'unidad 5, tema 4 · págs. 103–105',
+  concepto:{
+    forma:'a^2 − b^2 = (a + b)(a − b)', formaRot:'la suma de las raíces por su diferencia',
+    puntos:[
+      'Dos términos, una <b>resta</b>, y los dos son cuadrados perfectos.',
+      'Se sacan las raíces cuadradas y se multiplica su <b>suma</b> por su <b>diferencia</b>.',
+      `Con una suma, ${M('a^2 + b^2')}, no se puede.`,
+    ]
+  },
+  ejemplos:[
+    { titulo:'la de partida', enun:M('x^2 − 25'),
+      pasos:[
+        P('Las raíces cuadradas de los dos términos.', '√(x^2) = x', '√25 = 5'),
+        P('La suma de las raíces por su diferencia.', 'x^2 − 25 = (x + 5)(x − 5)'),
+      ], final:M('(x + 5)(x − 5)'),
+      control:ctrl(M('x = 10'), '100 − 25 = 75', '15 · 5 = 75') },
+    { titulo:'cambio: coeficientes y dos letras', enun:M(`${N('9a^2')} − ${N('16b^2')}`),
+      pasos:[
+        P('Las raíces: también de los coeficientes.', '√(9a^2) = 3a', '√(16b^2) = 4b'),
+        P('Suma por diferencia.', '9a^2 − 16b^2 = (3a + 4b)(3a − 4b)'),
+      ], final:M('(3a + 4b)(3a − 4b)'),
+      control:ctrl(`${M('a = 2')} y ${M('b = 1')}`, '36 − 16 = 20', '10 · 2 = 20') },
+    { titulo:'con fracciones', enun:`<span class="ec">${Q('x^2','4')} − ${Q('1','9')}</span>`,
+      pasos:[
+        P('Las raíces de una fracción: raíz del numerador sobre raíz del denominador.',
+          `${Q('x^2','4')} = (${Q('x','2')})^2`, `${Q('1','9')} = (${Q('1','3')})^2`),
+        P('Suma por diferencia.', `${Q('x^2','4')} − ${Q('1','9')} = (${Q('x','2')} + ${Q('1','3')})(${Q('x','2')} − ${Q('1','3')})`),
+      ], final:`<span class="ec">(${Q('x','2')} + ${Q('1','3')})(${Q('x','2')} − ${Q('1','3')})</span>`,
+      control:ctrl(M('x = 6'), `${Q('36','4')} − ${Q('1','9')} = ${Q('80','9')}`, `(3 + ${Q('1','3')})(3 − ${Q('1','3')}) = ${Q('80','9')}`) },
+    { titulo:'uno de los cuadrados es un binomio', enun:M(`${N('(a + 1)^2')} − 4`),
+      pasos:[
+        `Las raíces son ${M('(a + 1)')} y 2: el paréntesis funciona como una sola cantidad.`,
+        P('Suma por diferencia.', '(a + 1)^2 − 4 = [(a + 1) + 2][(a + 1) − 2]'),
+        P('Saco los paréntesis de adentro.', ' = (a + 3)(a − 1)'),
+      ], final:M('(a + 3)(a − 1)'),
+      control:ctrl(M('a = 10'), '121 − 4 = 117', '13 · 9 = 117') },
+    { titulo:'dos veces seguidas', enun:M('x^4 − 1'),
+      pasos:[
+        P(`Las raíces son ${M('x^2')} y 1.`, 'x^4 − 1 = (x^2 + 1)(x^2 − 1)'),
+        P('El segundo paréntesis vuelve a ser diferencia de cuadrados; el primero es una suma y no se puede.',
+          ' = (x^2 + 1)(x + 1)(x − 1)'),
+      ], final:M('(x^2 + 1)(x + 1)(x − 1)'),
+      control:ctrl(M('x = 10'), '10 000 − 1 = 9999', '101 · 11 · 9 = 9999') },
+  ],
+  taller:'lab-cuadrados',
+  preguntas:[
+    { p:'¿Cuánto es 98 · 102, de memoria?',
+      r:`Es ${M('(100 − 2)(100 + 2) = 100^2 − 2^2')}: 10 000 − 4 = 9996. Funciona siempre que los dos números estén a la misma distancia de uno redondo. El taller lo hace con cualquier par.` },
+    { p:'¿Por qué x^2 + 25 no se factoriza?',
+      r:`Porque ${M('(x + 5)(x − 5)')} da una resta, y ${M('(x + 5)(x + 5)')} tiene un término del medio. Ningún producto de dos binomios con números da exactamente una suma de dos cuadrados.` },
+    { p:'¿Importa el orden: (a + b)(a − b) o (a − b)(a + b)?',
+      r:'No: la multiplicación es conmutativa. Los dos factores son los mismos.' },
+    { p:'¿Cómo sé que 16b^2 es un cuadrado perfecto?',
+      r:`Porque el coeficiente es un cuadrado (16 = 4 · 4) y el exponente es par: ${M('16b^2 = (4b)^2')}.` },
+  ],
+  notas:`<p>El libro presenta el caso en dos pasos (pág. 103): raíces, y suma por diferencia.
+      Los ejemplos del libro llegan al binomio y a la potencia cuarta; los de esta página
+      hacen lo mismo, con números propios.</p>
+    <p>El ejemplo 3 (fracciones) es el ejercicio 1 de la pág. 104. El 5 anticipa la
+      combinación de casos del tema 13: se factoriza hasta que no se pueda más.</p>
+    <p>El taller de multiplicar de memoria convence más que cualquier explicación: que
+      propongan ellos los números.</p>`
+},
+
+/* ─────────────────────────── 5 ─────────────────────────── */
+{
+  n:5, corto:'Cubos', titulo:'Suma y diferencia de cubos perfectos', pag:'unidad 5, tema 5 · págs. 106–107',
+  concepto:{
+    serie:[
+      { rot:'suma', ec:'a^3 + b^3 = (a + b)(a^2 − ab + b^2)' },
+      { rot:'diferencia', ec:'a^3 − b^3 = (a − b)(a^2 + ab + b^2)' },
+    ],
+    puntos:[
+      'Se sacan las <b>raíces cúbicas</b> de los dos términos.',
+      'El primer factor es la suma (o la diferencia) de las raíces. El segundo: el cuadrado de la primera, el producto, y el cuadrado de la segunda.',
+      'Los signos del segundo factor: en la suma, <b>menos y más</b>; en la diferencia, <b>más y más</b>.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'una suma de cubos', enun:M('x^3 + 8'),
+      pasos:[
+        P('Las raíces cúbicas: 8 es 2 · 2 · 2.', '∛(x^3) = x', '∛8 = 2'),
+        P('Primer factor, la suma de las raíces. Segundo, cuadrado, menos el producto, más cuadrado.', 'x^3 + 8 = (x + 2)(x^2 − 2x + 4)'),
+      ], final:M('(x + 2)(x^2 − 2x + 4)'),
+      control:ctrl(M('x = 10'), '1000 + 8 = 1008', '12 · 84 = 1008') },
+    { titulo:'cambio el signo: una diferencia', enun:M(`x^3 ${N('−')} 8`),
+      pasos:[
+        P(`Las mismas raíces, ${M('x')} y 2.`, '∛(x^3) = x', '∛8 = 2'),
+        P('Primer factor, la diferencia. En el segundo, todos los signos son más.', 'x^3 − 8 = (x − 2)(x^2 + 2x + 4)'),
+      ], final:M('(x − 2)(x^2 + 2x + 4)'),
+      control:ctrl(M('x = 10'), '1000 − 8 = 992', '8 · 124 = 992') },
+    { titulo:'con coeficiente', enun:M(`${N('27')}a^3 + 1`),
+      pasos:[
+        P('27 es 3 · 3 · 3, y 1 es el cubo de 1.', '∛(27a^3) = 3a', '∛1 = 1'),
+        P('Suma de cubos.', '27a^3 + 1 = (3a + 1)(9a^2 − 3a + 1)'),
+      ], final:M('(3a + 1)(9a^2 − 3a + 1)'),
+      control:ctrl(M('a = 10'), '27 000 + 1 = 27 001', '31 · 871 = 27 001') },
+    { titulo:'dos letras', enun:M('8m^3 − 125n^3'),
+      pasos:[
+        P('Las raíces cúbicas.', '∛(8m^3) = 2m', '∛(125n^3) = 5n'),
+        P('Diferencia de cubos.', '8m^3 − 125n^3 = (2m − 5n)(4m^2 + 10mn + 25n^2)'),
+      ], final:M('(2m − 5n)(4m^2 + 10mn + 25n^2)'),
+      control:ctrl(`${M('m = 10')} y ${M('n = 1')}`, '8000 − 125 = 7875', '15 · 525 = 7875') },
+  ],
+  preguntas:[
+    { p:'¿Por qué en el segundo factor el producto va con un solo signo menos?',
+      r:`Porque al multiplicar ${M('(a + b)(a^2 − ab + b^2)')}, los términos del medio se cancelan: queda solo ${M('a^3 + b^3')}. Con otro signo no se cancelarían.` },
+    { p:'¿El segundo factor se puede seguir factorizando?',
+      r:`No con números: ${M('x^2 − 2x + 4')} parece un trinomio cuadrado perfecto, pero su término del medio tendría que ser 4x.` },
+    { p:'¿Por qué n^3 − n siempre es múltiplo de 6?',
+      r:`Porque ${M('n^3 − n = (n − 1) · n · (n + 1)')}: tres números seguidos. Entre ellos siempre hay un par y un múltiplo de 3. Con n = 7: 343 − 7 = 336 = 6 · 56.` },
+    { p:'¿Cómo me acuerdo de los signos?',
+      r:'El primer factor lleva el mismo signo que el binomio. El segundo empieza con más, sigue con el signo contrario y termina con más.' },
+  ],
+  notas:`<p>El libro obtiene la factorización dividiendo el binomio por la suma de sus bases
+      (pág. 106): es la razón de fondo, pero en clase conviene dar la regla de los signos y
+      controlar con números.</p>
+    <p>Los ejemplos 1 y 2 son el mismo binomio con el signo cambiado: que comparen los dos
+      segundos factores lado a lado.</p>`
+},
+
+/* ─────────────────────────── 6 ─────────────────────────── */
+{
+  n:6, corto:'Suma de potencias', titulo:'Suma de potencias de igual grado', pag:'unidad 5, tema 6 · págs. 108–109',
+  concepto:{
+    forma:'a^n + b^n = (a + b)(a<sup>n−1</sup> − a<sup>n−2</sup>b + … + b<sup>n−1</sup>)', formaRot:'solo si n es impar',
+    puntos:[
+      `Con exponente <b>impar</b>, ${M('a^n + b^n')} es divisible por ${M('(a + b)')}.`,
+      `En el segundo factor, los exponentes de ${M('a')} bajan de a uno y los de ${M('b')} suben; los signos <b>alternan</b>.`,
+      'Con exponente <b>par</b>, la suma no se factoriza con este caso.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'exponente 5', enun:M('x^5 + 1'),
+      pasos:[
+        'Las bases son x y 1, y el exponente, 5, es impar: se puede.',
+        P(`Primer factor, la suma de las bases. En el segundo, las potencias de ${M('x')} bajan y los signos alternan.`, 'x^5 + 1 = (x + 1)(x^4 − x^3 + x^2 − x + 1)'),
+      ], final:M('(x + 1)(x^4 − x^3 + x^2 − x + 1)'),
+      control:ctrl(M('x = 10'), '100 000 + 1 = 100 001', '11 · 9091 = 100 001') },
+    { titulo:'cambio el 1 por 32', enun:M(`x^5 + ${N('32')}`),
+      pasos:[
+        P('32 es una quinta potencia.', '32 = 2^5'),
+        P(`Las bases son ${M('x')} y 2. En el segundo factor, las potencias de 2 suben.`, 'x^5 + 32 = (x + 2)(x^4 − 2x^3 + 4x^2 − 8x + 16)'),
+      ], final:M('(x + 2)(x^4 − 2x^3 + 4x^2 − 8x + 16)'),
+      control:ctrl(M('x = 10'), '100 000 + 32 = 100 032', '12 · 8336 = 100 032') },
+    { titulo:'exponente 7', enun:M('a^7 + b^7'),
+      pasos:[
+        'El exponente, 7, es impar. El segundo factor tiene siete términos.',
+        P(`Los exponentes de ${M('a')} bajan de 6 a 0; los de ${M('b')} suben de 0 a 6.`, 'a^7 + b^7 = (a + b)(a^6 − a^5b + a^4b^2 − a^3b^3 + a^2b^4 − ab^5 + b^6)'),
+      ], final:M('(a + b)(a^6 − a^5b + a^4b^2 − a^3b^3 + a^2b^4 − ab^5 + b^6)'),
+      control:ctrl(`${M('a = 2')} y ${M('b = 1')}`, '128 + 1 = 129', '3 · 43 = 129') },
+    { titulo:'cambio a exponente par', enun:M(`x${N('^2')} + 9`),
+      pasos:[
+        'El exponente es 2, par: el caso no se aplica.',
+        P(`Si fuera divisible por ${M('(x + 3)')}, al poner ${M('x = −3')} tendría que dar 0. No da.`, '(−3)^2 + 9 = 18', ['', '18 ≠ 0']),
+      ], final:'no se factoriza: una suma de potencias pares no tiene caso' },
+  ],
+  preguntas:[
+    { p:'¿Por qué con exponente par no se puede?',
+      r:`Porque con n par, poner ${M('a = −b')} da ${M('b^n + b^n')}, que no es 0: la suma no es divisible por ${M('(a + b)')}.` },
+    { p:'¿Para qué sirve saber que 2^n + 1 es divisible por 3 cuando n es impar?',
+      r:`Para descartar primos: ${M('2^5 + 1 = 33 = 3 · 11')}, ${M('2^7 + 1 = 129 = 3 · 43')}. Por eso los únicos 2^n + 1 que pueden ser primos tienen n potencia de 2: son los primos de Fermat, y se conocen solo cinco.` },
+    { p:'¿Cuántos términos tiene el segundo factor?',
+      r:'Tantos como el exponente: con exponente 5, cinco términos; con 7, siete.' },
+  ],
+  notas:`<p>El libro enuncia la regla general y la aplica con n = 5 y n = 7 (pág. 108), y
+      aclara que con exponente par no se factoriza. Los ejemplos hacen lo mismo, y el 4 lo
+      muestra con un número: si fuera divisible por (x + 3), con x = −3 daría 0.</p>
+    <p>Ese argumento es el teorema del resto: si ya lo vieron con Ruffini, conviene nombrarlo.</p>`
+},
+
+/* ─────────────────────────── 7 ─────────────────────────── */
+{
+  n:7, corto:'Diferencia de potencias', titulo:'Diferencia de potencias de igual grado', pag:'unidad 5, tema 7 · págs. 110–111', ficha:3,
+  concepto:{
+    forma:'a^n − b^n = (a − b)(a<sup>n−1</sup> + a<sup>n−2</sup>b + … + b<sup>n−1</sup>)', formaRot:'siempre divisible por (a − b)',
+    puntos:[
+      `${M('a^n − b^n')} es divisible por ${M('(a − b)')}, con n par o impar. En el segundo factor, todos los signos son <b>más</b>.`,
+      'Con exponente <b>par</b> conviene verla como <b>diferencia de cuadrados</b>, que da más factores.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'exponente 5', enun:M('x^5 − 1'),
+      pasos:[
+        'Las bases son x y 1. Primer factor, la diferencia de las bases.',
+        P(`En el segundo, las potencias de ${M('x')} bajan y todos los signos son más.`, 'x^5 − 1 = (x − 1)(x^4 + x^3 + x^2 + x + 1)'),
+      ], final:M('(x − 1)(x^4 + x^3 + x^2 + x + 1)'),
+      control:ctrl(M('x = 10'), '100 000 − 1 = 99 999', '9 · 11 111 = 99 999') },
+    { titulo:'cambio el 1 por 32', enun:M(`x^5 − ${N('32')}`),
+      pasos:[
+        P(`32 es ${M('2^5')}: las bases son ${M('x')} y 2.`, '32 = 2^5'),
+        P('Diferencia de potencias.', 'x^5 − 32 = (x − 2)(x^4 + 2x^3 + 4x^2 + 8x + 16)'),
+      ], final:M('(x − 2)(x^4 + 2x^3 + 4x^2 + 8x + 16)'),
+      control:ctrl(M('x = 10'), '100 000 − 32 = 99 968', '8 · 12 496 = 99 968') },
+    { titulo:'exponente par', enun:M(`x${N('^4')} − 81`),
+      pasos:[
+        P(`Con exponente par la veo como diferencia de cuadrados: ${M('x^4')} es ${M('(x^2)^2')} y 81 es ${M('9^2')}.`, 'x^4 − 81 = (x^2 + 9)(x^2 − 9)'),
+        P('El segundo paréntesis se vuelve a factorizar.', ' = (x^2 + 9)(x + 3)(x − 3)'),
+      ], final:M('(x^2 + 9)(x + 3)(x − 3)'),
+      control:ctrl(M('x = 10'), '10 000 − 81 = 9919', '109 · 13 · 7 = 9919') },
+    { titulo:'exponente 6: cuadrados y después cubos', enun:M('a^6 − 1'),
+      pasos:[
+        P(`Primero como diferencia de cuadrados: ${M('a^6')} es ${M('(a^3)^2')}.`, 'a^6 − 1 = (a^3 + 1)(a^3 − 1)'),
+        P('Cada paréntesis es una suma o una diferencia de cubos, del tema 5.', ' = (a + 1)(a^2 − a + 1)(a − 1)(a^2 + a + 1)'),
+      ], final:M('(a + 1)(a^2 − a + 1)(a − 1)(a^2 + a + 1)'),
+      control:ctrl(M('a = 2'), '64 − 1 = 63', '3 · 3 · 1 · 7 = 63') },
+  ],
+  taller:'lab-nueve',
+  preguntas:[
+    { p:'¿Por qué la regla del 9 funciona?',
+      r:`Por este caso: ${M('10^n − 1')} es divisible por ${M('10 − 1 = 9')}. Entonces 9, 99, 999… son múltiplos de 9, y un número menos la suma de sus cifras es una suma de esos pedazos. El taller lo muestra con cualquier número.` },
+    { p:'¿Y la regla del 11?',
+      r:`Sale con ${M('b = −1')}: ${M('10^n − (−1)^n')} es divisible por 11. De ahí la suma alternada de cifras.` },
+    { p:'¿Por qué en el ejemplo 3 no uso directamente la regla de potencias?',
+      r:`Se puede: da ${M('(x − 3)(x^3 + 3x^2 + 9x + 27)')}. Pero ese segundo factor todavía se factoriza. Por diferencia de cuadrados se llega más rápido a todos los factores.` },
+  ],
+  notas:`<p>El libro separa exponente impar y par (pág. 110). Con par, recomienda diferencia de
+      cuadrados, que es lo que hacen los ejemplos 3 y 4.</p>
+    <p>Este caso es el que demuestra la regla de divisibilidad por 9 que usan desde la
+      primaria. Vale la pena el taller: que escriban su número y vean los 9, 99, 999.</p>
+    <p>Para practicar: la Ficha 3 junta los casos de la unidad 5.</p>`
+},
+
+/* ─────────────────────────── 8 ───────────────────────────
+   Desde acá, la unidad 6 del libro. */
+{
+  n:8, corto:'Trinomio cuadrado perfecto', titulo:'Trinomio cuadrado perfecto', pag:'unidad 6, tema 1 · págs. 118–119', ficha:2,
+  concepto:{
+    forma:'a^2 ± 2ab + b^2 = (a ± b)^2', formaRot:'el cuadrado de un binomio',
+    puntos:[
+      'Tres términos: dos son <b>cuadrados perfectos</b>, y el otro es el <b>doble producto</b> de sus raíces.',
+      'El signo del binomio es el del doble producto. Los cuadrados son siempre positivos.',
+      'Antes de escribir el cuadrado se <b>controla</b> el doble producto: si no coincide, no es este caso.',
+    ]
+  },
+  ejemplos:(() => {
+    const o = [100, 30], x = LX, t = 3 * U;
+    const tiras = (x0, y0, w, h, n, vertical) => Array.from({ length:n }, (_, i) =>
+      vertical ? rect(x0 + i * w, y0, w, h, 'g-x1') : rect(x0, y0 + i * h, w, h, 'g-x1')).join('');
+    const unidades = (x0, y0, c, f) => { let s = ''; for (let i = 0; i < c; i++) for (let j = 0; j < f; j++) s += rect(x0 + i * U, y0 + j * U, U, U, 'g-u'); return s; };
+    return [
+    { titulo:'la de partida, con su figura', enun:M('x^2 + 6x + 9'),
+      lienzo:F([
+        [0, rect(o[0], o[1], x, x, 'g-x2') + tiras(o[0] + x, o[1], U, x, 3, true) + tiras(o[0], o[1] + x, x, U, 3, false) + unidades(o[0] + x, o[1] + x, 3, 3)
+            + g.txt([o[0] + x / 2, o[1] + x / 2], X2, 'g-rot') + g.txt([o[0] + x + t / 2, o[1] + x / 2], '3x', 'g-rot')
+            + g.txt([o[0] + x / 2, o[1] + x + t / 2], '3x', 'g-rot') + g.txt([o[0] + x + t / 2, o[1] + x + t / 2], '9', 'g-dato')],
+        [1, rect(o[0], o[1], x, x, 'g-foco') + rect(o[0] + x, o[1] + x, t, t, 'g-foco'), 2],
+        [2, rect(o[0] + x, o[1], t, x, 'g-foco') + rect(o[0], o[1] + x, x, t, 'g-foco'), 3],
+        [3, g.txt([o[0] + x / 2, o[1] - 14], 'x', 'g-rot') + g.txt([o[0] + x + t / 2, o[1] - 14], '3', 'g-dato')
+            + g.txt([o[0] - 16, o[1] + x / 2], 'x', 'g-rot') + g.txt([o[0] - 16, o[1] + x + t / 2], '3', 'g-dato')
+            + rect(o[0], o[1], x + t, x + t, 'g-foco')],
+      ], 'Un cuadrado de lado x + 3 armado con un cuadrado de x, seis tiras y nueve cuadraditos'),
+      pasos:[
+        P(`Los cuadrados perfectos son ${M('x^2')} y 9. Sus raíces: ${M('x')} y 3.`, '√(x^2) = x', '√9 = 3'),
+        P('Controlo el doble producto de las raíces: coincide con el término del medio.', '2 · x · 3 = 6x'),
+        P(`Es el cuadrado del binomio: la figura es un cuadrado de lado ${M('x + 3')}.`, 'x^2 + 6x + 9 = (x + 3)^2'),
+      ], final:M('(x + 3)^2'),
+      control:ctrl(M('x = 10'), '100 + 60 + 9 = 169', '13^2 = 169') },
+    { titulo:'cambio el signo del medio', enun:M(`x^2 ${N('− 10x')} + 25`),
+      pasos:[
+        P(`Los cuadrados: ${M('x^2')} y 25. Raíces ${M('x')} y 5.`, '√(x^2) = x', '√25 = 5'),
+        P('El doble producto es 10x, y está restando.', '2 · x · 5 = 10x'),
+        P('El binomio lleva el signo del término del medio.', 'x^2 − 10x + 25 = (x − 5)^2'),
+      ], final:M('(x − 5)^2'),
+      control:ctrl(M('x = 10'), '100 − 100 + 25 = 25', '5^2 = 25') },
+    { titulo:'con coeficientes y dos letras', enun:M('4a^2 + 12ab + 9b^2'),
+      pasos:[
+        P('Raíces de los cuadrados.', '√(4a^2) = 2a', '√(9b^2) = 3b'),
+        P('Doble producto.', '2 · 2a · 3b = 12ab'),
+        P('Coincide.', '4a^2 + 12ab + 9b^2 = (2a + 3b)^2'),
+      ], final:M('(2a + 3b)^2'),
+      control:ctrl(`${M('a = 2')} y ${M('b = 1')}`, '16 + 24 + 9 = 49', '7^2 = 49') },
+    { titulo:'cambio el medio: no siempre es', enun:M(`x^2 + ${N('4x')} + 16`),
+      pasos:[
+        P(`Los cuadrados: ${M('x^2')} y 16. Raíces ${M('x')} y 4.`, '√(x^2) = x', '√16 = 4'),
+        P('El doble producto tendría que ser 8x, y hay 4x.', '2 · x · 4 = 8x', ['', '8x ≠ 4x']),
+      ], final:'no es trinomio cuadrado perfecto' },
+    { titulo:'una de las raíces es un binomio', enun:M('(a + b)^2 + 2(a + b) + 1'),
+      pasos:[
+        P(`Raíces: ${M('(a + b)')} y 1.`, '√((a + b)^2) = a + b', '√1 = 1'),
+        P('Doble producto: coincide.', '2 · (a + b) · 1 = 2(a + b)'),
+        P('Es el cuadrado de la suma de las raíces.', '(a + b)^2 + 2(a + b) + 1 = (a + b + 1)^2'),
+      ], final:M('(a + b + 1)^2'),
+      control:ctrl(`${M('a = 2')} y ${M('b = 1')}`, '9 + 6 + 1 = 16', '4^2 = 16') },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Por qué "doble" producto?',
+      r:'Porque en la figura del ejemplo 1 el producto x · 3 aparece dos veces: la tira de arriba a la derecha y la de abajo a la izquierda.' },
+    { p:'¿Cómo elevo 85 al cuadrado de memoria?',
+      r:`8 · 9 = 72, y se le pega 25: 7225. Funciona porque ${M('(10a + 5)^2 = 100a(a + 1) + 25')}: el a(a + 1) es "multiplicalo por el que sigue".` },
+    { p:'¿Un trinomio con los dos cuadrados negativos puede ser cuadrado perfecto?',
+      r:`Solo si se saca el menos afuera: ${M('−x^2 − 6x − 9 = −(x + 3)^2')}. Adentro, los cuadrados tienen que ser positivos.` },
+    { p:'¿Por qué hay que controlar el término del medio?',
+      r:'Porque con los cuadrados solos no alcanza: x² + 4x + 16 tiene dos cuadrados y no es cuadrado perfecto, como en el ejemplo 4.' },
+  ],
+  notas:`<p>El libro da las tres condiciones del trinomio cuadrado perfecto (pág. 118) y lo
+      factoriza igualándolo al cuadrado del binomio. El ejemplo 1 lo muestra con áreas: un
+      cuadrado grande, dos tiras de 3x y nueve cuadraditos arman un cuadrado de lado x + 3.</p>
+    <p>El ejemplo 4 es el contraejemplo que más sirve: dos cuadrados perfectos y, sin
+      embargo, no es este caso. Que lo detecten antes de abrir el paso.</p>
+    <p>Para practicar: la Ficha 2.</p>`
+},
+
+/* ─────────────────────────── 9 ─────────────────────────── */
+{
+  n:9, corto:'x² + bx + c', titulo:'Trinomio de la forma x² + bx + c', pag:'unidad 6, tema 2 · págs. 120–121',
+  concepto:{
+    forma:'x^2 + bx + c = (x + p)(x + q)', formaRot:'con p + q = b y p · q = c',
+    puntos:[
+      `Se buscan dos números que <b>multiplicados</b> den ${M('c')} y <b>sumados</b> den ${M('b')}.`,
+      `Se empieza por el producto: los candidatos son los divisores de ${M('c')}, y son pocos.`,
+      `Si ${M('c')} es negativo, los dos números tienen signos distintos.`,
+    ]
+  },
+  ejemplos:(() => {
+    const unid = (x0, y0, c, f) => { let s = ''; for (let i = 0; i < c; i++) for (let j = 0; j < f; j++) s += rect(x0 + i * U, y0 + j * U, U, U, 'g-u'); return s; };
+    const o = [110, 40];
+    return [
+    { titulo:'la de partida, con su figura', enun:M('x^2 + 5x + 6'),
+      lienzo:F([
+        [0, rect(20, 60, LX, LX, 'g-x2') + g.txt([20 + LX / 2, 60 + LX / 2], X2, 'g-rot')
+            + Array.from({ length:5 }, (_, i) => rect(170 + i * U, 60, U, LX, 'g-x1')).join('') + g.txt([235, 44], '5 tiras de x', 'g-dato')
+            + unid(318, 60, 2, 3) + g.txt([344, 156], '6', 'g-dato'), 3],
+        [3, rect(o[0], o[1], LX, LX, 'g-x2') + Array.from({ length:3 }, (_, i) => rect(o[0] + LX + i * U, o[1], U, LX, 'g-x1')).join('')
+            + Array.from({ length:2 }, (_, j) => rect(o[0], o[1] + LX + j * U, LX, U, 'g-x1')).join('') + unid(o[0] + LX, o[1] + LX, 3, 2)
+            + g.txt([o[0] + LX / 2, o[1] + LX / 2], X2, 'g-rot')
+            + g.txt([o[0] + (LX + 3 * U) / 2, o[1] - 16], 'x + 3', 'g-rot') + g.txt([o[0] - 34, o[1] + (LX + 2 * U) / 2], 'x + 2', 'g-rot')
+            + rect(o[0], o[1], LX + 3 * U, LX + 2 * U, 'g-foco')],
+      ], 'Un cuadrado de x, cinco tiras y seis cuadraditos que se acomodan en un rectángulo de x + 3 por x + 2'),
+      pasos:[
+        P('Busco dos números que multiplicados den 6.', '1 · 6 = 6', '2 · 3 = 6'),
+        P('De esas parejas, la que suma 5 es 2 y 3.', '2 + 3 = 5'),
+        P(`Las piezas se acomodan en un rectángulo de ${M('x + 3')} por ${M('x + 2')}.`, 'x^2 + 5x + 6 = (x + 2)(x + 3)'),
+      ], final:M('(x + 2)(x + 3)'),
+      control:ctrl(M('x = 10'), '100 + 50 + 6 = 156', '12 · 13 = 156') },
+    { titulo:'cambio los signos: el del medio resta', enun:M(`x^2 ${N('− 7x')} + 12`),
+      pasos:[
+        'El producto es positivo y la suma negativa: los dos números son negativos.',
+        P('Busco entre los divisores de 12.', '(−3) · (−4) = 12', '(−3) + (−4) = −7'),
+        P('Entonces:', 'x^2 − 7x + 12 = (x − 3)(x − 4)'),
+      ], final:M('(x − 3)(x − 4)'),
+      control:ctrl(M('x = 10'), '100 − 70 + 12 = 42', '7 · 6 = 42') },
+    { titulo:'el último término es negativo', enun:M(`x^2 + 2x ${N('− 15')}`),
+      pasos:[
+        'El producto es negativo: los números tienen signos distintos. La suma es positiva: el más grande es el positivo.',
+        P('Busco entre los divisores de 15.', '5 · (−3) = −15', '5 + (−3) = 2'),
+        P('Entonces:', 'x^2 + 2x − 15 = (x + 5)(x − 3)'),
+      ], final:M('(x + 5)(x − 3)'),
+      control:ctrl(M('x = 10'), '100 + 20 − 15 = 105', '15 · 7 = 105') },
+    { titulo:'los dos negativos', enun:M(`x^2 ${N('− x − 20')}`),
+      pasos:[
+        'El producto es negativo y la suma también: el más grande es el negativo. El coeficiente de x es −1.',
+        P('Busco entre los divisores de 20.', '(−5) · 4 = −20', '(−5) + 4 = −1'),
+        P('Entonces:', 'x^2 − x − 20 = (x − 5)(x + 4)'),
+      ], final:M('(x − 5)(x + 4)'),
+      control:ctrl(M('x = 10'), '100 − 10 − 20 = 70', '5 · 14 = 70') },
+    ];
+  })(),
+  preguntas:[
+    { p:'¿Por qué empezar por el producto y no por la suma?',
+      r:'Porque dos números que suman 5 hay infinitos; dos enteros que multiplicados dan 6 hay pocos. La lista de los divisores se termina.' },
+    { p:'¿Siempre se puede?',
+      r:`No: ${M('x^2 + x + 1')} no tiene dos enteros que multiplicados den 1 y sumados 1. Si no aparece la pareja, no se factoriza con este caso.` },
+    { p:'¿Qué tiene que ver con la figura?',
+      r:'El trinomio son piezas: un cuadrado de x, tiras de x por 1 y cuadraditos. Factorizar es acomodarlas en un rectángulo; los factores son sus lados.' },
+    { p:'¿Es lo mismo (x + 2)(x + 3) que (x + 3)(x + 2)?',
+      r:'Sí: los factores se pueden escribir en cualquier orden.' },
+  ],
+  notas:`<p>El libro da el procedimiento en cuatro pasos y, en el margen, la interpretación
+      geométrica con áreas (pág. 120). El ejemplo 1 hace justamente eso: las piezas del
+      trinomio se acomodan en un rectángulo.</p>
+    <p>Los ejemplos 2, 3 y 4 cambian solo los signos, que es lo que traba: el producto dice si
+      los signos son iguales o distintos, y la suma dice cuál manda.</p>`
+},
+
+/* ─────────────────────────── 10 ─────────────────────────── */
+{
+  n:10, corto:'ax² + bx + c', titulo:'Trinomio de la forma ax² + bx + c', pag:'unidad 6, tema 3 · págs. 122–123',
+  concepto:{
+    formaTxt:'se multiplica y se divide por a, para convertirlo en el caso anterior',
+    puntos:[
+      `Se multiplica todo por ${M('a')}: el primer término queda un cuadrado, ${M('(ax)^2')}.`,
+      `Se factoriza como ${M('x^2 + bx + c')}, pero con ${M('ax')} en el lugar de ${M('x')}.`,
+      `Al final se saca factor común y se simplifica la ${M('a')}.`,
+    ]
+  },
+  ejemplos:[
+    { titulo:'la de partida', enun:M('2x^2 + 7x + 3'),
+      pasos:[
+        P(`Multiplico y divido por 2. El primer término queda ${M('(2x)^2')} y el último ${M('3 · 2')}.`, `2x^2 + 7x + 3 = ${Q('(2x)^2 + 7(2x) + 6','2')}`),
+        P('Dos números que multiplicados den 6 y sumados 7: 6 y 1.', ` = ${Q('(2x + 6)(2x + 1)','2')}`),
+        P('Saco factor común 2 del primer paréntesis y simplifico.', ` = ${Q('2(x + 3)(2x + 1)','2')}`, ' = (x + 3)(2x + 1)'),
+      ], final:M('(x + 3)(2x + 1)'),
+      control:ctrl(M('x = 10'), '200 + 70 + 3 = 273', '13 · 21 = 273') },
+    { titulo:'cambio los signos', enun:M(`3x^2 ${N('− 5x − 2')}`),
+      pasos:[
+        P('Multiplico y divido por 3.', `3x^2 − 5x − 2 = ${Q('(3x)^2 − 5(3x) − 6','3')}`),
+        P('Producto −6 y suma −5: −6 y 1.', ` = ${Q('(3x − 6)(3x + 1)','3')}`),
+        P('Saco factor común 3 del primer paréntesis y simplifico.', ` = ${Q('3(x − 2)(3x + 1)','3')}`, ' = (x − 2)(3x + 1)'),
+      ], final:M('(x − 2)(3x + 1)'),
+      control:ctrl(M('x = 10'), '300 − 50 − 2 = 248', '8 · 31 = 248') },
+    { titulo:'la a no es primo', enun:M(`${N('6')}x^2 + x − 2`),
+      pasos:[
+        P('Multiplico y divido por 6.', `6x^2 + x − 2 = ${Q('(6x)^2 + (6x) − 12','6')}`),
+        P('Producto −12 y suma 1: 4 y −3.', ` = ${Q('(6x + 4)(6x − 3)','6')}`),
+        P('Esta vez el 6 se reparte: un 2 sale del primer paréntesis y un 3 del segundo.', ` = ${Q('2(3x + 2) · 3(2x − 1)','6')}`, ' = (3x + 2)(2x − 1)'),
+      ], final:M('(3x + 2)(2x − 1)'),
+      control:ctrl(M('x = 10'), '600 + 10 − 2 = 608', '32 · 19 = 608') },
+    { titulo:'con a = 4', enun:M(`${N('4')}x^2 + 4x − 3`),
+      pasos:[
+        P('Multiplico y divido por 4.', `4x^2 + 4x − 3 = ${Q('(4x)^2 + 4(4x) − 12','4')}`),
+        P('Producto −12 y suma 4: 6 y −2.', ` = ${Q('(4x + 6)(4x − 2)','4')}`),
+        P('Un 2 de cada paréntesis, y 2 · 2 = 4 se simplifica.', ` = ${Q('2(2x + 3) · 2(2x − 1)','4')}`, ' = (2x + 3)(2x − 1)'),
+      ], final:M('(2x + 3)(2x − 1)'),
+      control:ctrl(M('x = 10'), '400 + 40 − 3 = 437', '23 · 19 = 437') },
+  ],
+  preguntas:[
+    { p:'¿Por qué se multiplica y se divide por a?',
+      r:'Para que el primer término sea un cuadrado y se pueda usar el caso anterior. Multiplicar y dividir por lo mismo no cambia el valor.' },
+    { p:'¿Qué pasa si no se simplifica el denominador?',
+      r:'La a del denominador siempre se va: tiene que salir de los factores comunes de los paréntesis. Si no se va, hay un error de cuentas.' },
+    { p:'¿Se puede hacer sin multiplicar por a?',
+      r:`Sí, probando: ${M('(2x + 1)(x + 3)')} se puede adivinar mirando los divisores de 2 y de 3. Pero probando se tarda más cuando hay muchas opciones.` },
+  ],
+  notas:`<p>El libro usa el método de multiplicar y dividir por a (pág. 122), en cinco pasos.
+      Los ejemplos siguen ese método: es mecánico y siempre funciona.</p>
+    <p>El ejemplo 3 es el que traba: el 6 no sale de un solo paréntesis, se reparte en 2 y 3.
+      Conviene hacerlo despacio.</p>`
+},
+
+/* ─────────────────────────── 11 ─────────────────────────── */
+{
+  n:11, corto:'Cubo perfecto', titulo:'Cuatrinomio cubo perfecto', pag:'unidad 6, tema 4 · págs. 124–125', ficha:4,
+  concepto:{
+    forma:'a^3 + 3a^2b + 3ab^2 + b^3 = (a + b)^3', formaRot:'el cubo de un binomio',
+    puntos:[
+      'Cuatro términos ordenados: el primero y el último son <b>cubos perfectos</b>.',
+      'El segundo es el triple del cuadrado de la primera raíz por la segunda; el tercero, el triple de la primera por el cuadrado de la segunda.',
+      'Si los signos <b>alternan</b>, es el cubo de una diferencia.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la de partida', enun:M('x^3 + 3x^2 + 3x + 1'),
+      pasos:[
+        P('Las raíces cúbicas de los extremos.', '∛(x^3) = x', '∛1 = 1'),
+        P('Controlo los dos términos del medio.', '3 · x^2 · 1 = 3x^2', '3 · x · 1^2 = 3x'),
+        P('Cierran los cuatro: es un cubo.', 'x^3 + 3x^2 + 3x + 1 = (x + 1)^3'),
+      ], final:M('(x + 1)^3'),
+      control:ctrl(M('x = 10'), '1000 + 300 + 30 + 1 = 1331', '11^3 = 1331') },
+    { titulo:'cambio el último: 8', enun:M(`x^3 + 6x^2 + 12x + ${N('8')}`),
+      pasos:[
+        P('Las raíces cúbicas.', '∛(x^3) = x', '∛8 = 2'),
+        P('Controlo los del medio.', '3 · x^2 · 2 = 6x^2', '3 · x · 2^2 = 12x'),
+        P('Cierran.', 'x^3 + 6x^2 + 12x + 8 = (x + 2)^3'),
+      ], final:M('(x + 2)^3'),
+      control:ctrl(M('x = 10'), '1000 + 600 + 120 + 8 = 1728', '12^3 = 1728') },
+    { titulo:'los signos alternan', enun:M(`x^3 ${N('−')} 9x^2 + 27x ${N('−')} 27`),
+      pasos:[
+        P('Las raíces cúbicas: 27 es 3 · 3 · 3.', '∛(x^3) = x', '∛27 = 3'),
+        P('Controlo los del medio, sin mirar el signo.', '3 · x^2 · 3 = 9x^2', '3 · x · 3^2 = 27x'),
+        P('Los signos alternan: es el cubo de una diferencia.', 'x^3 − 9x^2 + 27x − 27 = (x − 3)^3'),
+      ], final:M('(x − 3)^3'),
+      control:ctrl(M('x = 10'), '1000 − 900 + 270 − 27 = 343', '7^3 = 343') },
+    { titulo:'con coeficiente y dos letras', enun:M('8a^3 + 12a^2b + 6ab^2 + b^3'),
+      pasos:[
+        P('Las raíces cúbicas.', '∛(8a^3) = 2a', '∛(b^3) = b'),
+        P('Controlo los del medio.', '3 · (2a)^2 · b = 12a^2b', '3 · 2a · b^2 = 6ab^2'),
+        P('Cierran.', '8a^3 + 12a^2b + 6ab^2 + b^3 = (2a + b)^3'),
+      ], final:M('(2a + b)^3'),
+      control:ctrl(`${M('a = 2')} y ${M('b = 1')}`, '64 + 48 + 12 + 1 = 125', '5^3 = 125') },
+    { titulo:'cambio uno del medio: no siempre es', enun:M(`x^3 + ${N('3x^2')} + 6x + 8`),
+      pasos:[
+        P(`Las raíces cúbicas: ${M('x')} y 2.`, '∛(x^3) = x', '∛8 = 2'),
+        P(`El segundo término tendría que ser ${M('6x^2')}.`, '3 · x^2 · 2 = 6x^2', ['', '6x^2 ≠ 3x^2']),
+      ], final:'no es cuatrinomio cubo perfecto' },
+  ],
+  preguntas:[
+    { p:'¿De dónde salen el 1, 3, 3, 1?',
+      r:`Del triángulo de Pascal. Se ve elevando 11 al cubo: ${M('11^3 = 1331')}. Y ${M('101^3 = 1 030 301')}, con los coeficientes separados por ceros.` },
+    { p:'¿Por qué hay que controlar los dos del medio?',
+      r:'Porque los extremos pueden ser cubos y el resto no cerrar, como en el ejemplo 5.' },
+    { p:'¿Hay un caso con (a + b)^4?',
+      r:'Existe, con coeficientes 1, 4, 6, 4, 1, pero no está en el programa de 8.º. Se ve en el laboratorio de GeoGebra de la unidad.' },
+  ],
+  notas:`<p>El libro verifica el cuatrinomio en cinco pasos (pág. 124): ordenar, raíces,
+      segundo término, tercer término y escribir el cubo. Los ejemplos hacen los mismos
+      controles.</p>
+    <p>El control con x = 10 da 1331, 1728, 343: son 11³, 12³ y 7³, y se ven de memoria.</p>
+    <p>Para practicar: la Ficha 4 junta los trinomios y el cuatrinomio.</p>`
+},
+
+/* ─────────────────────────── 12 ─────────────────────────── */
+{
+  n:12, corto:'Combinación en dos factores', titulo:'Combinación de casos de factoreo (I)', pag:'unidad 6, tema 5 · págs. 126–127',
+  concepto:{
+    serie:[
+      { rot:'primero', txt:'siempre, el factor común' },
+      { rot:'dos términos', txt:'diferencia de cuadrados, de cubos o de potencias' },
+      { rot:'tres términos', txt:'trinomio cuadrado perfecto o de la forma x² + bx + c' },
+      { rot:'cuatro o más', txt:'cuatrinomio cubo perfecto o agrupación' },
+    ],
+    puntos:[
+      'Se combinan casos hasta que <b>ningún factor</b> se pueda seguir factorizando.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'factor común y después trinomio', enun:M('5x^2 + 20x + 20'),
+      pasos:[
+        P('Primero, el factor común: 5.', '5x^2 + 20x + 20 = 5(x^2 + 4x + 4)'),
+        P(`Adentro queda un trinomio cuadrado perfecto: raíces ${M('x')} y 2, y ${M('2 · x · 2')} es ${M('4x')}.`, ' = 5(x + 2)^2'),
+      ], final:M('5(x + 2)^2'),
+      control:ctrl(M('x = 10'), '500 + 200 + 20 = 720', '5 · 144 = 720') },
+    { titulo:'agrupación y después nada más', enun:M('x^3 + x^2 + 4x + 4'),
+      pasos:[
+        P('No hay factor común a todos: agrupo de a dos.', 'x^3 + x^2 + 4x + 4 = (x^3 + x^2) + (4x + 4)', ' = x^2(x + 1) + 4(x + 1)'),
+        P(`Se repite ${M('(x + 1)')}.`, ' = (x + 1)(x^2 + 4)'),
+        'El segundo factor es una suma de cuadrados: no se sigue.',
+      ], final:M('(x + 1)(x^2 + 4)'),
+      control:ctrl(M('x = 10'), '1000 + 100 + 40 + 4 = 1144', '11 · 104 = 1144') },
+    { titulo:'un trinomio escondido', enun:M('x^2 − y^2 − 2y − 1'),
+      pasos:[
+        P('Agrupo los tres últimos, con el menos afuera.', 'x^2 − y^2 − 2y − 1 = x^2 − (y^2 + 2y + 1)'),
+        P('Adentro hay un trinomio cuadrado perfecto.', ' = x^2 − (y + 1)^2'),
+        P('Y eso es una diferencia de cuadrados.', ' = [x + (y + 1)][x − (y + 1)]', ' = (x + y + 1)(x − y − 1)'),
+      ], final:M('(x + y + 1)(x − y − 1)'),
+      control:ctrl(`${M('x = 10')} y ${M('y = 2')}`, '100 − 4 − 4 − 1 = 91', '13 · 7 = 91') },
+  ],
+  preguntas:[
+    { p:'¿Por qué el factor común va primero?',
+      r:'Porque deja números más chicos adentro y muchas veces destapa otro caso: en el ejemplo 1, sin sacar el 5, el trinomio no parece cuadrado perfecto.' },
+    { p:'¿Cómo sé cuándo terminar?',
+      r:'Cuando cada factor es un número, una letra, o un polinomio que ningún caso puede partir: una suma de cuadrados, un trinomio sin pareja.' },
+    { p:'En el ejemplo 3, ¿cómo se me ocurre agrupar esos tres?',
+      r:`Porque ${M('y^2 + 2y + 1')} es un trinomio cuadrado perfecto conocido. Con práctica se reconocen de lejos.` },
+  ],
+  notas:`<p>El libro da en el margen la estrategia para combinar casos (pág. 126): factor común
+      primero, y después según la cantidad de términos. La serie del concepto es esa lista.</p>
+    <p>Los temas 12, 13 y 14 del libro se distinguen por la cantidad de factores que quedan
+      (dos, tres y cuatro). Lo importante es la estrategia, no el número.</p>`
+},
+
+/* ─────────────────────────── 13 ─────────────────────────── */
+{
+  n:13, corto:'Combinación en tres factores', titulo:'Combinación de casos de factoreo (II)', pag:'unidad 6, tema 6 · págs. 128–129', ficha:5,
+  concepto:{
+    formaTxt:'factor común, y después el caso que corresponda a lo que queda',
+    puntos:[
+      'La factorización es <b>completa</b> cuando ninguno de sus factores se puede volver a factorizar.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'factor común y diferencia de cuadrados', enun:M('2x^2 − 18'),
+      pasos:[
+        P('Factor común 2.', '2x^2 − 18 = 2(x^2 − 9)'),
+        P('Adentro, diferencia de cuadrados.', ' = 2(x + 3)(x − 3)'),
+      ], final:M('2(x + 3)(x − 3)'),
+      control:ctrl(M('x = 10'), '200 − 18 = 182', '2 · 13 · 7 = 182') },
+    { titulo:'factor común y trinomio cuadrado perfecto', enun:M('3a^3 − 12a^2 + 12a'),
+      pasos:[
+        P(`Factor común ${M('3a')}.`, '3a^3 − 12a^2 + 12a = 3a(a^2 − 4a + 4)'),
+        P(`Adentro, un trinomio cuadrado perfecto: raíces ${M('a')} y 2, y ${M('2 · a · 2')} es ${M('4a')}.`, ' = 3a(a − 2)^2'),
+      ], final:M('3a(a − 2)^2'),
+      control:ctrl(M('a = 10'), '3000 − 1200 + 120 = 1920', '30 · 64 = 1920') },
+    { titulo:'un número por su cuadrado menos uno', enun:M('x^3 − x'),
+      pasos:[
+        P(`Factor común ${M('x')}.`, 'x^3 − x = x(x^2 − 1)'),
+        P('Diferencia de cuadrados.', ' = x(x + 1)(x − 1)'),
+      ], final:M('x(x + 1)(x − 1)'),
+      control:ctrl(M('x = 10'), '1000 − 10 = 990', '10 · 11 · 9 = 990') },
+    { titulo:'factor común y trinomio x² + bx + c', enun:M('5x^2 − 5x − 30'),
+      pasos:[
+        P('Factor común 5.', '5x^2 − 5x − 30 = 5(x^2 − x − 6)'),
+        P('Producto −6 y suma −1: −3 y 2.', ' = 5(x − 3)(x + 2)'),
+      ], final:M('5(x − 3)(x + 2)'),
+      control:ctrl(M('x = 10'), '500 − 50 − 30 = 420', '5 · 7 · 12 = 420') },
+  ],
+  preguntas:[
+    { p:'¿Por qué x^3 − x siempre es múltiplo de 6?',
+      r:`Porque ${M('x(x + 1)(x − 1)')} son tres números seguidos: siempre hay un par y un múltiplo de 3. Con x = 10: 9 · 10 · 11 = 990 = 6 · 165.` },
+    { p:'¿3a(a − 2)^2 son tres factores?',
+      r:'Sí: 3a, (a − 2) y (a − 2) otra vez. El libro lo cuenta así.' },
+    { p:'¿Qué pasa si me olvido del factor común al principio?',
+      r:`A veces igual se llega, pero con números más grandes: ${M('2x^2 − 18')} no es diferencia de cuadrados hasta que se saca el 2.` },
+  ],
+  notas:`<p>El libro (pág. 128) descompone en tres factores con dos pasos: factor común y otro
+      caso. Los cuatro ejemplos combinan el factor común con los cuatro casos más usados.</p>
+    <p>El ejemplo 3 tiene una consecuencia linda para contar en voz alta: el producto de tres
+      números seguidos es siempre múltiplo de 6.</p>
+    <p>Para practicar: la Ficha 5.</p>`
+},
+
+/* ─────────────────────────── 14 ─────────────────────────── */
+{
+  n:14, corto:'Combinación en cuatro factores', titulo:'Combinación de casos de factoreo (III)', pag:'unidad 6, tema 7 · págs. 130–131', ficha:1,
+  concepto:{
+    formaTxt:'se factoriza hasta el final: a veces el mismo caso aparece dos veces',
+    puntos:[
+      'Con exponente 4 o 5 suele haber una diferencia de cuadrados que se abre <b>dos veces</b>.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'factor común y dos diferencias de cuadrados', enun:M('2x^4 − 32'),
+      pasos:[
+        P('Factor común 2.', '2x^4 − 32 = 2(x^4 − 16)'),
+        P(`Diferencia de cuadrados: ${M('x^4')} es ${M('(x^2)^2')}.`, ' = 2(x^2 + 4)(x^2 − 4)'),
+        P('Otra vez, en el último paréntesis.', ' = 2(x^2 + 4)(x + 2)(x − 2)'),
+      ], final:M('2(x^2 + 4)(x + 2)(x − 2)'),
+      control:ctrl(M('x = 10'), '20 000 − 32 = 19 968', '2 · 104 · 12 · 8 = 19 968') },
+    { titulo:'un trinomio en x²', enun:M('x^4 − 5x^2 + 4'),
+      pasos:[
+        P(`Es un trinomio con ${M('x^2')} en lugar de ${M('x')}: producto 4 y suma −5, que son −1 y −4.`, 'x^4 − 5x^2 + 4 = (x^2 − 1)(x^2 − 4)'),
+        P('Los dos paréntesis son diferencias de cuadrados.', ' = (x + 1)(x − 1)(x + 2)(x − 2)'),
+      ], final:M('(x + 1)(x − 1)(x + 2)(x − 2)'),
+      control:ctrl(M('x = 10'), '10 000 − 500 + 4 = 9504', '11 · 9 · 12 · 8 = 9504') },
+    { titulo:'x a la quinta menos x', enun:M('x^5 − x'),
+      pasos:[
+        P(`Factor común ${M('x')}.`, 'x^5 − x = x(x^4 − 1)'),
+        P('Diferencia de cuadrados, dos veces.', ' = x(x^2 + 1)(x^2 − 1)', ' = x(x^2 + 1)(x + 1)(x − 1)'),
+      ], final:M('x(x^2 + 1)(x + 1)(x − 1)'),
+      control:ctrl(M('x = 10'), '100 000 − 10 = 99 990', '10 · 101 · 11 · 9 = 99 990') },
+  ],
+  preguntas:[
+    { p:'¿x^2 + 4 no se puede seguir?',
+      r:'No: es una suma de cuadrados. Con números enteros, ningún caso la parte.' },
+    { p:'¿Por qué en el ejemplo 2 se puede tratar x^4 como si fuera x^2?',
+      r:`Porque ${M('x^4 = (x^2)^2')}: si se llama y a x^2, queda ${M('y^2 − 5y + 4')}, un trinomio del tema 9.` },
+    { p:'¿Hay un número que siempre divida a x^5 − x?',
+      r:'Sí, 30. El 2 y el 3 salen de los tres números seguidos, x − 1, x y x + 1; el 5, de un teorema de Fermat. Con x = 10 da 99 990 = 30 · 3333.' },
+  ],
+  notas:`<p>El libro (pág. 130) descompone en cuatro factores, siempre con alguna diferencia de
+      cuadrados que se abre dos veces. Los tres ejemplos repiten esa idea con tres entradas
+      distintas: factor común, trinomio y factor común de nuevo.</p>
+    <p>La Ficha 1, de miscelánea, sirve como repaso de toda la unidad.</p>`
+},
 ];
 
-/* ——— navegación ——— */
-document.getElementById('nav').innerHTML = CASOS.map(c =>
-  `<a class="chip" href="#caso${c.n}">${c.n}. ${c.corto}</a>`).join('');
+/* ─────────────────────── el desafío ─────────────────────── */
+const DESAFIO = {
+  titulo:'Un número que nunca es primo',
+  enun:M('n^4 + 4'),
+  pasos:[
+    'No es ninguno de los casos. El truco: sumar y restar lo mismo para armar un trinomio cuadrado perfecto.',
+    P(`Sumo y resto ${M('4n^2')}.`, `n^4 + 4 = n^4 ${N('+ 4n^2')} + 4 ${N('− 4n^2')}`),
+    P('Los tres primeros son un trinomio cuadrado perfecto; el último, un cuadrado.', ' = (n^2 + 2)^2 − (2n)^2'),
+    P('Diferencia de cuadrados.', ' = (n^2 + 2 − 2n)(n^2 + 2 + 2n)', ' = (n^2 − 2n + 2)(n^2 + 2n + 2)'),
+  ],
+  final:M('(n^2 − 2n + 2)(n^2 + 2n + 2)'),
+  control:ctrl(M('n = 5'), '625 + 4 = 629', '17 · 37 = 629'),
+  preguntas:[
+    { p:'¿Por qué el título dice que nunca es primo?',
+      r:'Porque para n ≥ 2 los dos factores son mayores que 1. Con n = 5, 629 = 17 · 37; con n = 3, 85 = 5 · 17.' },
+    { p:'¿Quién lo descubrió?',
+      r:'Sophie Germain, una matemática francesa que firmaba sus trabajos con nombre de varón para que los leyeran. La versión general es a⁴ + 4b⁴.' },
+  ],
+  notas:`<p>El desafío no es ninguno de los catorce casos: combina dos (trinomio cuadrado
+      perfecto y diferencia de cuadrados) con un truco nuevo, sumar y restar lo mismo.</p>
+    <p>La consecuencia —ningún n⁴ + 4 con n ≥ 2 es primo— es de las que los sorprende: que
+      prueben con n = 2, 3 y 4 antes de mostrar el control.</p>`
+};
 
-/* ——— fichas ——— */
+/* ─────────────────── la pregunta de arranque ─────────────────── */
+const PREGUNTA_INICIAL = {
+  prosa:true,
+  enun:'«¿Cuánto es 98 · 102? Sin calculadora y sin hacer la cuenta larga.»',
+  pasos:[
+    '98 y 102 están a 2 de 100: uno le falta y el otro le sobra.',
+    P('Lo escribo así y multiplico en cruz: los productos del medio se cancelan.', '98 · 102 = (100 − 2)(100 + 2)', ' = 100^2 − 2^2'),
+    P('Y eso se hace de memoria.', ' = 10 000 − 4', ' = 9996'),
+  ],
+  final:'98 · 102 es 9996',
+};
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve factorizar?',
+      r:'Para simplificar fracciones con letras (la unidad que viene), para resolver ecuaciones de grado mayor que 1, y también para calcular de memoria y para las reglas de divisibilidad.' },
+    { p:'¿Cómo sé qué caso usar?',
+      r:'Mirando cuántos términos hay, después de sacar factor común. El tema 12 tiene la lista.' },
+  ],
+  notas:`<p><b>Son las unidades 5 y 6 del libro, en sus catorce temas y en su orden.</b> La
+      unidad 5 va del factor común a las potencias de igual grado; la 6, de los trinomios a
+      la combinación de casos.</p>
+    <p>Cada ejemplo termina con un <b>control</b>: se reemplaza la letra por un número (casi
+      siempre 10) en la expresión y en la factorización, y los dos lados tienen que dar lo
+      mismo. Es el mismo control de la unidad de ecuaciones, y detecta casi cualquier error
+      de signo o de coeficiente.</p>
+    <p>Los trucos de cálculo y las reglas de divisibilidad que antes estaban en cada caso
+      ahora están en las preguntas del observador: el 98 · 102 de la diferencia de
+      cuadrados, la regla del 9 de la diferencia de potencias, el 85² del trinomio.</p>
+    <p>Los exponentes y los coeficientes del libro se cambiaron: los ejemplos son todos
+      propios.</p>`
+};
+
+/* ═══ los talleres ═══ */
 const LABS = {
 'lab-cuadrados':`
 <div class="lab">
@@ -526,66 +1005,14 @@ const LABS = {
 </div>`
 };
 
-document.getElementById('casos').innerHTML = CASOS.map(c => `
-<article class="caso" id="caso${c.n}">
-  <div class="caso-cab">
-    <div class="numero">${c.n}</div>
-    <div class="caso-tit">
-      <h3>${c.nombre}</h3>
-      <div class="paginas">${c.pag}</div>
-    </div>
-  </div>
+/* ═══ el armado ═══
+   La plantilla, los pasos, el cuaderno y el movimiento están en
+   assets/pizarra.js: esta página trae solo sus datos. */
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'8vo', temasLibro:14 });
+</script>
 
-  <div class="forma">
-    <span class="rotulo">Forma general</span>
-    <span class="ec">${c.forma}</span>
-  </div>
-
-  <div class="ejemplo" data-caso="${c.n}">
-    <div class="ejemplo-cab">
-      <span class="rotulo-chico">Ejemplo · factorizar <span class="ec">${c.enun}</span></span>
-      <button class="boton" type="button" data-accion="paso" data-caso="${c.n}">Siguiente paso</button>
-    </div>
-    <ol class="pasos" id="pasos${c.n}"></ol>
-  </div>
-
-  <div class="gancho">
-    <p class="gancho-tit">${c.gancho.tit}</p>
-    ${c.gancho.html}
-  </div>
-
-  ${c.lab ? LABS[c.lab] : ''}
-</article>`).join('');
-
-/* ——— revelar pasos ——— */
-const estado = {};
-CASOS.forEach(c => { estado[c.n] = 0; });
-
-function siguientePaso(n){
-  const c = CASOS.find(k => k.n === n);
-  const total = c.pasos.length + 1;
-  if (estado[n] >= total) return;
-  const i = estado[n];
-  const ultimo = (i === c.pasos.length);
-  const li = document.createElement('li');
-  if (ultimo) li.className = 'final';
-  li.innerHTML = ultimo
-    ? `<span class="n">=</span><span class="t"><span class="ec">${c.final}</span></span>`
-    : `<span class="n">${i+1}</span><span class="t">${c.pasos[i]}</span>`;
-  document.getElementById('pasos' + n).appendChild(li);
-  estado[n] = i + 1;
-  if (estado[n] >= total){
-    const b = document.querySelector(`[data-accion="paso"][data-caso="${n}"]`);
-    b.disabled = true; b.textContent = 'Completo';
-  }
-}
-
-document.addEventListener('click', ev => {
-  const b = ev.target.closest('[data-accion="paso"]');
-  if (b) siguientePaso(Number(b.dataset.caso));
-});
-
-/* ——— laboratorio: diferencia de cuadrados ——— */
+<script>
+/* ——— taller: multiplicar de memoria ——— */
 const miles = x => x.toLocaleString('es-PY');
 
 function calcCuadrados(){
@@ -596,7 +1023,7 @@ function calcCuadrados(){
     out.innerHTML = '<span class="dim">Escribí los dos números.</span>'; return;
   }
   if ((a + b) % 2 !== 0){
-    out.innerHTML = `<span class="dim">${miles(a)} × ${miles(b)} = </span><span class="ok">${miles(a*b)}</span><br>
+    out.innerHTML = `<span class="dim">${miles(a)} · ${miles(b)} = </span><span class="ok">${miles(a*b)}</span><br>
       <span class="dim">Para el truco conviene que los dos sean pares o los dos impares,
       así el punto medio es entero.</span>`;
     return;
@@ -605,13 +1032,13 @@ function calcCuadrados(){
   out.innerHTML = `
     <div class="fila"><span class="dim">punto medio:</span> ${miles(m)} &nbsp;&nbsp;
       <span class="dim">distancia:</span> ${miles(d)}</div>
-    <div class="fila">${miles(a)} × ${miles(b)} = (${miles(m)} − ${miles(d)})(${miles(m)} + ${miles(d)})</div>
-    <div class="fila"><span class="dim">=</span> ${miles(m)}<sup>2</sup> − ${miles(d)}<sup>2</sup>
-      <span class="dim">=</span> ${miles(m*m)} − ${miles(d*d)}</div>
+    <div class="fila">${miles(a)} · ${miles(b)} = (${miles(m)} − ${miles(d)})(${miles(m)} + ${miles(d)})</div>
+    <div class="fila"><span class="dim">=</span> ${miles(m)}<sup>2</sup> − ${miles(d)}<sup>2</sup></div>
+    <div class="fila"><span class="dim">=</span> ${miles(m*m)} − ${miles(d*d)}</div>
     <div class="fila"><span class="dim">=</span> <span class="ok">${miles(a*b)}</span></div>`;
 }
 
-/* ——— laboratorio: regla del 9 ——— */
+/* ——— taller: la regla del 9 ——— */
 function calcNueve(){
   const campo = document.getElementById('n9');
   const bruto = String(campo.value).replace(/[^0-9]/g, '').slice(0, 12);
@@ -620,19 +1047,20 @@ function calcNueve(){
     out.innerHTML = '<span class="dim">Escribí un número de al menos dos cifras.</span>'; return;
   }
   const cifras = bruto.split('').map(Number);
-  const N = Number(bruto);
-  const suma = cifras.reduce((s, d) => s + d, 0);
+  const Nn = Number(bruto);
+  const s = cifras.reduce((t, d) => t + d, 0);
   const k = cifras.length;
   const trozos = cifras.map((d, i) => {
       const nueves = '9'.repeat(k - 1 - i);
-      return nueves ? `${d}·<b>${nueves}</b>` : null;
+      return nueves ? `${d} · <b>${nueves}</b>` : null;
     }).filter(Boolean).join(' + ');
   out.innerHTML = `
-    <div class="fila">${miles(N)} <span class="dim">− suma de cifras (</span>${cifras.join(' + ')}<span class="dim"> = ${suma})</span></div>
-    <div class="fila"><span class="dim">=</span> ${trozos} <span class="dim">=</span> ${miles(N - suma)}</div>
-    <div class="fila"><span class="dim">cada pedazo es múltiplo de 9, así que ${miles(N - suma)} lo es:</span> ${miles(N - suma)} ÷ 9 = ${miles((N - suma) / 9)}</div>
-    <div class="fila"><span class="dim">resto de</span> ${miles(N)} <span class="dim">÷ 9 =</span> <span class="ok">${N % 9}</span>
-      <span class="dim">· resto de</span> ${suma} <span class="dim">÷ 9 =</span> <span class="ok">${suma % 9}</span>
+    <div class="fila">${miles(Nn)} <span class="dim">− la suma de sus cifras (</span>${cifras.join(' + ')}<span class="dim">, que es ${s})</span></div>
+    <div class="fila"><span class="dim">=</span> ${trozos}</div>
+    <div class="fila"><span class="dim">=</span> ${miles(Nn - s)}</div>
+    <div class="fila"><span class="dim">cada pedazo es múltiplo de 9, así que ${miles(Nn - s)} también:</span> ${miles(Nn - s)} : 9 = ${miles((Nn - s) / 9)}</div>
+    <div class="fila"><span class="dim">resto de</span> ${miles(Nn)} <span class="dim">: 9 →</span> <span class="ok">${Nn % 9}</span>
+      <span class="dim">| resto de</span> ${s} <span class="dim">: 9 →</span> <span class="ok">${s % 9}</span>
       <span class="dim">— el mismo.</span></div>`;
 }
 
@@ -644,5 +1072,6 @@ calcNueve();
 
 <script src="../../assets/proyeccion.js" defer></script>
 <script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
 </body>
 </html>

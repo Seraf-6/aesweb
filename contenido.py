@@ -38,11 +38,11 @@ GRADOS = [
         'url': 'fichas/index.html#7mo'},
      ]},
     {'n': '8+9', 'titulo': 'Polígonos', 'pags': '152–192',
-     'nota': 'Unidades 8 y 9 fusionadas en una sola, en ocho pasos.',
+     'nota': 'Unidades 8 y 9 fusionadas en una sola, con sus quince temas.',
      'material': [
-       {'tipo': 'diapositiva', 'titulo': 'Todo se corta en triángulos',
-        'desc': 'La unidad entera en ocho pasos, con Pitágoras una sola vez y aplicado '
-                'después a triángulos y a cuadriláteros. Tres talleres para proyectar.',
+       {'tipo': 'diapositiva', 'titulo': 'Polígonos',
+        'desc': 'Los quince temas del libro, con Pitágoras una sola vez y aplicado '
+                'después a triángulos y a cuadriláteros. Cada ejemplo arma su figura.',
         'url': 'matematica/7mo/poligonos.html'},
        {'tipo': 'ficha', 'titulo': 'Polígonos y clasificación',
         'desc': 'Ficha 10.', 'url': 'fichas/index.html#7mo'},
