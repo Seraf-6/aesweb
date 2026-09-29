@@ -35,6 +35,7 @@ matematica/
   7mo/poligonos.html        diapositivas                 ← escritas a mano
   8vo/factoreo.html         diapositivas                 ← escritas a mano
   8vo/sistemas.html         diapositivas                 ← escritas a mano
+  9no/cuadraticas.html      diapositivas                 ← escritas a mano
 fichas/
   index.html                listado                      ← lo genera build.py
   pdf/<grado>/Ficha_NN.pdf  los archivos
@@ -172,8 +173,9 @@ videos de Khan Academy, la pantalla se parte en dos:
   - **el plano**, si el ejemplo dibuja (`construye:`): vacío al principio,
     un punto por paso, con su renglón en la tabla chica de la izquierda; la
     recta aparece recién con la respuesta y el control es un punto más;
-  - **el plano con varias rectas** (`lienzo:{ tipo:'plano' }`): las rectas y
-    los puntos aparecen por capas, paso a paso. Es el de los sistemas;
+  - **el plano con varias rectas** (`lienzo:{ tipo:'plano' }`): las rectas,
+    las parábolas, los ejes de simetría y los puntos aparecen por capas,
+    paso a paso. Es el de los sistemas y el de la parábola de 9.º;
   - **una figura** (`lienzo:{ tipo:'figura' }`): un dibujo por capas, cada
     una con el paso en que aparece. El triángulo, sus alturas, la
     circunferencia; los cuadrados de Pitágoras; las piezas de un trinomio.
@@ -319,7 +321,8 @@ cuenta esté bien. Después de tocar una página de clase hay que volver a
 correrlo.
 
 Hay uno por cada página de clase (ecuaciones y polígonos de 7.º,
-factoreo y sistemas de 8.º) y uno para el módulo de progreso.
+factoreo y sistemas de 8.º, ecuaciones de segundo grado de 9.º) y uno para
+el módulo de progreso.
 
 Las páginas de clase cargan `assets/pizarra.js` (sin `defer`, antes de su
 propio guion) y enlazan `assets/clase.css`, que tiene los componentes
@@ -466,8 +469,9 @@ series originales propias.
    que corresponda, con `'tipo': 'diapositiva'` y su `url`.
 5. `python build.py` y el verificador otra vez.
 
-Las cuatro clases que hay (ecuaciones y polígonos de 7.º, factoreo y
-sistemas de 8.º) siguen esta anatomía y usan el mismo motor.
+Las cinco clases que hay (ecuaciones y polígonos de 7.º, factoreo y
+sistemas de 8.º, ecuaciones de segundo grado de 9.º) siguen esta anatomía y
+usan el mismo motor.
 
 ### Una unidad nueva
 
@@ -511,11 +515,12 @@ las páginas de clase.
 
 Hecho: portada, índices de los tres grados, listado de fichas con 26 PDF,
 las diapositivas de 7.º (ecuaciones lineales y polígonos) y las dos de 8.º
-(factoreo y sistemas), todas sobre el motor de la pizarra, con su
+(factoreo y sistemas), la de ecuaciones de segundo grado de 9.º
+(unidades 5 y 6), todas sobre el motor de la pizarra, con su
 verificador; el panel de proyección, el timer de aula y el módulo de
 progreso.
 
 Pendiente: el proyecto de estadística compartido por los tres grados (falta
-definir el tema), las diapositivas de cuerpos geométricos y de la parábola
-para 9.º, el material de circunferencia de 8.º, la ficha de sistemas de 8.º
+definir el tema), las diapositivas de cuerpos geométricos de 9.º, el
+material de circunferencia de 8.º, la ficha de sistemas de 8.º
 y todo el contenido de OMAPA.

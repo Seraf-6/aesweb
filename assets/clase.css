@@ -633,6 +633,11 @@ body[data-solo="1"] .cu-rot{font-size:.55em}
   paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
 .recta-anterior{stroke:var(--lapiz); stroke-width:2; stroke-dasharray:6 6; opacity:.7; fill:none}
 
+/* la parábola y su eje de simetría */
+.parabola{fill:none; stroke-linejoin:round}
+.eje-sim{stroke:var(--dest); stroke-width:2; stroke-dasharray:7 6; fill:none}
+.punto-vertice{fill:var(--dest); stroke:var(--papel); stroke-width:2}
+
 /* el nombre de cada recta en el plano, del color de su recta */
 .rot-recta{font-family:var(--serif); font-style:italic; font-weight:700; font-size:16px;
   paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}

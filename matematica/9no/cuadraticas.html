@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ecuaciones de segundo grado · AESWeb</title>
+<meta name="description" content="Las unidades 5 y 6 de 9.º en los dieciséis temas del libro: de las ecuaciones incompletas a la fórmula, los radicales, el discriminante, completar el cuadrado y la parábola, con ejemplos resueltos paso a paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de esta página ---------- */
+/* las piezas de la figura de completar el cuadrado */
+.g-x2{fill:var(--acento2-suave); stroke:var(--tinta); stroke-width:2}
+.g-x1{fill:var(--dest-suave); stroke:var(--tinta); stroke-width:2}
+.g-u{fill:var(--acento-suave); stroke:var(--tinta); stroke-width:2}
+.g-falta{fill:none; stroke:var(--acento); stroke-width:2.5; stroke-dasharray:6 5}
+/* el taller de la parábola */
+.taller{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,300px); gap:18px; align-items:start}
+@media (max-width:760px){.taller{grid-template-columns:minmax(0,1fr)}}
+.taller .lienzo svg{max-height:calc(100vh - 200px)}
+.perilla{display:flex; align-items:center; gap:6px; margin-bottom:8px}
+.perilla-rot{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--lapiz); min-width:6.5em}
+.perilla input{font-family:var(--mono); font-size:17px; width:4.2em; text-align:center;
+  background:var(--papel); color:var(--tinta); border:1px solid var(--linea-fuerte);
+  border-radius:3px; padding:7px 6px}
+.cambio{margin-top:6px; font-family:var(--sans); font-size:14px; line-height:1.4; color:var(--acento2)}
+.recta-anterior{stroke:var(--lapiz); stroke-width:2; stroke-dasharray:6 6; opacity:.7; fill:none}
+body[data-solo="1"] .perilla input{font-size:1em}
+body[data-solo="1"] .cambio{font-size:.8em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="index.html">9.º grado</a><span class="sep">/</span>
+      <span>Unidades 5 y 6 · págs. 98–148</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Matemática 9.º grado</p>
+    <h1>Ecuaciones de segundo grado</h1>
+    <p class="bajada">«La imaginación es más importante que el conocimiento.»<span class="firma">Albert Einstein</span></p>
+    <div class="pie-tapa">
+      <span>Unidades 5 y 6 · páginas 98 a 148</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Unidades 5 y 6 · págs. 98–148</p>
+    <h2>Cuando la incógnita aparece al cuadrado</h2>
+    <ul class="puntos">
+      <li>En <span class="ec"><i>ax</i><sup>2</sup> + <i>bx</i> + <i>c</i> = 0</span> ya no alcanza con pasar términos: la <i>x</i> no se puede despejar de una.</li>
+      <li>Hay tres caminos: <b>factorizar</b>, <b>completar el cuadrado</b> y la <b>fórmula</b>. Los tres dan lo mismo.</li>
+      <li>Puede tener <b>dos</b> soluciones, <b>una</b> o <b>ninguna</b>, y el dibujo lo explica: es una parábola que corta, toca o no toca al eje <i>x</i>.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de clase · Unidades 5 y 6, <i>Matemática 9</i>, Editorial En Alianza. Sigue los
+    dieciséis temas del libro con ejemplos originales; las páginas indicadas remiten al libro
+    del alumno. Cada solución de esta página está verificada en
+    <span class="ec">verificacion/cuadraticas_9no.py</span>.
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* Las letras de esta unidad: la incógnita, los coeficientes y los
+   parámetros de los problemas. Los exponentes se escriben con ^. */
+Pizarra.letras = /[abcxykmht]/g;
+
+/* las dos soluciones, como las escribe el libro */
+const R1 = '<i>x</i><sub>1</sub> = ', R2 = '<i>x</i><sub>2</sub> = ';
+/* el control: se reemplaza cada solución en la ecuación original */
+const ctrl = (...filas) => `Control en la ecuación original:${A(...filas)}`;
+/* la fórmula general */
+const FORMULA = `x = ${Q('−b ± √(b^2 − 4ac)', '2a')}`;
+
+/* el plano con la parábola */
+const PL = (capas, rot, R = 8) => ({ tipo:'plano', R, capas, rot });
+const par = (a, b, c, rot, cls = 'recta1') => ({ parabola:[a, b, c], cls, rot });
+const pt = (x, y, rot, guias = false, cls) => ({ punto:[x, y], rot, guias, cls });
+const vert = (x, y, rot) => ({ punto:[x, y], rot, cls:'punto-vertice' });
+
+/* las piezas de la figura de completar el cuadrado */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 420 320') => ({ tipo:'figura', vb, rot, capas });
+const rect = (x, y, w, h, cls) => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+const U = 26, LX = 130;
+
+/* ═══════════════════════════════════════════════════════════════
+   Los dieciséis temas de las unidades 5 y 6 del libro, en su orden
+   Toda solución que aparece acá está calculada y verificada en
+   verificacion/cuadraticas_9no.py. No se escribe ninguna a mano.
+   ═══════════════════════════════════════════════════════════════ */
+const TEMAS = [
+/* ─────────────────────── unidad 5 · 1 ─────────────────────── */
+{
+  n:1, corto:'Qué es', titulo:'Ecuaciones de segundo grado con una variable', pag:'unidad 5, tema 1 · págs. 100–101',
+  concepto:{
+    forma:'ax^2 + bx + c = 0', formaRot:'ecuación de segundo grado, o cuadrática, con a ≠ 0',
+    serie:[
+      { rot:'a', txt:'el coeficiente de x²: no puede ser 0' },
+      { rot:'b', txt:'el coeficiente de x' },
+      { rot:'c', txt:'el término independiente' },
+      { rot:'completa', txt:'tiene los tres términos' },
+      { rot:'incompleta', txt:'le falta bx o c' },
+    ],
+    puntos:[
+      'Es de <b>segundo grado</b> porque el mayor exponente de la incógnita es 2.',
+      'Antes de leer a, b y c, la ecuación se <b>ordena</b> y se <b>iguala a cero</b>.',
+      'Puede tener <b>dos soluciones</b>: dos números que la cumplen.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'leer los coeficientes', enun:M('3x^2 − 5x + 2 = 0'),
+      pasos:[
+        P('Ya está ordenada e igualada a cero: leo cada coeficiente con su signo.', 'a = 3', 'b = −5', 'c = 2'),
+        'Tiene los tres términos.',
+      ], final:'<i>a</i> = 3, <i>b</i> = −5 y <i>c</i> = 2: es completa' },
+    { titulo:'desordenada', enun:M(`${N('4x − 7 + x^2')} = 0`),
+      pasos:[
+        P('Ordeno de mayor a menor exponente.', 'x^2 + 4x − 7 = 0'),
+        P('Delante de x² no hay número: el coeficiente es 1.', 'a = 1', 'b = 4', 'c = −7'),
+      ], final:'<i>a</i> = 1, <i>b</i> = 4 y <i>c</i> = −7: es completa' },
+    { titulo:'no está igualada a cero', enun:M(`2x^2 + 3 = ${N('5x')}`),
+      pasos:[
+        P('Resto 5x a los dos miembros, para que quede igualada a cero.', `2x^2 + 3 ${N('− 5x')} = 5x ${N('− 5x')}`, '2x^2 − 5x + 3 = 0'),
+        P('Ahora leo.', 'a = 2', 'b = −5', 'c = 3'),
+      ], final:'<i>a</i> = 2, <i>b</i> = −5 y <i>c</i> = 3: es completa' },
+    { titulo:'le falta un término', enun:M('5x^2 − 20 = 0'),
+      pasos:[
+        P('No hay término con x: su coeficiente es 0.', 'a = 5', `b = ${N('0')}`, 'c = −20'),
+        'Le falta el término bx.',
+      ], final:'<i>a</i> = 5, <i>b</i> = 0 y <i>c</i> = −20: es incompleta' },
+    { titulo:'¿cuántas soluciones?', enun:`¿Cuáles de los números 3, −1 y 2 cumplen ${M('x^2 − 2x − 3 = 0')}?`,
+      pasos:[
+        P('Pruebo con 3.', ['con x = 3', `${N('3')}^2 − 2 · ${N('3')} − 3 = 0 ✓`]),
+        P('Con −1.', ['con x = −1', `(${N('−1')})^2 − 2 · (${N('−1')}) − 3 = 0 ✓`]),
+        P('Con 2.', ['con x = 2', `${N('2')}^2 − 2 · ${N('2')} − 3 ≠ 0`]),
+      ], final:'la cumplen 3 y −1: una ecuación de segundo grado puede tener dos soluciones' },
+  ],
+  preguntas:[
+    { p:'¿Por qué a no puede ser 0?',
+      r:`Porque si a es 0 desaparece el ${M('x^2')} y queda una ecuación de primer grado, como las de 7.º.` },
+    { p:'¿Una ecuación de primer grado puede tener dos soluciones?',
+      r:'No: tiene una sola, o ninguna, o infinitas. Las de segundo grado pueden tener dos, y es lo nuevo de esta unidad.' },
+    { p:'En el ejemplo 2, ¿de dónde salió el 1?',
+      r:`De ${M('x^2 = 1 · x^2')}. Cuando no hay número adelante, el coeficiente es 1; y si hay solo un menos, es −1.` },
+    { p:'¿Por qué hay que igualar a cero antes de leer los coeficientes?',
+      r:'Porque la forma ax² + bx + c = 0 tiene todo en un miembro. Si no, el 5x del ejemplo 3 se leería con el signo cambiado.' },
+  ],
+  notas:`<p>El libro define la ecuación cuadrática y sus elementos (pág. 100). Los ejemplos 2 y 3
+      son los dos tropiezos más comunes al leer a, b y c: la ecuación desordenada y la que no
+      está igualada a cero.</p>
+    <p>El ejemplo 5 es el centro del tema: <b>dos números distintos cumplen la misma
+      ecuación</b>. Conviene preguntar antes de probar con −1 si alguien espera que funcione.</p>`
+},
+
+/* ─────────────────────── unidad 5 · 2 ─────────────────────── */
+{
+  n:2, corto:'Incompletas', titulo:'Cálculo de las raíces de una ecuación de segundo grado incompleta', pag:'unidad 5, tema 2 · págs. 102–103',
+  concepto:{
+    serie:[
+      { rot:'ax² + c = 0', txt:'despejo x² y saco la raíz: dos soluciones opuestas' },
+      { rot:'ax² + bx = 0', txt:'saco factor común x: una solución es 0' },
+    ],
+    puntos:[
+      `Una raíz cuadrada tiene <b>dos</b> resultados: ${M('x^2 = 9')} se cumple con 3 y con −3. Se escribe ${M('x = ±3')}.`,
+      '<b>Si un producto da cero, alguno de los factores es cero.</b> Es la idea que resuelve todas las factorizadas.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'sin término en x', enun:M('x^2 − 49 = 0'),
+      inicio:'x^2 − 49 = 0',
+      pasos:[
+        P('Sumo 49 a los dos miembros.', `x^2 − 49 ${N('+ 49')} = 0 ${N('+ 49')}`, 'x^2 = 49'),
+        P('Saco la raíz: hay dos números que al cuadrado dan 49.', 'x = ±√49', 'x = ±7'),
+      ], final:`${R1}7 y ${R2}−7`,
+      control:ctrl(['x = 7', '49 − 49 = 0 ✓'], ['x = −7', '(−7)^2 − 49 = 0 ✓']) },
+    { titulo:'con coeficiente', enun:M(`${N('3')}x^2 − 75 = 0`),
+      inicio:'3x^2 − 75 = 0',
+      pasos:[
+        P('Sumo 75 y divido por 3.', '3x^2 = 75', 'x^2 = 25'),
+        P('Saco la raíz.', 'x = ±5'),
+      ], final:`${R1}5 y ${R2}−5`,
+      control:ctrl(['x = ±5', '3 · 25 − 75 = 0 ✓']) },
+    { titulo:'cambio el signo: un cuadrado negativo', enun:M(`x^2 ${N('+')} 16 = 0`),
+      inicio:'x^2 + 16 = 0',
+      pasos:[
+        P('Resto 16.', 'x^2 = −16'),
+        'Ningún número al cuadrado da negativo: ni 4 ni −4, que dan 16.',
+      ], final:'no tiene solución en los números reales' },
+    { titulo:'sin término independiente', enun:M('x^2 − 5x = 0'),
+      inicio:'x^2 − 5x = 0',
+      pasos:[
+        P('Saco factor común x.', 'x(x − 5) = 0'),
+        P('Un producto da cero: uno de los factores es cero.', ['o bien', 'x = 0'], ['o bien', 'x − 5 = 0'], ['', 'x = 5']),
+      ], final:`${R1}0 y ${R2}5`,
+      control:ctrl(['x = 0', '0 − 0 = 0 ✓'], ['x = 5', '25 − 25 = 0 ✓']) },
+    { titulo:'con coeficiente, y una fracción', enun:M('4x^2 + 6x = 0'),
+      inicio:'4x^2 + 6x = 0',
+      pasos:[
+        P('Factor común 2x.', '2x(2x + 3) = 0'),
+        P('Cada factor, igual a cero.', ['o bien', '2x = 0'], ['', 'x = 0'], ['o bien', '2x + 3 = 0'], ['', `x = −${Q('3','2')}`]),
+      ], final:`${R1}0 y ${R2}−3/2`,
+      control:ctrl(['x = −3/2', `4 · ${Q('9','4')} + 6 · (−${Q('3','2')}) = 9 − 9`], ['', ' = 0 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿Por qué no se puede dividir por x en el ejemplo 4?',
+      r:`Porque x podría ser 0, y justamente lo es. Si se divide, se pierde esa solución: queda ${M('x = 5')} solo.` },
+    { p:'¿Por qué si un producto da cero, algún factor es cero?',
+      r:'Porque dos números que no son cero, multiplicados, nunca dan cero. Es la única manera de que un producto se anule.' },
+    { p:'¿Qué pasa con √(−16)?',
+      r:'No es un número real. En la unidad 6 van a ver que el libro la escribe con la letra i, como un número "imaginario"; por ahora decimos que no hay solución real.' },
+    { p:'¿x² = 7 también tiene dos soluciones?',
+      r:`Sí: ${M('x = √7')} y ${M('x = −√7')}. No dan enteras, pero son dos números.` },
+  ],
+  notas:`<p>El libro separa las dos incompletas (pág. 102). La primera se despeja; la segunda se
+      factoriza. Los ejemplos 1 a 3 van de la primera; el 3 es el que no tiene solución, y
+      anticipa el discriminante de la unidad 6.</p>
+    <p>El error más común del tema es escribir <span class="ec"><i>x</i> = 7</span> y
+      olvidar el −7. El control con las dos soluciones lo muestra.</p>
+    <p>En el ejemplo 4 conviene preguntar si alguien "dividiría por x". Es la primera pregunta
+      del observador.</p>`
+},
+
+/* ─────────────────────── unidad 5 · 3 ─────────────────────── */
+{
+  n:3, corto:'Por factorización', titulo:'Resolución de ecuaciones cuadráticas completas por factorización', pag:'unidad 5, tema 3 · págs. 104–106',
+  concepto:{
+    formaTxt:'se ordena, se factoriza el trinomio y cada factor se iguala a cero',
+    puntos:[
+      `Para ${M('x^2 + bx + c')}: dos números que <b>multiplicados</b> den c y <b>sumados</b> den b, como en 8.º.`,
+      'Si a no es 1, se multiplica y se divide por a, y se sigue igual.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la de partida', enun:M('x^2 + 7x + 10 = 0'),
+      inicio:'x^2 + 7x + 10 = 0',
+      pasos:[
+        P('Dos números que multiplicados den 10 y sumados 7: 2 y 5.', '(x + 2)(x + 5) = 0'),
+        P('Cada factor, igual a cero.', ['o bien', 'x + 2 = 0'], ['', 'x = −2'], ['o bien', 'x + 5 = 0'], ['', 'x = −5']),
+      ], final:`${R1}−2 y ${R2}−5`,
+      control:ctrl(['x = −2', '4 − 14 + 10 = 0 ✓'], ['x = −5', '25 − 35 + 10 = 0 ✓']) },
+    { titulo:'cambio los signos', enun:M(`x^2 ${N('− 2x − 15')} = 0`),
+      inicio:'x^2 − 2x − 15 = 0',
+      pasos:[
+        P('Producto −15 y suma −2: −5 y 3.', '(x − 5)(x + 3) = 0'),
+        P('Cada factor, igual a cero.', ['', 'x = 5'], ['', 'x = −3']),
+      ], final:`${R1}5 y ${R2}−3`,
+      control:ctrl(['x = 5', '25 − 10 − 15 = 0 ✓'], ['x = −3', '9 + 6 − 15 = 0 ✓']) },
+    { titulo:'hay que ordenar primero', enun:M(`x^2 + 12 = ${N('7x')}`),
+      inicio:'x^2 + 12 = 7x',
+      pasos:[
+        P('Resto 7x y ordeno.', 'x^2 − 7x + 12 = 0'),
+        P('Producto 12 y suma −7: −3 y −4.', '(x − 3)(x − 4) = 0'),
+        P('Cada factor, igual a cero.', ['', 'x = 3'], ['', 'x = 4']),
+      ], final:`${R1}3 y ${R2}4`,
+      control:ctrl(['x = 3', '9 + 12 = 7 · 3 ✓'], ['x = 4', '16 + 12 = 7 · 4 ✓']) },
+    { titulo:'con a distinto de 1', enun:M(`${N('2')}x^2 + 5x − 3 = 0`),
+      inicio:'2x^2 + 5x − 3 = 0',
+      pasos:[
+        P('Multiplico y divido por 2.', `${Q('(2x)^2 + 5(2x) − 6','2')} = 0`),
+        P('Producto −6 y suma 5: 6 y −1.', `${Q('(2x + 6)(2x − 1)','2')} = 0`, '(x + 3)(2x − 1) = 0'),
+        P('Cada factor, igual a cero.', ['', 'x = −3'], ['', `x = ${Q('1','2')}`]),
+      ], final:`${R1}−3 y ${R2}1/2`,
+      control:ctrl(['x = 1/2', `2 · ${Q('1','4')} + ${Q('5','2')} − 3 = 0 ✓`], ['x = −3', '18 − 15 − 3 = 0 ✓']) },
+    { titulo:'un trinomio cuadrado perfecto', enun:M('x^2 − 10x + 25 = 0'),
+      inicio:'x^2 − 10x + 25 = 0',
+      pasos:[
+        P('Es el cuadrado de un binomio: las raíces de los extremos son x y 5, y 2 · x · 5 = 10x.', '(x − 5)^2 = 0'),
+        P('Los dos factores son iguales.', 'x − 5 = 0', 'x = 5'),
+      ], final:'una sola solución: <i>x</i> = 5, que se llama raíz doble',
+      control:ctrl(['x = 5', '25 − 50 + 25 = 0 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿Por qué hay que igualar a cero antes de factorizar?',
+      r:`Porque la idea es "si un producto da cero…". Si el producto da 12, sus factores pueden ser 3 y 4, o 2 y 6, o infinitas otras cosas.` },
+    { p:'¿Qué pasa si no encuentro los dos números?',
+      r:'Puede que no sean enteros, o que no existan. Para eso está la fórmula, del tema 4: funciona siempre.' },
+    { p:'¿Por qué el ejemplo 5 tiene una sola solución?',
+      r:'Porque los dos factores son el mismo, x − 5. Las dos soluciones "coinciden": por eso se dice raíz doble.' },
+  ],
+  notas:`<p>El libro factoriza el trinomio x² + bx + c y el de a distinto de 1 multiplicando y
+      dividiendo por a (pág. 104), como en 8.º. Los ejemplos repasan los casos de factoreo
+      que hacen falta.</p>
+    <p>El ejemplo 3 muestra el paso de ordenar, que el libro pone primero en el procedimiento.
+      El 5 anticipa el discriminante cero.</p>`
+},
+
+/* ─────────────────────── unidad 5 · 4 ─────────────────────── */
+{
+  n:4, corto:'La fórmula', titulo:'Resolución de ecuaciones cuadráticas por fórmulas', pag:'unidad 5, tema 4 · págs. 107–108', ficha:3,
+  concepto:{
+    forma:FORMULA, formaRot:'la fórmula resuelve cualquier ecuación ax² + bx + c = 0',
+    puntos:[
+      'Se leen a, b y c, se reemplazan <b>con sus signos</b> y se hace la cuenta.',
+      'El ± da las dos soluciones: una con más y otra con menos.',
+      'De dónde sale se ve en el tema 11, completando el cuadrado.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la de partida', enun:M('x^2 − 5x + 6 = 0'),
+      inicio:['a = 1', 'b = −5', 'c = 6'],
+      pasos:[
+        P('Reemplazo en la fórmula. −b es 5.', `x = ${Q('5 ± √((−5)^2 − 4 · 1 · 6)','2 · 1')}`, ` = ${Q('5 ± √1','2')}`),
+        P('Una solución con más y otra con menos.', `x<sub>1</sub> = ${Q('5 + 1','2')}`, ' = 3', `x<sub>2</sub> = ${Q('5 − 1','2')}`, ' = 2'),
+      ], final:`${R1}3 y ${R2}2`,
+      control:'Por factorización, del tema 3: producto 6 y suma −5 son −2 y −3, así que (x − 2)(x − 3) = 0 ✓' },
+    { titulo:'con a distinto de 1', enun:M(`${N('2')}x^2 + 3x − 2 = 0`),
+      inicio:['a = 2', 'b = 3', 'c = −2'],
+      pasos:[
+        P('Reemplazo. Menos por menos: −4 · 2 · (−2) es +16.', `x = ${Q('−3 ± √(9 + 16)','4')}`, ` = ${Q('−3 ± 5','4')}`),
+        P('Las dos soluciones.', `x<sub>1</sub> = ${Q('2','4')}`, ` = ${Q('1','2')}`, `x<sub>2</sub> = ${Q('−8','4')}`, ' = −2'),
+      ], final:`${R1}1/2 y ${R2}−2`,
+      control:ctrl(['x = 1/2', `${Q('2','4')} + ${Q('3','2')} − 2 = 0 ✓`], ['x = −2', '8 − 6 − 2 = 0 ✓']) },
+    { titulo:'la raíz no es exacta', enun:M('x^2 − 4x + 1 = 0'),
+      inicio:['a = 1', 'b = −4', 'c = 1'],
+      pasos:[
+        P('Reemplazo.', `x = ${Q('4 ± √(16 − 4)','2')}`, ` = ${Q('4 ± √12','2')}`),
+        P('√12 es √(4 · 3), o sea 2√3. Divido los dos términos por 2.', `x = ${Q('4 ± 2√3','2')}`, ' = 2 ± √3'),
+      ], final:`${R1}2 + √3 y ${R2}2 − √3`,
+      control:`Con las propiedades del tema 14: la suma de las soluciones tiene que dar 4 y el producto 1.${A(['suma', '(2 + √3) + (2 − √3) = 4 ✓'], ['producto', '(2 + √3)(2 − √3) = 4 − 3'], ['', ' = 1 ✓'])}` },
+    { titulo:'todo con signos', enun:M('3x^2 − 2x − 8 = 0'),
+      inicio:['a = 3', 'b = −2', 'c = −8'],
+      pasos:[
+        P('Reemplazo.', `x = ${Q('2 ± √(4 + 96)','6')}`, ` = ${Q('2 ± 10','6')}`),
+        P('Las dos soluciones.', `x<sub>1</sub> = ${Q('12','6')}`, ' = 2', `x<sub>2</sub> = ${Q('−8','6')}`, ` = −${Q('4','3')}`),
+      ], final:`${R1}2 y ${R2}−4/3`,
+      control:ctrl(['x = 2', '12 − 4 − 8 = 0 ✓'], ['x = −4/3', `${Q('16','3')} + ${Q('8','3')} − 8 = 0 ✓`]) },
+  ],
+  preguntas:[
+    { p:'¿Por qué −b y no b?',
+      r:'Es parte de la fórmula: si b es −5, entonces −b es 5. El error más común es copiar b con su signo.' },
+    { p:'¿Qué pasa si lo de adentro de la raíz da negativo?',
+      r:'No hay solución real, como en x² + 16 = 0 del tema 2. Ese número de adentro se llama discriminante, y es el tema 9.' },
+    { p:'¿Quién inventó la fórmula?',
+      r:'El libro la atribuye a Bhaskara, matemático de la India del siglo XII. En realidad se fue armando durante siglos: los babilonios ya resolvían estas ecuaciones hace 4000 años.' },
+    { p:'¿Siempre conviene la fórmula?',
+      r:'Siempre funciona. Pero si la ecuación es incompleta o se factoriza fácil, esos caminos son más cortos.' },
+  ],
+  notas:`<p>El libro deduce la fórmula en seis pasos completando el cuadrado (pág. 107). En esta
+      clase la deducción queda para el tema 11, cuando completar el cuadrado ya se vio con
+      números: con letras sola, al principio, no se sigue.</p>
+    <p>Los ejemplos van cambiando una sola dificultad: a distinto de 1, raíz no exacta, todos
+      los signos negativos. El control del ejemplo 1 usa otro método; el del 3 usa las
+      propiedades de las raíces del tema 14, como adelanto.</p>
+    <p>Para practicar: la Ficha 3.</p>`
+},
+
+/* ─────────────────────── unidad 5 · 5 ─────────────────────── */
+{
+  n:5, corto:'Sin denominadores', titulo:'Ecuaciones cuadráticas sin denominadores', pag:'unidad 5, tema 5 · págs. 109–110', ficha:1,
+  concepto:{
+    formaTxt:'primero se hacen las cuentas y se lleva a la forma ax² + bx + c = 0',
+    puntos:[
+      'Se resuelven los productos y los cuadrados, se pasa todo a un miembro y se reducen los términos semejantes.',
+      'Recién ahí se elige el método: factorizar o la fórmula.',
+      'El control se hace en la ecuación <b>original</b>, no en la ordenada.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'un producto', enun:M('x(x + 3) = 10'),
+      inicio:'x(x + 3) = 10',
+      pasos:[
+        P('Distributiva, y resto 10.', 'x^2 + 3x = 10', 'x^2 + 3x − 10 = 0'),
+        P('Producto −10 y suma 3: 5 y −2.', '(x + 5)(x − 2) = 0', ['', 'x = −5'], ['', 'x = 2']),
+      ], final:`${R1}−5 y ${R2}2`,
+      control:ctrl(['x = 2', '2 · 5 = 10 ✓'], ['x = −5', '(−5) · (−2) = 10 ✓']) },
+    { titulo:'un cuadrado de binomio', enun:M(`${N('(x + 2)^2')} = 3x + 10`),
+      inicio:'(x + 2)^2 = 3x + 10',
+      pasos:[
+        P('Desarrollo el cuadrado: el primero al cuadrado, el doble producto y el segundo al cuadrado.', 'x^2 + 4x + 4 = 3x + 10'),
+        P('Paso todo al primer miembro.', 'x^2 + x − 6 = 0'),
+        P('Producto −6 y suma 1: 3 y −2.', '(x + 3)(x − 2) = 0', ['', 'x = −3'], ['', 'x = 2']),
+      ], final:`${R1}−3 y ${R2}2`,
+      control:ctrl(['x = 2', '16 = 6 + 10 ✓'], ['x = −3', '1 = −9 + 10 ✓']) },
+    { titulo:'se cancela un término', enun:M('(x − 1)(x + 4) = 3x'),
+      inicio:'(x − 1)(x + 4) = 3x',
+      pasos:[
+        P('Multiplico los binomios.', 'x^2 + 3x − 4 = 3x'),
+        P('Resto 3x: el término en x desaparece.', 'x^2 − 4 = 0'),
+        P('Quedó incompleta, como en el tema 2.', 'x^2 = 4', 'x = ±2'),
+      ], final:`${R1}2 y ${R2}−2`,
+      control:ctrl(['x = 2', '1 · 6 = 6 ✓'], ['x = −2', '(−3) · 2 = −6 ✓']) },
+    { titulo:'x² en los dos miembros', enun:M('3x^2 − 5 = (x + 1)^2 − 2'),
+      inicio:'3x^2 − 5 = (x + 1)^2 − 2',
+      pasos:[
+        P('Desarrollo el cuadrado.', '3x^2 − 5 = x^2 + 2x + 1 − 2', '3x^2 − 5 = x^2 + 2x − 1'),
+        P('Paso todo al primer miembro y divido por 2.', '2x^2 − 2x − 4 = 0', 'x^2 − x − 2 = 0'),
+        P('Producto −2 y suma −1: −2 y 1.', '(x − 2)(x + 1) = 0', ['', 'x = 2'], ['', 'x = −1']),
+      ], final:`${R1}2 y ${R2}−1`,
+      control:ctrl(['x = 2', '12 − 5 = 9 − 2 ✓'], ['x = −1', '3 − 5 = 0 − 2 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿Por qué en el ejemplo 3 quedó incompleta?',
+      r:'Porque había 3x en los dos miembros y se canceló. Hasta no hacer las cuentas no se sabe qué tipo de ecuación es.' },
+    { p:'En el ejemplo 4, ¿por qué dividí por 2?',
+      r:'Porque los tres términos eran pares. Dividir los dos miembros por 2 no cambia las soluciones y deja números más chicos.' },
+    { p:'¿(x + 2)² es x² + 4?',
+      r:'No: falta el doble producto, 4x. Es el error más común de toda la unidad. Con x = 1: (1 + 2)² = 9, y 1 + 4 = 5.' },
+  ],
+  notas:`<p>El libro reduce primero y después elige el método (pág. 109). Los ejemplos repasan lo
+      que hace falta de 8.º: distributiva, cuadrado de un binomio y producto de binomios.</p>
+    <p>El ejemplo 3 está para que vean que la forma final no se sabe de antemano. El control
+      siempre en la original, porque un error al desarrollar pasa inadvertido en la ordenada.</p>
+    <p>Para practicar: la Ficha 1.</p>`
+},
+
+/* ─────────────────────── unidad 5 · 6 ─────────────────────── */
+{
+  n:6, corto:'Con denominadores', titulo:'Resolución de ecuaciones cuadráticas con denominadores', pag:'unidad 5, tema 6 · págs. 111–113', ficha:2,
+  concepto:{
+    formaTxt:'se multiplica todo por el m.c.m. de los denominadores y se resuelve',
+    puntos:[
+      'Si hay letras en los denominadores, se factorizan y se busca el m.c.m. como en 8.º.',
+      'Un denominador no puede valer cero: los valores que lo anulan <b>no pueden ser solución</b>.',
+      'Por eso, al final, cada solución se controla también en los denominadores.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'denominadores numéricos', enun:`<span class="ec">${Q('x^2','4')} − ${Q('x','2')} = 2</span>`,
+      inicio:`${Q('x^2','4')} − ${Q('x','2')} = 2`,
+      pasos:[
+        P('El m.c.m. de 4 y 2 es 4. Multiplico cada término por 4.', `${N('4 ·')} ${Q('x^2','4')} − ${N('4 ·')} ${Q('x','2')} = ${N('4 ·')} 2`, 'x^2 − 2x = 8'),
+        P('Igualo a cero y factorizo: producto −8 y suma −2.', 'x^2 − 2x − 8 = 0', '(x − 4)(x + 2) = 0', ['', 'x = 4'], ['', 'x = −2']),
+      ], final:`${R1}4 y ${R2}−2`,
+      control:ctrl(['x = 4', `4 − 2 = 2 ✓`], ['x = −2', `1 + 1 = 2 ✓`]) },
+    { titulo:'x en un denominador', enun:`<span class="ec">${Q('3',N('x'))} + ${Q('x','2')} = ${Q('5','2')}</span>`,
+      inicio:`${Q('3','x')} + ${Q('x','2')} = ${Q('5','2')}`,
+      pasos:[
+        'x no puede ser 0. El m.c.m. es 2x.',
+        P('Multiplico cada término por 2x.', `${N('2x ·')} ${Q('3','x')} + ${N('2x ·')} ${Q('x','2')} = ${N('2x ·')} ${Q('5','2')}`, '6 + x^2 = 5x'),
+        P('Ordeno y factorizo.', 'x^2 − 5x + 6 = 0', '(x − 2)(x − 3) = 0', ['', 'x = 2'], ['', 'x = 3']),
+      ], final:`${R1}2 y ${R2}3`,
+      control:ctrl(['x = 2', `${Q('3','2')} + 1 = ${Q('5','2')} ✓`], ['x = 3', `1 + ${Q('3','2')} = ${Q('5','2')} ✓`]) },
+    { titulo:'dos denominadores con x', enun:`<span class="ec">${Q('1','x − 1')} + ${Q('1','x + 1')} = ${Q('4','3')}</span>`,
+      inicio:`${Q('1','x − 1')} + ${Q('1','x + 1')} = ${Q('4','3')}`,
+      pasos:[
+        'x no puede ser 1 ni −1. El m.c.m. es 3(x − 1)(x + 1).',
+        P('Multiplico y simplifico cada término.', '3(x + 1) + 3(x − 1) = 4(x − 1)(x + 1)', '6x = 4x^2 − 4'),
+        P('Ordeno y divido por 2.', '4x^2 − 6x − 4 = 0', '2x^2 − 3x − 2 = 0'),
+        P('Con la fórmula.', `x = ${Q('3 ± √(9 + 16)','4')}`, ` = ${Q('3 ± 5','4')}`, ['', 'x = 2'], ['', `x = −${Q('1','2')}`]),
+      ], final:`${R1}2 y ${R2}−1/2`,
+      control:ctrl(['x = 2', `1 + ${Q('1','3')} = ${Q('4','3')} ✓`], ['x = −1/2', `−${Q('2','3')} + 2 = ${Q('4','3')} ✓`]) },
+    { titulo:'una solución que hay que descartar', enun:`<span class="ec">${Q('x^2','x − 2')} = ${Q('4','x − 2')}</span>`,
+      inicio:`${Q('x^2','x − 2')} = ${Q('4','x − 2')}`,
+      pasos:[
+        'x no puede ser 2: anularía los denominadores.',
+        P('Multiplico por x − 2.', 'x^2 = 4', 'x = ±2'),
+        P('El 2 anula el denominador: no se puede dividir por cero.', ['x = 2', `${Q('4','0')} no existe`]),
+      ], final:'la única solución es <i>x</i> = −2; el 2 se descarta',
+      control:ctrl(['x = −2', `${Q('4','−4')} = ${Q('4','−4')} ✓`]) },
+  ],
+  preguntas:[
+    { p:'¿Por qué el 2 no sirve en el ejemplo 4, si cumple x² = 4?',
+      r:'Porque en la ecuación original aparece dividido por x − 2, que con x = 2 es 0. Al multiplicar por x − 2 se multiplicó por cero sin saberlo.' },
+    { p:'¿Hay que multiplicar también los términos sin denominador?',
+      r:'Sí, todos. Es el mismo error de la unidad de 7.º: olvidar un término "que no tenía fracción".' },
+    { p:'¿Cómo sé qué valores no puede tomar x?',
+      r:'Mirando los denominadores antes de empezar: cada valor que los hace cero queda afuera. Conviene escribirlo arriba, como en los ejemplos.' },
+  ],
+  notas:`<p>El libro factoriza los denominadores y busca el MCM (pág. 111). El ejemplo 4 es el
+      que justifica escribir, antes de empezar, qué valores no puede tomar x: la solución
+      extraña aparece y hay que descartarla.</p>
+    <p>El ejemplo 3 termina con la fórmula: combina el tema con el anterior.</p>
+    <p>Para practicar: la Ficha 2.</p>`
+},
+
+/* ─────────────────────── unidad 5 · 7 ─────────────────────── */
+{
+  n:7, corto:'Radicales (I)', titulo:'Resolución de ecuaciones cuadráticas con radicales (I)', pag:'unidad 5, tema 7 · págs. 114–116', ficha:6,
+  concepto:{
+    serie:[
+      { rot:'paso 1', txt:'dejo la raíz sola en un miembro' },
+      { rot:'paso 2', txt:'elevo los dos miembros al cuadrado' },
+      { rot:'paso 3', txt:'resuelvo la ecuación que queda' },
+      { rot:'paso 4', txt:'controlo cada solución en la original' },
+    ],
+    puntos:[
+      'Cuando la incógnita está dentro de una raíz, la ecuación se llama <b>irracional</b>.',
+      'Elevar al cuadrado puede <b>agregar</b> soluciones falsas: el control del paso 4 es obligatorio.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la raíz ya está sola', enun:M('√(x + 3) = 4'),
+      inicio:'√(x + 3) = 4',
+      pasos:[
+        P('Elevo los dos miembros al cuadrado: la raíz desaparece.', `(√(x + 3))${N('^2')} = 4${N('^2')}`, 'x + 3 = 16'),
+        P('Resto 3.', 'x = 13'),
+      ], final:'<i>x</i> = 13',
+      control:ctrl(['x = 13', '√16 = 4 ✓']) },
+    { titulo:'hay que aislar la raíz', enun:M(`x ${N('−')} √(x + 1) = 5`),
+      inicio:'x − √(x + 1) = 5',
+      pasos:[
+        P('Dejo la raíz sola.', 'x − 5 = √(x + 1)'),
+        P('Elevo al cuadrado. A la izquierda hay un binomio: no me olvido del doble producto.', 'x^2 − 10x + 25 = x + 1', 'x^2 − 11x + 24 = 0'),
+        P('Producto 24 y suma −11: −3 y −8.', '(x − 3)(x − 8) = 0', ['', 'x = 3'], ['', 'x = 8']),
+        P('Controlo en la original.', ['x = 8', '8 − √9 = 5 ✓'], ['x = 3', '3 − √4 ≠ 5']),
+      ], final:'la solución es <i>x</i> = 8; el 3 se descarta' },
+    { titulo:'la raíz igual a x', enun:M('√(2x + 3) = x'),
+      inicio:'√(2x + 3) = x',
+      pasos:[
+        P('Elevo al cuadrado.', '2x + 3 = x^2', 'x^2 − 2x − 3 = 0'),
+        P('Producto −3 y suma −2: −3 y 1.', '(x − 3)(x + 1) = 0', ['', 'x = 3'], ['', 'x = −1']),
+        P('Controlo.', ['x = 3', '√9 = 3 ✓'], ['x = −1', '√1 ≠ −1']),
+      ], final:'la solución es <i>x</i> = 3; el −1 se descarta' },
+    { titulo:'a veces sirven las dos', enun:M('√(5x − 1) = x + 1'),
+      inicio:'√(5x − 1) = x + 1',
+      pasos:[
+        P('Elevo al cuadrado.', '5x − 1 = x^2 + 2x + 1', 'x^2 − 3x + 2 = 0'),
+        P('Producto 2 y suma −3.', '(x − 1)(x − 2) = 0', ['', 'x = 1'], ['', 'x = 2']),
+        P('Controlo las dos.', ['x = 1', '√4 = 2 ✓'], ['x = 2', '√9 = 3 ✓']),
+      ], final:`${R1}1 y ${R2}2: esta vez sirven las dos` },
+    { titulo:'el cuadrado se cancela', enun:M('√(x^2 + 9) = x + 1'),
+      inicio:'√(x^2 + 9) = x + 1',
+      pasos:[
+        P('Elevo al cuadrado.', 'x^2 + 9 = x^2 + 2x + 1'),
+        P('El x² está en los dos miembros y se cancela: queda de primer grado.', '8 = 2x', 'x = 4'),
+      ], final:'<i>x</i> = 4',
+      control:ctrl(['x = 4', '√25 = 5 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿Por qué aparecen soluciones falsas?',
+      r:'Porque al elevar al cuadrado se pierde el signo: 2 = −2 es falso, pero 2² = (−2)² es verdadero. La ecuación nueva acepta cosas que la original no.' },
+    { p:'¿Por qué √1 no es −1, si (−1)² = 1?',
+      r:'Porque el signo √ quiere decir la raíz positiva. Por eso al despejar x² = 9 se escribe ±3: el ± lo agrega uno, no la raíz.' },
+    { p:'¿Puedo elevar al cuadrado antes de aislar la raíz?',
+      r:`Se puede, pero la raíz no se va: ${M('(x − √(x + 1))^2')} tiene un doble producto con raíz. Aislarla primero es lo que la hace desaparecer.` },
+  ],
+  notas:`<p>El libro resuelve en seis pasos y descarta una solución en el primer ejemplo
+      (pág. 114). Los ejemplos 2 y 3 descartan una; el 4 muestra que no siempre hay que
+      descartar, y el 5 que a veces el cuadrado se cancela.</p>
+    <p>La idea que hay que dejar: <b>elevar al cuadrado no es una operación reversible</b>, y
+      por eso el control no es opcional en este tema.</p>
+    <p>Para practicar: la Ficha 6.</p>`
+},
+
+/* ─────────────────────── unidad 5 · 8 ─────────────────────── */
+{
+  n:8, corto:'Radicales (II)', titulo:'Resolución de ecuaciones cuadráticas con radicales (II)', pag:'unidad 5, tema 8 · págs. 117–119',
+  concepto:{
+    formaTxt:'con dos raíces: se deja una sola de cada lado y se eleva al cuadrado, las veces que haga falta',
+    puntos:[
+      'Si después de elevar queda una raíz, se la aísla y se eleva otra vez.',
+      'Cada vez que se eleva pueden aparecer soluciones falsas: se controla siempre en la original.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'una raíz en cada miembro', enun:M('√(x + 5) = √(2x − 1)'),
+      inicio:'√(x + 5) = √(2x − 1)',
+      pasos:[
+        P('Elevo al cuadrado: se van las dos raíces.', 'x + 5 = 2x − 1', '6 = x'),
+      ], final:'<i>x</i> = 6',
+      control:ctrl(['x = 6', '√11 = √11 ✓']) },
+    { titulo:'una resta de raíces', enun:M('√(x + 7) − √x = 1'),
+      inicio:'√(x + 7) − √x = 1',
+      pasos:[
+        P('Dejo una raíz de cada lado.', '√(x + 7) = 1 + √x'),
+        P('Elevo al cuadrado. A la derecha, el doble producto tiene raíz.', 'x + 7 = 1 + 2√x + x', '6 = 2√x', '3 = √x'),
+        P('Elevo otra vez.', 'x = 9'),
+      ], final:'<i>x</i> = 9',
+      control:ctrl(['x = 9', '√16 − √9 = 4 − 3', ' = 1 ✓']) },
+    { titulo:'una suma de raíces', enun:M(`√(x + 4) ${N('+')} √(x − 1) = 5`),
+      inicio:'√(x + 4) + √(x − 1) = 5',
+      pasos:[
+        P('Dejo una raíz de cada lado.', '√(x + 4) = 5 − √(x − 1)'),
+        P('Elevo al cuadrado.', 'x + 4 = 25 − 10√(x − 1) + x − 1', '10√(x − 1) = 20', '√(x − 1) = 2'),
+        P('Elevo otra vez.', 'x − 1 = 4', 'x = 5'),
+      ], final:'<i>x</i> = 5',
+      control:ctrl(['x = 5', '√9 + √4 = 3 + 2', ' = 5 ✓']) },
+    { titulo:'dos veces al cuadrado, y una falsa', enun:M('√(2x + 1) + √(x − 3) = 4'),
+      inicio:'√(2x + 1) + √(x − 3) = 4',
+      pasos:[
+        P('Aíslo y elevo.', '√(2x + 1) = 4 − √(x − 3)', '2x + 1 = 16 − 8√(x − 3) + x − 3', 'x − 12 = −8√(x − 3)'),
+        P('Elevo otra vez.', 'x^2 − 24x + 144 = 64(x − 3)', 'x^2 − 88x + 336 = 0'),
+        P('Con la fórmula.', `x = ${Q('88 ± √6400','2')}`, ` = ${Q('88 ± 80','2')}`, ['', 'x = 84'], ['', 'x = 4']),
+        P('Controlo las dos.', ['x = 4', '√9 + √1 = 4 ✓'], ['x = 84', '√169 + √81 ≠ 4']),
+      ], final:'la solución es <i>x</i> = 4; el 84 se descarta' },
+  ],
+  preguntas:[
+    { p:'¿Por qué no elevo directamente la suma de las dos raíces?',
+      r:'Porque (√A + √B)² = A + 2√A√B + B: aparece un producto de raíces que es peor. Separarlas deja una sola en el doble producto.' },
+    { p:'¿Cómo pudo aparecer el 84, si es tan grande?',
+      r:`Porque ${M('x − 12 = −8√(x − 3)')} con x = 84 da 72 = −72 antes de elevar, y 72² = (−72)² después. Otra vez el signo.` },
+    { p:'¿Siempre hay que elevar dos veces?',
+      r:'No: en el ejemplo 1 alcanzó con una. Depende de cuántas raíces quedan después de cada paso.' },
+  ],
+  notas:`<p>El libro resuelve con dos radicales, elevando dos veces y descartando la solución
+      grande (pág. 117). El ejemplo 4 tiene la misma estructura con otros números.</p>
+    <p>Es el tema más largo de cuentas. Conviene hacerlo con el cuaderno a la vista y
+      preguntar, antes de cada paso, qué raíz conviene aislar.</p>`
+},
+
+/* ─────────────────────── unidad 6 · 1 ─────────────────────── */
+{
+  n:9, corto:'Discriminante', titulo:'Estudio del discriminante de una ecuación cuadrática', pag:'unidad 6, tema 1 · págs. 126–128', ficha:7,
+  concepto:{
+    forma:'Δ = b^2 − 4ac', formaRot:'el discriminante: lo que va dentro de la raíz de la fórmula',
+    serie:[
+      { rot:'Δ > 0', txt:'dos soluciones reales distintas' },
+      { rot:'Δ = 0', txt:'una sola solución, raíz doble' },
+      { rot:'Δ < 0', txt:'ninguna solución real' },
+    ],
+    puntos:[
+      'Con el discriminante se sabe <b>cuántas soluciones</b> hay sin resolver la ecuación.',
+      'En el dibujo: la parábola corta el eje x dos veces, lo toca una vez o no lo toca.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'discriminante positivo', enun:M('x^2 − 6x + 5 = 0'),
+      lienzo:PL([[2, par(1, -6, 5, 'y = x² − 6x + 5')], ['final', pt(1, 0, '(1, 0)')], ['final', pt(5, 0, '(5, 0)')]], 'La parábola corta el eje x en dos puntos'),
+      pasos:[
+        P('Leo a = 1, b = −6 y c = 5, y calculo el discriminante.', 'Δ = (−6)^2 − 4 · 1 · 5', ' = 36 − 20', ' = 16'),
+        'Es positivo: va a haber dos soluciones. La parábola corta el eje x dos veces.',
+        P('Con la fórmula: la raíz de Δ es 4.', `x = ${Q('6 ± 4','2')}`, ['', 'x = 5'], ['', 'x = 1']),
+      ], final:`${R1}5 y ${R2}1: dos soluciones` },
+    { titulo:'cambio c: de 5 a 9', enun:M(`x^2 − 6x + ${N('9')} = 0`),
+      lienzo:PL([[0, par(1, -6, 5, '', 'recta-anterior')], [2, par(1, -6, 9, 'y = x² − 6x + 9')], ['final', pt(3, 0, '(3, 0)')]], 'La parábola toca el eje x en un punto'),
+      pasos:[
+        P('El discriminante.', 'Δ = 36 − 4 · 1 · 9', ' = 0'),
+        'Es cero: la parábola subió 4 y ahora solo toca el eje x.',
+        P('Con Δ = 0 el ± no cambia nada.', `x = ${Q('6 ± 0','2')}`, ' = 3'),
+      ], final:'una sola solución, <i>x</i> = 3: raíz doble' },
+    { titulo:'cambio c: de 9 a 13', enun:M(`x^2 − 6x + ${N('13')} = 0`),
+      lienzo:PL([[0, par(1, -6, 9, '', 'recta-anterior')], [2, par(1, -6, 13, 'y = x² − 6x + 13')]], 'La parábola no toca el eje x'),
+      pasos:[
+        P('El discriminante.', 'Δ = 36 − 52', ' = −16'),
+        'Es negativo: la parábola no llega al eje x.',
+        'En la fórmula quedaría √(−16), que no es un número real.',
+      ], final:'no tiene soluciones reales' },
+    { titulo:'con a distinto de 1', enun:M('4x^2 − 12x + 9 = 0'),
+      pasos:[
+        P('El discriminante.', 'Δ = (−12)^2 − 4 · 4 · 9', ' = 144 − 144', ' = 0'),
+        P('Una sola solución.', `x = ${Q('12','8')}`, ` = ${Q('3','2')}`),
+      ], final:'una sola solución, <i>x</i> = 3/2',
+      control:`Es un trinomio cuadrado perfecto:${A('4x^2 − 12x + 9 = (2x − 3)^2 ✓')}` },
+    { titulo:'al revés: elegir un coeficiente', enun:`¿Para qué valores de ${M('k')} la ecuación ${M('x^2 + kx + 16 = 0')} tiene una sola solución?`,
+      pasos:[
+        P('Una sola solución quiere decir discriminante cero.', 'Δ = k^2 − 4 · 1 · 16', ' = k^2 − 64'),
+        P('Lo igualo a cero: es una incompleta del tema 2.', 'k^2 − 64 = 0', 'k^2 = 64', 'k = ±8'),
+      ], final:'<i>k</i> = 8 o <i>k</i> = −8',
+      control:`Con k = 8 y con k = −8 quedan trinomios cuadrados perfectos:${A('x^2 + 8x + 16 = (x + 4)^2 ✓', 'x^2 − 8x + 16 = (x − 4)^2 ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Por qué se llama discriminante?',
+      r:'Porque discrimina, es decir, distingue: separa las ecuaciones en tres grupos según cuántas soluciones tienen.' },
+    { p:'¿Por qué los ejemplos 1, 2 y 3 son la misma parábola corrida?',
+      r:'Porque cambiar c sube la parábola sin cambiar su forma. Subiendo, primero corta el eje dos veces, después lo toca y después se despega.' },
+    { p:'¿Qué hace el libro con √(−7)?',
+      r:'La escribe como √7 · i: un número imaginario. Esos números existen y se estudian más adelante, pero no están en la recta numérica: por eso decimos que no hay solución real.' },
+    { p:'¿Hace falta calcular Δ si igual voy a usar la fórmula?',
+      r:'No hace falta, pero ahorra trabajo: si da negativo, se termina ahí. Y si da un cuadrado perfecto, se sabe que la ecuación se podía factorizar.' },
+  ],
+  notas:`<p>El libro presenta el discriminante con tres ejemplos, uno por caso (pág. 126), y
+      menciona los números imaginarios. Esta clase los nombra en el observador sin
+      trabajarlos: la frase es "no tiene solución real".</p>
+    <p>Los ejemplos 1 a 3 son la misma ecuación cambiando solo c, con la parábola a la derecha:
+      cuando sube, el discriminante pasa de positivo a cero y a negativo. Es la primera vez
+      que aparece la parábola, que se estudia en los temas 12 y 13.</p>
+    <p>Para practicar: la Ficha 7.</p>`
+},
+
+/* ─────────────────────── unidad 6 · 2 ─────────────────────── */
+{
+  n:10, corto:'Completar el cuadrado (I)', titulo:'Completación del cuadrado (I)', pag:'unidad 6, tema 2 · págs. 129–130',
+  concepto:{
+    formaTxt:'se suma lo que le falta al primer miembro para ser un cuadrado perfecto',
+    puntos:[
+      `Con ${M('x^2 + bx')}, lo que falta es <b>el cuadrado de la mitad de b</b>.`,
+      'Se suma a los dos miembros, se escribe el cuadrado del binomio y se saca la raíz.',
+      'El nombre es literal: se completa un cuadrado, como se ve en el ejemplo 1.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'con su figura', enun:M('x^2 + 6x = 16'),
+      /* El cuadrado de x y las dos tiras de 3x forman una L de área 16. Le
+         falta una esquina de 3 por 3: con ella, es un cuadrado de lado x + 3. */
+      lienzo:(() => {
+        const x = LX, t = 3 * U, O = [40, 36];
+        const q = rect(O[0], O[1], x, x, 'g-x2') + g.txt([O[0] + x / 2, O[1] + x / 2], 'x<tspan baseline-shift="super" font-size="12">2</tspan>', 'g-rot');
+        const tv = rect(O[0] + x, O[1], t, x, 'g-x1') + g.txt([O[0] + x + t / 2, O[1] + x / 2], '3x', 'g-rot');
+        const thEn = (X, Y) => rect(X, Y, x, t, 'g-x1') + g.txt([X + x / 2, Y + t / 2], '3x', 'g-rot');
+        const suelta = [O[0] + x + t + 24, O[1] + 40], abajo = [O[0], O[1] + x];
+        let nueve = '';
+        for (let i = 0; i < 9; i++) nueve += rect(O[0] + x + (i % 3) * U, O[1] + x + Math.floor(i / 3) * U, U, U, 'g-u');
+        return F([
+          [0, q + tv],
+          [0, thEn(...suelta), 1, { desde:[abajo[0] - suelta[0], abajo[1] - suelta[1]] }],
+          [0, g.txt([O[0] + x + t + 24 + x / 2, O[1] + 20], 'el 6x son 3x + 3x', 'g-rot'), 1],
+          [1, thEn(...abajo), Infinity, { desde:[suelta[0] - abajo[0], suelta[1] - abajo[1]] }],
+          [1, rect(O[0] + x, O[1] + x, t, t, 'g-falta') + g.txt([O[0] + x + t / 2, O[1] + x + t / 2], 'falta', 'g-num'), 2],
+          [2, nueve + g.txt([O[0] + x + t / 2, O[1] + x + t / 2], '9', 'g-dato')],
+          [3, rect(O[0], O[1], x + t, x + t, 'g-foco')
+              + g.txt([O[0] + x / 2, O[1] - 14], 'x', 'g-rot') + g.txt([O[0] + x + t / 2, O[1] - 14], '3', 'g-num')
+              + g.txt([O[0] + x + t + 70, O[1] + (x + t) / 2 - 12], 'área 25', 'g-rot') + g.txt([O[0] + x + t + 70, O[1] + (x + t) / 2 + 14], 'lado x + 3', 'g-rot')],
+        ], 'Un cuadrado de x y dos tiras de 3x que se completan con una esquina de 3 por 3');
+      })(),
+      pasos:[
+        P('Parto el 6x en dos mitades iguales y pongo una a la derecha y otra abajo.', 'x^2 + 3x + 3x = 16'),
+        P('Falta una esquina de 3 por 3: sumo 9 a los dos miembros.', `x^2 + 6x ${N('+ 9')} = 16 ${N('+ 9')}`),
+        P('Ahora es un cuadrado de lado x + 3, y su área es 25.', '(x + 3)^2 = 25'),
+        P('Saco la raíz: el lado puede ser 5 o −5.', 'x + 3 = ±5', ['', 'x = 2'], ['', 'x = −8']),
+      ], final:`${R1}2 y ${R2}−8`,
+      control:ctrl(['x = 2', '4 + 12 = 16 ✓'], ['x = −8', '64 − 48 = 16 ✓']) },
+    { titulo:'con signo menos', enun:M(`x^2 ${N('− 4x')} − 5 = 0`),
+      inicio:'x^2 − 4x − 5 = 0',
+      pasos:[
+        P('Paso el término independiente al segundo miembro.', 'x^2 − 4x = 5'),
+        P('La mitad de −4 es −2, y su cuadrado es 4. Lo sumo a los dos miembros.', `x^2 − 4x ${N('+ 4')} = 5 ${N('+ 4')}`, '(x − 2)^2 = 9'),
+        P('Saco la raíz.', 'x − 2 = ±3', ['', 'x = 5'], ['', 'x = −1']),
+      ], final:`${R1}5 y ${R2}−1`,
+      control:ctrl(['x = 5', '25 − 20 − 5 = 0 ✓'], ['x = −1', '1 + 4 − 5 = 0 ✓']) },
+    { titulo:'el término independiente es positivo', enun:M('x^2 + 8x + 7 = 0'),
+      inicio:'x^2 + 8x + 7 = 0',
+      pasos:[
+        P('Paso el 7.', 'x^2 + 8x = −7'),
+        P('La mitad de 8 es 4, y su cuadrado 16.', `x^2 + 8x ${N('+ 16')} = −7 ${N('+ 16')}`, '(x + 4)^2 = 9'),
+        P('Saco la raíz.', 'x + 4 = ±3', ['', 'x = −1'], ['', 'x = −7']),
+      ], final:`${R1}−1 y ${R2}−7`,
+      control:ctrl(['x = −1', '1 − 8 + 7 = 0 ✓'], ['x = −7', '49 − 56 + 7 = 0 ✓']) },
+    { titulo:'la raíz no es exacta', enun:M('x^2 + 2x − 4 = 0'),
+      inicio:'x^2 + 2x − 4 = 0',
+      pasos:[
+        P('Paso el −4 y sumo el cuadrado de la mitad de 2, que es 1.', 'x^2 + 2x = 4', `x^2 + 2x ${N('+ 1')} = 4 ${N('+ 1')}`, '(x + 1)^2 = 5'),
+        P('Saco la raíz: 5 no es un cuadrado, queda √5.', 'x + 1 = ±√5', 'x = −1 ± √5'),
+      ], final:`${R1}−1 + √5 y ${R2}−1 − √5`,
+      control:`Con la fórmula del tema 4:${A(`x = ${Q('−2 ± √(4 + 16)','2')}`, ` = ${Q('−2 ± 2√5','2')}`, ' = −1 ± √5 ✓')}` },
+    { titulo:'b impar: la mitad es una fracción', enun:M(`x^2 + ${N('3')}x − 10 = 0`),
+      inicio:'x^2 + 3x − 10 = 0',
+      pasos:[
+        P('Paso el −10. La mitad de 3 es 3/2, y su cuadrado 9/4.', 'x^2 + 3x = 10', `x^2 + 3x ${N('+ ' + Q('9','4'))} = 10 ${N('+ ' + Q('9','4'))}`, `(x + ${Q('3','2')})^2 = ${Q('49','4')}`),
+        P('Saco la raíz: la de 49/4 es 7/2.', `x + ${Q('3','2')} = ±${Q('7','2')}`, ['', `x = ${Q('4','2')}`], ['', ' = 2'], ['', `x = −${Q('10','2')}`], ['', ' = −5']),
+      ], final:`${R1}2 y ${R2}−5`,
+      control:ctrl(['x = 2', '4 + 6 − 10 = 0 ✓'], ['x = −5', '25 − 15 − 10 = 0 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿Por qué se suma el cuadrado de la mitad de b?',
+      r:'Por la figura: el bx se parte en dos tiras iguales de ancho b/2, y la esquina que falta es un cuadrado de lado b/2.' },
+    { p:'¿Qué pasa con la solución negativa en la figura, si un lado no puede medir −5?',
+      r:'La figura explica de dónde sale el 9, pero la ecuación no habla de lados: x = −8 la cumple igual. Con números, (−8)² + 6 · (−8) = 16.' },
+    { p:'¿Para qué sirve si ya tengo la fórmula?',
+      r:'Para entender de dónde sale la fórmula (tema 11) y para encontrar el vértice de una parábola (temas 12 y 13). Es el método de fondo.' },
+    { p:'¿Quién lo inventó?',
+      r:'Los babilonios ya resolvían así problemas de áreas hace unos 4000 años. En el siglo IX, al-Juarismi lo explicó con dibujos de cuadrados, como el del ejemplo 1.' },
+  ],
+  notas:`<p>El libro completa el cuadrado en cinco pasos y trae en el margen la interpretación
+      geométrica (pág. 129). El ejemplo 1 hace esa interpretación con las piezas: el
+      cuadrado de x y las dos tiras de 3x, a las que les falta una esquina de 3 por 3.</p>
+    <p>Los ejemplos 2 a 5 cambian una cosa por vez: el signo de b, el signo de c, una raíz no
+      exacta y una b impar. El 5 es el que más traba: la mitad es una fracción.</p>`
+},
+
+/* ─────────────────────── unidad 6 · 3 ─────────────────────── */
+{
+  n:11, corto:'Completar el cuadrado (II)', titulo:'Completación del cuadrado (II)', pag:'unidad 6, tema 3 · págs. 131–132',
+  concepto:{
+    formaTxt:'si a no es 1, primero se divide toda la ecuación por a',
+    puntos:[
+      'Dividir los dos miembros por a no cambia las soluciones, y deja x² solo.',
+      'Hecho con letras, este procedimiento <b>es la fórmula</b>: el ejemplo 4 lo muestra.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'a = 2', enun:M(`${N('2')}x^2 + 4x − 16 = 0`),
+      inicio:'2x^2 + 4x − 16 = 0',
+      pasos:[
+        P('Divido todo por 2.', 'x^2 + 2x − 8 = 0'),
+        P('Paso el −8 y sumo 1, el cuadrado de la mitad de 2.', `x^2 + 2x ${N('+ 1')} = 8 ${N('+ 1')}`, '(x + 1)^2 = 9'),
+        P('Saco la raíz.', 'x + 1 = ±3', ['', 'x = 2'], ['', 'x = −4']),
+      ], final:`${R1}2 y ${R2}−4`,
+      control:ctrl(['x = 2', '8 + 8 − 16 = 0 ✓'], ['x = −4', '32 − 16 − 16 = 0 ✓']) },
+    { titulo:'a = 3', enun:M(`${N('3')}x^2 − 12x + 9 = 0`),
+      inicio:'3x^2 − 12x + 9 = 0',
+      pasos:[
+        P('Divido todo por 3.', 'x^2 − 4x + 3 = 0'),
+        P('Paso el 3 y sumo 4.', `x^2 − 4x ${N('+ 4')} = −3 ${N('+ 4')}`, '(x − 2)^2 = 1'),
+        P('Saco la raíz.', 'x − 2 = ±1', ['', 'x = 3'], ['', 'x = 1']),
+      ], final:`${R1}3 y ${R2}1`,
+      control:ctrl(['x = 3', '27 − 36 + 9 = 0 ✓'], ['x = 1', '3 − 12 + 9 = 0 ✓']) },
+    { titulo:'al dividir quedan fracciones', enun:M('2x^2 − 5x + 2 = 0'),
+      inicio:'2x^2 − 5x + 2 = 0',
+      pasos:[
+        P('Divido por 2 y paso el término independiente.', `x^2 − ${Q('5','2')}x + 1 = 0`, `x^2 − ${Q('5','2')}x = −1`),
+        P('La mitad de 5/2 es 5/4, y su cuadrado 25/16.', `x^2 − ${Q('5','2')}x ${N('+ ' + Q('25','16'))} = −1 ${N('+ ' + Q('25','16'))}`, `(x − ${Q('5','4')})^2 = ${Q('9','16')}`),
+        P('Saco la raíz.', `x − ${Q('5','4')} = ±${Q('3','4')}`, ['', 'x = 2'], ['', `x = ${Q('1','2')}`]),
+      ], final:`${R1}2 y ${R2}1/2`,
+      control:ctrl(['x = 2', '8 − 10 + 2 = 0 ✓'], ['x = 1/2', `${Q('1','2')} − ${Q('5','2')} + 2 = 0 ✓`]) },
+    { titulo:'con letras: de dónde sale la fórmula', enun:M('ax^2 + bx + c = 0'),
+      inicio:'ax^2 + bx + c = 0',
+      pasos:[
+        P('Divido por a y paso c/a.', `x^2 + ${Q('b','a')}x = −${Q('c','a')}`),
+        P('La mitad de b/a es b/2a. Sumo su cuadrado.', `x^2 + ${Q('b','a')}x ${N('+ ' + Q('b^2','4a^2'))} = ${Q('b^2','4a^2')} − ${Q('c','a')}`),
+        P('A la izquierda, un cuadrado; a la derecha, una sola fracción.', `(x + ${Q('b','2a')})^2 = ${Q('b^2 − 4ac','4a^2')}`),
+        P('Saco la raíz: la de 4a² es 2a.', `x + ${Q('b','2a')} = ±${Q('√(b^2 − 4ac)','2a')}`),
+        P('Despejo x.', FORMULA),
+      ], final:'es la fórmula del tema 4' },
+  ],
+  preguntas:[
+    { p:'¿Por qué hay que dividir por a?',
+      r:'Porque el truco de la mitad de b funciona cuando x² está solo. Con 2x², el cuadrado que se completa no es de lado x.' },
+    { p:'¿Qué es lo que va dentro de la raíz en el ejemplo 4?',
+      r:'b² − 4ac: el discriminante del tema 9. Por eso si es negativo no hay solución real: habría que sacar la raíz de un negativo.' },
+    { p:'¿Cuál conviene usar, completar o la fórmula?',
+      r:'Dan lo mismo, porque la fórmula es completar el cuadrado hecho una sola vez para todas las ecuaciones. Completar es más corto cuando b es par.' },
+  ],
+  notas:`<p>El libro completa el cuadrado con a distinto de 1 dividiendo por a (pág. 131).
+      El ejemplo 4 hace lo mismo con letras, y llega a la fórmula: es la deducción que el
+      libro pone en el tema 4 de la unidad 5 y que conviene hacer recién acá, cuando el
+      procedimiento ya se vio con números.</p>
+    <p>El ejemplo 3 es el más largo en fracciones; si el grupo lo pide, resolverlo también con
+      la fórmula muestra que da lo mismo.</p>`
+},
+
+/* ─────────────────────── unidad 6 · 4 ─────────────────────── */
+{
+  n:12, corto:'La parábola (I)', titulo:'Representación gráfica de una función cuadrática (I)', pag:'unidad 6, tema 4 · págs. 133–134', ficha:8,
+  concepto:{
+    forma:'y = ax^2 + bx + c', formaRot:'función cuadrática: su gráfica es una parábola',
+    serie:[
+      { rot:'a > 0', txt:'cóncava: ramas hacia arriba, vértice mínimo' },
+      { rot:'a < 0', txt:'convexa: ramas hacia abajo, vértice máximo' },
+      { rot:'vértice', txt:'en x = −b : 2a' },
+      { rot:'raíces', txt:'donde corta el eje x' },
+      { rot:'c', txt:'donde corta el eje y' },
+    ],
+    puntos:[
+      'Tiene un <b>eje de simetría</b> vertical que pasa por el vértice.',
+      'Para graficar: raíces, vértice, corte con el eje y, y los puntos simétricos.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la de partida', enun:M('y = x^2 − 4x + 3'),
+      lienzo:PL([[1, pt(1, 0, '(1, 0)')], [1, pt(3, 0, '(3, 0)')], [2, { vertical:2 }], [2, vert(2, -1, 'V(2, −1)')],
+                 [3, pt(0, 3, '(0, 3)')], [3, pt(4, 3, '(4, 3)')], ['final', par(1, -4, 3, 'y = x² − 4x + 3')]], 'La parábola y = x² − 4x + 3'),
+      pasos:[
+        P('Las raíces: igualo a cero y factorizo.', 'x^2 − 4x + 3 = 0', '(x − 1)(x − 3) = 0', ['', 'x = 1'], ['', 'x = 3']),
+        P('El vértice: la abscisa es −b : 2a, y reemplazo.', `x = ${Q('4','2')}`, ' = 2', 'y = 4 − 8 + 3', ' = −1'),
+        P('El corte con el eje y es c. Y su simétrico respecto del eje x = 2.', ['x = 0', 'y = 3'], ['x = 4', 'y = 3']),
+      ], final:'una parábola cóncava con vértice (2, −1), que es un mínimo' },
+    { titulo:'cambio todos los signos', enun:M(`y = ${N('−')}x^2 ${N('+')} 4x ${N('−')} 3`),
+      lienzo:PL([[0, par(1, -4, 3, '', 'recta-anterior')], [1, pt(1, 0, '(1, 0)')], [1, pt(3, 0, '(3, 0)')], [2, { vertical:2 }], [2, vert(2, 1, 'V(2, 1)')],
+                 [3, pt(0, -3, '(0, −3)')], [3, pt(4, -3, '(4, −3)')], ['final', par(-1, 4, -3, 'y = −x² + 4x − 3')]], 'La parábola dada vuelta'),
+      pasos:[
+        P('Las raíces son las mismas: la ecuación es la anterior multiplicada por −1.', '−x^2 + 4x − 3 = 0', 'x^2 − 4x + 3 = 0', ['', 'x = 1'], ['', 'x = 3']),
+        P('El vértice.', `x = ${Q('−4','−2')}`, ' = 2', 'y = −4 + 8 − 3', ' = 1'),
+        P('El corte con el eje y, y su simétrico.', ['x = 0', 'y = −3'], ['x = 4', 'y = −3']),
+      ], final:'una parábola convexa con vértice (2, 1), que es un máximo' },
+    { titulo:'el vértice a la izquierda', enun:M('y = x^2 + 2x − 3'),
+      lienzo:PL([[1, pt(1, 0, '(1, 0)')], [1, pt(-3, 0, '(−3, 0)')], [2, { vertical:-1 }], [2, vert(-1, -4, 'V(−1, −4)')],
+                 [3, pt(0, -3, '(0, −3)')], [3, pt(-2, -3, '(−2, −3)')], ['final', par(1, 2, -3, 'y = x² + 2x − 3')]], 'La parábola y = x² + 2x − 3'),
+      pasos:[
+        P('Las raíces.', '(x + 3)(x − 1) = 0', ['', 'x = −3'], ['', 'x = 1']),
+        P('El vértice.', `x = ${Q('−2','2')}`, ' = −1', 'y = 1 − 2 − 3', ' = −4'),
+        P('El corte con el eje y, y su simétrico respecto de x = −1.', ['x = 0', 'y = −3'], ['x = −2', 'y = −3']),
+      ], final:'una parábola cóncava con vértice (−1, −4)' },
+    { titulo:'no tiene raíces', enun:M('y = x^2 − 2x + 3'),
+      lienzo:PL([[1, { vertical:1 }], [1, vert(1, 2, 'V(1, 2)')], [2, pt(0, 3, '(0, 3)')], [2, pt(2, 3, '(2, 3)')],
+                 [3, pt(-1, 6, '(−1, 6)')], [3, pt(3, 6, '(3, 6)')], ['final', par(1, -2, 3, 'y = x² − 2x + 3')]], 'Una parábola que no corta el eje x'),
+      pasos:[
+        P('El discriminante es negativo: no corta el eje x.', 'Δ = 4 − 12', ' = −8'),
+        P('El vértice.', `x = ${Q('2','2')}`, ' = 1', 'y = 1 − 2 + 3', ' = 2'),
+        P('El corte con el eje y, y su simétrico.', ['x = 0', 'y = 3'], ['x = 2', 'y = 3']),
+        P('Dos puntos más, a la misma distancia del eje.', ['x = −1', 'y = 6'], ['x = 3', 'y = 6']),
+      ], final:'una parábola cóncava con vértice (1, 2), que no toca el eje x' },
+  ],
+  preguntas:[
+    { p:'¿Por qué el vértice está en x = −b : 2a?',
+      r:'Porque el vértice está justo en el medio de las dos raíces, que son (−b + √Δ) : 2a y (−b − √Δ) : 2a. Su promedio es −b : 2a.' },
+    { p:'¿Cóncava es hacia arriba o hacia abajo?',
+      r:'El libro llama cóncava a la que abre hacia arriba (a > 0). Otros libros lo usan al revés; lo seguro es decir "ramas hacia arriba" o "hacia abajo".' },
+    { p:'¿Por qué el punto (4, 3) aparece sin hacer la cuenta?',
+      r:'Por la simetría: (0, 3) está 2 lugares a la izquierda del eje x = 2, así que a 2 lugares a la derecha hay otro punto a la misma altura.' },
+    { p:'¿Dónde se usan las parábolas?',
+      r:'Una pelota tirada hacia arriba dibuja una parábola; las antenas satelitales, como la de la tapa de la unidad 6 del libro, tienen forma de parábola girada, porque juntan las señales en un punto.' },
+  ],
+  notas:`<p>El libro grafica en cinco pasos: raíces, vértice, tabla, gráfica y conclusión
+      (pág. 133). Los ejemplos van marcando esos puntos en el plano uno por uno, y la curva
+      se traza recién con la respuesta, como la recta del puente de 7.º.</p>
+    <p>El ejemplo 2 es el 1 con todos los signos cambiados: la parábola anterior queda en
+      punteado. El 4 no tiene raíces, y se grafica igual con el vértice y los simétricos.</p>
+    <p>La palabra cóncava sigue al libro (a > 0, ramas hacia arriba). Es la segunda pregunta
+      del observador.</p>
+    <p>Para practicar: la Ficha 8.</p>`
+},
+
+/* ─────────────────────── unidad 6 · 5 ─────────────────────── */
+{
+  n:13, corto:'La parábola (II)', titulo:'Representación gráfica de una función cuadrática (II)', pag:'unidad 6, tema 5 · págs. 135–137',
+  concepto:{
+    serie:[
+      { rot:'y = ax²', txt:'vértice en el origen' },
+      { rot:'y = ax² + c', txt:'la misma, corrida c hacia arriba o abajo' },
+      { rot:'y = ax² + bx', txt:'pasa por el origen' },
+    ],
+    puntos:[
+      'Cuanto más grande es a, más cerrada es la parábola.',
+      'Cambiar c sube o baja la parábola sin cambiar su forma.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la más simple', enun:M('y = x^2'),
+      lienzo:PL([[1, vert(0, 0, 'V(0, 0)')], [2, pt(1, 1, '(1, 1)')], [2, pt(-1, 1, '(−1, 1)')], [3, pt(2, 4, '(2, 4)')], [3, pt(-2, 4, '(−2, 4)')],
+                 ['final', par(1, 0, 0, 'y = x²')]], 'La parábola y = x²'),
+      pasos:[
+        P('Con x = 0: es el vértice.', ['x = 0', 'y = 0']),
+        P('Con 1 y con −1: un número y su opuesto dan el mismo cuadrado.', ['x = ±1', 'y = 1']),
+        P('Con 2 y con −2.', ['x = ±2', 'y = 4']),
+      ], final:'una parábola cóncava con vértice en el origen' },
+    { titulo:'cambio a: de 1 a 2', enun:M(`y = ${N('2')}x^2`),
+      lienzo:PL([[0, par(1, 0, 0, '', 'recta-anterior')], [1, vert(0, 0, 'V(0, 0)')], [2, pt(1, 2, '(1, 2)')], [2, pt(-1, 2, '(−1, 2)')],
+                 [3, pt(2, 8, '(2, 8)')], [3, pt(-2, 8, '(−2, 8)')], ['final', par(2, 0, 0, 'y = 2x²')]], 'La parábola y = 2x², más cerrada'),
+      pasos:[
+        P('El vértice sigue en el origen.', ['x = 0', 'y = 0']),
+        P('Cada y es el doble que en y = x².', ['x = ±1', 'y = 2']),
+        P('Con 2 y −2.', ['x = ±2', 'y = 8']),
+      ], final:'la misma forma, más cerrada: las ramas suben el doble de rápido' },
+    { titulo:'cambio c: le resto 4', enun:M(`y = x^2 ${N('− 4')}`),
+      lienzo:PL([[0, par(1, 0, 0, '', 'recta-anterior')], [1, pt(2, 0, '(2, 0)')], [1, pt(-2, 0, '(−2, 0)')], [2, vert(0, -4, 'V(0, −4)')],
+                 ['final', par(1, 0, -4, 'y = x² − 4')]], 'La parábola y = x² − 4, cuatro lugares más abajo'),
+      pasos:[
+        P('Las raíces: incompleta, del tema 2.', 'x^2 − 4 = 0', 'x = ±2'),
+        P('El vértice: con x = 0.', ['x = 0', 'y = −4']),
+      ], final:'la parábola de y = x², bajada 4 lugares: vértice (0, −4)' },
+    { titulo:'sin término independiente, y a negativo', enun:M('y = −x^2 + 2x'),
+      lienzo:PL([[1, pt(0, 0, '(0, 0)')], [1, pt(2, 0, '(2, 0)')], [2, { vertical:1 }], [2, vert(1, 1, 'V(1, 1)')],
+                 [3, pt(-1, -3, '(−1, −3)')], [3, pt(3, -3, '(3, −3)')], ['final', par(-1, 2, 0, 'y = −x² + 2x')]], 'La parábola y = −x² + 2x'),
+      pasos:[
+        P('Las raíces: factor común.', '−x^2 + 2x = 0', 'x(−x + 2) = 0', ['', 'x = 0'], ['', 'x = 2']),
+        P('El vértice, en el medio de las raíces.', 'x = 1', 'y = −1 + 2', ' = 1'),
+        P('Dos puntos simétricos.', ['x = −1', 'y = −3'], ['x = 3', 'y = −3']),
+      ], final:'una parábola convexa con vértice (1, 1), que es un máximo' },
+  ],
+  taller:'lab-parabola',
+  preguntas:[
+    { p:'¿Por qué y = x² − 4 es la misma parábola que y = x², pero más abajo?',
+      r:'Porque para cada x, la y es 4 menos que antes. Todos los puntos bajan 4: la forma no cambia.' },
+    { p:'¿Qué pasa si a es 1/2?',
+      r:'La parábola se abre: las ramas suben la mitad de rápido. En el taller se puede escribir 1/2 en el lugar de a.' },
+    { p:'¿Y si cambio b?',
+      r:'La parábola no cambia de forma, pero el vértice se corre a los costados y hacia arriba o abajo. Sigue pasando por (0, c). Probalo en el taller.' },
+  ],
+  notas:`<p>El libro grafica las cuadráticas incompletas con tablas cerca del 0 (pág. 135). Los
+      ejemplos 2 y 3 dejan la parábola anterior en punteado: se ve qué hace cada coeficiente,
+      que es lo que pide el Explora de la pág. 137.</p>
+    <p>El taller tiene botones + y − para a, b y c, y deja la parábola anterior en punteado
+      con un cartel que dice qué pasó. Conviene que primero apuesten qué va a hacer cada
+      botón.</p>`
+},
+
+/* ─────────────────────── unidad 6 · 6 ─────────────────────── */
+{
+  n:14, corto:'Propiedades de las raíces', titulo:'Propiedades de las raíces de una ecuación cuadrática', pag:'unidad 6, tema 6 · págs. 138–139',
+  concepto:{
+    serie:[
+      { rot:'suma', html:`<span class="ec"><i>x</i><sub>1</sub> + <i>x</i><sub>2</sub> = −${Q('b','a')}</span>` },
+      { rot:'producto', html:`<span class="ec"><i>x</i><sub>1</sub> · <i>x</i><sub>2</sub> = ${Q('c','a')}</span>` },
+    ],
+    puntos:[
+      'Se leen de los coeficientes, <b>sin resolver</b> la ecuación.',
+      'Sirven para controlar soluciones, y para decidir si dos números son raíces.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'suma y producto sin resolver', enun:M('x^2 − 7x + 12 = 0'),
+      inicio:['a = 1', 'b = −7', 'c = 12'],
+      pasos:[
+        P('La suma de las raíces.', `x<sub>1</sub> + x<sub>2</sub> = −${Q('−7','1')}`, ' = 7'),
+        P('El producto.', `x<sub>1</sub> · x<sub>2</sub> = ${Q('12','1')}`, ' = 12'),
+        'Dos números que suman 7 y multiplicados dan 12: 3 y 4.',
+      ], final:`las raíces suman 7 y su producto es 12: son ${R1}3 y ${R2}4`,
+      control:ctrl(['x = 3', '9 − 21 + 12 = 0 ✓'], ['x = 4', '16 − 28 + 12 = 0 ✓']) },
+    { titulo:'con a distinto de 1', enun:M('2x^2 + x − 6 = 0'),
+      inicio:['a = 2', 'b = 1', 'c = −6'],
+      pasos:[
+        P('La suma.', `x<sub>1</sub> + x<sub>2</sub> = −${Q('1','2')}`),
+        P('El producto.', `x<sub>1</sub> · x<sub>2</sub> = ${Q('−6','2')}`, ' = −3'),
+      ], final:'suman −1/2 y su producto es −3',
+      control:`Resolviendo, las raíces son 3/2 y −2:${A(['suma', `${Q('3','2')} − 2 = −${Q('1','2')} ✓`], ['producto', `${Q('3','2')} · (−2) = −3 ✓`])}` },
+    { titulo:'¿son raíces?', enun:`¿Son 5 y −3 las raíces de ${M('x^2 − 2x − 15 = 0')}?`,
+      pasos:[
+        P('La suma de las raíces tendría que ser −b : a, o sea 2.', '5 + (−3) = 2 ✓'),
+        P('Y el producto, c : a, o sea −15.', '5 · (−3) = −15 ✓'),
+      ], final:'sí: suman lo que tienen que sumar y multiplican lo que tienen que multiplicar' },
+    { titulo:'cambio el signo de b', enun:`¿Son 4 y −2 las raíces de ${M(`x^2 ${N('+')} 2x − 8 = 0`)}?`,
+      pasos:[
+        P('El producto tiene que ser −8.', '4 · (−2) = −8 ✓'),
+        P('Pero la suma tiene que ser −2.', '4 + (−2) ≠ −2'),
+      ], final:'no: el producto coincide pero la suma no; las raíces son −4 y 2' },
+    { titulo:'encontrar un coeficiente', enun:`Una raíz de ${M('x^2 − mx + 18 = 0')} es 3. ¿Cuánto vale ${M('m')} y cuál es la otra raíz?`,
+      pasos:[
+        P('El producto de las raíces es 18.', '3 · x<sub>2</sub> = 18', 'x<sub>2</sub> = 6'),
+        P('La suma es −b : a, o sea m.', 'm = 3 + 6', ' = 9'),
+      ], final:'<i>m</i> = 9 y la otra raíz es 6',
+      control:ctrl(['x = 3', '9 − 27 + 18 = 0 ✓'], ['x = 6', '36 − 54 + 18 = 0 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿De dónde salen −b/a y c/a?',
+      r:'De sumar y multiplicar las dos soluciones de la fórmula. En la suma, las raíces cuadradas se cancelan; en el producto queda b² − (b² − 4ac), que es 4ac.' },
+    { p:'¿Por qué en el ejemplo 4 no alcanza con que el producto coincida?',
+      r:'Porque hay muchos pares con el mismo producto: 4 y −2, −4 y 2, 8 y −1. La suma elige cuál.' },
+    { p:'¿Sirve también si las raíces no son enteras?',
+      r:'Sí: en el ejemplo 3 del tema 4, 2 + √3 y 2 − √3 suman 4 y su producto es 1, como dicen los coeficientes.' },
+  ],
+  notas:`<p>El libro deduce las propiedades a partir de la fórmula (pág. 138). Los ejemplos las
+      usan de tres maneras: calcular sin resolver, decidir si dos números son raíces y
+      encontrar un coeficiente.</p>
+    <p>El ejemplo 4 es el contraejemplo: el producto coincide y la suma no. Que lo detecten
+      antes de abrir el segundo paso.</p>`
+},
+
+/* ─────────────────────── unidad 6 · 7 ─────────────────────── */
+{
+  n:15, corto:'Reconstrucción', titulo:'Reconstrucción de ecuaciones cuadráticas', pag:'unidad 6, tema 7 · págs. 140–142',
+  concepto:{
+    forma:'x^2 − Sx + P = 0', formaRot:'la ecuación cuyas raíces suman S y multiplican P',
+    puntos:[
+      'Es el tema anterior al revés: de las raíces a la ecuación.',
+      'También se puede multiplicar <span class="ec">(<i>x</i> − <i>x</i><sub>1</sub>)(<i>x</i> − <i>x</i><sub>2</sub>)</span>: da lo mismo.',
+      'Si quedan fracciones, se multiplica toda la ecuación para sacarlas.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'raíces 2 y 5', enun:'Una ecuación de segundo grado cuyas raíces son 2 y 5.', prosa:true,
+      pasos:[
+        P('La suma y el producto.', 'S = 2 + 5', ' = 7', 'P = 2 · 5', ' = 10'),
+        P('Reemplazo en x² − Sx + P = 0.', 'x^2 − 7x + 10 = 0'),
+      ], final:M('x^2 − 7x + 10 = 0'),
+      control:ctrl(['x = 2', '4 − 14 + 10 = 0 ✓'], ['x = 5', '25 − 35 + 10 = 0 ✓']) },
+    { titulo:'una raíz negativa', enun:`Una ecuación cuyas raíces son ${N('−3')} y 4.`, prosa:true,
+      pasos:[
+        P('La suma y el producto.', 'S = −3 + 4', ' = 1', 'P = (−3) · 4', ' = −12'),
+        P('Reemplazo: −S es −1.', 'x^2 − x − 12 = 0'),
+      ], final:M('x^2 − x − 12 = 0'),
+      control:ctrl(['x = −3', '9 + 3 − 12 = 0 ✓'], ['x = 4', '16 − 4 − 12 = 0 ✓']) },
+    { titulo:'una raíz es una fracción', enun:`Una ecuación cuyas raíces son ${N('1/2')} y −3.`, prosa:true,
+      pasos:[
+        P('La suma y el producto.', `S = ${Q('1','2')} − 3`, ` = −${Q('5','2')}`, `P = ${Q('1','2')} · (−3)`, ` = −${Q('3','2')}`),
+        P('Reemplazo, y multiplico por 2 para sacar las fracciones.', `x^2 + ${Q('5','2')}x − ${Q('3','2')} = 0`, '2x^2 + 5x − 3 = 0'),
+      ], final:M('2x^2 + 5x − 3 = 0'),
+      control:'Es la del ejemplo 4 del tema 3, que dio −3 y 1/2 ✓' },
+    { titulo:'con la suma y el producto', enun:'Una ecuación cuyas raíces suman 6 y multiplican −16. ¿Cuáles son las raíces?', prosa:true,
+      pasos:[
+        P('Reemplazo S y P directamente.', 'x^2 − 6x − 16 = 0'),
+        P('La resuelvo: producto −16 y suma −6.', '(x − 8)(x + 2) = 0', ['', 'x = 8'], ['', 'x = −2']),
+      ], final:`${M('x^2 − 6x − 16 = 0')}, con raíces 8 y −2`,
+      control:ctrl(['suma', '8 + (−2) = 6 ✓'], ['producto', '8 · (−2) = −16 ✓']) },
+    { titulo:'una raíz doble', enun:'Una ecuación que tenga una sola solución, 5.', prosa:true,
+      pasos:[
+        P('Una sola solución es una raíz doble: las dos raíces son 5.', 'S = 5 + 5', ' = 10', 'P = 5 · 5', ' = 25'),
+        P('Reemplazo.', 'x^2 − 10x + 25 = 0'),
+      ], final:M('x^2 − 10x + 25 = 0'),
+      control:`Es un trinomio cuadrado perfecto:${A('x^2 − 10x + 25 = (x − 5)^2 ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Por qué −S y no +S?',
+      r:'Porque la suma de las raíces es −b : a. Con a = 1, b tiene que ser −S.' },
+    { p:'¿Hay una sola ecuación con esas raíces?',
+      r:'No: 2x² − 14x + 20 = 0 también tiene raíces 2 y 5. Todas las que se obtienen multiplicando por un número tienen las mismas raíces.' },
+    { p:'¿Y con (x − 2)(x − 5)?',
+      r:'Se obtiene lo mismo: x² − 7x + 10. Cada factor se anula en una de las raíces.' },
+  ],
+  notas:`<p>El libro reconstruye con la suma y el producto, y comprueba resolviendo la ecuación
+      obtenida (pág. 140). Los ejemplos cambian una cosa por vez: raíz negativa, raíz
+      fraccionaria, dato de suma y producto, raíz doble.</p>
+    <p>El control del ejemplo 3 remite a una ecuación ya resuelta en el tema 3: conviene
+      volver a esa diapositiva.</p>`
+},
+
+/* ─────────────────────── unidad 6 · 8 ─────────────────────── */
+{
+  n:16, corto:'Problemas', titulo:'Resolución de problemas que involucran ecuaciones cuadráticas', pag:'unidad 6, tema 8 · págs. 143–146',
+  concepto:{
+    serie:[
+      { rot:'1. datos', txt:'nombro la incógnita, con su unidad' },
+      { rot:'2. planteo', txt:'escribo la ecuación' },
+      { rot:'3. resuelvo', txt:'con el método que convenga' },
+      { rot:'4. interpreto', txt:'elijo las soluciones que tienen sentido' },
+      { rot:'5. verifico', txt:'en el enunciado' },
+    ],
+    puntos:[
+      'La ecuación da dos soluciones, pero <b>el problema puede aceptar una sola</b>: una longitud o una edad no son negativas.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'un terreno', prosa:true, fija:1,
+      enun:'«Un terreno rectangular tiene 26 m de perímetro y 40 m² de área. ¿Cuánto miden sus lados?»',
+      pasos:[
+        `El largo y el ancho suman la mitad del perímetro, 13 m: si ${M('x')} es el largo, el ancho es ${M('13 − x')}.`,
+        P('El área es largo por ancho.', 'x(13 − x) = 40', '13x − x^2 = 40', 'x^2 − 13x + 40 = 0'),
+        P('Producto 40 y suma −13: −5 y −8.', '(x − 5)(x − 8) = 0', ['', 'x = 5'], ['', 'x = 8']),
+        'Con x = 8 el ancho es 5; con x = 5, el ancho es 8: es el mismo rectángulo.',
+      ], final:'los lados miden 8 m y 5 m',
+      control:'Control: 2 · (8 + 5) = 26 m de perímetro y 8 · 5 = 40 m² de área ✓' },
+    { titulo:'números consecutivos', prosa:true, fija:1,
+      enun:'«El producto de dos números naturales consecutivos es 132. ¿Cuáles son?»',
+      pasos:[
+        `${M('x')} es el menor; el siguiente es ${M('x + 1')}.`,
+        P('Su producto.', 'x(x + 1) = 132', 'x^2 + x − 132 = 0'),
+        P('Producto −132 y suma 1: 12 y −11.', '(x + 12)(x − 11) = 0', ['', 'x = −12'], ['', 'x = 11']),
+        'Se pedían naturales: el −12 se descarta.',
+      ], final:'los números son 11 y 12',
+      control:'Control: 11 · 12 = 132 ✓' },
+    { titulo:'edades', prosa:true, fija:1,
+      enun:'«Dentro de 3 años, la edad de Lucas va a ser el cuadrado de la edad que tenía hace 3 años. ¿Cuántos años tiene?»',
+      pasos:[
+        `${M('x')} es la edad de Lucas hoy.`,
+        P('Dentro de 3 años y hace 3 años.', 'x + 3 = (x − 3)^2', 'x + 3 = x^2 − 6x + 9', 'x^2 − 7x + 6 = 0'),
+        P('Producto 6 y suma −7.', '(x − 1)(x − 6) = 0', ['', 'x = 1'], ['', 'x = 6']),
+        'Si tuviera 1 año, hace 3 años tendría −2: se descarta.',
+      ], final:'Lucas tiene 6 años',
+      control:'Control: hace 3 años tenía 3; dentro de 3 va a tener 9, que es 3 al cuadrado ✓' },
+    { titulo:'una pelota', prosa:true, fija:1,
+      enun:'«Una pelota se lanza hacia arriba y su altura, en metros, es h = 20t − 5t², con t en segundos. ¿En qué momento está a 15 m de altura?»',
+      pasos:[
+        'La pregunta es para qué t la altura vale 15.',
+        P('Igualo y ordeno.', '20t − 5t^2 = 15', '5t^2 − 20t + 15 = 0', 't^2 − 4t + 3 = 0'),
+        P('Producto 3 y suma −4.', '(t − 1)(t − 3) = 0', ['', 't = 1'], ['', 't = 3']),
+        'Las dos sirven: pasa por 15 m al subir y otra vez al bajar.',
+      ], final:'al segundo 1, subiendo, y al segundo 3, bajando',
+      control:'Control: con t = 1, 20 − 5 = 15; con t = 3, 60 − 45 = 15 ✓' },
+    { titulo:'una torta entre amigos', prosa:true, fija:1,
+      enun:'«Unos amigos compran una torta de ₲ 120 000 y pagan partes iguales. Si fueran 2 amigos más, cada uno pagaría ₲ 5000 menos. ¿Cuántos amigos son?»',
+      pasos:[
+        `${M('x')} es la cantidad de amigos: cada uno paga ${`<span class="ec">${Q('120 000','x')}</span>`}.`,
+        P('Con 2 más, cada uno paga 5000 menos. Divido todo por 5000.', `${Q('120 000','x')} − ${Q('120 000','x + 2')} = 5000`, `${Q('24','x')} − ${Q('24','x + 2')} = 1`),
+        P('Multiplico por x(x + 2).', '24(x + 2) − 24x = x(x + 2)', '48 = x^2 + 2x', 'x^2 + 2x − 48 = 0'),
+        P('Producto −48 y suma 2: 8 y −6.', '(x + 8)(x − 6) = 0', ['', 'x = −8'], ['', 'x = 6']),
+      ], final:'son 6 amigos, y cada uno paga ₲ 20 000',
+      control:'Control: 120 000 : 6 = 20 000; con 8 amigos serían 15 000, que es 5000 menos ✓' },
+  ],
+  preguntas:[
+    { p:'¿Por qué en el terreno las dos soluciones dan el mismo rectángulo?',
+      r:'Porque x es el largo, y "largo" y "ancho" se pueden intercambiar: 8 por 5 o 5 por 8 es el mismo terreno.' },
+    { p:'¿Cuándo se descarta una solución?',
+      r:'Cuando no tiene sentido en el problema: una cantidad de personas negativa, una edad que hace unos años era negativa, un número que no es natural si se pedían naturales.' },
+    { p:'¿Por qué la pelota está dos veces a 15 m?',
+      r:'Porque sube y después baja: su altura es una parábola convexa, y una recta horizontal a 15 m la corta en dos puntos.' },
+  ],
+  notas:`<p>El libro resuelve en cinco pasos, con un terreno y un grupo de amigos que se
+      divide un gasto (págs. 143–144). Los ejemplos repiten esas situaciones con números
+      propios y agregan edades, consecutivos y una pelota.</p>
+    <p>El paso 4, interpretar, es el nuevo respecto de los problemas de 7.º y 8.º: hay que
+      decidir qué soluciones sirven. En el terreno sirven las dos y dan lo mismo; en los
+      consecutivos y las edades se descarta una; en la pelota sirven las dos y significan
+      cosas distintas.</p>`
+},
+];
+
+/* ─────────────────────── el desafío ─────────────────────── */
+const DESAFIO = {
+  titulo:'Los monos de Bhaskara', prosa:true, fija:1,
+  enun:'«La octava parte de una manada de monos, elevada al cuadrado, jugaba en el bosque. Los doce restantes gritaban en la colina. ¿Cuántos monos había?» (Bhaskara, India, siglo XII)',
+  pasos:[
+    `${M('x')} es la cantidad de monos.`,
+    P('Los que jugaban más los que gritaban son todos.', `(${Q('x','8')})^2 + 12 = x`, `${Q('x^2','64')} + 12 = x`),
+    P('Multiplico por 64 y ordeno.', 'x^2 + 768 = 64x', 'x^2 − 64x + 768 = 0'),
+    P('Con la fórmula. La raíz del discriminante es 32.', 'Δ = 4096 − 3072', ' = 1024', `x = ${Q('64 ± 32','2')}`, ['', 'x = 48'], ['', 'x = 16']),
+  ],
+  final:'había 48 monos, o 16: las dos cumplen el enunciado',
+  control:`Control en el enunciado, con los dos:${A(['48 monos', '6^2 + 12 = 48 ✓'], ['16 monos', '2^2 + 12 = 16 ✓'])}`,
+  preguntas:[
+    { p:'¿Cuál de las dos es la respuesta?',
+      r:'Las dos: 48 y 16 cumplen el enunciado, y ninguna es negativa ni fraccionaria. El problema, tal como está escrito, tiene dos respuestas.' },
+    { p:'¿Cómo escribía Bhaskara la ecuación?',
+      r:'Con palabras y abreviaturas: no había letras ni el signo =. El signo = lo inventó Robert Recorde en 1557, casi 400 años después.' },
+  ],
+  notas:`<p>El problema es de Bhaskara, el matemático de la India que el libro menciona en el
+      margen de la pág. 108. Junta la unidad: plantear, sacar denominadores, la fórmula e
+      interpretar.</p>
+    <p>La sorpresa es que las dos soluciones sirven. Conviene preguntar antes del control si
+      alguien descartaría una, y por qué.</p>`
+};
+
+/* ─────────────────── la pregunta de arranque ─────────────────── */
+const PREGUNTA_INICIAL = { prosa:true, fija:1,
+  enun:'«Un terreno rectangular tiene el largo 3 m más que el ancho, y su área es 40 m². ¿Cuánto mide el ancho?»',
+  pasos:[
+    `${M('x')} es el ancho, en metros; el largo es ${M('x + 3')}.`,
+    P('El área es largo por ancho.', 'x(x + 3) = 40', 'x^2 + 3x = 40'),
+    'La x aparece al cuadrado y también sola: con lo de 7.º no se puede despejar.',
+    P('Probando con números: 5 por 8 da 40.', ['con x = 5', '5 · 8 = 40 ✓']),
+  ],
+  final:'el ancho mide 5 m y el largo 8 m',
+};
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirven las ecuaciones de segundo grado?',
+      r:'Para cualquier situación donde algo se multiplica por sí mismo o por algo que depende de él: áreas, la altura de una pelota, ganancias que dependen del precio.' },
+    { p:'¿Por qué la pregunta de arranque no se resuelve con lo de 7.º?',
+      r:'Porque la x aparece dos veces, una multiplicada por sí misma. Pasar términos no la deja sola: hace falta factorizar, completar el cuadrado o la fórmula.' },
+  ],
+  notas:`<p><b>Son las unidades 5 y 6 del libro, en sus dieciséis temas y en su orden.</b> La
+      unidad 5 resuelve ecuaciones: incompletas, por factorización, por fórmula, con
+      denominadores y con radicales. La unidad 6 las estudia: discriminante, completar el
+      cuadrado, la parábola, las propiedades de las raíces y los problemas.</p>
+    <p>Hay un cambio respecto del libro: la deducción de la fórmula, que el libro hace en el
+      tema 4, se hace acá en el tema 11, completando el cuadrado con letras. En el tema 4 la
+      fórmula se usa; en el 11 se ve de dónde sale.</p>
+    <p>La parábola aparece antes de sus temas, en el discriminante (tema 9): las tres
+      ecuaciones de ese tema son la misma parábola subiendo, que corta, toca y deja de tocar
+      el eje x.</p>
+    <p>La Ficha 5 es un diagnóstico de cuadráticas y la 4 son secuencias cuadráticas: sirven
+      antes de empezar y como repaso.</p>`
+};
+
+/* ═══ el taller de la parábola ═══ */
+const LABS = {
+'lab-parabola':`
+<div class="lab">
+  <h4>Probalo: qué hace cada coeficiente</h4>
+  <p class="sub">Tocá <b>+</b> y <b>−</b> en a, b o c. La parábola anterior queda en punteado y
+    un cartel dice qué pasó. También se puede escribir un número, como 1/2.</p>
+  <div class="taller">
+    <div id="par-lienzo"></div>
+    <div>
+      <div class="perilla"><span class="perilla-rot">a</span>
+        <button class="op" type="button" data-par="a" data-par-d="-1" aria-label="Bajar a">−</button>
+        <input id="par-a" type="text" value="1" aria-label="Coeficiente a">
+        <button class="op" type="button" data-par="a" data-par-d="1" aria-label="Subir a">+</button></div>
+      <div class="perilla"><span class="perilla-rot">b</span>
+        <button class="op" type="button" data-par="b" data-par-d="-1" aria-label="Bajar b">−</button>
+        <input id="par-b" type="text" value="0" aria-label="Coeficiente b">
+        <button class="op" type="button" data-par="b" data-par-d="1" aria-label="Subir b">+</button></div>
+      <div class="perilla"><span class="perilla-rot">c</span>
+        <button class="op" type="button" data-par="c" data-par-d="-1" aria-label="Bajar c">−</button>
+        <input id="par-c" type="text" value="-4" aria-label="Coeficiente c">
+        <button class="op" type="button" data-par="c" data-par-d="1" aria-label="Subir c">+</button></div>
+      <div class="salida" id="par-out"></div>
+    </div>
+  </div>
+</div>`
+};
+
+/* ═══ el armado ═══
+   La plantilla, los pasos, el plano y el movimiento están en
+   assets/pizarra.js: esta página trae solo sus datos. */
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'9no', temasLibro:16 });
+</script>
+
+<script>
+/* ═══ el taller de la parábola ═══
+   Usa el plano del motor: la parábola nueva, la anterior en punteado,
+   el eje de simetría, el vértice y las raíces. */
+const tp = { anterior:null, cambio:'' };
+const leeP = id => leeNumero(document.getElementById('par-' + id).value);
+function poli(a, b, c){
+  const t = [];
+  const coef = (v, letra) => {
+    if (cero(v)) return;
+    const neg = v.n < 0, abs = fr(Math.abs(v.n), v.d);
+    const num = (igual(abs, fr(1)) && letra) ? '' : txtPlano(abs);
+    t.push({ neg, s: num + letra });
+  };
+  coef(a, 'x²'); coef(b, 'x'); coef(c, '');
+  if (!t.length) return '0';
+  return t.map((p, i) => (i === 0 ? (p.neg ? '−' : '') : (p.neg ? ' − ' : ' + ')) + p.s).join('');
+}
+function describe(que, antes, ahora){
+  const va = valor(antes), vn = valor(ahora);
+  if (que === 'c') return `c pasó de ${txtPlano(antes)} a ${txtPlano(ahora)}: la parábola se corrió ${vn > va ? 'hacia arriba' : 'hacia abajo'}, sin cambiar de forma.`;
+  if (que === 'b') return `b pasó de ${txtPlano(antes)} a ${txtPlano(ahora)}: el vértice se corrió, la forma es la misma y sigue pasando por el mismo punto del eje y.`;
+  if (Math.sign(va) !== Math.sign(vn)) return `a cambió de signo: la parábola se dio vuelta y ahora abre hacia ${vn > 0 ? 'arriba' : 'abajo'}.`;
+  return `a pasó de ${txtPlano(antes)} a ${txtPlano(ahora)}: la parábola quedó ${Math.abs(vn) > Math.abs(va) ? 'más cerrada' : 'más abierta'}.`;
+}
+function pintaParabola(){
+  const a = leeP('a'), b = leeP('b'), c = leeP('c');
+  const out = document.getElementById('par-out');
+  if (!a || !b || !c || cero(a)){ out.innerHTML = '<span class="dim">Escribí tres números; a no puede ser 0.</span>'; return; }
+  const h = coc(fr(-b.n, b.d), prod(fr(2), a));
+  const k = suma(suma(prod(a, prod(h, h)), prod(b, h)), c);
+  const D = resta(prod(b, b), prod(fr(4), prod(a, c)));
+  const capas = [];
+  if (tp.anterior) capas.push([0, { parabola:tp.anterior.map(valor), cls:'recta-anterior' }]);
+  capas.push([0, { vertical:valor(h) }], [0, { parabola:[valor(a), valor(b), valor(c)], cls:'recta1' }]);
+  capas.push([0, { punto:[valor(h), valor(k)], rot:`V(${txtPlano(h)}, ${txtPlano(k)})`, cls:'punto-vertice' }]);
+  let raicesTxt;
+  if (D.n < 0) raicesTxt = 'no corta el eje x (Δ < 0)';
+  else {
+    const r1 = (-valor(b) + Math.sqrt(valor(D))) / (2 * valor(a)), r2 = (-valor(b) - Math.sqrt(valor(D))) / (2 * valor(a));
+    // si el discriminante es un cuadrado, las raíces son exactas
+    const sn = Math.round(Math.sqrt(D.n)), sd = Math.round(Math.sqrt(D.d));
+    const exacta = sn * sn === D.n && sd * sd === D.d;
+    const menosB = fr(-b.n, b.d), dosA = prod(fr(2), a), raiz = fr(sn, sd);
+    const ex = [coc(suma(menosB, raiz), dosA), coc(resta(menosB, raiz), dosA)];
+    const t = i => exacta ? 'x = ' + txtPlano(ex[i]) : 'x ≈ ' + [r1, r2][i].toFixed(2).replace('.', ',').replace('-', '−');
+    if (D.n === 0){ raicesTxt = `toca el eje x en x = ${txtPlano(h)}`; capas.push([0, { punto:[valor(h), 0] }]); }
+    else {
+      raicesTxt = `corta el eje x en ${t(0)} y en ${t(1)}`;
+      capas.push([0, { punto:[r1, 0] }], [0, { punto:[r2, 0] }]);
+    }
+  }
+  Pizarra.lienzos.plano('taller', { pasos:[], lienzo:{ R:8, capas } }, 0, false, document.getElementById('par-lienzo'));
+  out.innerHTML = `<div><span class="ec"><i>y</i> = ${poli(a, b, c).replace(/x/g, '<i>x</i>')}</span></div>
+    <div class="dim">ramas hacia ${valor(a) > 0 ? 'arriba' : 'abajo'} · vértice (${txtPlano(h)}, ${txtPlano(k)}) · Δ = ${txtPlano(D)}</div>
+    <div class="dim">${raicesTxt}</div>${tp.cambio ? `<div class="cambio">${tp.cambio}</div>` : ''}`;
+}
+document.getElementById('par-out').closest('.lab').addEventListener('click', ev => {
+  const bt = ev.target.closest('[data-par]');
+  if (!bt) return;
+  const que = bt.dataset.par, campo = document.getElementById('par-' + que);
+  const antes = leeNumero(campo.value), a = leeP('a'), b = leeP('b'), c = leeP('c');
+  if (!antes || !a || !b || !c) return;
+  let ahora = suma(antes, fr(Number(bt.dataset.parD)));
+  if (que === 'a' && cero(ahora)) ahora = suma(ahora, fr(Number(bt.dataset.parD)));   // a no puede ser 0
+  tp.anterior = [a, b, c];
+  tp.cambio = describe(que, antes, ahora);
+  campo.value = txtPlano(ahora).replace('−', '-');
+  pintaParabola();
+});
+['par-a', 'par-b', 'par-c'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+  tp.anterior = null; tp.cambio = ''; pintaParabola();
+}));
+pintaParabola();
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

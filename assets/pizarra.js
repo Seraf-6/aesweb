@@ -474,7 +474,9 @@ function pintaCuaderno(clave, avanzando, borrados = false, div = document.getEle
   const antes = div.getBoundingClientRect().height;
   // un cuaderno largo usa letra más chica desde el principio: que entre entero
   // en la pantalla, sin cambiar de tamaño a mitad del ejemplo
-  const largo = filasHasta(ej, Infinity).length > 9 ? ' largo' : '';
+  // (un renglón con fracción apilada ocupa casi dos)
+  const peso = filasHasta(ej, Infinity).reduce((s, { f }) => s + (/class="fr"/.test([].concat(f).join('')) ? 1.8 : 1), 0);
+  const largo = peso > 9 ? ' largo' : '';
   div.innerHTML = `<div class="cuaderno${largo}"><span class="cu-rot">${ej.rotCuaderno || 'en el cuaderno'}</span>
       <div class="alineado">${cuerpo}</div></div>`;
   acompanaAlto(div, antes);
@@ -563,6 +565,8 @@ Pizarra.lienzos.figura = (clave, ej, k, avanzando, div) => {
    lienzo:{ tipo:'plano', R:8, capas:[[en, cosa, hasta], …] }, con cosa:
      { recta:[a, b, c], cls:'recta1', rot:'x + y = 5' }   la recta ax + by = c
      { punto:[x, y], rot:'(3, 2)', guias:true }           x e y pueden ser [n, d]
+     { parabola:[a, b, c], cls:'recta1', rot:'y = x² − 4' } la parábola y = ax² + bx + c
+     { vertical:h }                                       el eje de simetría x = h, punteado
    La recta que aparece en este paso se traza; el punto cae con un pulso. */
 Pizarra.lienzos.plano = (clave, ej, k, avanzando, div) => {
   const nP = ej.pasos.length, R = ej.lienzo.R || 8, T = 400, Mg = 22, Un = (T - 2 * Mg) / (2 * R);
@@ -595,6 +599,32 @@ Pizarra.lienzos.plano = (clave, ej, k, avanzando, div) => {
                y="${(ly + s * ny * 16).toFixed(1)}" text-anchor="middle">${c.rot}</text>`;
       }
     }
+    if (c.parabola){
+      // y = ax² + bx + c: la parte que se ve es un solo tramo (la curva es
+      // convexa), y se recorta al recuadro
+      const [a, b, cc] = c.parabola.map(val), pts = [];
+      for (let x = -R; x <= R + 1e-9; x += R / 160){
+        const y = a * x * x + b * x + cc;
+        if (y >= -R - 1.5 && y <= R + 1.5) pts.push([px(x), py(y)]);
+      }
+      if (pts.length > 1){
+        let largo = 0;
+        for (let i = 1; i < pts.length; i++) largo += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+        const d = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
+        g += `<path class="${c.cls || 'recta1'} parabola${nueva ? ' dibuja' : ''}" clip-path="url(#clip-${clave})" d="${d}"${
+               nueva ? ` style="--largo:${largo.toFixed(1)}"` : ''}/>`;
+        if (c.rot){
+          const [lx, ly] = pts[Math.floor(pts.length * .9)];
+          g += `<text class="rot-recta ${c.cls === 'recta2' ? 'rot-r2' : 'rot-r1'}${nueva ? ' aparece-rot' : ''}" x="${(lx - 12).toFixed(1)}"
+                 y="${Math.max(Mg + 14, ly).toFixed(1)}" text-anchor="end">${c.rot}</text>`;
+        }
+      }
+    }
+    if (c.vertical != null){
+      // el eje de simetría: una recta vertical punteada
+      const X = val(c.vertical);
+      g += `<line class="eje-sim${nueva ? ' aparece-rot' : ''}" x1="${px(X)}" y1="${py(R)}" x2="${px(X)}" y2="${py(-R)}"/>`;
+    }
     if (c.punto){
       const X = val(c.punto[0]), Y = val(c.punto[1]);
       if (!dentro(X) || !dentro(Y)) return;
@@ -606,12 +636,16 @@ Pizarra.lienzos.plano = (clave, ej, k, avanzando, div) => {
       if (nueva) g += `<circle class="onda" cx="${px(X)}" cy="${py(Y)}" r="7" style="${o}; animation-delay:${c.guias ? .85 : .1}s"/>`;
       g += `<circle class="${c.cls || 'punto-tabla'}${nueva ? ' aparece' : ''}" cx="${px(X)}" cy="${py(Y)}" r="7" style="${o}${nueva ? `; animation-delay:${c.guias ? .8 : .05}s` : ''}"/>`;
       if (c.rot){
-        const izq = X > R - 3, abajo = Y < 0;
+        // dos puntos a la misma altura (las raíces, dos simétricos): el de la
+        // izquierda lleva el rótulo a su izquierda, para que no se pisen
+        const misma = ej.lienzo.capas.filter(([, o]) => o.punto && val(o.punto[1]) === Y).map(([, o]) => val(o.punto[0]));
+        const izq = X > R - 3 || (misma.length > 1 && X === Math.min(...misma)), abajo = Y < 0;
         g += `<text class="rotulo-punto${nueva ? ' aparece-rot' : ''}" x="${px(X) + (izq ? -10 : 10)}" y="${py(Y) + (abajo ? 22 : -10)}"${izq ? ' text-anchor="end"' : ''}>${c.rot}</text>`;
       }
     }
   });
-  div.innerHTML = `<div class="lienzo"><svg viewBox="0 0 ${T} ${T}" role="img" aria-label="${ej.lienzo.rot || 'Las rectas del sistema en el plano'}">${g}</svg></div>`;
+  div.innerHTML = `<div class="lienzo"><svg viewBox="0 0 ${T} ${T}" role="img" aria-label="${ej.lienzo.rot || 'Las rectas del sistema en el plano'}">
+    <defs><clipPath id="clip-${clave}"><rect x="${Mg}" y="${Mg}" width="${T - 2 * Mg}" height="${T - 2 * Mg}"/></clipPath></defs>${g}</svg></div>`;
 };
 
 /* ═══ herramientas para dibujar figuras ═══

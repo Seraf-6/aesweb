@@ -106,8 +106,11 @@ GRADOS = [
        {'tipo': 'ficha', 'titulo': 'Fichas de cuadráticas',
         'desc': 'Ocho fichas: de las incompletas al discriminante y la gráfica.',
         'url': 'fichas/index.html#9no'},
-       {'tipo': 'pendiente', 'titulo': 'Diapositivas de la parábola',
-        'desc': 'Cómo se mueve la gráfica al cambiar cada coeficiente.'},
+       {'tipo': 'diapositiva', 'titulo': 'Ecuaciones de segundo grado',
+        'desc': 'Los dieciséis temas de las unidades 5 y 6: de las incompletas a la fórmula, '
+                'los radicales, el discriminante, completar el cuadrado y la parábola, con un '
+                'taller para ver qué hace cada coeficiente.',
+        'url': 'matematica/9no/cuadraticas.html'},
      ]},
     {'n': '7+8+9', 'titulo': 'Cuerpos geométricos', 'pags': '150–218',
      'nota': 'Unidades 7, 8 y 9 fusionadas y reordenadas por cuerpo: cada uno se ve '
