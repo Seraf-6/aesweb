@@ -31,9 +31,43 @@
 const Pizarra = { letras:/[xyabcd]/g, lienzos:{} };
 window.Pizarra = Pizarra;
 
+/* La raíz como en el pizarrón: la raya de arriba cubre todo lo de adentro.
+   Se escribe √25, √(x^2), 3√3, √(9 · 3), y acá se convierte. Lo de adentro
+   es lo que está entre los paréntesis (que se sacan), o un número, o una
+   letra. El signo lo dibuja clase.css, así que el resultado ya no tiene
+   ningún √ y pasarlo dos veces no cambia nada. */
+function raices(s){
+  s = String(s);
+  let out = '', i = 0;
+  while (i < s.length){
+    const j = s.indexOf('√', i);
+    if (j < 0){ out += s.slice(i); break; }
+    out += s.slice(i, j);
+    // adentro de una etiqueta (un aria-label) no se toca
+    if (s.lastIndexOf('<', j) > s.lastIndexOf('>', j)){ out += '√'; i = j + 1; continue; }
+    let k = j + 1, rad = null;
+    if (s[k] === '('){
+      let prof = 0, m = k;
+      for (; m < s.length; m++){
+        if (s[m] === '<'){ m = s.indexOf('>', m); if (m < 0) break; continue; }
+        if (s[m] === '(') prof++;
+        else if (s[m] === ')' && !--prof) break;
+      }
+      if (m > 0 && m < s.length){ rad = s.slice(k + 1, m); k = m + 1; }
+    } else {
+      const t = /^(?:\d+(?:,\d+)?|<i>[^<]<\/i>|[a-zA-Zℓ])(?:<sup>[^<]*<\/sup>)?/.exec(s.slice(k));
+      if (t){ rad = t[0]; k += t[0].length; }
+    }
+    if (rad === null){ out += '√'; i = j + 1; continue; }
+    out += `<span class="raiz"><span class="raiz-r">${rad}</span></span>`;
+    i = k;
+  }
+  return out;
+}
+
 /* Un exponente se puede escribir con ^: 'x^2 + 5x + 6', '(a + b)^3', 'x^n'. */
-const I = s => String(s).replace(/\^(\d+|[a-z])/g, '<sup>$1</sup>').split(/(<[^>]+>)/)
-  .map(t => t.startsWith('<') ? t : t.replace(Pizarra.letras, '<i>$&</i>')).join('');
+const I = s => raices(String(s).replace(/\^(\d+|[a-z])/g, '<sup>$1</sup>').split(/(<[^>]+>)/)
+  .map(t => t.startsWith('<') ? t : t.replace(Pizarra.letras, '<i>$&</i>')).join(''));
 const M = s => '<span class="ec">' + I(s) + '</span>';
 const Q = (n, d) => `<span class="fr"><span>${I(String(n))}</span><span>${I(String(d))}</span></span>`;
 
@@ -43,7 +77,7 @@ const S = (...ecs) => `<span class="sistema"><span class="llave">{</span><span c
 /* Los ángulos con sombrero (Â, B̂, Ĉ, D̂): B̂ y D̂ no existen como una sola
    letra, y en cursiva el sombrero se corre. Se escriben como siempre y acá
    se dibujan todos igual (.ang, en clase.css). No va dentro de un SVG. */
-const sombrero = s => String(s).replace(/([A-Z])̂|([ÂÊÎÔÛĈĜĤĴŜŴŶ])/g,
+const sombrero = s => raices(s).replace(/([A-Z])̂|([ÂÊÎÔÛĈĜĤĴŜŴŶ])/g,
   (m, l, pre) => `<span class="ang">${l || pre.normalize('NFD')[0]}</span>`);
 
 /* N() resalta lo nuevo: lo que se agrega a los dos miembros, el valor que
@@ -504,15 +538,25 @@ function pintaDerecha(clave, avanzando){
    Cada capa se ve desde el paso `en` (0 es desde el principio; también
    'final' y 'control') hasta antes del paso `hasta`, si lo tiene. La capa
    que aparece en este paso se dibuja: sus trazos (.traza) se hacen de
-   punta a punta y sus puntos (.pop) caen con un pulso. */
+   punta a punta y sus puntos (.pop) caen con un pulso.
+   Una capa con un cuarto elemento { desde:[dx, dy] } no se dibuja: llega
+   deslizándose desde ese corrimiento, como una pieza que se mueve a su
+   lugar. Sirve también para volver: la pieza que se había ido regresa
+   desde donde está la otra. */
 Pizarra.lienzos.figura = (clave, ej, k, avanzando, div) => {
   const nP = ej.pasos.length;
   const num = v => v === 'final' ? nP + 1 : v === 'control' ? nP + 2 : (v == null ? Infinity : v);
-  const capas = ej.lienzo.capas.map(([en, svg, hasta]) => ({ en:num(en), svg, hasta:num(hasta) }));
+  const capas = ej.lienzo.capas.map(([en, svg, hasta, op]) => ({ en:num(en), svg, hasta:num(hasta), op:op || {} }));
   const vis = capas.filter(c => c.en <= k && k < c.hasta);
+  const g = c => {
+    const llega = avanzando && c.en === k && k > 0;
+    const vuelve = !avanzando && c.hasta === k + 1;
+    if ((llega || vuelve) && c.op.desde)
+      return `<g class="capa capa-mueve" style="--dx:${c.op.desde[0]}px; --dy:${c.op.desde[1]}px">${c.svg}</g>`;
+    return `<g class="capa${llega ? ' capa-nueva' : ''}">${c.svg}</g>`;
+  };
   div.innerHTML = `<div class="lienzo figura-lienzo"><svg viewBox="${ej.lienzo.vb || '0 0 400 300'}" role="img"
-      aria-label="${ej.lienzo.rot || 'La figura del ejemplo'}">${
-      vis.map(c => `<g class="capa${avanzando && c.en === k && k > 0 ? ' capa-nueva' : ''}">${c.svg}</g>`).join('')}</svg></div>`;
+      aria-label="${ej.lienzo.rot || 'La figura del ejemplo'}">${vis.map(g).join('')}</svg></div>`;
 };
 
 /* ═══ el plano con rectas y puntos, que se arma por capas ═══
@@ -712,7 +756,7 @@ Pizarra.unidad = cfg => {
   const idT = t => t.id || String(t.n);
   const etiqueta = t => t.puente ? 'Puente' : `Tema ${t.n}`;
 
-  document.getElementById('temas').innerHTML = TEMAS.map(t => {
+  document.getElementById('temas').innerHTML = raices(TEMAS.map(t => {
     const c = t.concepto;
     const total = t.ejemplos.length;
     return `
@@ -746,7 +790,7 @@ Pizarra.unidad = cfg => {
 </article>`;
   }).join('') + (DESAFIO ? bloque('desafio', DESAFIO, {
       cinta:'<b>Desafío final</b> · toda la unidad junta', clase:'desafio', id:'desafio',
-      attrs:'data-tema="desafio"' }) : '');
+      attrs:'data-tema="desafio"' }) : ''));
 
   /* la pregunta de arranque, en la introducción */
   const recorrido = document.getElementById('recorrido');
@@ -768,7 +812,8 @@ Pizarra.unidad = cfg => {
     ...TEMAS.map(t => ({ id:idT(t), titulo:t.puente ? `Puente · ${t.titulo.toLowerCase()}` : `Tema ${t.n} · ${t.corto}`,
                           notas:t.notas, preguntas:t.preguntas })),
     ...(DESAFIO ? [{ id:'desafio', titulo:'Desafío final', notas:DESAFIO.notas, preguntas:DESAFIO.preguntas }] : []),
-  ]};
+  ].map(s => ({ ...s, notas:raices(s.notas || ''),
+                preguntas:(s.preguntas || []).map(q => ({ p:raices(q.p), r:raices(q.r) })) }))};
 
   Pizarra.inicia();
 };

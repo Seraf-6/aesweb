@@ -211,11 +211,16 @@
         aplicar(); return;
       }
     }
-    // con una diapositiva a la vez, los chips del navegador cambian de diapositiva
-    var c = ev.target.closest('a.chip');
-    if (c && estado.solo){
-      var destino = document.querySelector(c.getAttribute('href'));
-      var k = diapos.indexOf(destino);
+    // con una diapositiva a la vez, todo enlace a otra parte de la página (los
+    // chips del navegador, las cajitas del recorrido de la introducción) cambia
+    // a la diapositiva donde está lo que se busca
+    var c = ev.target.closest('a[href^="#"]');
+    if (c && estado.solo && c.getAttribute('href').length > 1){
+      var destino = document.getElementById(c.getAttribute('href').slice(1));
+      var k = -1;
+      for (var j = 0; destino && j < diapos.length; j++){
+        if (diapos[j] === destino || diapos[j].contains(destino)){ k = j; break; }
+      }
       if (k >= 0){ estado.i = k; aplicar(); window.scrollTo(0, 0); ev.preventDefault(); }
     }
   });

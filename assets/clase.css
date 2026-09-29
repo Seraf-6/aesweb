@@ -643,6 +643,16 @@ body[data-solo="1"] .cu-rot{font-size:.55em}
 .sistema .llave{font-family:var(--serif); font-size:2.3em; line-height:1; font-weight:400; transform:scaleX(.7)}
 .sistema .sis-ecs{display:inline-flex; flex-direction:column; line-height:1.35}
 
+/* la raíz como en el pizarrón (raices() de pizarra.js): el signo se estira
+   con lo de adentro y su raya lo cubre entero */
+.raiz{display:inline-flex; position:relative; padding-left:.62em; margin-left:.04em;
+  white-space:nowrap; font-style:normal}
+.raiz::before{content:""; position:absolute; left:0; top:0; bottom:0; width:.66em;
+  background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M.6 12.2 2.9 10.8 5.6 19.2 10 .75' fill='none' stroke='black' stroke-width='1.35' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M.6 12.2 2.9 10.8 5.6 19.2 10 .75' fill='none' stroke='black' stroke-width='1.35' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%}
+.raiz-r{border-top:.075em solid currentColor; padding:.12em .12em 0 .1em; line-height:1.15}
+
 /* un ángulo con sombrero: B̂ (sombrero() de pizarra.js) */
 .ang{display:inline-block; position:relative; font-style:normal}
 .ang::after{content:"\02C6"; position:absolute; left:0; right:0; top:-.3em; text-align:center;
@@ -651,6 +661,8 @@ body[data-solo="1"] .cu-rot{font-size:.55em}
 /* la figura que se arma por capas (lienzo 'figura' de pizarra.js) */
 .pizarra-der .figura-lienzo svg{max-height:calc(100vh - 175px)}
 .capa-nueva{animation:funde .45s ease both}
+.capa-mueve{animation:mueve .9s cubic-bezier(.65,0,.35,1) both .1s}
+@keyframes mueve{from{transform:translate(var(--dx), var(--dy))}}
 .capa-nueva .traza{stroke-dasharray:1; stroke-dashoffset:1; animation:traza .9s cubic-bezier(.65,0,.35,1) forwards .1s}
 .capa-nueva .pop{transform-box:fill-box; transform-origin:center; animation:pop .5s cubic-bezier(.3,1.6,.5,1) both .25s}
 .capa-nueva .pop-suave{transform-box:fill-box; transform-origin:center; animation:aterriza .5s ease both .2s}
@@ -740,7 +752,7 @@ body[data-solo="1"] .t-mini th{font-size:1em}
 
 @media (prefers-reduced-motion:reduce){
   .recien *,.recien > *,.fila-nueva td,.aparece,.aparece-rot,.onda,.guia,.marca-x,
-  .cuaderno *,.capa-nueva,.capa-nueva *{animation:none!important}
+  .cuaderno *,.capa-nueva,.capa-nueva *,.capa-mueve{animation:none!important}
   .capa-nueva .traza{stroke-dasharray:none; stroke-dashoffset:0}
   .dibuja{animation:none; stroke-dasharray:none; stroke-dashoffset:0}
   .onda{display:none}

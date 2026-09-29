@@ -234,6 +234,11 @@ las clases a la vez. Para escribir, el motor trae además: `x^2` para los
 exponentes (dentro de `M()`, `A()` y `P()`), `S('x + y = 5', 'x − y = 1')`
 para un sistema con su llave, y los ángulos con sombrero (Â, B̂) que se
 escriben tal cual y se dibujan bien aunque la letra no exista armada.
+Las raíces se escriben `√25`, `3√3` o `√(x^2 + 9)` y se dibujan como en el
+pizarrón: la raya de arriba cubre todo lo de adentro (los paréntesis se
+sacan). En una figura, una capa puede llegar deslizándose desde otro lugar
+(`{ desde:[dx, dy] }`), como una pieza que se mueve a su lugar: así se arma
+el cuadrado de x² + 6x + 9 con sus piezas sueltas.
 Cada página elige sus letras en cursiva con `Pizarra.letras`. Toda limpieza que espera el final de una animación
 tiene además un temporizador de respaldo (`alTerminar`): con la ventana
 oculta o el navegador ocupado el aviso de fin puede no llegar, y las cajas

@@ -528,16 +528,48 @@ const TEMAS = [
     const unidades = (x0, y0, c, f) => { let s = ''; for (let i = 0; i < c; i++) for (let j = 0; j < f; j++) s += rect(x0 + i * U, y0 + j * U, U, U, 'g-u'); return s; };
     return [
     { titulo:'la de partida, con su figura', enun:M('x^2 + 6x + 9'),
-      lienzo:F([
-        [0, rect(o[0], o[1], x, x, 'g-x2') + tiras(o[0] + x, o[1], U, x, 3, true) + tiras(o[0], o[1] + x, x, U, 3, false) + unidades(o[0] + x, o[1] + x, 3, 3)
-            + g.txt([o[0] + x / 2, o[1] + x / 2], X2, 'g-rot') + g.txt([o[0] + x + t / 2, o[1] + x / 2], '3x', 'g-rot')
-            + g.txt([o[0] + x / 2, o[1] + x + t / 2], '3x', 'g-rot') + g.txt([o[0] + x + t / 2, o[1] + x + t / 2], '9', 'g-dato')],
-        [1, rect(o[0], o[1], x, x, 'g-foco') + rect(o[0] + x, o[1] + x, t, t, 'g-foco'), 2],
-        [2, rect(o[0] + x, o[1], t, x, 'g-foco') + rect(o[0], o[1] + x, x, t, 'g-foco'), 3],
-        [3, g.txt([o[0] + x / 2, o[1] - 14], 'x', 'g-rot') + g.txt([o[0] + x + t / 2, o[1] - 14], '3', 'g-dato')
-            + g.txt([o[0] - 16, o[1] + x / 2], 'x', 'g-rot') + g.txt([o[0] - 16, o[1] + x + t / 2], '3', 'g-dato')
-            + rect(o[0], o[1], x + t, x + t, 'g-foco')],
-      ], 'Un cuadrado de lado x + 3 armado con un cuadrado de x, seis tiras y nueve cuadraditos'),
+      /* Las piezas empiezan sueltas: un cuadrado de x por x, seis tiras de
+         x por 1 y nueve cuadraditos. Con las raíces se ubican el cuadrado
+         grande y el de 3 por 3; con el doble producto, las tiras llenan los
+         huecos; y recién ahí aparece el cuadrado de lado x + 3. */
+      lienzo:(() => {
+        const q = (x0, y0) => rect(x0, y0, x, x, 'g-x2') + g.txt([x0 + x / 2, y0 + x / 2], X2, 'g-rot');
+        const tv = (x0, y0) => Array.from({ length:3 }, (_, i) =>
+          rect(x0 + i * U, y0, U, x, 'g-x1') + g.txt([x0 + i * U + U / 2, y0 + x / 2], 'x', 'g-rot')).join('');
+        const th = (x0, y0) => Array.from({ length:3 }, (_, i) =>
+          rect(x0, y0 + i * U, x, U, 'g-x1') + g.txt([x0 + x / 2, y0 + i * U + U / 2], 'x', 'g-rot')).join('');
+        const un = (x0, y0) => unidades(x0, y0, 3, 3) + Array.from({ length:9 }, (_, i) =>
+          g.txt([x0 + (i % 3) * U + U / 2, y0 + Math.floor(i / 3) * U + U / 2 + 1], '1', 'g-dato')).join('');
+        // dónde quedan en el cuadrado armado, y dónde están sueltas
+        const F0 = [30, 30];
+        const A = { q:[F0[0], F0[1]], tv:[F0[0] + x, F0[1]], th:[F0[0], F0[1] + x], un:[F0[0] + x, F0[1] + x] };
+        const S_ = { q:[20, 180], tv:[270, 30], th:[270, 180], un:[175, 225] };
+        const d = (de, a) => [de[0] - a[0], de[1] - a[1]];
+        const leyenda = g.txt([30, 50], `${X2}: cuadrado de x por x`, 'g-rot', 'start')
+          + g.txt([30, 82], 'x: tira de x por 1', 'g-rot', 'start')
+          + g.txt([30, 114], '1: cuadradito de 1 por 1', 'g-rot', 'start');
+        return F([
+          [0, leyenda, 1],
+          // sueltas; al volver para atrás regresan desde el cuadrado
+          [0, q(...S_.q), 1, { desde:d(A.q, S_.q) }],
+          [0, un(...S_.un), 1, { desde:d(A.un, S_.un) }],
+          [0, tv(...S_.tv), 2, { desde:d(A.tv, S_.tv) }],
+          [0, th(...S_.th), 2, { desde:d(A.th, S_.th) }],
+          // paso 1: los dos cuadrados perfectos van a sus esquinas
+          [1, q(...A.q), Infinity, { desde:d(S_.q, A.q) }],
+          [1, un(...A.un), Infinity, { desde:d(S_.un, A.un) }],
+          [1, g.txt([F0[0] + x / 2, F0[1] - 13], 'x', 'g-rot') + g.txt([F0[0] - 14, F0[1] + x / 2], 'x', 'g-rot')
+              + g.txt([F0[0] + x + t + 14, F0[1] + x + t / 2], '3', 'g-num') + g.txt([F0[0] + x + t / 2, F0[1] + x + t + 16], '3', 'g-num'), 3],
+          // paso 2: las seis tiras llenan los huecos
+          [2, tv(...A.tv), Infinity, { desde:d(S_.tv, A.tv) }],
+          [2, th(...A.th), Infinity, { desde:d(S_.th, A.th) }],
+          // paso 3: es un cuadrado de lado x + 3
+          [3, rect(F0[0], F0[1], x + t, x + t, 'g-foco')
+              + g.txt([F0[0] + x / 2, F0[1] - 13], 'x', 'g-rot') + g.txt([F0[0] + x + t / 2, F0[1] - 13], '3', 'g-num')
+              + g.txt([F0[0] - 14, F0[1] + x / 2], 'x', 'g-rot') + g.txt([F0[0] - 14, F0[1] + x + t / 2], '3', 'g-num')
+              + g.txt([F0[0] + x + t + 70, F0[1] + (x + t) / 2], 'lado x + 3', 'g-rot')],
+        ], 'Las piezas de x² + 6x + 9 se acomodan en un cuadrado de lado x + 3', '0 0 420 320');
+      })(),
       pasos:[
         P(`Los cuadrados perfectos son ${M('x^2')} y 9. Sus raíces: ${M('x')} y 3.`, '√(x^2) = x', '√9 = 3'),
         P('Controlo el doble producto de las raíces: coincide con el término del medio.', '2 · x · 3 = 6x'),
