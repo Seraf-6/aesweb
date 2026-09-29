@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contar bien · OMAPA · AESWeb</title>
+<meta name="description" content="Entrenamiento para la olimpiada, bloque 1: Contar bien. La herramienta explicada con problemas reales de OMAPA, resueltos paso a paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de las clases de OMAPA ---------- */
+.fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+body[data-solo="1"] .fuente{font-size:.45em}
+.otros-bloques{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px}
+/* en el cuaderno de estas clases hay palabras: el renglón puede cortar */
+.cuaderno .alineado,body[data-solo="1"] .cuaderno .alineado{
+  grid-template-columns:max-content max-content max-content minmax(0,1fr); font-size:1.2em}
+.cuaderno .al-der{white-space:normal}
+.cuaderno .al-rot{font-size:.7em; padding-right:1em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">OMAPA</a><span class="sep">/</span>
+      <span>Bloque 1 · Contar bien</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Entrenamiento OMAPA</p>
+    <h1>Contar bien</h1>
+    <p class="bajada">«Si no podés resolver un problema, hay uno más fácil que sí podés resolver:
+      encontralo.»<span class="firma">George Pólya</span></p>
+    <div class="pie-tapa">
+      <span>Bloque 1 de 7 · cuadernillo de herramientas</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Bloque 1 de 7 · Contar bien</p>
+    <h2>La herramienta</h2>
+    <ul class="puntos">
+      <li>Contar parece fácil, y por eso es donde más se pierden puntos: se <b>repite</b> un caso o se <b>olvida</b> otro.</li>
+      <li>La herramienta es siempre la misma: <b>ordenar antes de contar</b>, separando en casos que no se pisen.</li>
+      <li>Y a veces es más corto contar <b>lo que no sirve</b> y restarlo del total.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de entrenamiento · Los problemas son de las Olimpiadas Nacionales de Matemática
+    de OMAPA (Organización Multidisciplinaria de Apoyo a Profesores y Alumnos); cada uno
+    indica su ronda, su año y su grado. Las resoluciones y las explicaciones son propias.
+    Cada respuesta de esta página está verificada en
+    <span class="ec">verificacion/omapa_bloques.py</span>.
+    <div class="otros-bloques" style="margin-top:12px"><a class="chip" href="bloque-2.html">2. Relaciones entre cantidades</a> <a class="chip" href="bloque-3.html">3. Patrones</a> <a class="chip" href="bloque-4.html">4. Números</a> <a class="chip" href="bloque-5.html">5. Estrategias</a> <a class="chip" href="bloque-6.html">6. Ideas potentes</a> <a class="chip" href="bloque-7.html">7. Geometría</a></div>
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En estas clases no hay letras que poner en cursiva: los problemas son de números. */
+Pizarra.letras = /(?!)/g;
+/* la fuente de cada problema: ronda, año y grado */
+const fte = s => `<span class="fuente">${s}</span>`;
+/* para las figuras */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const rect_ = (x, y, w, h, cls = 'g-fig') => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+
+const TEMAS = [
+{
+  n:1, corto:'Separar por posición', titulo:'Separar por posición y listar en orden', pag:'Olimpiada Infantil · 3.º a 6.º grado',
+  concepto:{
+    formaTxt:'contar sin repetir ni omitir: separar en casos y listar cada caso en orden',
+    serie:[
+      { rot:'por posición', txt:'unidades, decenas y centenas por separado' },
+      { rot:'en orden', txt:'de menor a mayor, sin saltear' },
+      { rot:'por etapas', txt:'opciones de cada etapa, multiplicadas' },
+    ],
+    puntos:[
+      'Antes de contar se decide <b>cómo</b> se va a contar: por lugar, por tamaño, por etapa.',
+      'Cada caso se cuenta <b>una sola vez</b>: los casos no se pisan.',
+      'El control es contar de otra manera, o listar todo cuando es corto.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el dígito 1 del 100 al 150', prosa:true, fija:1,
+      enun:`«La profesora de Pedro pide a sus alumnos que escriban la lista de los números desde el 100 hasta el 150. ¿Cuántas veces escribió Pedro el dígito 1?»${fte('Fiesta Matemática 2008 · 3.º grado')}`,
+      pasos:[
+        'No cuento número por número: separo los unos según el <b>lugar</b> donde aparecen.',
+        P('En el lugar de las centenas, todos tienen un 1.', ['centenas', 'del 100 al 150: 51 números']),
+        P('En las decenas, solo los que van del 110 al 119.', ['decenas', 'del 110 al 119: 10 números']),
+        P('En las unidades, uno cada diez.', ['unidades', '101, 111, 121, 131, 141: 5 números']),
+        P('Sumo los tres lugares. El 111 se contó tres veces, y está bien: tiene tres unos.', ['total', '51 + 10 + 5 = 66']),
+      ], final:'Pedro escribió 66 veces el dígito 1',
+      control:'Otra manera: del 100 al 109 hay 11 unos, del 110 al 119 hay 21, y del 120 al 150 hay 34. Suman 66 ✓' },
+    { titulo:'cambio el rango: del 1 al 100', prosa:true, fija:1,
+      enun:`«María escribe en la pizarra la lista de números del 1 al 100. ¿Cuántos dígitos 1 escribe María?»${fte('Fiesta Matemática 2007 · 4.º grado')}`,
+      pasos:[
+        'Otra vez, por lugar.',
+        P('En las unidades: 1, 11, 21, … 91.', ['unidades', '10 veces']),
+        P('En las decenas: del 10 al 19.', ['decenas', '10 veces']),
+        P('En las centenas, solo el 100.', ['centenas', '1 vez'], ['total', '10 + 10 + 1 = 21']),
+      ], final:'María escribe 21 veces el dígito 1' },
+    { titulo:'armar números con cifras dadas', prosa:true, fija:1,
+      enun:`«Con los dígitos 1, 4, 7, Laura debe escribir varios números impares. No es necesario que use todos en un mismo número, pero no puede repetir ningún dígito en un mismo número. ¿Cuántos números impares puede construir?»${fte('Fiesta Matemática 2006 · 3.º grado')}`,
+      pasos:[
+        'Separo por la <b>cantidad de cifras</b>. Y para ser impar, tiene que terminar en 1 o en 7.',
+        P('De una cifra.', ['una cifra', '1 y 7: 2 números']),
+        P('De dos cifras: termina en 1 o en 7, y adelante va cualquiera de las otras dos.', ['dos cifras', '41, 71, 17, 47: 4 números']),
+        P('De tres cifras: termina en 1 o en 7, y las otras dos van en cualquier orden.', ['tres cifras', '471, 741, 147, 417: 4 números'], ['total', '2 + 4 + 4 = 10']),
+      ], final:'Laura puede construir 10 números impares' },
+    { titulo:'por etapas: el principio del producto', prosa:true, fija:1,
+      enun:`«Julia tiene en su ropero 3 polleras, 3 blusas y 2 pares de zapatos. Combinando todas estas prendas de vestir, ¿de cuántas maneras se puede vestir Julia?»${fte('Fiesta Matemática 2008 · 3.º grado')}`,
+      pasos:[
+        'Separo por <b>etapas</b>: primero elige la pollera, después la blusa, después los zapatos.',
+        P('Con cada pollera puede ir cualquiera de las 3 blusas.', ['pollera y blusa', '3 · 3 = 9 maneras']),
+        P('Y cada una de esas 9 puede ir con cualquiera de los 2 zapatos.', ['con zapatos', '9 · 2 = 18 maneras']),
+      ], final:'Julia se puede vestir de 18 maneras',
+      control:'Dibujando el árbol: 3 ramas, cada una con 3, cada una con 2. Al final hay 18 puntas ✓' },
+  ],
+  preguntas:[
+    { p:'En el ejemplo 1, ¿no estoy contando el 111 tres veces?',
+      r:'Sí, y está bien: el 111 tiene tres unos. Se cuentan dígitos, no números.' },
+    { p:'¿Por qué conviene separar por lugar y no contar número por número?',
+      r:'Porque número por número es fácil saltearse uno. Por lugar, cada caso es una cuenta corta: "del 110 al 119 son 10".' },
+    { p:'¿Por qué en el ejemplo 4 se multiplica y no se suma?',
+      r:'Porque cada pollera se combina con cada blusa: son 3 grupos de 3. Se suma cuando los casos son separados, como las cifras del ejemplo 3.' },
+  ],
+  notas:`<p>Es el primer bloque del cuadernillo de herramientas: <b>contar sin repetir ni
+      omitir</b>. El ejemplo 1 es el problema "para explicar en clase" del cuadernillo; el 3
+      y el 4, los "para entrenar".</p>
+    <p>La idea que hay que dejar es que antes de contar se elige un orden: por lugar (1 y 2),
+      por cantidad de cifras (3) o por etapas (4). Conviene preguntar, antes de cada ejemplo,
+      "¿cómo lo separarían?".</p>
+    <p>El 4 es la puerta al principio del producto, que en Juvenil se usa todo el tiempo.</p>`
+},
+{
+  n:2, corto:'Casos disjuntos y complemento', titulo:'Contar por casos disjuntos; el complemento cuando es más corto', pag:'Olimpiada Juvenil · Nivel 1 y 2',
+  concepto:{
+    formaTxt:'lo que sirve = el total − lo que no sirve',
+    puntos:[
+      'Si contar lo que sirve es largo, se cuenta lo que <b>no</b> sirve y se resta del total: es el <b>complemento</b>.',
+      'Los casos tienen que ser <b>disjuntos</b>: ningún objeto puede estar en dos casos.',
+      'Con etapas independientes, se multiplican las opciones de cada etapa.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el complemento: cifras distintas', prosa:true, fija:1,
+      enun:`«¿Cuántos números desde 10 hasta 100 (incluidos) utilizan dos dígitos diferentes al escribirlos?»${fte('Ronda Departamental 2011 · Nivel 1')}`,
+      pasos:[
+        P('Primero, cuántos números hay en total.', ['total', '100 − 10 + 1 = 91']),
+        'Contar los que tienen dos dígitos distintos es largo. Los que <b>no</b> sirven son pocos: los que repiten la cifra.',
+        P('Los que no sirven.', ['no sirven', '11, 22, 33, …, 99: 9 números']),
+        P('Resto. El 100 sí sirve: usa el 1 y el 0.', ['sirven', '91 − 9 = 82']),
+      ], final:'82 números' },
+    { titulo:'complemento con grupos', prosa:true, fija:1,
+      enun:`«Juan tiene 5 tarjetas con las letras A, B, C, D y E. ¿De cuántas formas puede seleccionar tres tarjetas, de modo que las letras A y B nunca queden juntas en el grupo elegido?»${fte('Ronda Departamental 2013 · Nivel 1')}`,
+      pasos:[
+        P('Todos los grupos de 3 tarjetas: los listo en orden alfabético.', ['total', 'ABC, ABD, ABE, ACD, ACE, ADE, BCD, BCE, BDE, CDE: 10 grupos']),
+        P('Los que no sirven son los que tienen A y B juntas: la tercera es C, D o E.', ['no sirven', 'ABC, ABD, ABE: 3 grupos']),
+        P('Resto.', ['sirven', '10 − 3 = 7']),
+      ], final:'7 formas' },
+    { titulo:'pares con suma prima', prosa:true, fija:1,
+      enun:`«Con la lista 1, 4, 6, 8, 9, 10, 12, 14, 15, ¿de cuántas maneras puedes elegir dos números para que su suma sea un número primo?»${fte('Ronda Final 2014 · Nivel 1')}`,
+      pasos:[
+        'Un filtro antes de contar: un primo mayor que 2 es impar, así que un número tiene que ser par y el otro impar.',
+        'Separo por el impar del par: los impares de la lista son 1, 9 y 15. Así los casos no se pisan.',
+        P('Con el 1: 1 + 4, 1 + 6, 1 + 10, 1 + 12, 1 + 14, 1 + 8.', ['con el 1', '5, 7, 11, 13 son primos: 4 pares']),
+        P('Con el 9 y con el 15.', ['con el 9', '13, 17, 19, 23 son primos: 4 pares'], ['con el 15', '19, 23, 29 son primos: 3 pares'], ['total', '4 + 4 + 3 = 11']),
+      ], final:'11 maneras' },
+    { titulo:'por etapas: torres de colores', prosa:true, fija:1,
+      enun:`«Silvi tiene cubos de color blanco, negro y azul. Quiere armar torres de 4 cubos sin que haya dos cubos del mismo color seguidos. ¿Cuál es la mayor cantidad de torres diferentes que puede armar?»${fte('Ronda Final 2011 · Nivel 1')}`,
+      pasos:[
+        P('El cubo de abajo puede ser de cualquiera de los 3 colores.', ['1.º cubo', '3 opciones']),
+        P('Cada uno de los siguientes, de cualquier color menos el del cubo de abajo.', ['2.º, 3.º y 4.º', '2 opciones cada uno']),
+        P('Las etapas se multiplican.', ['total', '3 · 2 · 2 · 2 = 24']),
+      ], final:'24 torres' },
+  ],
+  preguntas:[
+    { p:'¿Y el 100 del ejemplo 1? Tiene tres cifras.',
+      r:'Pero usa solo dos dígitos diferentes: el 1 y el 0. Por eso cuenta. Si el enunciado dijera "de dos cifras distintas", no contaría.' },
+    { p:'En el ejemplo 2, ¿"nunca queden" no quiere decir que no esté ninguna de las dos?',
+      r:'Se puede leer así, y daría 1 solo grupo (CDE): un problema de 3 puntos no sería tan corto. La lectura natural es que no estén juntas. Conviene discutir las dos.' },
+    { p:'¿Cómo sé cuándo conviene el complemento?',
+      r:'Cuando la palabra clave es "nunca", "al menos uno" o "distintos": lo contrario suele ser un caso chico.' },
+  ],
+  notas:`<p>Los ejemplos 1 y 2 son el "para explicar" y el "para entrenar" del cuadernillo
+      Juvenil. Ninguno de los dos tiene clave oficial en el banco: las respuestas están
+      contadas por computadora, y la ambigüedad de cada uno (el 100, el "nunca") va en el
+      observador.</p>
+    <p>El ejemplo 3 usa un filtro de paridad antes de contar: es un adelanto del bloque 6.</p>`
+},
+];
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve aprender una herramienta, si cada problema es distinto?',
+      r:'Porque los problemas de olimpiada visten la misma idea con contextos distintos: patas de animales, monedas, puntajes. Reconocer la herramienta es reconocer el problema.' },
+    { p:'¿Estos problemas son de verdad de la olimpiada?',
+      r:'Sí: cada uno dice de qué ronda, qué año y qué grado es. Las resoluciones son nuestras.' },
+  ],
+  notas:`<p>Esta clase es el <b>bloque 1</b> del cuadernillo de herramientas: primero la
+      herramienta de la Olimpiada Infantil (3.º a 6.º) y después la de la Juvenil (7.º a 9.º).
+      Cada tema empieza con el problema "para explicar en clase" del cuadernillo y sigue con
+      los "para entrenar" y otros del banco que se resuelven con la misma idea.</p>
+    <p>Conviene no decir de entrada qué herramienta es: dejar que la busquen con el primer
+      problema, y nombrarla recién cuando aparece.</p>
+    <p>Las fichas de entrenamiento por grado están en la página de OMAPA. Las claves no están
+      en el sitio.</p>`
+};
+Pizarra.unidad({ TEMAS, UNIDAD, grado:'omapa', temasLibro:2 });
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

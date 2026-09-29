@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ideas potentes · OMAPA · AESWeb</title>
+<meta name="description" content="Entrenamiento para la olimpiada, bloque 6: Ideas potentes. La herramienta explicada con problemas reales de OMAPA, resueltos paso a paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de las clases de OMAPA ---------- */
+.fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+body[data-solo="1"] .fuente{font-size:.45em}
+.otros-bloques{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px}
+/* en el cuaderno de estas clases hay palabras: el renglón puede cortar */
+.cuaderno .alineado,body[data-solo="1"] .cuaderno .alineado{
+  grid-template-columns:max-content max-content max-content minmax(0,1fr); font-size:1.2em}
+.cuaderno .al-der{white-space:normal}
+.cuaderno .al-rot{font-size:.7em; padding-right:1em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">OMAPA</a><span class="sep">/</span>
+      <span>Bloque 6 · Ideas potentes</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Entrenamiento OMAPA</p>
+    <h1>Ideas potentes</h1>
+    <p class="bajada">«Si no podés resolver un problema, hay uno más fácil que sí podés resolver:
+      encontralo.»<span class="firma">George Pólya</span></p>
+    <div class="pie-tapa">
+      <span>Bloque 6 de 7 · cuadernillo de herramientas</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Bloque 6 de 7 · Ideas potentes</p>
+    <h2>La herramienta</h2>
+    <ul class="puntos">
+      <li>Hay problemas que no se resuelven con una cuenta, sino con una <b>idea</b>.</li>
+      <li>Agotar todos los casos, y demostrar que no hay más.</li>
+      <li>Para que uno sea lo más grande posible, los demás tienen que ser lo más chicos posible: el <b>principio del extremo</b>.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de entrenamiento · Los problemas son de las Olimpiadas Nacionales de Matemática
+    de OMAPA (Organización Multidisciplinaria de Apoyo a Profesores y Alumnos); cada uno
+    indica su ronda, su año y su grado. Las resoluciones y las explicaciones son propias.
+    Cada respuesta de esta página está verificada en
+    <span class="ec">verificacion/omapa_bloques.py</span>.
+    <div class="otros-bloques" style="margin-top:12px"><a class="chip" href="bloque-1.html">1. Contar bien</a> <a class="chip" href="bloque-2.html">2. Relaciones entre cantidades</a> <a class="chip" href="bloque-3.html">3. Patrones</a> <a class="chip" href="bloque-4.html">4. Números</a> <a class="chip" href="bloque-5.html">5. Estrategias</a> <a class="chip" href="bloque-7.html">7. Geometría</a></div>
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En estas clases no hay letras que poner en cursiva: los problemas son de números. */
+Pizarra.letras = /(?!)/g;
+/* la fuente de cada problema: ronda, año y grado */
+const fte = s => `<span class="fuente">${s}</span>`;
+/* para las figuras */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const rect_ = (x, y, w, h, cls = 'g-fig') => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+
+const TEMAS = [
+{
+  n:1, corto:'Enumeración exhaustiva', titulo:'Enumeración exhaustiva: agotar todos los casos y probar que no hay más', pag:'Olimpiada Infantil · 3.º a 6.º grado',
+  concepto:{
+    formaTxt:'listar todos los casos en un orden que garantice que no falta ninguno',
+    puntos:[
+      'El orden es lo que prueba que están todos: de menor a mayor, sin saltear.',
+      'Se decide antes si (2, 10) y (10, 2) son el mismo caso o no.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'los pares con producto 20', prosa:true, fija:1,
+      enun:`«Jorge debe escribir en el pizarrón todos los pares de números naturales cuyo producto es 20. ¿Cuántos pares distintos puede escribir?»${fte('Fiesta Matemática 2007 · 5.º grado')}`,
+      pasos:[
+        'Pruebo el primer número del par en orden, desde el 1.',
+        P('Los que dividen a 20.', ['1', '1 · 20'], ['2', '2 · 10'], ['4', '4 · 5']),
+        'El 3 no divide a 20, y después del 4 viene el 5, que ya salió: si sigo, repito los pares al revés.',
+      ], final:'3 pares: 1 y 20, 2 y 10, 4 y 5' },
+    { titulo:'años pares e impares', prosa:true, fija:1,
+      enun:`«Mi hermana nació el 1 de enero del último año impar del siglo pasado y yo, el 1 de enero del primer año impar de este siglo. ¿Cuánto suman nuestras edades en este año 2013?»${fte('Fiesta Matemática 2013 · 6.º grado')}`,
+      pasos:[
+        P('El siglo pasado terminó en 2000; el último año impar fue 1999.', ['hermana', 'nació en 1999'], ['en 2013', '2013 − 1999 = 14']),
+        P('Este siglo empezó en 2001, que ya es impar.', ['yo', 'nací en 2001'], ['en 2013', '2013 − 2001 = 12'], ['suma', '14 + 12 = 26']),
+      ], final:'suman 26 años' },
+    { titulo:'todas las maneras de pagar', prosa:true, fija:1,
+      enun:`«¿De cuántas maneras se puede formar 2000 guaraníes usando solo monedas de 1000 y 500?»${fte('Ronda Zonal 2010 · 4.º grado')}`,
+      pasos:[
+        'Ordeno por la cantidad de monedas de 1000: 0, 1 o 2.',
+        P('Para cada una, completo con las de 500.', ['0 de 1000', '4 de 500'], ['1 de 1000', '2 de 500'], ['2 de 1000', 'ninguna de 500']),
+      ], final:'3 maneras' },
+    { titulo:'todas las sumas de dos dados', prosa:true, fija:1,
+      enun:`«¿Cuántos resultados diferentes se pueden obtener sumando los números que salen al lanzar dos dados?»${fte('Ronda Zonal 2012 · 6.º grado')}`,
+      pasos:[
+        P('La suma más chica y la más grande.', ['la menor', '1 + 1 = 2'], ['la mayor', '6 + 6 = 12']),
+        'Todas las del medio se pueden lograr: 3 = 1 + 2, 4 = 1 + 3, … 11 = 5 + 6.',
+        P('Cuento del 2 al 12.', ['resultados', '12 − 2 + 1 = 11']),
+      ], final:'11 resultados diferentes' },
+  ],
+  preguntas:[
+    { p:'¿Por qué 2 · 10 y 10 · 2 cuentan como un solo par?',
+      r:'Porque el problema pide pares de números, no el orden. Si pidiera "en orden", serían 6.' },
+    { p:'¿El año 2000 no es de este siglo?',
+      r:'No: el siglo XX va de 1901 a 2000, y el XXI empieza en 2001. Es la trampa del ejemplo 2.' },
+    { p:'¿Por qué "12 − 2 + 1" y no "12 − 2"?',
+      r:'Porque se cuentan los dos extremos, el 2 y el 12. Es el error del poste: entre el 2 y el 12 hay 10 espacios, pero 11 números.' },
+  ],
+  notas:`<p>El ejemplo 1 es el "para explicar" del cuadernillo Infantil y el 2, el "para
+      entrenar". La herramienta es el orden: es lo que convence de que no falta ningún caso.</p>
+    <p>El ejemplo 4 termina con el "error del poste" (n − m + 1), que es el arquetipo de
+      mejor rendimiento de todo el banco.</p>`
+},
+{
+  n:2, corto:'Principio del extremo', titulo:'Principio del extremo: para que uno sea máximo, los demás deben ser mínimos', pag:'Olimpiada Juvenil · Nivel 1 y 2',
+  concepto:{
+    formaTxt:'si el total está fijo, lo que se le da a uno se le quita a los demás',
+    puntos:[
+      'Para que uno sea lo más grande posible, los otros se hacen lo más chicos que se pueda (o al revés).',
+      'Cada condición del enunciado pone un límite: se respetan todas.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el último de una votación', prosa:true, fija:1,
+      enun:`«Los 40 estudiantes de 6.º grado eligieron un delegado entre cinco candidatos. El que ganó obtuvo 10 votos y no hubo dos candidatos con la misma cantidad de votos. ¿Cuál es la mayor cantidad de votos que pudo tener el que quedó último?»${fte('Ronda Departamental 2013 · Nivel 1')}`,
+      pasos:[
+        P('Los otros cuatro reparten lo que queda, con menos de 10 cada uno y todos distintos.', ['los otros cuatro', '40 − 10 = 30']),
+        'Para que el último tenga mucho, los otros tres tienen que tener también mucho: lo más que se puede, 9, 8 y 7.',
+        P('Lo que le queda al último.', ['el último', '30 − 9 − 8 − 7 = 6']),
+      ], final:'6 votos',
+      control:'Control: 10 + 9 + 8 + 7 + 6 = 40, todos distintos y el ganador con más ✓' },
+    { titulo:'filas con la misma cantidad', prosa:true, fija:1,
+      enun:`«En un examen, 12 alumnos están sentados en 5 filas. Dos de las filas tienen la misma cantidad de alumnos y las otras tienen cantidades diferentes. ¿Cuántos alumnos pueden estar sentados en cada una de las filas que tienen la misma cantidad?»${fte('Ronda Departamental 2011 · Nivel 1')}`,
+      pasos:[
+        'Las otras tres filas tienen cantidades distintas: como mínimo 1, 2 y 3, que suman 6.',
+        P('Así que las dos filas iguales juntas tienen como mucho 6: cada una, como mucho 3.', ['las dos iguales', '12 − 6 = 6 como máximo']),
+        P('Pruebo 1, 2 y 3 alumnos por fila.', ['1 y 1', 'las otras suman 10: 2, 3 y 5 ✓'], ['2 y 2', 'las otras suman 8: 1, 3 y 4 ✓'], ['3 y 3', 'las otras suman 6: 1, 2 y 3, pero se repite el 3 ✗']),
+      ], final:'1 alumno o 2 alumnos por fila' },
+    { titulo:'la mayor cantidad de aciertos', prosa:true, fija:1,
+      enun:`«César da una prueba de 13 ítems. Si contesta bien gana 2 puntos, si contesta mal pierde 1 punto y si no contesta no gana ni pierde. Logró 10 puntos. ¿Cuál es la mayor cantidad de respuestas correctas que pudo haber tenido?»${fte('Ronda Final 2011 · Nivel 2')}`,
+      pasos:[
+        'Cada acierto de más, por encima de 5, tiene que compensarse con errores: por cada acierto de más, 2 errores.',
+        P('Pruebo desde arriba.', ['8 correctas', '16 puntos: 6 errores, 14 ítems ✗'], ['7 correctas', '14 puntos: 4 errores, 11 ítems ✓']),
+      ], final:'7 respuestas correctas',
+      control:'Control: 7 · 2 − 4 · 1 = 10 puntos, y 7 + 4 = 11 ítems contestados de 13 ✓' },
+    { titulo:'la mayor cantidad de rectángulos', prosa:true, fija:1,
+      enun:`«Carla tiene 14 cartulinas cuadradas iguales. Va armando rectángulos distintos, sin desarmar los que ya armó y sin encimar las cartulinas, hasta que se le terminan. ¿Cuál es la mayor cantidad de rectángulos diferentes que puede dejar armados, sin que sobre ninguna?»${fte('Ronda Zonal 2013 · Nivel 1')}`,
+      pasos:[
+        'Para tener muchos, uso los más chicos primero.',
+        P('Los rectángulos más chicos, en cartulinas.', ['1 por 1', '1'], ['1 por 2', '2'], ['1 por 3', '3'], ['1 por 4 y 2 por 2', '4 y 4'], ['total', '1 + 2 + 3 + 4 + 4 = 14']),
+        'Con 6 rectángulos distintos harían falta al menos 1 + 2 + 3 + 4 + 4 + 5 = 19 cartulinas.',
+      ], final:'5 rectángulos' },
+  ],
+  preguntas:[
+    { p:'En la votación, ¿por qué los otros tres son 9, 8 y 7?',
+      r:'Porque el último tiene que tener menos que todos. Para que pueda tener muchos, los de arriba tienen que estar lo más cerca posible de él: pegados debajo del 10, o sea 9, 8 y 7.' },
+    { p:'¿Por qué el cuadrado 2 por 2 cuenta como rectángulo?',
+      r:'Porque un cuadrado es un rectángulo: tiene cuatro ángulos rectos. Y es distinto del 1 por 4, aunque tenga la misma cantidad de cartulinas.' },
+    { p:'¿Siempre hay una sola respuesta?',
+      r:'No: en el ejemplo 2 hay dos. En estos problemas conviene probar todos los casos que deja la cota.' },
+  ],
+  notas:`<p>El ejemplo 1 es el "para explicar" del cuadernillo Juvenil y el 2, el "para
+      entrenar". En el 2 hay dos respuestas: se acota con el mínimo de las otras filas y se
+      prueban los casos que quedan.</p>
+    <p>En el ejemplo 1 conviene preguntar primero "¿cuántos votos pudo tener el último, como
+      mínimo?", y después el máximo: la herramienta se entiende mejor por contraste.</p>`
+},
+];
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve aprender una herramienta, si cada problema es distinto?',
+      r:'Porque los problemas de olimpiada visten la misma idea con contextos distintos: patas de animales, monedas, puntajes. Reconocer la herramienta es reconocer el problema.' },
+    { p:'¿Estos problemas son de verdad de la olimpiada?',
+      r:'Sí: cada uno dice de qué ronda, qué año y qué grado es. Las resoluciones son nuestras.' },
+  ],
+  notas:`<p>Esta clase es el <b>bloque 6</b> del cuadernillo de herramientas: primero la
+      herramienta de la Olimpiada Infantil (3.º a 6.º) y después la de la Juvenil (7.º a 9.º).
+      Cada tema empieza con el problema "para explicar en clase" del cuadernillo y sigue con
+      los "para entrenar" y otros del banco que se resuelven con la misma idea.</p>
+    <p>Conviene no decir de entrada qué herramienta es: dejar que la busquen con el primer
+      problema, y nombrarla recién cuando aparece.</p>
+    <p>Las fichas de entrenamiento por grado están en la página de OMAPA. Las claves no están
+      en el sitio.</p>`
+};
+Pizarra.unidad({ TEMAS, UNIDAD, grado:'omapa', temasLibro:2 });
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

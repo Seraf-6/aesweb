@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Números · OMAPA · AESWeb</title>
+<meta name="description" content="Entrenamiento para la olimpiada, bloque 4: Números. La herramienta explicada con problemas reales de OMAPA, resueltos paso a paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de las clases de OMAPA ---------- */
+.fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+body[data-solo="1"] .fuente{font-size:.45em}
+.otros-bloques{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px}
+/* en el cuaderno de estas clases hay palabras: el renglón puede cortar */
+.cuaderno .alineado,body[data-solo="1"] .cuaderno .alineado{
+  grid-template-columns:max-content max-content max-content minmax(0,1fr); font-size:1.2em}
+.cuaderno .al-der{white-space:normal}
+.cuaderno .al-rot{font-size:.7em; padding-right:1em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">OMAPA</a><span class="sep">/</span>
+      <span>Bloque 4 · Números</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Entrenamiento OMAPA</p>
+    <h1>Números</h1>
+    <p class="bajada">«Si no podés resolver un problema, hay uno más fácil que sí podés resolver:
+      encontralo.»<span class="firma">George Pólya</span></p>
+    <div class="pie-tapa">
+      <span>Bloque 4 de 7 · cuadernillo de herramientas</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Bloque 4 de 7 · Números</p>
+    <h2>La herramienta</h2>
+    <ul class="puntos">
+      <li>Muchos problemas de números se destraban <b>descomponiendo en factores primos</b>.</li>
+      <li>De la descomposición salen los divisores, los divisores comunes y el mcm.</li>
+      <li>Y cuando hay que buscar un número, conviene <b>acotar</b>: descartar de entrada todos los que no pueden ser.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de entrenamiento · Los problemas son de las Olimpiadas Nacionales de Matemática
+    de OMAPA (Organización Multidisciplinaria de Apoyo a Profesores y Alumnos); cada uno
+    indica su ronda, su año y su grado. Las resoluciones y las explicaciones son propias.
+    Cada respuesta de esta página está verificada en
+    <span class="ec">verificacion/omapa_bloques.py</span>.
+    <div class="otros-bloques" style="margin-top:12px"><a class="chip" href="bloque-1.html">1. Contar bien</a> <a class="chip" href="bloque-2.html">2. Relaciones entre cantidades</a> <a class="chip" href="bloque-3.html">3. Patrones</a> <a class="chip" href="bloque-5.html">5. Estrategias</a> <a class="chip" href="bloque-6.html">6. Ideas potentes</a> <a class="chip" href="bloque-7.html">7. Geometría</a></div>
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En estas clases no hay letras que poner en cursiva: los problemas son de números. */
+Pizarra.letras = /(?!)/g;
+/* la fuente de cada problema: ronda, año y grado */
+const fte = s => `<span class="fuente">${s}</span>`;
+/* para las figuras */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const rect_ = (x, y, w, h, cls = 'g-fig') => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+
+const TEMAS = [
+{
+  n:1, corto:'Divisores y múltiplos', titulo:'Divisores y múltiplos: descomponer en factores y contar', pag:'Olimpiada Infantil · 3.º a 6.º grado',
+  concepto:{
+    formaTxt:'los divisores se buscan de a pares: si 4 divide a 80, también lo divide 80 : 4 = 20',
+    puntos:[
+      'Se prueba con 1, 2, 3… hasta que el par se da vuelta: cada divisor chico trae uno grande.',
+      'Los divisores comunes de dos números son los divisores de su <b>mcd</b>.',
+      'Un resto que se repite se resuelve con el mcm: "sobran 2 al repartir de a 3 y de a 5".',
+    ]
+  },
+  ejemplos:[
+    { titulo:'los divisores de 80', prosa:true, fija:1,
+      enun:`«¿Qué cantidad de divisores tiene el número 80?»${fte('Fiesta Matemática 2008 · 5.º grado')}`,
+      pasos:[
+        P('Busco de a pares, probando desde el 1.', ['1 · 80', 'el 1 y el 80'], ['2 · 40', 'el 2 y el 40'], ['4 · 20', 'el 4 y el 20'], ['5 · 16', 'el 5 y el 16'], ['8 · 10', 'el 8 y el 10']),
+        'El 3, el 6, el 7 y el 9 no dividen a 80; después del 8 viene el 10, que ya está: el par se dio vuelta.',
+        P('Cuento.', ['pares', '5 pares de divisores'], ['total', '5 · 2 = 10']),
+      ], final:'80 tiene 10 divisores' },
+    { titulo:'divisores en común', prosa:true, fija:1,
+      enun:`«Alexander hace una lista con todos los divisores de 36 y Agustina otra con todos los divisores de 40. ¿Cuántos números tienen en común?»${fte('Fiesta Matemática 2014 · 6.º grado')}`,
+      pasos:[
+        P('Las dos listas.', ['de 36', '1, 2, 3, 4, 6, 9, 12, 18, 36'], ['de 40', '1, 2, 4, 5, 8, 10, 20, 40']),
+        P('Los que están en las dos: son los divisores del mcd, que es 4.', ['en común', '1, 2 y 4']),
+      ], final:'tienen 3 números en común' },
+    { titulo:'dividir hacia atrás', prosa:true, fija:1,
+      enun:`«Kari teclea el número 42 y Raquel lo divide por cierto número, quedando 21. Ahora Kari divide el 21 entre cierto número y obtiene 7. ¿Cuánto suman los dos números que usaron como divisores?»${fte('Ronda Zonal 2011 · 5.º grado')}`,
+      pasos:[
+        P('¿Por cuánto se divide 42 para que dé 21?', ['42 : 21', '2']),
+        P('¿Y 21 para que dé 7?', ['21 : 7', '3'], ['suma', '2 + 3 = 5']),
+      ], final:'suman 5' },
+    { titulo:'el mismo resto: el mcm', prosa:true, fija:1,
+      enun:`«Miriam tiene una caja de bombones. Si a cada amiga le da 3 bombones, sobran 2. También sobran 2 si reparte de a 5. ¿Cuál es la menor cantidad de bombones que puede haber en la caja?»${fte('Fiesta Matemática 2008 · 4.º grado')}`,
+      pasos:[
+        'Si saco los 2 que sobran, el resto se reparte justo de a 3 y de a 5: es múltiplo de 3 y de 5.',
+        P('El menor múltiplo común.', ['mcm(3, 5)', '15']),
+        P('Le vuelvo a sumar los 2. (Con solo 2 bombones no le da a ninguna amiga.)', ['bombones', '15 + 2 = 17']),
+      ], final:'17 bombones',
+      control:'Control: 17 = 5 · 3 + 2 y 17 = 3 · 5 + 2 ✓' },
+  ],
+  preguntas:[
+    { p:'¿Por qué se puede parar de buscar divisores en el 8?',
+      r:'Porque 8 · 10 = 80: el siguiente divisor, el 10, ya salió como pareja del 8. De ahí en adelante se repiten los pares al revés.' },
+    { p:'¿Qué es el mcd?',
+      r:'El máximo común divisor: el mayor número que divide a los dos. Todos los divisores comunes son divisores de él.' },
+    { p:'¿Por qué el 2 no sirve como respuesta en el ejemplo 4?',
+      r:'Porque 2 bombones "sobran" sin repartir a nadie. El problema habla de amigas que reciben: hace falta repartir al menos una vez.' },
+  ],
+  notas:`<p>Los ejemplos 1 y 2 son el "para explicar" y el "para entrenar" del cuadernillo
+      Infantil. La búsqueda de a pares es la herramienta: evita olvidarse divisores y dice
+      cuándo parar.</p>
+    <p>En el ejemplo 4 la respuesta 2 es matemáticamente posible (2 = 0 · 3 + 2). Vale la
+      pena discutirlo: el enunciado supone que hay reparto.</p>`
+},
+{
+  n:2, corto:'Primos y cotas', titulo:'Primos, divisores y cotas para acotar los candidatos', pag:'Olimpiada Juvenil · Nivel 1 y 2',
+  concepto:{
+    formaTxt:'primero se acota dónde puede estar la respuesta; después se prueban solo esos candidatos',
+    puntos:[
+      'Un número <b>primo</b> tiene exactamente dos divisores: el 1 y él mismo.',
+      'Las condiciones del enunciado dejan pocos candidatos: se listan todos y se prueba cada uno.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'los primos entre 10 y 20', prosa:true, fija:1,
+      enun:`«Entre 10 y 20 hay números que son divisibles solo por 1 y por sí mismos. ¿Cuál es la suma de esos números?»${fte('Ronda Departamental 2012 · Nivel 1')}`,
+      pasos:[
+        'Descarto los pares y el 15, que es múltiplo de 3 y de 5.',
+        P('Quedan.', ['primos', '11, 13, 17, 19'], ['suma', '11 + 13 + 17 + 19 = 60']),
+      ], final:'la suma es 60' },
+    { titulo:'acotar con las edades', prosa:true, fija:1,
+      enun:`«Priscila tiene 17 años. Las edades de sus dos hermanos menores son números primos. El menor de sus hermanos tiene más de 9 años. ¿Cuál es la suma de las edades de los hermanos?»${fte('Ronda Departamental 2013 · Nivel 1')}`,
+      pasos:[
+        P('Acoto: son menores que Priscila y mayores que 9.', ['entre', '10 y 16 años']),
+        P('Los primos de ese rango.', ['primos', '11 y 13']),
+        P('Son exactamente dos: son los hermanos.', ['suma', '11 + 13 = 24']),
+      ], final:'suman 24 años' },
+    { titulo:'probar todos los candidatos', prosa:true, fija:1,
+      enun:`«¿Cuántos números naturales desde el 10 hasta el 20 son divisibles entre la suma de sus cifras?»${fte('Ronda Zonal 2011 · Nivel 2')}`,
+      pasos:[
+        'Son solo 11 candidatos: los pruebo todos.',
+        P('Sirven.', ['10', 'cifras 1 + 0 = 1 ✓'], ['12', 'cifras 3 ✓'], ['18', 'cifras 9 ✓'], ['20', 'cifras 2 ✓']),
+        'Los otros no: 11 entre 2, 13 entre 4, 14 entre 5, 15 entre 6, 16 entre 7, 17 entre 8 y 19 entre 10 dejan resto.',
+      ], final:'4 números: 10, 12, 18 y 20' },
+    { titulo:'divisores comunes de varios', prosa:true, fija:1,
+      enun:`«¿Cuántos divisores comunes de un dígito tienen los números 111, 222, 333, 555 y 777?»${fte('Ronda Zonal 2012 · Nivel 2')}`,
+      pasos:[
+        P('Todos son múltiplos de 111.', ['222', '2 · 111'], ['777', '7 · 111']),
+        P('El mcd es 111, y sus divisores de una cifra son los que buscamos.', ['111', '3 · 37'], ['de una cifra', '1 y 3']),
+      ], final:'2 divisores: el 1 y el 3' },
+  ],
+  preguntas:[
+    { p:'¿El 1 es primo?',
+      r:'No: tiene un solo divisor. Los primos tienen exactamente dos.' },
+    { p:'¿Por qué en el ejemplo 2 no hace falta probar más?',
+      r:'Porque entre 10 y 16 los únicos primos son 11 y 13: la cota dejó justo dos candidatos.' },
+    { p:'¿Cómo supe que 111 = 3 · 37?',
+      r:'Porque sus cifras suman 3: es divisible por 3. Y 111 : 3 = 37, que es primo.' },
+  ],
+  notas:`<p>Los ejemplos 1 y 2 son el "para explicar" y el "para entrenar" del cuadernillo
+      Juvenil. La herramienta es acotar antes de probar: en el 2, las dos condiciones dejan
+      solo 7 edades posibles.</p>`
+},
+];
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve aprender una herramienta, si cada problema es distinto?',
+      r:'Porque los problemas de olimpiada visten la misma idea con contextos distintos: patas de animales, monedas, puntajes. Reconocer la herramienta es reconocer el problema.' },
+    { p:'¿Estos problemas son de verdad de la olimpiada?',
+      r:'Sí: cada uno dice de qué ronda, qué año y qué grado es. Las resoluciones son nuestras.' },
+  ],
+  notas:`<p>Esta clase es el <b>bloque 4</b> del cuadernillo de herramientas: primero la
+      herramienta de la Olimpiada Infantil (3.º a 6.º) y después la de la Juvenil (7.º a 9.º).
+      Cada tema empieza con el problema "para explicar en clase" del cuadernillo y sigue con
+      los "para entrenar" y otros del banco que se resuelven con la misma idea.</p>
+    <p>Conviene no decir de entrada qué herramienta es: dejar que la busquen con el primer
+      problema, y nombrarla recién cuando aparece.</p>
+    <p>Las fichas de entrenamiento por grado están en la página de OMAPA. Las claves no están
+      en el sitio.</p>`
+};
+Pizarra.unidad({ TEMAS, UNIDAD, grado:'omapa', temasLibro:2 });
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

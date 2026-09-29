@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Patrones · OMAPA · AESWeb</title>
+<meta name="description" content="Entrenamiento para la olimpiada, bloque 3: Patrones. La herramienta explicada con problemas reales de OMAPA, resueltos paso a paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de las clases de OMAPA ---------- */
+.fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+body[data-solo="1"] .fuente{font-size:.45em}
+.otros-bloques{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px}
+/* en el cuaderno de estas clases hay palabras: el renglón puede cortar */
+.cuaderno .alineado,body[data-solo="1"] .cuaderno .alineado{
+  grid-template-columns:max-content max-content max-content minmax(0,1fr); font-size:1.2em}
+.cuaderno .al-der{white-space:normal}
+.cuaderno .al-rot{font-size:.7em; padding-right:1em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">OMAPA</a><span class="sep">/</span>
+      <span>Bloque 3 · Patrones</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Entrenamiento OMAPA</p>
+    <h1>Patrones</h1>
+    <p class="bajada">«Si no podés resolver un problema, hay uno más fácil que sí podés resolver:
+      encontralo.»<span class="firma">George Pólya</span></p>
+    <div class="pie-tapa">
+      <span>Bloque 3 de 7 · cuadernillo de herramientas</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Bloque 3 de 7 · Patrones</p>
+    <h2>La herramienta</h2>
+    <ul class="puntos">
+      <li>Lo que se repite se puede <b>saltear</b>: si algo pasa cada 7 días, alcanza con mirar el resto de dividir por 7.</li>
+      <li>Dos ciclos se encuentran en el <b>mínimo común múltiplo</b>.</li>
+      <li>Una lista de consecutivos tiene un <b>centro</b> que representa a todos.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de entrenamiento · Los problemas son de las Olimpiadas Nacionales de Matemática
+    de OMAPA (Organización Multidisciplinaria de Apoyo a Profesores y Alumnos); cada uno
+    indica su ronda, su año y su grado. Las resoluciones y las explicaciones son propias.
+    Cada respuesta de esta página está verificada en
+    <span class="ec">verificacion/omapa_bloques.py</span>.
+    <div class="otros-bloques" style="margin-top:12px"><a class="chip" href="bloque-1.html">1. Contar bien</a> <a class="chip" href="bloque-2.html">2. Relaciones entre cantidades</a> <a class="chip" href="bloque-4.html">4. Números</a> <a class="chip" href="bloque-5.html">5. Estrategias</a> <a class="chip" href="bloque-6.html">6. Ideas potentes</a> <a class="chip" href="bloque-7.html">7. Geometría</a></div>
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En estas clases no hay letras que poner en cursiva: los problemas son de números. */
+Pizarra.letras = /(?!)/g;
+/* la fuente de cada problema: ronda, año y grado */
+const fte = s => `<span class="fuente">${s}</span>`;
+/* para las figuras */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const rect_ = (x, y, w, h, cls = 'g-fig') => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+
+const TEMAS = [
+{
+  n:1, corto:'Ciclos', titulo:'Ciclos y periodicidad: dividir y mirar el resto; mínimo común múltiplo', pag:'Olimpiada Infantil · 3.º a 6.º grado',
+  concepto:{
+    formaTxt:'lo que se repite cada k pasos vuelve a empezar: importa el resto de dividir por k',
+    puntos:[
+      'Los días de la semana se repiten cada 7: 12 días después de un sábado es lo mismo que 5 días después.',
+      'Dos cosas que se repiten cada 4 y cada 6 días coinciden cada <b>mcm(4, 6) = 12</b> días.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'dos ciclos que se encuentran', prosa:true, fija:1,
+      enun:`«Lara va al shopping cada 4 días y Luján, cada 6 días. Si el sábado se encontraron, ¿qué día se volverán a encontrar?»${fte('Fiesta Matemática 2010 · 6.º grado')}`,
+      pasos:[
+        P('Lara va a los 4, 8, 12… días; Luján a los 6, 12… El primero en común es el mcm.', ['Lara', '4, 8, 12, 16, …'], ['Luján', '6, 12, 18, …'], ['en común', '12 días']),
+        P('12 días después del sábado: la semana se repite cada 7, así que miro el resto.', ['12 : 7', 'cociente 1, resto 5']),
+        'Cinco días después del sábado: domingo, lunes, martes, miércoles, jueves.',
+      ], final:'se vuelven a encontrar el jueves' },
+    { titulo:'contar días de un mes', prosa:true, fija:1,
+      enun:`«A Don Chente y su mariachi lo contrataron para llevar una serenata cada viernes y sábado del mes de agosto, que tuvo 5 domingos. Si el 1 de agosto fue viernes, ¿cuántas serenatas llevó en agosto?»${fte('Fiesta Matemática 2016 · 6.º grado')}`,
+      pasos:[
+        P('Los viernes, cada 7 días desde el 1.', ['viernes', '1, 8, 15, 22, 29: 5']),
+        P('Los sábados, desde el 2.', ['sábados', '2, 9, 16, 23, 30: 5']),
+        P('Y el dato de los domingos lo confirma: 3, 10, 17, 24 y 31.', ['total', '5 + 5 = 10']),
+      ], final:'llevó 10 serenatas' },
+    { titulo:'cada 4 días, pero un miércoles', prosa:true, fija:1,
+      enun:`«La mamá de Julio va al supermercado cada 4 días. Si fue el miércoles 5 de setiembre, ¿en qué fecha volverá por primera vez al supermercado un día miércoles? (Setiembre tiene 30 días.)»${fte('Fiesta Matemática 2007 · 4.º grado')}`,
+      pasos:[
+        'Tiene que ser múltiplo de 4 días (va cada 4) y de 7 días (para caer miércoles).',
+        P('El primero en común.', ['mcm(4, 7)', '28 días']),
+        P('28 días después del 5 de setiembre.', ['5 + 28', '33 de setiembre'], ['en octubre', '33 − 30 = 3']),
+      ], final:'el miércoles 3 de octubre' },
+    { titulo:'vueltas en minutos', prosa:true, fija:1,
+      enun:`«Jani y María Paz parten de la salida del parque a las 8:00 h. Jani completa una vuelta cada 30 minutos y María Paz cada 50 minutos. Al encontrarse de nuevo en la salida, vuelven juntas a su casa. ¿A qué hora vuelven?»${fte('Ronda Zonal 2012 · 6.º grado')}`,
+      pasos:[
+        P('Jani pasa por la salida cada 30 minutos y María Paz cada 50.', ['Jani', '30, 60, 90, 120, 150'], ['María Paz', '50, 100, 150'], ['en común', '150 minutos']),
+        P('150 minutos son 2 horas y media.', ['8:00 + 2:30', '10:30']),
+      ], final:'vuelven a las 10:30' },
+  ],
+  preguntas:[
+    { p:'¿Por qué el mcm y no el producto 4 · 6 = 24?',
+      r:'Porque a los 24 también coinciden, pero ya coincidieron antes, a los 12. El mcm es la primera vez.' },
+    { p:'¿Para qué sirve el dato de los 5 domingos en la serenata?',
+      r:'Para confirmar que agosto tiene 31 días y que el calendario cierra. Es un dato de control.' },
+    { p:'¿Por qué se mira el resto de dividir por 7?',
+      r:'Porque cada 7 días se vuelve al mismo día de la semana: las semanas completas no cambian nada.' },
+  ],
+  notas:`<p>Los ejemplos 1 y 2 son el "para explicar" y el "para entrenar" del cuadernillo
+      Infantil. Los ejemplos 3 y 4 repiten el mcm con otros disfraces: supermercado y
+      vueltas en un parque.</p>`
+},
+{
+  n:2, corto:'Consecutivos y simetría', titulo:'Consecutivos y simetría: el término del centro representa al promedio', pag:'Olimpiada Juvenil · Nivel 1 y 2',
+  concepto:{
+    formaTxt:'en una lista de consecutivos, el del centro es el promedio',
+    puntos:[
+      'Si son 5 consecutivos que suman 100, el del centro es 100 : 5 = 20.',
+      'Si la cantidad es par, en el centro hay dos, y su suma es la del primero con el último.',
+      'Los extremos se emparejan: primero con último, segundo con anteúltimo… todas las parejas suman lo mismo.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'cinco consecutivos', prosa:true, fija:1,
+      enun:`«La suma de 5 números naturales consecutivos es 100. ¿Cuál es el mayor de ellos?»${fte('Ronda Departamental 2013 · Nivel 1')}`,
+      pasos:[
+        P('El del centro es el promedio.', ['el centro', '100 : 5 = 20']),
+        P('Hay dos a cada lado.', ['los cinco', '18, 19, 20, 21, 22']),
+      ], final:'el mayor es 22',
+      control:'Control: 18 + 19 + 20 + 21 + 22 = 100 ✓' },
+    { titulo:'cambio a cuatro: el centro son dos', prosa:true, fija:1,
+      enun:`«¿Cuáles son los 4 números enteros consecutivos que sumados dan 58?»${fte('Ronda Zonal 2011 · Nivel 1')}`,
+      pasos:[
+        P('Con cuatro, el promedio cae entre los dos del centro.', ['promedio', '58 : 4 = 14,5']),
+        P('Los dos del centro son 14 y 15; uno más a cada lado.', ['los cuatro', '13, 14, 15, 16']),
+      ], final:'13, 14, 15 y 16',
+      control:'Control: 13 + 14 + 15 + 16 = 58 ✓' },
+    { titulo:'el centro de una lista larga', prosa:true, fija:1,
+      enun:`«Sonia escribe los números del 1 al 78. ¿Cuánto suman los dos números que se encuentran en el centro mismo de su lista?»${fte('Ronda Zonal 2011 · 5.º grado')}`,
+      pasos:[
+        'Empareja los extremos: 1 con 78, 2 con 77… todas las parejas suman 79.',
+        P('La pareja del centro también.', ['el centro', '39 y 40'], ['suman', '39 + 40 = 79']),
+      ], final:'suman 79' },
+    { titulo:'diez números en el centro', prosa:true, fija:1,
+      enun:`«Daiana escribe una lista de 488 números naturales consecutivos, comenzando con 33. ¿Cuál es la suma de los 10 números que están en el centro de la lista?»${fte('Ronda Final 2014 · Nivel 2')}`,
+      pasos:[
+        P('El último de la lista.', ['último', '33 + 487 = 520']),
+        P('Los dos del medio suman lo mismo que el primero y el último.', ['cada pareja', '33 + 520 = 553']),
+        P('Los 10 del centro son 5 parejas simétricas.', ['suma', '5 · 553 = 2765']),
+      ], final:'suman 2765',
+      control:'Directo: los 10 del centro van del 272 al 281, y 272 + 281 = 553; son 5 parejas: 2765 ✓' },
+  ],
+  preguntas:[
+    { p:'¿Por qué el del centro es el promedio?',
+      r:'Porque los de un lado tienen 1, 2… de menos y los del otro, 1, 2… de más: se compensan.' },
+    { p:'¿Cómo sumaba Gauss del 1 al 100?',
+      r:'Emparejando: 1 + 100, 2 + 99… son 50 parejas de 101, o sea 5050. Es la idea del ejemplo 3.' },
+    { p:'¿Y si el promedio da con coma, como 14,5?',
+      r:'Entonces la cantidad es par y el centro son dos números: los que están a cada lado del promedio.' },
+  ],
+  notas:`<p>El ejemplo 1 es el "para explicar" del cuadernillo Juvenil. El "para entrenar"
+      (una serie de figuras) pide un dibujo y no se puede resolver con este formato.</p>
+    <p>El ejemplo 4 es de Ronda Final: la misma idea con números grandes. Conviene que
+      estimen primero dónde cae el centro.</p>`
+},
+];
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve aprender una herramienta, si cada problema es distinto?',
+      r:'Porque los problemas de olimpiada visten la misma idea con contextos distintos: patas de animales, monedas, puntajes. Reconocer la herramienta es reconocer el problema.' },
+    { p:'¿Estos problemas son de verdad de la olimpiada?',
+      r:'Sí: cada uno dice de qué ronda, qué año y qué grado es. Las resoluciones son nuestras.' },
+  ],
+  notas:`<p>Esta clase es el <b>bloque 3</b> del cuadernillo de herramientas: primero la
+      herramienta de la Olimpiada Infantil (3.º a 6.º) y después la de la Juvenil (7.º a 9.º).
+      Cada tema empieza con el problema "para explicar en clase" del cuadernillo y sigue con
+      los "para entrenar" y otros del banco que se resuelven con la misma idea.</p>
+    <p>Conviene no decir de entrada qué herramienta es: dejar que la busquen con el primer
+      problema, y nombrarla recién cuando aparece.</p>
+    <p>Las fichas de entrenamiento por grado están en la página de OMAPA. Las claves no están
+      en el sitio.</p>`
+};
+Pizarra.unidad({ TEMAS, UNIDAD, grado:'omapa', temasLibro:2 });
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

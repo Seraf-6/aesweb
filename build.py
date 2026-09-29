@@ -199,22 +199,63 @@ def indice_omapa():
   <h1>{html.escape(OMAPA['titulo'])}</h1>
   <p class="bajada">{html.escape(OMAPA['bajada'])}</p>
 </header>""")
-    cuerpo.append('<section class="bloque"><h2>Por edad</h2><div class="tarjetas">')
-    for n in OMAPA['niveles']:
-        cuerpo.append(f"""<div class="tarjeta vacia">
-      <span class="etiqueta pend">En preparación</span>
-      <h3>{html.escape(n['nombre'])}</h3>
-      <p>{html.escape(n['desc'])}</p></div>""")
+
+    cuerpo.append("""<section class="bloque">
+  <p class="eyebrow">Clases para proyectar</p>
+  <h2>Las herramientas</h2>
+  <p>Una clase por bloque del cuadernillo de herramientas. Cada una tiene la herramienta de
+    la Olimpiada Infantil (3.º a 6.º) y la de la Juvenil (7.º a 9.º), con problemas reales
+    de OMAPA resueltos paso a paso.</p>
+  <div class="tarjetas">""")
+    for n, titulo, desc in OMAPA['clases']:
+        cuerpo.append(tarjeta({'tipo': 'diapositiva', 'titulo': f'{n}. {titulo}', 'desc': desc,
+                               'url': f'omapa/clases/bloque-{n}.html'}, prof=1))
     cuerpo.append('</div></section>')
+
+    cuerpo.append("""<section class="bloque" id="fichas">
+  <p class="eyebrow">Para imprimir</p>
+  <h2>Fichas de entrenamiento OMAPA</h2>
+  <p>Cinco problemas, 40 minutos, individual. Cada ficha sube de ronda: los primeros
+    problemas son de rondas iniciales y el último, de la ronda más alta del grado.</p>
+  <ul class="lista-fichas">""")
+    for cod, nombre, tandas in OMAPA['fichas_olimpiada']:
+        enlaces = ' '.join(f'<a href="fichas/olimpiada/ficha-{cod}-{t}.pdf">{t}</a>' for t in tandas)
+        cuerpo.append(f"""<li><span class="num">{cod}</span>
+      <span class="nombre">{html.escape(nombre)} · fichas {enlaces}</span></li>""")
+    cuerpo.append('</ul></section>')
+
+    cuerpo.append("""<section class="bloque" id="kanguro">
+  <h2>Fichas de competencia Kanguro</h2>
+  <p>En parejas, como se rinde el Kanguro: ocho problemas de opción múltiple que valen 3, 4
+    o 5 puntos según su dificultad.</p>
+  <ul class="lista-fichas">""")
+    for cod, nombre, tandas in OMAPA['fichas_kanguro']:
+        enlaces = ' '.join(f'<a href="fichas/kanguro/ficha-kanguro-{cod}-{t}.pdf">{t}</a>' for t in tandas)
+        cuerpo.append(f"""<li><span class="num">K</span>
+      <span class="nombre">{html.escape(nombre)} · fichas {enlaces}</span></li>""")
+    cuerpo.append('</ul></section>')
+
+    cuerpo.append("""<section class="bloque" id="cuadernillos">
+  <h2>Cuadernillos de herramientas</h2>
+  <ul class="lista-fichas">
+    <li><span class="num">I</span><span class="nombre"><a href="fichas/cuadernillos/cuadernillo-infantil.pdf">Infantil</a> · problemas de Fiesta Matemática, un bloque por herramienta</span></li>
+    <li><span class="num">J</span><span class="nombre"><a href="fichas/cuadernillos/cuadernillo-juvenil.pdf">Juvenil</a> · problemas de Ronda Departamental, Nivel 1</span></li>
+  </ul>
+</section>""")
+
     cuerpo.append("""<section class="bloque">
   <p class="eyebrow">Criterio</p>
   <h2>Agrupado por idea, no por contenido</h2>
   <p>En la olimpiada el problema no avisa de qué tema es. Por eso el material se organiza
-    por la herramienta que hace falta —paridad, principio del palomar, invariantes,
-    conteo ordenado— y no por la unidad del libro donde apareció.</p>
+    por la herramienta que hace falta —contar bien, comparar, patrones, paridad, casos
+    extremos— y no por la unidad del libro donde apareció.</p>
+  <div class="aviso"><strong>Los problemas son de OMAPA y del Kanguro.</strong> Cada ficha
+    indica al pie de qué ronda y año es cada problema. Las claves de respuestas no están en
+    este sitio.</div>
 </section></div>""")
     cuerpo.append(pie(1))
-    return pagina('OMAPA', '\n'.join(cuerpo), prof=1)
+    return pagina('OMAPA', '\n'.join(cuerpo), prof=1,
+                  descripcion='Entrenamiento para la olimpiada: clases por herramienta y fichas por grado.')
 
 
 def indice_fichas():

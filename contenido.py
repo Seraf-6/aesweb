@@ -136,15 +136,34 @@ OMAPA = {
   'titulo': 'OMAPA',
   'bajada': 'Preparación para la olimpiada, del 2.º al 9.º grado. Los problemas no se '
             'agrupan por unidad del libro sino por la idea que hace falta para resolverlos.',
-  'niveles': [
-    {'id': 'kanguru-menor', 'nombre': '2.º y 3.º grado',
-     'desc': 'Conteo, dibujos y regularidades. Casi nada de cuenta escrita.'},
-    {'id': 'kanguru-medio', 'nombre': '4.º y 5.º grado',
-     'desc': 'Aritmética con sentido, problemas de dos pasos, primeras estrategias.'},
-    {'id': 'kanguru-mayor', 'nombre': '6.º y 7.º grado',
-     'desc': 'Divisibilidad, fracciones, áreas y los primeros argumentos de paridad.'},
-    {'id': 'olimpiada', 'nombre': '8.º y 9.º grado',
-     'desc': 'Álgebra, geometría, combinatoria y teoría de números elemental.'},
+  # Las clases: una por bloque del cuadernillo de herramientas. Cada una tiene la
+  # herramienta de la Olimpiada Infantil y la de la Juvenil.
+  'clases': [
+    (1, 'Contar bien', 'Separar por posición y listar en orden; casos disjuntos y el complemento.'),
+    (2, 'Relaciones entre cantidades', 'Comparar dos estados; traducir "más que" y "el doble"; suponer y corregir.'),
+    (3, 'Patrones', 'Ciclos, restos y mcm; consecutivos y el término del centro.'),
+    (4, 'Números', 'Divisores de a pares, mcd y mcm; primos y cotas.'),
+    (5, 'Estrategias', 'Construir el caso extremo; elegir siempre lo mejor.'),
+    (6, 'Ideas potentes', 'Agotar todos los casos; el principio del extremo.'),
+    (7, 'Geometría', 'Descomponer la figura; áreas en cuadrícula; cortar y rearmar.'),
+  ],
+  # Las fichas de alumno, en omapa/fichas/. Las claves NO se publican.
+  # (código del archivo, nombre, tandas publicadas)
+  'fichas_olimpiada': [
+    ('2G', '2.º grado', ['02', '03', '04']),
+    ('3G', '3.º grado', ['01', '02', '03', '04']),
+    ('4G', '4.º grado', ['01', '02', '03']),
+    ('5G', '5.º grado', ['01', '02', '03']),
+    ('6G', '6.º grado', ['01', '02', '03']),
+    ('N1', '7.º grado · Nivel 1', ['01', '02', '03']),
+    ('N2', '8.º y 9.º grado · Nivel 2', ['01', '02', '03']),
+  ],
+  'fichas_kanguro': [
+    ('escolar-2', '2.º grado · Escolar', ['01', '02', '03']),
+    ('escolar-3', '3.º y 4.º grado · Escolar', ['01', '02', '03']),
+    ('benjamin-5', '5.º y 6.º grado · Benjamín', ['01', '02', '03']),
+    ('cadete-7', '7.º y 8.º grado · Cadete', ['01', '02', '03']),
+    ('junior-9', '9.º grado · Junior', ['01', '02', '03']),
   ],
 }
 

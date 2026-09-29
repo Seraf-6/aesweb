@@ -40,6 +40,8 @@ fichas/
   index.html                listado                      ← lo genera build.py
   pdf/<grado>/Ficha_NN.pdf  los archivos
 omapa/index.html            módulo de olimpiada          ← lo genera build.py
+omapa/clases/bloque-N.html  clases por herramienta       ← escritas a mano
+omapa/fichas/               fichas de alumno OMAPA y Kanguro (sin claves)
 progreso/index.html         progreso del tramo           ← escrita a mano
 assets/
   base.css                  colores, tipografía, notación, panel de proyección
@@ -322,8 +324,8 @@ cuenta esté bien. Después de tocar una página de clase hay que volver a
 correrlo.
 
 Hay uno por cada página de clase (ecuaciones y polígonos de 7.º,
-factoreo y sistemas de 8.º, ecuaciones de segundo grado de 9.º) y uno para
-el módulo de progreso.
+factoreo y sistemas de 8.º, ecuaciones de segundo grado de 9.º), uno para
+las siete clases de OMAPA y uno para el módulo de progreso.
 
 Las páginas de clase cargan `assets/pizarra.js` (sin `defer`, antes de su
 propio guion) y enlazan `assets/clase.css`, que tiene los componentes
@@ -398,6 +400,53 @@ sugeridos de la página y recalcula todo en Python con enteros.
 
 ---
 
+## El módulo de OMAPA
+
+`omapa/index.html` (lo genera `build.py` desde `OMAPA` en `contenido.py`)
+tiene tres partes:
+
+- **Las herramientas**: una clase por bloque del cuadernillo de herramientas,
+  en `omapa/clases/bloque-1.html` a `bloque-7.html`. Son páginas de clase
+  como las de Matemática, sobre el mismo motor de la pizarra. Cada una tiene
+  dos temas: la herramienta de la Olimpiada Infantil (3.º a 6.º) y la de la
+  Juvenil (7.º a 9.º). Cada tema empieza con el problema "para explicar en
+  clase" del cuadernillo, sigue con los "para entrenar" y con otros del banco
+  que se resuelven con la misma idea.
+- **Las fichas**: las de alumno de OMAPA (por grado) y de Kanguro (por
+  nivel), en `omapa/fichas/`, y los dos cuadernillos.
+- El criterio: agrupado por idea, no por unidad.
+
+**Los problemas son reales**, de las olimpiadas de OMAPA y del Kanguro, y
+cada uno dice de qué ronda, año y grado es (`fte()` en el guion de la
+página). Las resoluciones y las explicaciones son propias. Juan decidió
+publicar las fichas de alumno (septiembre de 2026); **las claves no se
+publican nunca**: el verificador falla si encuentra un archivo con
+RESPUESTAS o CLAVE en el nombre dentro de `omapa/`.
+
+Todo sale del proyecto hermano `Proyecto OMAPA` (fuera del repositorio): el
+banco de problemas, las figuras recortadas, el generador de fichas y el
+análisis de arquetipos (`03-curricula`). Para publicar una tanda nueva de
+fichas se copian solo los PDF de alumno a `omapa/fichas/olimpiada/` o
+`omapa/fichas/kanguro/`, se agrega la tanda en `OMAPA['fichas_olimpiada']`
+o `OMAPA['fichas_kanguro']` y se corre `build.py`.
+
+Las páginas de las clases se generaron con un script, pero se mantienen a
+mano como el resto: cada una trae sus datos y llama a `Pizarra.unidad()`.
+Algunas diferencias con las de Matemática:
+
+- No hay letras en cursiva (`Pizarra.letras = /(?!)/g`): los problemas son de
+  números y los renglones del cuaderno tienen palabras.
+- En el cuaderno los renglones pueden cortar (la última columna es flexible).
+- Los problemas con figura usan la imagen recortada del examen
+  (`omapa/clases/img/`) o una figura redibujada con `Geo`.
+- Si el enunciado es ambiguo o el banco no trae clave, la respuesta se cuenta
+  por computadora y la ambigüedad se dice en el observador o en las notas.
+
+Las cuentas se verifican con `verificacion/omapa_bloques.py`, por fuerza
+bruta: recorre todos los casos de cada problema.
+
+---
+
 ## Las citas de las tapas
 
 Cada página de clase abre con una cita en vez de una explicación. La lista
@@ -442,7 +491,8 @@ del lado del cliente (AES-GCM con clave derivada por PBKDF2), no un `if
 (password === "...")`.
 
 **Material con derechos de autor.** Nada de escanear ni reproducir páginas de
-libros de texto. Si hace falta ejercitación al estilo de un libro, se generan
+libros de texto. Los problemas de olimpiada son la excepción decidida por Juan:
+se publican con su fuente (ver "El módulo de OMAPA"), nunca sus claves. Si hace falta ejercitación al estilo de un libro, se generan
 series originales propias.
 
 ---
@@ -519,9 +569,11 @@ las diapositivas de 7.º (ecuaciones lineales y polígonos) y las dos de 8.º
 (factoreo y sistemas), la de ecuaciones de segundo grado de 9.º
 (unidades 5 y 6), todas sobre el motor de la pizarra, con su
 verificador; el panel de proyección, el timer de aula y el módulo de
-progreso.
+progreso; y en OMAPA, las siete clases del cuadernillo de herramientas y las
+fichas de alumno de OMAPA y Kanguro.
 
 Pendiente: el proyecto de estadística compartido por los tres grados (falta
 definir el tema), las diapositivas de cuerpos geométricos de 9.º, el
-material de circunferencia de 8.º, la ficha de sistemas de 8.º
-y todo el contenido de OMAPA.
+material de circunferencia de 8.º, la ficha de sistemas de 8.º,
+las clases de OMAPA para los 25 arquetipos (hoy están los 7 bloques del
+cuadernillo) y el etiquetado de los problemas que quedaron sin clasificar.

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Geometría · OMAPA · AESWeb</title>
+<meta name="description" content="Entrenamiento para la olimpiada, bloque 7: Geometría. La herramienta explicada con problemas reales de OMAPA, resueltos paso a paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de las clases de OMAPA ---------- */
+.fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+body[data-solo="1"] .fuente{font-size:.45em}
+.otros-bloques{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px}
+/* en el cuaderno de estas clases hay palabras: el renglón puede cortar */
+.cuaderno .alineado,body[data-solo="1"] .cuaderno .alineado{
+  grid-template-columns:max-content max-content max-content minmax(0,1fr); font-size:1.2em}
+.cuaderno .al-der{white-space:normal}
+.cuaderno .al-rot{font-size:.7em; padding-right:1em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">OMAPA</a><span class="sep">/</span>
+      <span>Bloque 7 · Geometría</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Entrenamiento OMAPA</p>
+    <h1>Geometría</h1>
+    <p class="bajada">«Si no podés resolver un problema, hay uno más fácil que sí podés resolver:
+      encontralo.»<span class="firma">George Pólya</span></p>
+    <div class="pie-tapa">
+      <span>Bloque 7 de 7 · cuadernillo de herramientas</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Bloque 7 de 7 · Geometría</p>
+    <h2>La herramienta</h2>
+    <ul class="puntos">
+      <li>En geometría, la herramienta más usada es <b>descomponer</b>: partir la figura en piezas conocidas.</li>
+      <li>Se cuenta lo que hay y se compara con el total.</li>
+      <li>Y conviene dibujar: casi siempre el dibujo muestra la cuenta.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de entrenamiento · Los problemas son de las Olimpiadas Nacionales de Matemática
+    de OMAPA (Organización Multidisciplinaria de Apoyo a Profesores y Alumnos); cada uno
+    indica su ronda, su año y su grado. Las resoluciones y las explicaciones son propias.
+    Cada respuesta de esta página está verificada en
+    <span class="ec">verificacion/omapa_bloques.py</span>.
+    <div class="otros-bloques" style="margin-top:12px"><a class="chip" href="bloque-1.html">1. Contar bien</a> <a class="chip" href="bloque-2.html">2. Relaciones entre cantidades</a> <a class="chip" href="bloque-3.html">3. Patrones</a> <a class="chip" href="bloque-4.html">4. Números</a> <a class="chip" href="bloque-5.html">5. Estrategias</a> <a class="chip" href="bloque-6.html">6. Ideas potentes</a></div>
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En estas clases no hay letras que poner en cursiva: los problemas son de números. */
+Pizarra.letras = /(?!)/g;
+/* la fuente de cada problema: ronda, año y grado */
+const fte = s => `<span class="fuente">${s}</span>`;
+/* para las figuras */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const rect_ = (x, y, w, h, cls = 'g-fig') => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+
+const IMG = n => `<image href="img/${n}.png" x="10" y="20" width="380" height="148" preserveAspectRatio="xMidYMid meet"/>`;
+const TEMAS = [
+{
+  n:1, corto:'Descomponer', titulo:'Descomponer la figura en piezas conocidas: contar lo que hay contra el total', pag:'Olimpiada Infantil · 3.º a 6.º grado',
+  concepto:{
+    formaTxt:'se parte la figura en piezas que se saben medir o contar, y se suma',
+    puntos:[
+      'En un dado, las caras opuestas suman 7: la de abajo se conoce mirando la de arriba.',
+      'Un cubo tiene 6 caras, 12 aristas y 8 vértices.',
+      'Un hexágono regular se parte en 6 triángulos equiláteros.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'las caras que no se ven', prosa:true, fija:1,
+      enun:`«Ane tira tres dados comunes, que quedan como indica la figura. En los dados las caras opuestas suman siempre 7. Anota los números de las tres caras que quedan hacia la mesa. Suma los dos mayores y multiplica el resultado por el menor. ¿Qué número obtiene?»${fte('Fiesta Matemática 2011 · 3.º grado')}`,
+      lienzo:F([
+        [0, IMG('INF-2011-FIE-3G-P03')],
+        [1, g.txt([61, 200], 'arriba 6', 'g-dato') + g.txt([191, 200], 'arriba 2', 'g-dato') + g.txt([325, 200], 'arriba 3', 'g-dato')],
+        [2, g.txt([61, 232], 'abajo 1', 'g-num') + g.txt([191, 232], 'abajo 5', 'g-num') + g.txt([325, 232], 'abajo 4', 'g-num')],
+      ], 'Tres dados sobre la mesa', '0 0 400 260'),
+      pasos:[
+        'La cara que queda hacia la mesa es la opuesta a la de arriba.',
+        P('Arriba se ven 6, 2 y 3. Abajo, lo que les falta para 7.', ['dado 1', '7 − 6 = 1'], ['dado 2', '7 − 2 = 5'], ['dado 3', '7 − 3 = 4']),
+        P('Los dos mayores son 5 y 4; el menor, 1.', ['cuenta', '(5 + 4) · 1 = 9']),
+      ], final:'obtiene 9' },
+    { titulo:'aristas y caras de un cubo', prosa:true, fija:1,
+      enun:`«En un cubo, ¿cuántas aristas más que caras hay?»${fte('Fiesta Matemática 2010 · 3.º grado')}`,
+      lienzo:(() => {
+        const a = [110, 110], s = 150, d = [60, -50];
+        const fr_ = [a, [a[0] + s, a[1]], [a[0] + s, a[1] + s], [a[0], a[1] + s]];
+        const at = fr_.map(p => [p[0] + d[0], p[1] + d[1]]);
+        const caras = g.pol(fr_, 'g-fig') + g.pol([fr_[0], fr_[1], at[1], at[0]], 'g-fig2') + g.pol([fr_[1], fr_[2], at[2], at[1]], 'g-fig3');
+        const aristas = [0, 1, 2, 3].map(i => g.seg(fr_[i], fr_[(i + 1) % 4], 'g-roja') + g.seg(at[i], at[(i + 1) % 4], 'g-roja') + g.seg(fr_[i], at[i], 'g-roja')).join('');
+        return F([
+          [0, caras + g.seg(at[3], at[0], 'g-aux') + g.seg(at[3], at[2], 'g-aux') + g.seg(fr_[3], at[3], 'g-aux')],
+          [1, g.txt([335, 60], '6 caras', 'g-rot')],
+          [2, aristas + g.txt([335, 95], '12 aristas', 'g-rot')],
+        ], 'Un cubo con sus caras y sus aristas', '0 0 420 300');
+      })(),
+      pasos:[
+        P('Las caras: arriba, abajo, adelante, atrás, izquierda, derecha.', ['caras', '6']),
+        P('Las aristas: 4 arriba, 4 abajo y 4 paradas.', ['aristas', '4 + 4 + 4 = 12']),
+        P('La diferencia.', ['aristas − caras', '12 − 6 = 6']),
+      ], final:'6 aristas más que caras' },
+    { titulo:'cubitos en un cubo', prosa:true, fija:1,
+      enun:`«¿Cuántos cubitos de 1 cm de arista se pueden introducir en un cubo de 3 cm de arista para llenarlo completamente?»${fte('Fiesta Matemática 2010 · 5.º grado')}`,
+      pasos:[
+        P('Una capa del piso: 3 filas de 3.', ['una capa', '3 · 3 = 9']),
+        P('Y hay 3 capas, una encima de otra.', ['tres capas', '3 · 9 = 27']),
+      ], final:'27 cubitos' },
+    { titulo:'un hexágono partido', prosa:true, fija:1,
+      enun:`«El perímetro de un hexágono regular ABCDEF es 36 cm. En el hexágono se traza la diagonal CF. Calcular el perímetro del cuadrilátero ABCF.»${fte('Fiesta Matemática 2007 · 6.º grado')}`,
+      lienzo:(() => {
+        const H = g.regular(6, 200, 150, 110, 180);
+        const O = [200, 150], N = ['F', 'A', 'B', 'C', 'D', 'E'];
+        const nom = H.map((p, i) => g.txt([200 + (p[0] - 200) * 1.18, 150 + (p[1] - 150) * 1.18], N[i], 'g-rot')).join('');
+        return F([
+          [0, g.pol(H) + nom],
+          [1, [0, 1, 2].map(i => g.txt(g.enLado(H[i], H[i + 1], O, 16), '6', 'g-dato')).join('')],
+          [2, g.seg(H[3], H[0], 'g-roja') + H.map(p => g.seg(O, p, 'g-aux')).join('')],
+          [3, g.pol([H[0], H[1], H[2], H[3]], 'g-foco')],
+        ], 'Un hexágono regular con la diagonal CF', '0 0 400 300');
+      })(),
+      pasos:[
+        P('Los 6 lados son iguales.', ['un lado', '36 : 6 = 6 cm']),
+        'La diagonal CF pasa por el centro: son dos lados de los triángulos equiláteros en que se parte el hexágono.',
+        P('La diagonal mide dos lados.', ['CF', '2 · 6 = 12 cm']),
+        P('El cuadrilátero ABCF tiene tres lados del hexágono y la diagonal.', ['perímetro', '6 + 6 + 6 + 12 = 30']),
+      ], final:'el perímetro de ABCF es 30 cm' },
+  ],
+  preguntas:[
+    { p:'¿Por qué las caras opuestas de un dado suman 7?',
+      r:'Porque así se fabrican: 1 frente al 6, 2 frente al 5 y 3 frente al 4. Por eso se puede saber la de abajo sin levantarlo.' },
+    { p:'¿Por qué la diagonal CF mide dos lados?',
+      r:'Porque el hexágono regular se parte en 6 triángulos equiláteros desde el centro, y CF atraviesa dos de sus lados en línea recta.' },
+    { p:'¿Hay una fórmula para los cubitos?',
+      r:'El volumen de un cubo es arista por arista por arista: 3 · 3 · 3 = 27. Es contar capas, escrito corto.' },
+  ],
+  notas:`<p>El ejemplo 1 es el "para entrenar" del cuadernillo Infantil. El "para explicar"
+      (la caja de vidrio con cubos) no está en la clase: su respuesta depende de cubos que en
+      el dibujo no se ven, y el banco no trae clave oficial. Conviene trabajarlo con la
+      figura impresa y discutir qué se supone.</p>`
+},
+{
+  n:2, corto:'Áreas en cuadrícula', titulo:'Contar áreas sobre cuadrícula descomponiendo la figura', pag:'Olimpiada Juvenil · Nivel 1 y 2',
+  concepto:{
+    formaTxt:'área = cuadraditos enteros + medios cuadraditos',
+    puntos:[
+      'Sobre cuadrícula, un triángulo que corta un cuadradito por la diagonal ocupa la mitad.',
+      'Si una figura se corta y se rearma, el área no cambia.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'¿cuáles tienen área 11?', prosa:true, fija:1,
+      enun:`«En la cuadrícula, todos los cuadraditos tienen área 1. ¿Cuáles de las figuras tienen área 11?»${fte('Ronda Departamental 2013 · Nivel 1')}`,
+      lienzo:F([
+        [0, `<image href="img/JUV-2013-DEP-N1-P03.png" x="0" y="10" width="400" height="136" preserveAspectRatio="xMidYMid meet"/>`],
+        [1, g.txt([76, 175], 'figura 1: 10', 'g-dato')],
+        [2, g.txt([192, 175], 'figura 2: 11', 'g-num')],
+        [3, g.txt([326, 175], 'figura 3: 11', 'g-num')],
+      ], 'Tres figuras sobre una cuadrícula', '0 0 400 200'),
+      pasos:[
+        P('Figura 1: cuento cuadraditos enteros y medios.', ['enteros', '8'], ['medios', '4 medios = 2'], ['área', '8 + 2 = 10']),
+        P('Figura 2.', ['enteros', '8'], ['medios', '6 medios = 3'], ['área', '8 + 3 = 11']),
+        P('Figura 3.', ['enteros', '8'], ['medios', '6 medios = 3'], ['área', '8 + 3 = 11']),
+      ], final:'las figuras 2 y 3' },
+    { titulo:'cortar y rearmar', prosa:true, fija:1,
+      enun:`«La tira de papel de la figura A tiene 272 cm de perímetro. Rafael la corta en 4 partes iguales y con los 4 pedazos arma un cuadrado (figura B). ¿Cuántos centímetros mide el lado del cuadrado?»${fte('Ronda Departamental 2012 · Nivel 1')}`,
+      lienzo:(() => {
+        const L = 88, h = 22, y0 = 40, x0 = 24;
+        const pieza = (x, y) => rect_(x, y, L, h);
+        const cuadro = [156, 120];
+        const capas = [[0, rect_(x0, y0, 4 * L, h) + g.txt([x0 + 2 * L, y0 - 14], 'figura A: 4 lados del cuadrado de largo', 'g-dato'), 1]];
+        for (let i = 0; i < 4; i++){
+          capas.push([1, pieza(x0 + i * L, y0), 2]);
+          capas.push([2, pieza(cuadro[0], cuadro[1] + i * h), Infinity, { desde:[x0 + i * L - cuadro[0], y0 - cuadro[1] - i * h] }]);
+        }
+        capas.push([2, g.txt([cuadro[0] + L / 2, cuadro[1] + 4 * h + 20], 'lado', 'g-rot')]);
+        return F(capas, 'Una tira cortada en cuatro que arma un cuadrado', '0 0 400 240');
+      })(),
+      pasos:[
+        'Cada pedazo es un rectángulo tan largo como el lado del cuadrado, y 4 pedazos apilados forman el cuadrado.',
+        P('Si el lado es L, cada pedazo tiene de ancho la cuarta parte de L. La tira mide 4 lados de largo y un cuarto de lado de ancho.', ['perímetro', '2 · (4 + ¼) lados = 8,5 lados']),
+        P('Reparto el perímetro.', ['un lado', '272 : 8,5 = 32']),
+      ], final:'el lado mide 32 cm',
+      control:'Control: la tira mide 128 cm por 8 cm, y 2 · (128 + 8) = 272 ✓' },
+    { titulo:'rectángulos con perímetro fijo', prosa:true, fija:1,
+      enun:`«Mauri debe construir rectángulos cuyos lados midan una cantidad entera de centímetros, con perímetro de 36 cm. ¿Cuántos rectángulos diferentes puede construir?»${fte('Ronda Zonal 2011 · Nivel 2')}`,
+      pasos:[
+        P('El largo y el ancho suman la mitad del perímetro.', ['largo + ancho', '36 : 2 = 18']),
+        P('Listo en orden, con el ancho menor o igual que el largo.', ['ancho 1 al 9', '1 y 17, 2 y 16, …, 9 y 9']),
+      ], final:'9 rectángulos' },
+    { titulo:'llenar una caja', prosa:true, fija:1,
+      enun:`«Florencia carga cubitos de 1 dm de arista en una caja cúbica de medio metro de arista. ¿Cuál es la cantidad máxima de cubitos que podrá cargar para llenar la caja?»${fte('Ronda Departamental 2011 · Nivel 1')}`,
+      pasos:[
+        P('Paso todo a la misma unidad.', ['medio metro', '50 cm = 5 dm']),
+        P('Capas de 5 por 5, y 5 capas.', ['una capa', '5 · 5 = 25'], ['la caja', '5 · 25 = 125']),
+      ], final:'125 cubitos' },
+  ],
+  preguntas:[
+    { p:'En la tira, ¿por qué el perímetro son 8,5 lados?',
+      r:'Porque la tira tiene dos lados largos de 4 lados del cuadrado cada uno (8) y dos lados cortos de un cuarto de lado cada uno (medio lado).' },
+    { p:'¿El 9 por 9 es un rectángulo?',
+      r:'Sí: un cuadrado es un rectángulo. Si no se lo cuenta, son 8.' },
+    { p:'¿Por qué hay que pasar a decímetros?',
+      r:'Porque para dividir la caja en cubitos, las dos medidas tienen que estar en la misma unidad.' },
+  ],
+  notas:`<p>Los ejemplos 1 y 2 son el "para explicar" y el "para entrenar" del cuadernillo
+      Juvenil, con sus figuras originales. En el ejemplo 1 conviene contar la figura 1 en el
+      pizarrón con los chicos antes de mostrar las otras dos.</p>
+    <p>La figura del ejemplo 2 está redibujada para que los cuatro pedazos se muevan a su
+      lugar.</p>`
+},
+];
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve aprender una herramienta, si cada problema es distinto?',
+      r:'Porque los problemas de olimpiada visten la misma idea con contextos distintos: patas de animales, monedas, puntajes. Reconocer la herramienta es reconocer el problema.' },
+    { p:'¿Estos problemas son de verdad de la olimpiada?',
+      r:'Sí: cada uno dice de qué ronda, qué año y qué grado es. Las resoluciones son nuestras.' },
+  ],
+  notas:`<p>Esta clase es el <b>bloque 7</b> del cuadernillo de herramientas: primero la
+      herramienta de la Olimpiada Infantil (3.º a 6.º) y después la de la Juvenil (7.º a 9.º).
+      Cada tema empieza con el problema "para explicar en clase" del cuadernillo y sigue con
+      los "para entrenar" y otros del banco que se resuelven con la misma idea.</p>
+    <p>Conviene no decir de entrada qué herramienta es: dejar que la busquen con el primer
+      problema, y nombrarla recién cuando aparece.</p>
+    <p>Las fichas de entrenamiento por grado están en la página de OMAPA. Las claves no están
+      en el sitio.</p>`
+};
+Pizarra.unidad({ TEMAS, UNIDAD, grado:'omapa', temasLibro:2 });
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

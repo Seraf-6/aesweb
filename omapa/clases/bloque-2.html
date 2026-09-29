@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Relaciones entre cantidades · OMAPA · AESWeb</title>
+<meta name="description" content="Entrenamiento para la olimpiada, bloque 2: Relaciones entre cantidades. La herramienta explicada con problemas reales de OMAPA, resueltos paso a paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de las clases de OMAPA ---------- */
+.fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+body[data-solo="1"] .fuente{font-size:.45em}
+.otros-bloques{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px}
+/* en el cuaderno de estas clases hay palabras: el renglón puede cortar */
+.cuaderno .alineado,body[data-solo="1"] .cuaderno .alineado{
+  grid-template-columns:max-content max-content max-content minmax(0,1fr); font-size:1.2em}
+.cuaderno .al-der{white-space:normal}
+.cuaderno .al-rot{font-size:.7em; padding-right:1em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">OMAPA</a><span class="sep">/</span>
+      <span>Bloque 2 · Relaciones entre cantidades</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Entrenamiento OMAPA</p>
+    <h1>Relaciones entre cantidades</h1>
+    <p class="bajada">«Si no podés resolver un problema, hay uno más fácil que sí podés resolver:
+      encontralo.»<span class="firma">George Pólya</span></p>
+    <div class="pie-tapa">
+      <span>Bloque 2 de 7 · cuadernillo de herramientas</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Bloque 2 de 7 · Relaciones entre cantidades</p>
+    <h2>La herramienta</h2>
+    <ul class="puntos">
+      <li>Muchos problemas dan dos datos sobre dos cantidades desconocidas.</li>
+      <li>La herramienta es <b>comparar</b>: qué cambia entre un estado y el otro, o cuánto de más tiene uno que el otro.</li>
+      <li>Es álgebra sin letras: la misma cuenta que después se escribe con una ecuación.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de entrenamiento · Los problemas son de las Olimpiadas Nacionales de Matemática
+    de OMAPA (Organización Multidisciplinaria de Apoyo a Profesores y Alumnos); cada uno
+    indica su ronda, su año y su grado. Las resoluciones y las explicaciones son propias.
+    Cada respuesta de esta página está verificada en
+    <span class="ec">verificacion/omapa_bloques.py</span>.
+    <div class="otros-bloques" style="margin-top:12px"><a class="chip" href="bloque-1.html">1. Contar bien</a> <a class="chip" href="bloque-3.html">3. Patrones</a> <a class="chip" href="bloque-4.html">4. Números</a> <a class="chip" href="bloque-5.html">5. Estrategias</a> <a class="chip" href="bloque-6.html">6. Ideas potentes</a> <a class="chip" href="bloque-7.html">7. Geometría</a></div>
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En estas clases no hay letras que poner en cursiva: los problemas son de números. */
+Pizarra.letras = /(?!)/g;
+/* la fuente de cada problema: ronda, año y grado */
+const fte = s => `<span class="fuente">${s}</span>`;
+/* para las figuras */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const rect_ = (x, y, w, h, cls = 'g-fig') => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+
+const TEMAS = [
+{
+  n:1, corto:'Comparar dos estados', titulo:'Comparar dos estados para aislar lo que cambia; fracción del total', pag:'Olimpiada Infantil · 3.º a 6.º grado',
+  concepto:{
+    formaTxt:'lo que cambia entre dos situaciones es lo que las diferencia',
+    puntos:[
+      'Si algo pasa de un estado a otro, <b>la diferencia</b> se debe solo a lo que cambió.',
+      'Una fracción de una fracción se multiplica: la mitad de la mitad es un cuarto.',
+      'Se controla volviendo al enunciado con la respuesta.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el tanque de agua', prosa:true, fija:1,
+      enun:`«Un tanque lleno de agua pesa 100 kg y cargado hasta la mitad pesa 60 kg. ¿Cuánto pesa el tanque vacío?»${fte('Fiesta Matemática 2013 · 6.º grado')}`,
+      pasos:[
+        'Comparo los dos estados: el tanque es el mismo; lo único que cambió es media carga de agua.',
+        P('Esa diferencia es la mitad del agua.', ['media carga', '100 − 60 = 40 kg']),
+        P('Toda el agua pesa el doble.', ['el agua', '2 · 40 = 80 kg']),
+        P('Lo que queda es el tanque.', ['el tanque', '100 − 80 = 20 kg']),
+      ], final:'el tanque vacío pesa 20 kg',
+      control:'Control: 20 + 80 = 100 lleno, y 20 + 40 = 60 a la mitad ✓' },
+    { titulo:'la mitad de la mitad', prosa:true, fija:1,
+      enun:`«La mitad de la mitad del jugo de una jarra se cargó en un vaso. ¿Qué fracción del total de jugo se cargó en el vaso?»${fte('Fiesta Matemática 2016 · 5.º grado')}`,
+      pasos:[
+        'Parto la jarra en dos: la mitad es una de esas dos partes.',
+        'Esa mitad la vuelvo a partir en dos: queda una de cuatro partes iguales de la jarra.',
+        P('Una fracción de una fracción se multiplica.', `${Q('1','2')} · ${Q('1','2')} = ${Q('1','4')}`),
+      ], final:'un cuarto del jugo' },
+    { titulo:'baldes grandes y chicos', prosa:true, fija:1,
+      enun:`«Pedro dispone de 8 baldes, 5 de la misma capacidad y 3 con la mitad de la capacidad de los anteriores. Para llenarlos todos necesitan 39 litros de agua. ¿Cuál es la capacidad de uno de los baldes mayores?»${fte('Fiesta Matemática 2006 · 5.º grado')}`,
+      pasos:[
+        'Llevo todo a una misma unidad: el balde chico. Un balde grande son dos chicos.',
+        P('Cuento en baldes chicos.', ['en chicos', '5 · 2 + 3 = 13 baldes chicos']),
+        P('Reparto el agua.', ['un chico', '39 : 13 = 3 litros'], ['un grande', '2 · 3 = 6 litros']),
+      ], final:'el balde mayor tiene capacidad para 6 litros',
+      control:'Control: 5 · 6 + 3 · 3 = 39 litros ✓' },
+    { titulo:'la diferencia de edades no cambia', prosa:true, fija:1,
+      enun:`«Miguel nació cuando su mamá cumplía 24 años. Ahora Miguel tiene la cuarta parte de la edad de su mamá. ¿Cuántos años tiene ahora Miguel?»${fte('Fiesta Matemática 2008 · 4.º grado')}`,
+      pasos:[
+        'Lo que no cambia con los años es la <b>diferencia</b>: la mamá siempre le lleva 24.',
+        'Si Miguel es 1 parte, la mamá es 4 partes. La diferencia son 3 partes.',
+        P('Esas 3 partes son los 24 años.', ['una parte', '24 : 3 = 8']),
+      ], final:'Miguel tiene 8 años',
+      control:'Control: la mamá tiene 32; 32 − 8 = 24, y 8 es la cuarta parte de 32 ✓' },
+  ],
+  preguntas:[
+    { p:'En el tanque, ¿por qué no divido 100 por 2?',
+      r:'Porque 100 incluye el tanque, que no se divide: la mitad de la carga no es la mitad del peso.' },
+    { p:'¿Qué es lo que "no cambia" en un problema de edades?',
+      r:'La diferencia. Todos cumplen años al mismo ritmo.' },
+    { p:'¿Por qué conviene contar en baldes chicos?',
+      r:'Porque así todos los baldes son iguales y se puede dividir. Es elegir una unidad común.' },
+  ],
+  notas:`<p>El ejemplo 1 es el "para explicar en clase" del cuadernillo Infantil y el 2, el
+      "para entrenar". Los otros dos vienen del banco con la misma herramienta.</p>
+    <p>La pregunta que ordena todo el tema: <b>¿qué cambió y qué quedó igual?</b> En el tanque
+      cambia el agua; en las edades, no cambia la diferencia.</p>`
+},
+{
+  n:2, corto:'Traducir y encadenar', titulo:'Traducir "más que" y "el doble de"; encadenar', pag:'Olimpiada Juvenil · Nivel 1 y 2',
+  concepto:{
+    formaTxt:'cada frase es una cuenta: se traducen de a una y se encadenan',
+    serie:[
+      { rot:'"12 más que"', txt:'se suma 12' },
+      { rot:'"el doble de"', txt:'se multiplica por 2' },
+      { rot:'"juntos"', txt:'se suman' },
+    ],
+    puntos:[
+      'Se traduce una frase por vez, en el orden en que se necesita.',
+      'Con dos especies y dos totales: <b>suponer que todos son de una especie</b> y corregir.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'encadenar tres frases', prosa:true, fija:1,
+      enun:`«María tiene 20 figuritas y Pablo tiene 12 figuritas más que María. Luisa tiene doble cantidad de figuritas que María y Pablo juntos. ¿Cuántas figuritas tiene Luisa?»${fte('Ronda Departamental 2012 · Nivel 1')}`,
+      pasos:[
+        P('"12 más que María".', ['Pablo', '20 + 12 = 32']),
+        P('"María y Pablo juntos".', ['juntos', '20 + 32 = 52']),
+        P('"El doble".', ['Luisa', '2 · 52 = 104']),
+      ], final:'Luisa tiene 104 figuritas' },
+    { titulo:'una suma con un dato que falta', prosa:true, fija:1,
+      enun:`«En una suma de tres sumandos, el primero es 140, el segundo es el doble del primero y la suma total es 666. ¿Cuál es el tercer sumando?»${fte('Ronda Zonal 2012 · Nivel 1')}`,
+      pasos:[
+        P('El segundo.', ['segundo', '2 · 140 = 280']),
+        P('Lo que ya suman los dos primeros, y lo que falta.', ['los dos', '140 + 280 = 420'], ['tercero', '666 − 420 = 246']),
+      ], final:'el tercer sumando es 246' },
+    { titulo:'suma y diferencia', prosa:true, fija:1,
+      enun:`«En una cena hay dos varones más que mujeres. En total hay 10 invitados. ¿Cuántos son varones?»${fte('Ronda Departamental 2012 · Nivel 2')}`,
+      pasos:[
+        'Si saco los 2 varones "de más", quedan dos grupos iguales.',
+        P('Saco los 2 y reparto.', ['sin los 2', '10 − 2 = 8'], ['cada grupo', '8 : 2 = 4 mujeres']),
+        P('Vuelvo a poner los 2.', ['varones', '4 + 2 = 6']),
+      ], final:'son 6 varones',
+      control:'Control: 6 + 4 = 10, y 6 es dos más que 4 ✓' },
+    { titulo:'dos especies: suponer y corregir', prosa:true, fija:1,
+      enun:`«Matilde colecciona arañas y escarabajos. Tiene 15 insectos en total y contó 110 patas. Las arañas tienen 8 patas y los escarabajos 6. ¿Cuántos escarabajos tiene Matilde?»${fte('Ronda Zonal 2011 · Nivel 2')}`,
+      pasos:[
+        P('Supongo que los 15 son escarabajos.', ['si fueran todos', '15 · 6 = 90 patas']),
+        P('Faltan patas: cada araña agrega 2 más que un escarabajo.', ['faltan', '110 − 90 = 20 patas'], ['arañas', '20 : 2 = 10']),
+        P('Los demás son escarabajos.', ['escarabajos', '15 − 10 = 5']),
+      ], final:'Matilde tiene 5 escarabajos',
+      control:'Control: 10 · 8 + 5 · 6 = 80 + 30 = 110 patas ✓' },
+  ],
+  preguntas:[
+    { p:'¿Por qué en el ejemplo 3 se sacan los 2 varones?',
+      r:'Para que queden dos grupos iguales. Es la técnica de suma y diferencia: el mayor es (suma + diferencia) : 2, el menor (suma − diferencia) : 2.' },
+    { p:'En el de las patas, ¿por qué suponer que todos son escarabajos?',
+      r:'Porque así hay una sola cuenta, y la diferencia con la realidad dice cuántos hay que cambiar. Se llama "gallinas y conejos" y sirve para cualquier problema con dos tipos.' },
+    { p:'¿Se puede resolver con una ecuación?',
+      r:'Sí, con x arañas: 8x + 6(15 − x) = 110. Da lo mismo; suponer y corregir es la misma cuenta sin letras.' },
+  ],
+  notas:`<p>El ejemplo 1 es el "para explicar" del cuadernillo Juvenil. El problema "para
+      entrenar" del cuadernillo (Ana, Betina y Carlos) no está en la clase: su respuesta
+      depende de qué billetes existen, y conviene trabajarlo aparte.</p>
+    <p>El ejemplo 4 es el arquetipo "gallinas y conejos", uno de los de mejor rendimiento del
+      análisis: se transfiere a monedas, puntajes y entradas.</p>`
+},
+];
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve aprender una herramienta, si cada problema es distinto?',
+      r:'Porque los problemas de olimpiada visten la misma idea con contextos distintos: patas de animales, monedas, puntajes. Reconocer la herramienta es reconocer el problema.' },
+    { p:'¿Estos problemas son de verdad de la olimpiada?',
+      r:'Sí: cada uno dice de qué ronda, qué año y qué grado es. Las resoluciones son nuestras.' },
+  ],
+  notas:`<p>Esta clase es el <b>bloque 2</b> del cuadernillo de herramientas: primero la
+      herramienta de la Olimpiada Infantil (3.º a 6.º) y después la de la Juvenil (7.º a 9.º).
+      Cada tema empieza con el problema "para explicar en clase" del cuadernillo y sigue con
+      los "para entrenar" y otros del banco que se resuelven con la misma idea.</p>
+    <p>Conviene no decir de entrada qué herramienta es: dejar que la busquen con el primer
+      problema, y nombrarla recién cuando aparece.</p>
+    <p>Las fichas de entrenamiento por grado están en la página de OMAPA. Las claves no están
+      en el sitio.</p>`
+};
+Pizarra.unidad({ TEMAS, UNIDAD, grado:'omapa', temasLibro:2 });
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

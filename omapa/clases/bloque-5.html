@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Estrategias · OMAPA · AESWeb</title>
+<meta name="description" content="Entrenamiento para la olimpiada, bloque 5: Estrategias. La herramienta explicada con problemas reales de OMAPA, resueltos paso a paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de las clases de OMAPA ---------- */
+.fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+body[data-solo="1"] .fuente{font-size:.45em}
+.otros-bloques{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px}
+/* en el cuaderno de estas clases hay palabras: el renglón puede cortar */
+.cuaderno .alineado,body[data-solo="1"] .cuaderno .alineado{
+  grid-template-columns:max-content max-content max-content minmax(0,1fr); font-size:1.2em}
+.cuaderno .al-der{white-space:normal}
+.cuaderno .al-rot{font-size:.7em; padding-right:1em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">OMAPA</a><span class="sep">/</span>
+      <span>Bloque 5 · Estrategias</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Entrenamiento OMAPA</p>
+    <h1>Estrategias</h1>
+    <p class="bajada">«Si no podés resolver un problema, hay uno más fácil que sí podés resolver:
+      encontralo.»<span class="firma">George Pólya</span></p>
+    <div class="pie-tapa">
+      <span>Bloque 5 de 7 · cuadernillo de herramientas</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Bloque 5 de 7 · Estrategias</p>
+    <h2>La herramienta</h2>
+    <ul class="puntos">
+      <li>Cuando piden "el mayor" o "el menor", la respuesta no se adivina: se <b>construye</b>.</li>
+      <li>Para lo menor, se usa lo más chico posible en cada lugar; para lo mayor, lo más grande.</li>
+      <li>Y a veces conviene ir eligiendo, paso a paso, <b>siempre lo mejor</b>.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de entrenamiento · Los problemas son de las Olimpiadas Nacionales de Matemática
+    de OMAPA (Organización Multidisciplinaria de Apoyo a Profesores y Alumnos); cada uno
+    indica su ronda, su año y su grado. Las resoluciones y las explicaciones son propias.
+    Cada respuesta de esta página está verificada en
+    <span class="ec">verificacion/omapa_bloques.py</span>.
+    <div class="otros-bloques" style="margin-top:12px"><a class="chip" href="bloque-1.html">1. Contar bien</a> <a class="chip" href="bloque-2.html">2. Relaciones entre cantidades</a> <a class="chip" href="bloque-3.html">3. Patrones</a> <a class="chip" href="bloque-4.html">4. Números</a> <a class="chip" href="bloque-6.html">6. Ideas potentes</a> <a class="chip" href="bloque-7.html">7. Geometría</a></div>
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En estas clases no hay letras que poner en cursiva: los problemas son de números. */
+Pizarra.letras = /(?!)/g;
+/* la fuente de cada problema: ronda, año y grado */
+const fte = s => `<span class="fuente">${s}</span>`;
+/* para las figuras */
+const g = Geo;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const rect_ = (x, y, w, h, cls = 'g-fig') => `<rect class="${cls} traza" pathLength="1" x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+
+const TEMAS = [
+{
+  n:1, corto:'El caso extremo', titulo:'Construir el caso extremo a propósito: el mayor y el menor posible', pag:'Olimpiada Infantil · 3.º a 6.º grado',
+  concepto:{
+    formaTxt:'para el mínimo, todo lo más chico que se permita; para el máximo, todo lo más grande',
+    puntos:[
+      'Se lee con cuidado qué es lo menos y lo más que permite cada condición.',
+      'Se construye el caso y se comprueba que cumple todo.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el mínimo y el máximo', prosa:true, fija:1,
+      enun:`«Mi gata puede tener hasta 6 gatitos cada vez que se queda embarazada. Si ya tuvo crías 4 veces, ¿cuál es la menor y la mayor cantidad de gatitos que pudo tener?»${fte('Fiesta Matemática 2012 · 5.º grado')}`,
+      pasos:[
+        P('Lo menos: "tuvo crías" quiere decir al menos 1 cada vez.', ['el menor', '4 · 1 = 4']),
+        P('Lo más: 6 cada vez.', ['el mayor', '4 · 6 = 24']),
+      ], final:'la menor cantidad es 4 y la mayor, 24' },
+    { titulo:'"como máximo"', prosa:true, fija:1,
+      enun:`«Desde uno de los vértices de un polígono se pueden trazar como máximo 11 diagonales. ¿Cuántos lados tiene el polígono?»${fte('Fiesta Matemática 2007 · 5.º grado')}`,
+      pasos:[
+        'Desde un vértice salen diagonales a todos los vértices menos a él mismo y a sus dos vecinos: son 3 menos que la cantidad de vértices.',
+        P('Si son 11, los vértices son 3 más.', ['vértices', '11 + 3 = 14']),
+      ], final:'el polígono tiene 14 lados',
+      control:'Control: en un polígono de 14 lados, desde un vértice salen 14 − 3 = 11 diagonales ✓' },
+    { titulo:'el mayor y el menor de un dado', prosa:true, fija:1,
+      enun:`«Quique tira 4 dados. En uno obtiene el mayor número posible y en el segundo, el menor. Si la suma de los 4 dados es 15 y en ninguno se repitió el mismo número, ¿qué valores pudo obtener en los otros dos dados?»${fte('Fiesta Matemática 2010 · 3.º grado')}`,
+      pasos:[
+        P('El mayor de un dado es 6 y el menor, 1.', ['dos dados', '6 + 1 = 7']),
+        P('Los otros dos suman lo que falta.', ['los otros dos', '15 − 7 = 8']),
+        P('Distintos entre sí y distintos de 6 y de 1: solo pueden ser 2, 3, 4 o 5.', ['2 + 6', 'no: el 6 ya salió'], ['3 + 5', 'sí'], ['4 + 4', 'no: se repite']),
+      ], final:'3 y 5' },
+  ],
+  preguntas:[
+    { p:'En la gata, ¿por qué no puede ser 0 la menor cantidad?',
+      r:'Porque dice que "tuvo crías" 4 veces: cada vez tuvo al menos un gatito.' },
+    { p:'¿Por qué el menor número de un dado es 1 y no 0?',
+      r:'Porque las caras de un dado van del 1 al 6.' },
+    { p:'¿Cómo sé que en el ejemplo 3 no hay otra respuesta?',
+      r:'Porque se probaron todas las parejas posibles de números entre 2 y 5 que suman 8: solo 3 y 5 cumplen.' },
+  ],
+  notas:`<p>Los ejemplos 1 y 2 son el "para explicar" y el "para entrenar" del cuadernillo
+      Infantil.</p>
+    <p>El banco trae "3 y 1" como respuesta del ejemplo 1, que es un error de extracción del
+      PDF: la respuesta es 4 y 24, como está acá.</p>`
+},
+{
+  n:2, corto:'Elegir siempre lo mejor', titulo:'Optimizar: construir la solución paso a paso eligiendo siempre lo mejor', pag:'Olimpiada Juvenil · Nivel 1 y 2',
+  concepto:{
+    formaTxt:'en cada paso se toma la opción que más acerca al objetivo, y se comprueba que no hay nada mejor',
+    puntos:[
+      'Para usar la menor cantidad de envases, se usan primero los más grandes.',
+      'Para tener la mayor cantidad de sumandos, se usan los más chicos.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la menor cantidad de botellas', prosa:true, fija:1,
+      enun:`«Un comerciante envasa agua mineral en botellas de 1 litro, 2 litros y 5 litros. Quiere envasar 48 litros usando la menor cantidad posible de botellas. ¿Cuántas botellas de 2 litros usará?»${fte('Ronda Departamental 2012 · Nivel 1')}`,
+      pasos:[
+        P('Primero, todas las de 5 que se pueda.', ['de 5 litros', '9 botellas: 45 litros'], ['faltan', '48 − 45 = 3 litros']),
+        P('Los 3 litros que faltan, con la más grande que entre.', ['de 2 litros', '1 botella'], ['de 1 litro', '1 botella']),
+        'En total son 11 botellas; con 8 de 5 litros quedarían 8 litros, que necesitan 4 botellas más: peor.',
+      ], final:'usará 1 botella de 2 litros' },
+    { titulo:'la mayor cantidad de sumandos', prosa:true, fija:1,
+      enun:`«¿Cuál es la mayor cantidad de sumandos distintos en los que se puede descomponer el número 43, si todos los sumandos son números naturales?»${fte('Ronda Departamental 2011 · Nivel 1')}`,
+      pasos:[
+        P('Para tener muchos, uso los más chicos: 1, 2, 3…', ['1 al 8', '1 + 2 + … + 8 = 36'], ['1 al 9', '1 + 2 + … + 9 = 45']),
+        'Con 9 sumandos distintos lo mínimo es 45, que se pasa. Con 8 sí: al último le agrego lo que falta.',
+        P('Una descomposición con 8.', ['43', '1 + 2 + 3 + 4 + 5 + 6 + 7 + 15']),
+      ], final:'8 sumandos' },
+    { titulo:'la mayor cantidad de días', prosa:true, fija:1,
+      enun:`«Recordando que los años bisiestos tienen 1 día más que los no bisiestos, ¿cuál es la mayor cantidad de días que pueden tener juntos 10 años seguidos?»${fte('Ronda Departamental 2014 · Nivel 1')}`,
+      pasos:[
+        'Hay un bisiesto cada 4 años. En 10 años seguidos entran como máximo 3, si el primero es bisiesto.',
+        P('Cuento.', ['10 años comunes', '10 · 365 = 3650'], ['3 bisiestos', '3650 + 3 = 3653']),
+      ], final:'3653 días',
+      control:'Por ejemplo, de 2024 a 2033: son bisiestos 2024, 2028 y 2032 ✓' },
+    { titulo:'contar el máximo sin repetir', prosa:true, fija:1,
+      enun:`«Lucas debe escribir todos los números de dos cifras tales que al sumar las dos cifras el resultado sea mayor que 13. ¿Cuál es la mayor cantidad de números que puede escribir?»${fte('Ronda Zonal 2011 · Nivel 1')}`,
+      pasos:[
+        'La suma de dos cifras llega como mucho a 9 + 9 = 18. Separo por la suma.',
+        P('Cada suma, con sus números.', ['suma 14', '59, 68, 77, 86, 95: 5'], ['suma 15', '69, 78, 87, 96: 4'], ['suma 16', '79, 88, 97: 3'], ['suma 17', '89, 98: 2'], ['suma 18', '99: 1'], ['total', '5 + 4 + 3 + 2 + 1 = 15']),
+      ], final:'15 números' },
+  ],
+  preguntas:[
+    { p:'¿Siempre funciona elegir lo más grande primero?',
+      r:'Con botellas de 1, 2 y 5 sí. Con otros tamaños puede fallar: con envases de 1, 3 y 4, para 6 litros es mejor 3 + 3 que 4 + 1 + 1. Por eso hay que comprobar.' },
+    { p:'¿Por qué con 9 sumandos no se puede?',
+      r:'Porque los 9 números distintos más chicos ya suman 45, que es más que 43. Cualquier otra elección suma todavía más.' },
+    { p:'¿Por qué pueden entrar hasta 3 bisiestos en 10 años?',
+      r:'Porque si el primero es bisiesto, los siguientes están 4 y 8 años después, y los tres entran en los 10.' },
+  ],
+  notas:`<p>El ejemplo 1 es el "para explicar" del cuadernillo Juvenil y el 2, el "para
+      entrenar". La trampa de esta herramienta es no comprobar: la primera pregunta del
+      observador tiene un contraejemplo.</p>`
+},
+];
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve aprender una herramienta, si cada problema es distinto?',
+      r:'Porque los problemas de olimpiada visten la misma idea con contextos distintos: patas de animales, monedas, puntajes. Reconocer la herramienta es reconocer el problema.' },
+    { p:'¿Estos problemas son de verdad de la olimpiada?',
+      r:'Sí: cada uno dice de qué ronda, qué año y qué grado es. Las resoluciones son nuestras.' },
+  ],
+  notas:`<p>Esta clase es el <b>bloque 5</b> del cuadernillo de herramientas: primero la
+      herramienta de la Olimpiada Infantil (3.º a 6.º) y después la de la Juvenil (7.º a 9.º).
+      Cada tema empieza con el problema "para explicar en clase" del cuadernillo y sigue con
+      los "para entrenar" y otros del banco que se resuelven con la misma idea.</p>
+    <p>Conviene no decir de entrada qué herramienta es: dejar que la busquen con el primer
+      problema, y nombrarla recién cuando aparece.</p>
+    <p>Las fichas de entrenamiento por grado están en la página de OMAPA. Las claves no están
+      en el sitio.</p>`
+};
+Pizarra.unidad({ TEMAS, UNIDAD, grado:'omapa', temasLibro:2 });
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>
