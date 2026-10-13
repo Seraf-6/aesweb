@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Adentro de su cabeza · Open House 2026</title>
+<link rel="stylesheet" href="../assets/base.css">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<main class="o-env">
+<header>
+<p class="o-sello">Museo de problemas · Open House 2026</p>
+<h1>Adentro de su cabeza</h1>
+</header>
+<form class="o-buscar" role="search" onsubmit="return false">
+  <label for="q">Buscar una pieza</label>
+  <input id="q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false"
+         placeholder="Nombre o código, por ejemplo 3a-07" enterkeyhint="go">
+  <p class="o-ayuda">El código está escrito debajo del QR de cada hoja.</p>
+</form>
+<ul class="o-lista" id="resultados" aria-live="polite"></ul>
+<section>
+<p>Durante tres semanas, cada alumno del colegio, de 2.º a 9.º grado, hizo algo que no se les suele pedir: en vez de resolver un problema de matemática, inventó uno.</p><p>Parece lo mismo y no lo es. Para que un problema funcione hay que dar todos los datos necesarios y ninguno de más, y que tenga una sola respuesta. Casi todos descubrieron, escribiendo, que su primer problema tenía dos respuestas o le faltaba un dato. Ese descubrimiento es lo que vinieron a aprender.</p><p>Lo que está colgado acá es de ellos: el dibujo, la letra, el razonamiento y la voz.</p>
+<ol class="o-pasos"><li><strong>1 · Intentalo.</strong> Antes de levantar nada.</li><li><strong>2 · Levantá la hoja.</strong> Abajo está la solución, con la letra del autor.</li><li><strong>3 · Escaneá el código.</strong> Vas a escuchar al autor contando cómo se le ocurrió.</li></ol>
+<p><em>el recorrido va de 2.º a 9.º grado; la dificultad sube a medida que avanzás</em></p>
+</section>
+<section>
+<h2>Las salas</h2>
+<div class="o-salas"><a class="o-boton" href="sala/2/index.html">2.º grado</a><a class="o-boton" href="sala/3/index.html">3.º grado</a><a class="o-boton" href="sala/4/index.html">4.º grado</a><a class="o-boton" href="sala/5/index.html">5.º grado</a><a class="o-boton" href="sala/6/index.html">6.º grado</a><a class="o-boton" href="sala/7/index.html">7.º grado</a><a class="o-boton" href="sala/8/index.html">8.º grado</a><a class="o-boton" href="sala/9/index.html">9.º grado</a></div>
+</section>
+<p class="o-pie">Albert Einstein School · sábado 24 de octubre de 2026</p>
+</main>
+<script>
+(function () {
+  var P = [];
+  var q = document.getElementById('q'), out = document.getElementById('resultados');
+  function norm(s) { return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+  function comoCodigo(s) {
+    var m = norm(s).replace(/\s+/g, '').match(/^([2-9])([a-z])-?(\d{1,2})$/);
+    return m ? m[1] + m[2] + '-' + (m[3].length < 2 ? '0' : '') + m[3] : null;
+  }
+  function buscar() {
+    var t = q.value.trim(), cod = comoCodigo(t), palabras = norm(t).split(/\s+/).filter(Boolean);
+    out.textContent = '';
+    if (!t) return [];
+    var hall = P.filter(function (p) {
+      if (cod) return p[0] === cod;
+      var h = norm(p.join(' ') + ' ' + p[2].replace('.º', '') + p[3]);
+      // acá solo está la inicial del apellido: «gomez» coincide con «G.»
+      var iniciales = norm(p[1]).split(/\s+/).filter(function (x) { return /^.\.$/.test(x); })
+        .map(function (x) { return x.charAt(0); });
+      return palabras.every(function (w, i) {
+        return h.indexOf(w) >= 0 || (i > 0 && w.length > 1 && iniciales.indexOf(w.charAt(0)) >= 0);
+      });
+    });
+    hall.slice(0, 40).forEach(function (p) {
+      var li = document.createElement('li'), a = document.createElement('a');
+      a.href = 'p/' + p[0] + '/index.html';
+      var c = document.createElement('span'); c.className = 'cod'; c.textContent = p[0];
+      var n = document.createElement('span'); n.textContent = p[1] + ' · ' + p[2] + ' ' + p[3];
+      a.appendChild(c); a.appendChild(n);
+      if (p[4]) { var s = document.createElement('span'); s.className = 'tit'; s.textContent = p[4]; n.appendChild(document.createElement('br')); n.appendChild(s); }
+      li.appendChild(a); out.appendChild(li);
+    });
+    if (!hall.length) {
+      var li = document.createElement('li'); li.className = 'o-ayuda';
+      li.textContent = 'No encontramos esa pieza. Probá con el nombre, o mirá la sala del grado.';
+      out.appendChild(li);
+    }
+    return hall;
+  }
+  q.addEventListener('input', buscar);
+  q.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Enter') return;
+    var h = buscar();
+    if (h.length === 1) location.href = 'p/' + h[0][0] + '/index.html';
+  });
+})();
+</script>
+</body>
+</html>

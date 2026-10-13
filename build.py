@@ -5,6 +5,9 @@ Lee `contenido.py` y escribe las páginas de índice. Las páginas de clase
 (las diapositivas) se escriben a mano en matematica/<grado>/ y este
 script no las toca: solo las enlaza.
 
+También genera el módulo Open House 2026 (open-2026/) desde
+`open2026/piezas.py` y `open2026/salas.py`: ver `open2026/generar.py`.
+
     python3 build.py
 
 No necesita ninguna biblioteca externa.
@@ -15,6 +18,7 @@ import pathlib
 import shutil
 
 from contenido import SITIO, GRADOS, OMAPA, FICHAS
+from open2026 import generar as open2026
 
 RAIZ = pathlib.Path(__file__).resolve().parent
 
@@ -115,6 +119,11 @@ def portada():
       <span class="rotulo">Todas juntas</span>
       <h3>Fichas de ejercitación</h3>
       <p>Las fichas de los tres grados, en PDF, para imprimir.</p></a>""")
+    cuerpo.append("""<a class="tarjeta" href="open-2026/index.html">
+      <span class="rotulo">Sábado 24 de octubre</span>
+      <h3>Open House 2026</h3>
+      <p>Museo de problemas: cada alumno de 2.º a 9.º inventó uno. Las piezas, sus audios
+        y las salas.</p></a>""")
     cuerpo.append("""<a class="tarjeta" href="progreso/index.html">
       <span class="rotulo">Para el docente</span>
       <h3>Progreso del tramo</h3>
@@ -309,6 +318,20 @@ def main():
     for r in hechas:
         print('  ', r)
     print(f'{len(hechas)} páginas generadas.')
+
+    del_modulo, info = open2026.escribir(RAIZ)
+    hechas += del_modulo
+    print(f'Open House 2026: {len(del_modulo)} archivos en open-2026/, '
+          f'{info["qr_nuevos"]} QR nuevos.')
+    if info['sin_segno']:
+        print(f'  ¡Ojo! Faltan {len(info["sin_segno"])} QR y segno no está instalado '
+              f'(pip install segno): {", ".join(info["sin_segno"][:8])}…')
+    if info['invalidas']:
+        print('  ¡Ojo! Piezas con el código o el grado mal escritos (no se generaron): '
+              + ', '.join(info['invalidas']) + '. Ver open2026/verificar.py.')
+    if info['huerfanas']:
+        print('  Páginas de piezas que ya no están en piezas.py (se dejan, por si su QR '
+              'sigue pegado): ' + ', '.join(info['huerfanas']))
     sueltas = sorted(p.relative_to(RAIZ).as_posix() for p in RAIZ.rglob('*.html')
                      if p.relative_to(RAIZ).as_posix() not in hechas)
     if sueltas:

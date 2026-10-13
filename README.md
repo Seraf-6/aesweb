@@ -43,6 +43,9 @@ omapa/index.html            módulo de olimpiada          ← lo genera build.py
 omapa/clases/bloque-N.html  clases por herramienta       ← escritas a mano
 omapa/fichas/               fichas de alumno OMAPA y Kanguro (sin claves)
 progreso/index.html         progreso del tramo           ← escrita a mano
+open-2026/                  Open House 2026: piezas, salas, QR  ← lo genera build.py
+open2026/                   las piezas y las salas (la fuente), el generador, el verificador
+herramientas/               cargar la lista de alumnos, preparar audios y fotos
 assets/
   base.css                  colores, tipografía, notación, panel de proyección
   clase.css                 los componentes de las páginas de clase
@@ -324,7 +327,8 @@ correrlo.
 
 Hay uno por cada página de clase (ecuaciones y polígonos de 7.º,
 factoreo y sistemas de 8.º, ecuaciones de segundo grado de 9.º), uno para
-las siete clases de OMAPA y uno para el módulo de progreso.
+las siete clases de OMAPA y uno para el módulo de progreso. El Open House
+tiene el suyo: `open2026/verificar.py`.
 
 Las páginas de clase cargan `assets/pizarra.js` (sin `defer`, antes de su
 propio guion) y enlazan `assets/clase.css`, que tiene los componentes
@@ -446,6 +450,148 @@ bruta: recorre todos los casos de cada problema.
 
 ---
 
+## El módulo Open House 2026
+
+La muestra del sábado 24 de octubre de 2026 es un pasillo con una hoja A4
+por alumno, de 2.º a 9.º grado: cada uno inventó un problema de olimpiada, lo
+ilustró a mano y grabó treinta segundos contando cómo se le ocurrió. Cada
+hoja lleva impreso un QR que lleva a **su** pieza: el padre está parado
+frente a la hoja de su hijo, con una mano ocupada, y no puede ponerse a
+buscar entre doscientos nombres.
+
+```
+open-2026/index.html          portada: qué es la obra, cómo recorrerla, buscador
+open-2026/p/<codigo>/         una página por pieza            ← su QR, en la hoja
+open-2026/sala/<n>/           el texto de sala de cada grado   ← su QR, en el panel
+open-2026/qr/                 la hoja de etiquetas QR, A4
+open-2026/paneles/            los nueve paneles de sala, A3
+open-2026/mapa/               qué pieza va en qué pared
+open-2026/audio/  img/        los .m4a y .jpg ya preparados
+open-2026/qr/svg/             los QR, commiteados
+open-2026/qr/manifest.json    codigo → url → archivo, para el verificador
+open2026/piezas.py            LA FUENTE: una entrada por pieza
+open2026/salas.py             los textos de sala y el panel de entrada
+open2026/generar.py           el generador (lo llama build.py)
+open2026/verificar.py         el verificador
+herramientas/                 cargar la lista, preparar audios y fotos
+```
+
+**`open2026/piezas.py` y `open2026/salas.py` son la única fuente de verdad
+del módulo.** `build.py` genera todo `open-2026/` con `open2026/generar.py`
+y nada de ahí adentro se edita a mano: los audios y las fotos los dejan las
+herramientas. El módulo no está en `contenido.py`: la portada del sitio lo
+enlaza directo.
+
+**El código de una pieza no cambia nunca.** Es `<grado><sección>-<nn>`
+(`3a-07`), no lleva el nombre, y la dirección de la pieza depende solo de él:
+`https://seraf-6.github.io/aesweb/open-2026/p/3a-07/`. Si cambia el audio, el
+título o la foto, la dirección sigue igual. Reimprimir doscientas etiquetas
+porque se movió un archivo es el error caro de este módulo. Por lo mismo:
+
+- Los QR se hacen con `segno` **una sola vez**, cuando falta el SVG, y quedan
+  commiteados. Con los SVG en el repositorio el sitio se construye sin segno.
+- Una pieza que sale de `piezas.py` deja su página: su QR puede seguir
+  pegado en una pared. `build.py` avisa cuáles quedaron así.
+- La dirección base (`URL_BASE` en `generar.py`) está impresa en todos los
+  QR. El verificador la tiene escrita aparte, a propósito.
+
+**Los nombres.** Al repositorio llega solo el nombre y la inicial del
+apellido («Ana G.»). La planilla con los nombres completos vive en la
+computadora del docente; `cargar_piezas.py` se niega a leerla si está
+adentro del repositorio, y `.gitignore` rechaza las planillas y los audios y
+fotos crudos. No hay analítica ni nada que registre quién escanea.
+
+### Cómo se carga
+
+1. **La lista**, una vez: `python herramientas/cargar_piezas.py <planilla>`.
+   Lee un CSV o XLSX con grado, sección y nombre y apellido (o una columna
+   «alumno» con «Apellido, Nombre»); título, dificultad y pared/fila/orden
+   son opcionales. Asigna los códigos y devuelve la planilla como
+   `<planilla>_con_codigos.csv`, al lado de la original: esa es la que se
+   guarda. Recargarla no cambia ningún código ni pierde audios ni fotos; si
+   se le pasa la vieja, sin códigos, se niega.
+2. `python build.py` e imprimir `open-2026/qr/` en A4 al 100 %. Las
+   etiquetas dependen solo de los códigos: se imprimen el primer día y no se
+   vuelven a tocar. Para reponer una que se despegó, la misma hoja deja
+   imprimir solo esa.
+3. **Los audios**, a medida que llegan:
+   `python herramientas/preparar_audio.py <archivo> 3a-07`. Necesita ffmpeg
+   (`winget install Gyan.FFmpeg`). Mide el volumen, recorta el silencio del
+   principio y del final con un umbral 20 dB por debajo de la voz (con un
+   umbral fijo, al susurro normalizado no se le iba el silencio), normaliza
+   con `loudnorm` en dos pasadas a −16 LUFS y codifica AAC mono a 40 kbps
+   (32 si pasa de 400 kB), en `.m4a`: Opus en `.ogg` no suena en iPhones
+   viejos. Una grabación muda la rechaza.
+4. **Las fotos**: `python herramientas/preparar_imagen.py <foto> 3a-07 problema`
+   (o `solucion`). Necesita Pillow. La endereza según el EXIF del celular,
+   la achica a 1600 px de ancho, JPEG calidad 82, y la guarda **sin EXIF**,
+   que trae la ubicación GPS de dónde se sacó.
+5. Las herramientas anotan el archivo en `piezas.py`; después, `build.py` y
+   el verificador.
+6. **Los paneles se imprimen al final**, cuando cada sala tenga su párrafo
+   de `encontramos`. Sus QR ya existen desde el primer día.
+
+### La página de una pieza
+
+Se usa de pie, con una mano, con poca luz y a veces con mala señal. Arriba
+van el grado, el nombre y el título; enseguida el `<audio controls
+preload="none">` nativo; después la foto del problema y la solución detrás
+de un `<details>` («Ver cómo se resuelve»), que no se descarga hasta que se
+abre; al pie, la pieza anterior y la siguiente, la sala y la portada. Letra
+de 18 px, áreas táctiles de 52 px, modo oscuro del sistema. Usa `base.css` y
+no lleva la barra del sitio, el panel de proyección, el timer ni las fuentes
+de Google: con mala señal, una hoja de estilos externa demora el primer
+dibujo.
+
+Si `audio` es None la página existe igual y dice «Ana todavía está grabando
+su explicación»: el QR ya está pegado. El campo `respuesta` está reservado
+para un audio de la familia: si algún día tiene valor, sale un segundo
+reproductor rotulado «lo que le respondió su familia». Recibir esos audios
+necesitaría un servicio aparte: GitHub Pages no recibe archivos.
+
+El buscador de la portada encuentra por código (`3a7`, `3A-07`) o por
+nombre, sin tildes. Como en el repositorio solo está la inicial, un apellido
+escrito entero coincide con su inicial.
+
+### Las salas y los paneles
+
+Un texto por grado más el panel de entrada. `encontramos` arranca en None y
+se escribe después de leer los problemas (ver `Textos_de_sala.md`, «Cómo
+escribir el punto 4»): mientras sea None, la sección no sale ni en la web
+ni en el panel. **Nunca se rellena.** Cada panel tiene como máximo 150
+palabras, contando el título y todas sus secciones; el verificador dice
+cuántas le quedan a cada sala.
+
+Los paneles: A3 vertical con 18 mm de margen, título de 66 pt, subtítulos de
+28, cuerpo de 24 (nunca menos: se lee a un metro, parado), interlineado 1,35
+y renglones de entre 45 y 55 caracteres. Texto oscuro sobre blanco y el QR
+de la sala abajo a la derecha, a 35 mm. Se imprimen desde Chrome o Edge al
+100 %, sin encabezados.
+
+### Verificar
+
+```bash
+python open2026/verificar.py
+```
+
+Falla si hay códigos repetidos o mal formados, un nombre que no termina en
+la inicial del apellido, un archivo que no existe, un audio de más de 400 kB,
+de menos de 3 s, que no es AAC o que no es mono, una foto de más de 1600 px
+o con EXIF, un QR que falta, dos piezas en el mismo lugar de la pared, una
+página sin `noindex`, un panel de más de 150 palabras o sin su QR, un grado
+con piezas y sin sala o una sala sin piezas. Lo hace por caminos distintos
+de los que produjeron cada cosa: **los QR se leen** (un lector de QR en
+Python puro, sin segno, que decodifica cada SVG y compara la dirección con
+la esperada y con el manifiesto), la duración de los audios sale del
+encabezado del `.m4a` y no de ffmpeg, y las fotos se leen como JPEG. Lo que
+falta y no es un error (audios sin grabar, fotos sin subir, el párrafo de
+`encontramos`) lo lista aparte.
+
+Antes de imprimir las etiquetas por primera vez se probó además la hoja
+impresa a PDF: OpenCV leyó todos sus QR, y medían 40 mm.
+
+---
+
 ## Las citas de las tapas
 
 Cada página de clase abre con una cita en vez de una explicación. La lista
@@ -488,6 +634,11 @@ PDF en la computadora del docente.
 Si alguna vez hace falta publicarlas, la única opción honesta es cifrado real
 del lado del cliente (AES-GCM con clave derivada por PBKDF2), no un `if
 (password === "...")`.
+
+**Los nombres completos de los alumnos.** Ni en el módulo de progreso ni
+en el Open House: ahí va solo el nombre y la inicial del apellido. La
+planilla del docente, los audios y las fotos crudas tampoco (`.gitignore`
+rechaza `.csv`, `.xlsx`, `.opus`, `.ogg` y `.heic`).
 
 **Material con derechos de autor.** Nada de escanear ni reproducir páginas de
 libros de texto. Los problemas de olimpiada son la excepción decidida por Juan:
@@ -569,7 +720,8 @@ las diapositivas de 7.º (ecuaciones lineales y polígonos) y las dos de 8.º
 (unidades 5 y 6), todas sobre el motor de la pizarra, con su
 verificador; el panel de proyección, el timer de aula y el módulo de
 progreso; y en OMAPA, las siete clases del cuadernillo de herramientas y las
-fichas de alumno de OMAPA y Kanguro.
+fichas de alumno de OMAPA y Kanguro; y el módulo del Open House 2026, con
+sus herramientas y su verificador, esperando la lista de alumnos.
 
 Pendiente: el proyecto de estadística compartido por los tres grados (falta
 definir el tema), las diapositivas de cuerpos geométricos de 9.º, el

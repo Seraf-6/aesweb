@@ -1,0 +1,75 @@
+/* Open House 2026 · lo genera open2026/generar.py: no se edita a mano.
+   Las páginas se usan de pie, con una mano y poca luz: letra de 18 px,
+   áreas táctiles de 48 px y nada arriba del audio salvo quién y qué. */
+body{background-image:none; font-size:18px; line-height:1.5}
+.o-env{max-width:640px; margin:0 auto; padding:14px 16px 40px}
+.o-sello{font-size:17px; color:var(--lapiz); margin:0}
+h1{margin:.1em 0 0; line-height:1.15}
+a{color:var(--acento)}
+
+/* la pieza */
+.p-grado{font-size:18px; color:var(--lapiz); margin:0}
+.p-nombre{font-size:32px}
+.p-titulo{font-family:var(--serif); font-size:24px; line-height:1.25; margin:.2em 0 0}
+.p-estrellas{font-size:18px; color:var(--dest); margin:.25em 0 0}
+.p-estrellas span{color:var(--lapiz); font-size:17px}
+.p-audio{margin:14px 0 22px}
+.p-audio audio{display:block; width:100%; min-height:54px}
+.p-audio .rotulo{font-size:17px; color:var(--lapiz); margin:0 0 6px}
+.p-espera{font-size:19px; background:var(--papel-2); border:1px solid var(--linea-fuerte);
+  border-radius:10px; padding:14px 16px; margin:0}
+.p-respuesta{margin-top:-8px}
+.p-hoja{margin:0 0 18px}
+.p-hoja img{display:block; width:100%; border:1px solid var(--linea-fuerte); border-radius:6px;
+  background:#fff}
+.p-hoja figcaption{font-size:17px; color:var(--lapiz); margin-top:6px}
+.p-falta{font-size:17px; color:var(--lapiz)}
+.p-solucion{margin:0 0 26px}
+.p-solucion summary{display:flex; align-items:center; justify-content:center; min-height:56px;
+  padding:10px 16px; border-radius:10px; border:2px solid var(--acento2); color:var(--acento2);
+  font-weight:700; font-size:19px; cursor:pointer; list-style:none; text-align:center}
+.p-solucion summary::-webkit-details-marker{display:none}
+.p-solucion[open] summary{margin-bottom:12px}
+.p-solucion img{display:block; width:100%; border:1px solid var(--linea-fuerte); border-radius:6px;
+  background:#fff}
+
+/* navegación de a pie: anterior / siguiente y la portada */
+.o-nav{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px}
+.o-nav a, .o-boton{display:flex; align-items:center; justify-content:center; min-height:52px;
+  padding:8px 12px; border:1px solid var(--linea-fuerte); border-radius:10px; background:var(--papel-2);
+  color:var(--tinta); text-decoration:none; font-weight:600; text-align:center; line-height:1.2}
+.o-nav .ancho{grid-column:1 / -1}
+.o-nav .vacio{visibility:hidden}
+.o-pie{font-size:17px; color:var(--lapiz); margin-top:28px}
+
+/* listas de piezas */
+.o-lista{list-style:none; padding:0; margin:0}
+.o-lista li{border-bottom:1px solid var(--linea)}
+.o-lista a{display:flex; gap:12px; align-items:baseline; min-height:52px; padding:10px 4px;
+  color:var(--tinta); text-decoration:none}
+.o-lista .cod{font-family:var(--mono); font-size:16px; color:var(--lapiz); flex:none; min-width:4.6em}
+.o-lista .tit{color:var(--lapiz)}
+
+/* portada */
+.o-buscar{margin:18px 0 8px}
+.o-buscar label{display:block; font-weight:700; margin-bottom:6px}
+.o-buscar input{width:100%; min-height:52px; font-size:19px; padding:10px 14px; border-radius:10px;
+  border:2px solid var(--linea-fuerte); background:var(--papel); color:var(--tinta)}
+.o-buscar input:focus{outline:3px solid var(--acento2); outline-offset:1px}
+.o-ayuda{font-size:17px; color:var(--lapiz); margin:6px 0 0}
+.o-pasos{padding-left:0; list-style:none}
+.o-pasos li{margin:0 0 10px}
+.o-salas{display:grid; gap:10px; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr))}
+
+/* sala */
+.s-seccion h2{font-size:21px; margin:1.1em 0 .2em}
+.s-seccion p{margin:0}
+
+/* mapa */
+.m-tabla{width:100%; border-collapse:collapse; font-size:17px}
+.m-tabla th, .m-tabla td{text-align:left; padding:6px 8px; border-bottom:1px solid var(--linea)}
+.m-tabla .falta{color:var(--acento); font-weight:700}
+.m-resumen{display:flex; flex-wrap:wrap; gap:8px 18px; padding:0; list-style:none}
+.o-env.ancha{max-width:1000px}
+.o-scroll{overflow-x:auto}
+@media print{ .no-imprimir{display:none!important} body{font-size:11pt} }

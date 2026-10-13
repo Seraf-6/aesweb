@@ -13,3 +13,13 @@ Thumbs.db
 *.aux
 *.log
 *.out
+
+# Open House 2026: la planilla con los nombres completos y los audios y fotos
+# crudos se quedan en la computadora del docente. Al repositorio llegan solo
+# los .m4a y .jpg que dejan las herramientas (ver CLAUDE.md).
+*.csv
+*.xlsx
+*.xls
+*.opus
+*.ogg
+*.heic
