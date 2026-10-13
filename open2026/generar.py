@@ -225,20 +225,23 @@ def pagina_pieza(p, ant, sig, raiz_mod):
     if p.get('respuesta'):
         audio += '\n' + reproductor(p['respuesta'], 'lo que le respondió su familia', 'p-respuesta')
 
-    def foto(archivo, alt):
+    def foto(archivo, alt, diferida):
         tam = tam_jpeg(raiz_mod / 'img' / archivo)
         wh = f' width="{tam[0]}" height="{tam[1]}"' if tam else ''
-        return f'<img src="../../img/{e(archivo)}" alt="{alt}"{wh} loading="lazy" decoding="async">'
+        # La hoja está en la primera pantalla: se pide enseguida. La solución
+        # espera a que se abra el botón.
+        carga = ' loading="lazy"' if diferida else ''
+        return f'<img src="../../img/{e(archivo)}" alt="{alt}"{wh}{carga} decoding="async">'
 
     if p.get('problema'):
         hoja = (f'<figure class="p-hoja"><a href="../../img/{e(p["problema"])}">'
-                f'{foto(p["problema"], "La hoja del problema, dibujada por " + e(pila))}</a>'
+                f'{foto(p["problema"], "La hoja del problema, dibujada por " + e(pila), False)}</a>'
                 f'<figcaption>Tocá la foto para verla entera.</figcaption></figure>')
     else:
         hoja = '<p class="p-falta">La foto de la hoja todavía no está cargada.</p>'
     if p.get('solucion'):
         solucion = (f'<details class="p-solucion"><summary>Ver cómo se resuelve</summary>'
-                    f'{foto(p["solucion"], "La solución, con la letra de " + e(pila))}</details>')
+                    f'{foto(p["solucion"], "La solución, con la letra de " + e(pila), True)}</details>')
     else:
         solucion = ''
 

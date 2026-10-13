@@ -9,7 +9,13 @@ Deja open-2026/img/<codigo>-problema.jpg (o -solucion.jpg):
   · de 1600 px de ancho como máximo;
   · JPEG calidad 82;
   · sin metadatos EXIF, que además de pesar traen la ubicación GPS de dónde
-    se sacó la foto.
+    se sacó la foto;
+  · con lo que no se publica tapado: el apellido completo que el alumno
+    escribió en la hoja, o una anotación del docente. Cada --tapar es un
+    rectángulo en porcentajes de la hoja (izquierda,arriba,derecha,abajo) y
+    se pinta del color del papel de alrededor:
+
+    python herramientas/preparar_imagen.py hoja.jpg 4a-07 problema --tapar 31,0,57,5
 
 Después anota la foto en open2026/piezas.py. Hace falta Pillow
 (pip install Pillow); para fotos .heic de iPhone, también pillow-heif.
@@ -25,6 +31,20 @@ MAX_ANCHO = 1600
 CALIDAD = 82
 
 
+def tapa(im, caja):
+    """Pinta el rectángulo del color del papel: la mediana de un marco alrededor."""
+    from PIL import ImageDraw
+    W, H = im.size
+    x0, y0, x1, y1 = (round(v / 100 * L) for v, L in zip(caja, (W, H, W, H)))
+    m = max(6, round(0.01 * W))
+    marco = [im.getpixel((x, y)) for x in range(max(0, x0 - m), min(W, x1 + m), 3)
+             for y in (max(0, y0 - m), min(H - 1, y1 + m))]
+    marco += [im.getpixel((x, y)) for y in range(max(0, y0 - m), min(H, y1 + m), 3)
+              for x in (max(0, x0 - m), min(W - 1, x1 + m))]
+    color = tuple(sorted(c[i] for c in marco)[len(marco) // 2] for i in range(3))
+    ImageDraw.Draw(im).rectangle([x0, y0, x1, y1], fill=color)
+
+
 def main():
     _piezas.utf8()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -32,7 +52,18 @@ def main():
     ap.add_argument('codigo')
     ap.add_argument('tipo', choices=('problema', 'solucion'))
     ap.add_argument('--no-anotar', action='store_true', help='no tocar piezas.py')
+    ap.add_argument('--tapar', action='append', default=[], metavar='X0,Y0,X1,Y1',
+                    help='rectángulo a tapar, en %% de la hoja; se puede repetir')
     a = ap.parse_args()
+    cajas = []
+    for t in a.tapar:
+        try:
+            x0, y0, x1, y1 = (float(v) for v in t.split(','))
+        except ValueError:
+            sys.exit(f'--tapar {t}: tienen que ser cuatro números separados por comas')
+        if not (0 <= x0 < x1 <= 100 and 0 <= y0 < y1 <= 100):
+            sys.exit(f'--tapar {t}: izquierda < derecha y arriba < abajo, entre 0 y 100')
+        cajas.append((x0, y0, x1, y1))
     try:
         from PIL import Image, ImageOps
     except ImportError:
@@ -57,6 +88,8 @@ def main():
     original = im.size
     im = ImageOps.exif_transpose(im)          # enderezar antes de borrar el EXIF
     im = im.convert('RGB')
+    for caja in cajas:
+        tapa(im, caja)
     if im.width > MAX_ANCHO:
         im = im.resize((MAX_ANCHO, round(im.height * MAX_ANCHO / im.width)), Image.LANCZOS)
     destino = _piezas.MODULO / 'img' / f'{cod}-{a.tipo}.jpg'

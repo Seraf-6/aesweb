@@ -1,6 +1,87 @@
 {
  "base": "https://seraf-6.github.io/aesweb/open-2026/",
- "piezas": {},
+ "piezas": {
+  "4a-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-01/",
+   "archivo": "qr/svg/4a-01.svg",
+   "pagina": "p/4a-01/index.html"
+  },
+  "4a-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-02/",
+   "archivo": "qr/svg/4a-02.svg",
+   "pagina": "p/4a-02/index.html"
+  },
+  "4a-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-03/",
+   "archivo": "qr/svg/4a-03.svg",
+   "pagina": "p/4a-03/index.html"
+  },
+  "4a-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-04/",
+   "archivo": "qr/svg/4a-04.svg",
+   "pagina": "p/4a-04/index.html"
+  },
+  "4a-05": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-05/",
+   "archivo": "qr/svg/4a-05.svg",
+   "pagina": "p/4a-05/index.html"
+  },
+  "4a-06": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-06/",
+   "archivo": "qr/svg/4a-06.svg",
+   "pagina": "p/4a-06/index.html"
+  },
+  "4a-07": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-07/",
+   "archivo": "qr/svg/4a-07.svg",
+   "pagina": "p/4a-07/index.html"
+  },
+  "4a-08": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-08/",
+   "archivo": "qr/svg/4a-08.svg",
+   "pagina": "p/4a-08/index.html"
+  },
+  "4a-09": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-09/",
+   "archivo": "qr/svg/4a-09.svg",
+   "pagina": "p/4a-09/index.html"
+  },
+  "4a-10": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-10/",
+   "archivo": "qr/svg/4a-10.svg",
+   "pagina": "p/4a-10/index.html"
+  },
+  "4a-11": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-11/",
+   "archivo": "qr/svg/4a-11.svg",
+   "pagina": "p/4a-11/index.html"
+  },
+  "4a-12": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-12/",
+   "archivo": "qr/svg/4a-12.svg",
+   "pagina": "p/4a-12/index.html"
+  },
+  "4a-13": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-13/",
+   "archivo": "qr/svg/4a-13.svg",
+   "pagina": "p/4a-13/index.html"
+  },
+  "4a-14": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-14/",
+   "archivo": "qr/svg/4a-14.svg",
+   "pagina": "p/4a-14/index.html"
+  },
+  "4a-15": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-15/",
+   "archivo": "qr/svg/4a-15.svg",
+   "pagina": "p/4a-15/index.html"
+  },
+  "4a-16": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-16/",
+   "archivo": "qr/svg/4a-16.svg",
+   "pagina": "p/4a-16/index.html"
+  }
+ },
  "salas": {
   "2": {
    "url": "https://seraf-6.github.io/aesweb/open-2026/sala/2/",

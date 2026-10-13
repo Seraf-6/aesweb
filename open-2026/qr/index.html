@@ -38,14 +38,14 @@ body{background:#fff; background-image:none; color:#000; margin:0; font-family:s
 </head>
 <body>
 <div class="instrucciones">
-<b>Etiquetas QR · 0 piezas, 0 hoja(s) A4.</b> Imprimir desde Chrome o
+<b>Etiquetas QR · 16 piezas, 1 hoja(s) A4.</b> Imprimir desde Chrome o
 Edge: Ctrl+P → A4, Márgenes <b>predeterminados</b>, Escala <b>100 %</b> (no «ajustar a la página»), sin
 encabezados. El QR tiene que medir 40 mm en el papel: medilo en la primera hoja antes de imprimir el resto.
 <br><label for="solo">Imprimir solo algunas</label> (para reponer una que se despegó): códigos o grados separados
 por coma, por ejemplo <code>3a-07, 5b-12</code> o <code>4a</code>. Vacío = todas.<br>
 <input id="solo" type="text" autocomplete="off" spellcheck="false">
 </div>
-<div id="hojas"></div>
+<div id="hojas"><section class="hoja"><div class="et" data-c="4a-01"><img src="svg/4a-01.svg" alt=""><div class="cod">4a-01</div><div class="quien">4.º A · Paula D.</div></div><div class="et" data-c="4a-02"><img src="svg/4a-02.svg" alt=""><div class="cod">4a-02</div><div class="quien">4.º A · Emma G.</div></div><div class="et" data-c="4a-03"><img src="svg/4a-03.svg" alt=""><div class="cod">4a-03</div><div class="quien">4.º A · Carla G.</div></div><div class="et" data-c="4a-04"><img src="svg/4a-04.svg" alt=""><div class="cod">4a-04</div><div class="quien">4.º A · Jimena G.</div></div><div class="et" data-c="4a-05"><img src="svg/4a-05.svg" alt=""><div class="cod">4a-05</div><div class="quien">4.º A · Guillermo I.</div></div><div class="et" data-c="4a-06"><img src="svg/4a-06.svg" alt=""><div class="cod">4a-06</div><div class="quien">4.º A · Benjamín L.</div></div><div class="et" data-c="4a-07"><img src="svg/4a-07.svg" alt=""><div class="cod">4a-07</div><div class="quien">4.º A · Francesca M.</div></div><div class="et" data-c="4a-08"><img src="svg/4a-08.svg" alt=""><div class="cod">4a-08</div><div class="quien">4.º A · Enzo M.</div></div><div class="et" data-c="4a-09"><img src="svg/4a-09.svg" alt=""><div class="cod">4a-09</div><div class="quien">4.º A · Pedro Ignacio M.</div></div><div class="et" data-c="4a-10"><img src="svg/4a-10.svg" alt=""><div class="cod">4a-10</div><div class="quien">4.º A · Constantino O.</div></div><div class="et" data-c="4a-11"><img src="svg/4a-11.svg" alt=""><div class="cod">4a-11</div><div class="quien">4.º A · Marcelo S.</div></div><div class="et" data-c="4a-12"><img src="svg/4a-12.svg" alt=""><div class="cod">4a-12</div><div class="quien">4.º A · Jeremías S.</div></div><div class="et" data-c="4a-13"><img src="svg/4a-13.svg" alt=""><div class="cod">4a-13</div><div class="quien">4.º A · Guillermina S.</div></div><div class="et" data-c="4a-14"><img src="svg/4a-14.svg" alt=""><div class="cod">4a-14</div><div class="quien">4.º A · Valeria Monserrat T.</div></div><div class="et" data-c="4a-15"><img src="svg/4a-15.svg" alt=""><div class="cod">4a-15</div><div class="quien">4.º A · Luisa Giuliana T.</div></div><div class="et" data-c="4a-16"><img src="svg/4a-16.svg" alt=""><div class="cod">4a-16</div><div class="quien">4.º A · Mauro Sebastián V.</div></div></section></div>
 <script>
 (function () {
   var todas = Array.prototype.slice.call(document.querySelectorAll('.et'));

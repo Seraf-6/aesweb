@@ -522,11 +522,24 @@ fotos crudos. No hay analítica ni nada que registre quién escanea.
    umbral fijo, al susurro normalizado no se le iba el silencio), normaliza
    con `loudnorm` en dos pasadas a −16 LUFS y codifica AAC mono a 40 kbps
    (32 si pasa de 400 kB), en `.m4a`: Opus en `.ogg` no suena en iPhones
-   viejos. Una grabación muda la rechaza.
+   viejos. Una grabación muda la rechaza. Los audios llegan con nombres
+   como «Doctor Moises Santiago Bertoni 33» (el nombre que les pone el
+   iPhone según la calle donde se grabó) y con varias tomas por alumno:
+   para saber de quién es cada uno y cuál es la buena, en 4.º se
+   transcribieron todos en la computadora con faster-whisper (modelo
+   `small`, el audio decodificado con ffmpeg). Nada de eso va al
+   repositorio.
 4. **Las fotos**: `python herramientas/preparar_imagen.py <foto> 3a-07 problema`
    (o `solucion`). Necesita Pillow. La endereza según el EXIF del celular,
    la achica a 1600 px de ancho, JPEG calidad 82, y la guarda **sin EXIF**,
-   que trae la ubicación GPS de dónde se sacó.
+   que trae la ubicación GPS de dónde se sacó. **Hay que mirar cada hoja
+   antes**: los chicos escriben su nombre y apellido completos (arriba, en
+   el enunciado, firmado al pie) y las docentes anotan encima («Audio ✓»,
+   «Grabar de nuevo», «Falta solución»). Todo eso se tapa con
+   `--tapar izquierda,arriba,derecha,abajo` en porcentajes de la hoja, que
+   pinta el rectángulo del color del papel; el nombre de pila queda. Después
+   se revisa la zona tapada con lupa: en 4.º, la primera pasada dejó
+   asomar «…randa» de un apellido.
 5. Las herramientas anotan el archivo en `piezas.py`; después, `build.py` y
    el verificador.
 6. **Los paneles se imprimen al final**, cuando cada sala tenga su párrafo
