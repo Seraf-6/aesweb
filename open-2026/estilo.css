@@ -19,6 +19,8 @@ a{color:var(--acento)}
 .p-espera{font-size:19px; background:var(--papel-2); border:1px solid var(--linea-fuerte);
   border-radius:10px; padding:14px 16px; margin:0}
 .p-respuesta{margin-top:-8px}
+.p-cual{font-size:22px; margin:26px 0 4px; padding-top:14px; border-top:2px solid var(--linea-fuerte)}
+.p-cual:first-child{border-top:0; padding-top:0; margin-top:10px}
 .p-hoja{margin:0 0 18px}
 .p-hoja img{display:block; width:100%; border:1px solid var(--linea-fuerte); border-radius:6px;
   background:#fff}

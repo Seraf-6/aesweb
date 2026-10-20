@@ -340,8 +340,14 @@ def main():
             falta('sin ubicar en la pared', donde)
 
         # ── los archivos ──
-        for campo in ('audio', 'respuesta'):
-            arch = p.get(campo)
+        extras = list(p.get('mas') or [])
+        for k, q in enumerate(extras, 2):
+            if not isinstance(q, dict) or set(q) - {'audio', 'problema', 'solucion'}:
+                falla(donde, f'el problema {k} (mas) tiene que tener solo audio, problema y solución')
+        archivos_audio = [(c, p.get(c)) for c in ('audio', 'respuesta')]
+        archivos_audio += [(f'audio del problema {k}', q.get('audio')) for k, q in enumerate(extras, 2)
+                           if isinstance(q, dict) and q.get('audio')]
+        for campo, arch in archivos_audio:
             if not arch:
                 if campo == 'audio':
                     falta('sin audio', donde)
@@ -366,8 +372,9 @@ def main():
                 falla(donde, f'{campo} {arch} no es AAC (códec {codec})')
             elif canales != 1:
                 falla(donde, f'{campo} {arch} tiene {canales} canales: tiene que ser mono')
-        for campo in ('problema', 'solucion'):
-            arch = p.get(campo)
+        fotos = [(c, p.get(c)) for c in ('problema', 'solucion')]
+        fotos += [(c, q.get(c)) for q in extras if isinstance(q, dict) for c in ('problema', 'solucion') if q.get(c)]
+        for campo, arch in fotos:
             if not arch:
                 falta('sin foto de la solución' if campo == 'solucion' else 'sin foto del problema', donde)
                 continue
@@ -400,6 +407,10 @@ def main():
                         falla(donde, 'en la página hay una foto antes del audio')
                 elif 'todavía está grabando' not in h:
                     falla(donde, 'la página no avisa que el audio todavía no está')
+                for k, q in enumerate(extras, 2):
+                    for c in ('audio', 'problema', 'solucion'):
+                        if isinstance(q, dict) and q.get(c) and q[c] not in h:
+                            falla(donde, f'la página no muestra el {c} del problema {k}')
                 if p.get('respuesta') and 'lo que le respondió su familia' not in h:
                     falla(donde, 'la página no muestra el audio de respuesta')
                 if p.get('solucion'):
@@ -537,6 +548,8 @@ def main():
 
     # ── archivos sueltos (no es error: se avisan) ──
     usados = {p.get(c) for p in PIEZAS for c in ('audio', 'respuesta', 'problema', 'solucion')}
+    usados |= {q.get(c) for p in PIEZAS for q in (p.get('mas') or []) if isinstance(q, dict)
+               for c in ('audio', 'problema', 'solucion')}
     sueltos = [f'{c}/{x.name}' for c in ('audio', 'img') if (mod / c).is_dir()
                for x in sorted((mod / c).iterdir()) if x.is_file() and x.name not in usados]
 

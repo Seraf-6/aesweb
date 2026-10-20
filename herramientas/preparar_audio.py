@@ -5,7 +5,8 @@
 Toma lo que llegó (.opus de WhatsApp, .m4a de iPhone, .mp3, un video…) y deja
 open-2026/audio/<codigo>.m4a listo para publicar:
 
-  · AAC en .m4a, mono, 40 kbps (32 si hace falta para no pasar de 400 kB).
+  · AAC en .m4a, mono, 40 kbps (32 o 24 si hace falta para no pasar de 400 kB:
+    las grabaciones no se cortan).
     No Opus en .ogg: no se reproduce en iPhones viejos.
   · El volumen normalizado con loudnorm, en dos pasadas (−16 LUFS): el chico
     tímido y el que grita salen igual de fuerte.
@@ -65,6 +66,8 @@ def main():
     ap.add_argument('crudo')
     ap.add_argument('codigo')
     ap.add_argument('--no-anotar', action='store_true', help='no tocar piezas.py')
+    ap.add_argument('--numero', type=int, default=1,
+                    help='2 para el audio del segundo problema del mismo alumno')
     a = ap.parse_args()
     crudo = pathlib.Path(a.crudo)
     cod = a.codigo.strip().lower()
@@ -92,9 +95,9 @@ def main():
     filtro = f'highpass=f=80,{corta},areverse,{corta},areverse,{ln}'
 
     # 2.ª pasada: recortar, normalizar y codificar
-    destino = _piezas.MODULO / 'audio' / f'{cod}.m4a'
+    destino = _piezas.MODULO / 'audio' / _piezas.nombre_archivo(cod, a.numero, '.m4a')
     destino.parent.mkdir(parents=True, exist_ok=True)
-    for kbps in (40, 32):
+    for kbps in (40, 32, 24):           # 24 solo para las grabaciones muy largas: no se cortan
         corre([ffmpeg, '-hide_banner', '-nostats', '-y', '-i', str(crudo), '-vn', '-sn', '-dn',
                '-af', filtro, '-ac', '1', '-ar', '44100', '-c:a', 'aac', '-b:a', f'{kbps}k',
                '-map_metadata', '-1', '-movflags', '+faststart', str(destino)])
@@ -109,7 +112,7 @@ def main():
     if kb > MAX_KB:
         print(f'  ¡Ojo! Pesa más de {MAX_KB} kB: dura {seg:.0f} s. Habría que recortarla.')
     if not a.no_anotar:
-        antes = _piezas.pone(cod, 'audio', destino.name)
+        antes = _piezas.pone(cod, 'audio', destino.name, a.numero)
         print(f'  piezas.py: audio {antes!r} → {destino.name!r}. Falta correr build.py.')
 
 

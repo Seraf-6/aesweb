@@ -33,7 +33,8 @@ def _entrada(p):
             f"   'titulo': {r('titulo')}, 'dificultad': {r('dificultad')},\n"
             f"   'audio': {r('audio')}, 'problema': {r('problema')}, 'solucion': {r('solucion')}, "
             f"'respuesta': {r('respuesta')},\n"
-            f"   'pared': {r('pared')}, 'fila': {r('fila')}, 'orden': {r('orden')}}},\n")
+            f"   'pared': {r('pared')}, 'fila': {r('fila')}, 'orden': {r('orden')}"
+            + (f",\n   'mas': {p['mas']!r}" if p.get('mas') else '') + "},\n")
 
 
 def escribe(piezas):
@@ -44,16 +45,29 @@ def escribe(piezas):
     ARCHIVO.write_text(texto[:i] + 'PIEZAS = [\n' + cuerpo + ']\n' + texto[j:], encoding='utf-8')
 
 
-def pone(codigo, campo, valor):
-    """Cambia un campo de una pieza. Devuelve el valor anterior."""
+def pone(codigo, campo, valor, numero=1):
+    """Cambia un campo de una pieza. `numero` 2, 3… es el segundo, tercer problema
+    del mismo alumno (en `mas`). Devuelve el valor anterior."""
     piezas = lee()
     for p in piezas:
         if p['codigo'] == codigo:
-            antes = p.get(campo)
-            p[campo] = valor
+            destino = p
+            if numero > 1:
+                mas = p.setdefault('mas', [])
+                while len(mas) < numero - 1:
+                    mas.append({'audio': None, 'problema': None, 'solucion': None})
+                destino = mas[numero - 2]
+            antes = destino.get(campo)
+            destino[campo] = valor
             escribe(piezas)
             return antes
     raise KeyError(codigo)
+
+
+def nombre_archivo(codigo, numero, resto):
+    """3-07.m4a, 3-07-problema.jpg; el segundo problema: 3-07-2.m4a, 3-07-2-problema.jpg."""
+    base = codigo if numero == 1 else f'{codigo}-{numero}'
+    return base + resto
 
 
 def existe(codigo):

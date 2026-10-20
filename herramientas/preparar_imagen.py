@@ -52,6 +52,10 @@ def main():
     ap.add_argument('codigo')
     ap.add_argument('tipo', choices=('problema', 'solucion'))
     ap.add_argument('--no-anotar', action='store_true', help='no tocar piezas.py')
+    ap.add_argument('--numero', type=int, default=1,
+                    help='2 para la hoja del segundo problema del mismo alumno')
+    ap.add_argument('--girar', type=int, default=0, choices=(0, 90, 180, 270),
+                    help='grados en sentido horario, para una hoja escaneada de costado')
     ap.add_argument('--tapar', action='append', default=[], metavar='X0,Y0,X1,Y1',
                     help='rectángulo a tapar, en %% de la hoja; se puede repetir')
     a = ap.parse_args()
@@ -88,11 +92,13 @@ def main():
     original = im.size
     im = ImageOps.exif_transpose(im)          # enderezar antes de borrar el EXIF
     im = im.convert('RGB')
+    if a.girar:                               # --tapar se mide sobre la hoja ya derecha
+        im = im.rotate(-a.girar, expand=True)
     for caja in cajas:
         tapa(im, caja)
     if im.width > MAX_ANCHO:
         im = im.resize((MAX_ANCHO, round(im.height * MAX_ANCHO / im.width)), Image.LANCZOS)
-    destino = _piezas.MODULO / 'img' / f'{cod}-{a.tipo}.jpg'
+    destino = _piezas.MODULO / 'img' / _piezas.nombre_archivo(cod, a.numero, f'-{a.tipo}.jpg')
     destino.parent.mkdir(parents=True, exist_ok=True)
     # Sin exif= ni icc_profile=: Pillow no copia ningún metadato.
     im.save(destino, 'JPEG', quality=CALIDAD, optimize=True, progressive=True)
@@ -100,7 +106,7 @@ def main():
     print(f'{cod}: {foto.name} ({original[0]}×{original[1]}) → '
           f'{destino.relative_to(_piezas.RAIZ).as_posix()} ({im.width}×{im.height}, {kb:.0f} kB)')
     if not a.no_anotar:
-        antes = _piezas.pone(cod, a.tipo, destino.name)
+        antes = _piezas.pone(cod, a.tipo, destino.name, a.numero)
         print(f'  piezas.py: {a.tipo} {antes!r} → {destino.name!r}. Falta correr build.py.')
 
 

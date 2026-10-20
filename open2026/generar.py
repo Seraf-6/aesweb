@@ -139,6 +139,8 @@ a{color:var(--acento)}
 .p-espera{font-size:19px; background:var(--papel-2); border:1px solid var(--linea-fuerte);
   border-radius:10px; padding:14px 16px; margin:0}
 .p-respuesta{margin-top:-8px}
+.p-cual{font-size:22px; margin:26px 0 4px; padding-top:14px; border-top:2px solid var(--linea-fuerte)}
+.p-cual:first-child{border-top:0; padding-top:0; margin-top:10px}
 .p-hoja{margin:0 0 18px}
 .p-hoja img{display:block; width:100%; border:1px solid var(--linea-fuerte); border-radius:6px;
   background:#fff}
@@ -217,15 +219,6 @@ def pagina_pieza(p, ant, sig, raiz_mod):
                 f'  <audio controls preload="none"><source src="{src}" type="audio/mp4">'
                 f'<a href="{src}">Escuchar el audio</a></audio>\n</section>')
 
-    if p.get('audio'):
-        audio = reproductor(p['audio'], f'{e(pila)} cuenta cómo se le ocurrió')
-    else:
-        audio = (f'<section class="p-audio"><p class="p-espera">{e(pila)} todavía está grabando '
-                 f'su explicación.</p></section>')
-    # Reservado: el audio con que respondió la familia. Hoy siempre es None.
-    if p.get('respuesta'):
-        audio += '\n' + reproductor(p['respuesta'], 'lo que le respondió su familia', 'p-respuesta')
-
     def foto(archivo, alt, diferida):
         tam = tam_jpeg(raiz_mod / 'img' / archivo)
         wh = f' width="{tam[0]}" height="{tam[1]}"' if tam else ''
@@ -234,17 +227,33 @@ def pagina_pieza(p, ant, sig, raiz_mod):
         carga = ' loading="lazy"' if diferida else ''
         return f'<img src="../../img/{e(archivo)}" alt="{alt}"{wh}{carga} decoding="async">'
 
-    if p.get('problema'):
-        hoja = (f'<figure class="p-hoja"><a href="../../img/{e(p["problema"])}">'
-                f'{foto(p["problema"], "La hoja del problema, dibujada por " + e(pila), False)}</a>'
-                f'<figcaption>Tocá la foto para verla entera.</figcaption></figure>')
-    else:
-        hoja = '<p class="p-falta">La foto de la hoja todavía no está cargada.</p>'
-    if p.get('solucion'):
-        solucion = (f'<details class="p-solucion"><summary>Ver cómo se resuelve</summary>'
-                    f'{foto(p["solucion"], "La solución, con la letra de " + e(pila), True)}</details>')
-    else:
-        solucion = ''
+    # Un alumno puede tener más de un problema (`mas`): cada uno con su audio,
+    # su hoja y su solución, en ese orden.
+    problemas = [p] + list(p.get('mas') or [])
+    bloques = []
+    for k, q in enumerate(problemas, 1):
+        partes = []
+        if len(problemas) > 1:
+            partes.append(f'<h2 class="p-cual">Problema {k}</h2>')
+        if q.get('audio'):
+            rot = f'{e(pila)} cuenta cómo se le ocurrió' + (f' el problema {k}' if len(problemas) > 1 else '')
+            partes.append(reproductor(q['audio'], rot))
+        elif k == 1:
+            partes.append(f'<section class="p-audio"><p class="p-espera">{e(pila)} todavía está grabando '
+                          f'su explicación.</p></section>')
+        # Reservado: el audio con que respondió la familia. Hoy siempre es None.
+        if k == 1 and p.get('respuesta'):
+            partes.append(reproductor(p['respuesta'], 'lo que le respondió su familia', 'p-respuesta'))
+        if q.get('problema'):
+            partes.append(f'<figure class="p-hoja"><a href="../../img/{e(q["problema"])}">'
+                          f'{foto(q["problema"], "La hoja del problema, dibujada por " + e(pila), k > 1)}</a>'
+                          f'<figcaption>Tocá la foto para verla entera.</figcaption></figure>')
+        else:
+            partes.append('<p class="p-falta">La foto de la hoja todavía no está cargada.</p>')
+        if q.get('solucion'):
+            partes.append(f'<details class="p-solucion"><summary>Ver cómo se resuelve</summary>'
+                          f'{foto(q["solucion"], "La solución, con la letra de " + e(pila), True)}</details>')
+        bloques.append(chr(10).join(partes))
 
     nav = ['<nav class="o-nav" aria-label="Otras piezas">']
     nav.append(f'<a href="../{ant["codigo"]}/index.html">← {e(ant["codigo"])}</a>' if ant
@@ -259,9 +268,7 @@ def pagina_pieza(p, ant, sig, raiz_mod):
 <header>
 {chr(10).join(cab)}
 </header>
-{audio}
-{hoja}
-{solucion}
+{chr(10).join(bloques)}
 {''.join(nav)}
 <p class="o-pie">Pieza {e(cod)} · Open House 2026 · Albert Einstein School</p>
 </main>"""
