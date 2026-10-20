@@ -11,7 +11,7 @@ import sys
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 ARCHIVO = RAIZ / 'open2026' / 'piezas.py'
 MODULO = RAIZ / 'open-2026'
-CODIGO = re.compile(r'^([2-9])([a-z])-(\d{2})$')
+CODIGO = re.compile(r'^([2-9])-(\d{2})$')
 
 
 def lee():
@@ -22,15 +22,14 @@ def lee():
 
 
 def clave(p):
-    g, s, n = CODIGO.match(p['codigo']).groups()
-    return (int(g), s, int(n))
+    g, n = CODIGO.match(p['codigo']).groups()
+    return (int(g), int(n))
 
 
 def _entrada(p):
     r = lambda k: repr(p.get(k))
     return ("  {"
-            f"'codigo': {r('codigo')}, 'grado': {r('grado')}, 'seccion': {r('seccion')}, "
-            f"'nombre': {r('nombre')},\n"
+            f"'codigo': {r('codigo')}, 'grado': {r('grado')}, 'nombre': {r('nombre')},\n"
             f"   'titulo': {r('titulo')}, 'dificultad': {r('dificultad')},\n"
             f"   'audio': {r('audio')}, 'problema': {r('problema')}, 'solucion': {r('solucion')}, "
             f"'respuesta': {r('respuesta')},\n"
@@ -40,8 +39,9 @@ def _entrada(p):
 def escribe(piezas):
     texto = ARCHIVO.read_text(encoding='utf-8')
     i = texto.index('PIEZAS = [')
+    j = texto.index('\n]\n', i) + 3          # lo que viene después de la lista (ANTES) se conserva
     cuerpo = ''.join(_entrada(p) for p in sorted(piezas, key=clave))
-    ARCHIVO.write_text(texto[:i] + 'PIEZAS = [\n' + cuerpo + ']\n', encoding='utf-8')
+    ARCHIVO.write_text(texto[:i] + 'PIEZAS = [\n' + cuerpo + ']\n' + texto[j:], encoding='utf-8')
 
 
 def pone(codigo, campo, valor):

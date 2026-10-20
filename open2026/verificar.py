@@ -28,10 +28,10 @@ import sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 BASE = 'https://seraf-6.github.io/aesweb/open-2026/'   # escrita acá a propósito, no importada
-CODIGO = re.compile(r'^([2-9])([a-z])-(\d{2})$')
+CODIGO = re.compile(r'^([2-9])-(\d{2})$')     # <grado>-<nn>: no hay secciones
 GRADO = re.compile(r'^([2-9])\.º$')
 INICIAL = re.compile(r'^[A-ZÁÉÍÓÚÑ]\.$')
-CAMPOS = ('codigo', 'grado', 'seccion', 'nombre', 'titulo', 'dificultad', 'audio', 'problema',
+CAMPOS = ('codigo', 'grado', 'nombre', 'titulo', 'dificultad', 'audio', 'problema',
           'solucion', 'respuesta', 'pared', 'fila', 'orden')
 MAX_AUDIO = 400 * 1024
 MIN_SEG = 3.0
@@ -284,7 +284,9 @@ def main():
     a = ap.parse_args()
     raiz = pathlib.Path(a.raiz)
     mod = raiz / 'open-2026'
-    PIEZAS = carga(a.datos, 'piezas_a_verificar').PIEZAS
+    mod_piezas = carga(a.datos, 'piezas_a_verificar')
+    PIEZAS = mod_piezas.PIEZAS
+    ANTES = getattr(mod_piezas, 'ANTES', {})
     salas_m = carga(RAIZ / 'open2026' / 'salas.py', 'salas_a_verificar')
     SALAS, ENTRADA = salas_m.SALAS, salas_m.ENTRADA
 
@@ -304,7 +306,7 @@ def main():
             falla(donde, f'le faltan los campos {", ".join(faltan)}')
         m = CODIGO.match(cod or '')
         if not m:
-            falla(donde, 'el código no respeta <grado><sección>-<nn> (por ejemplo 3a-07)')
+            falla(donde, 'el código no respeta <grado>-<nn> (por ejemplo 3-07)')
         if cod in vistos:
             falla(donde, f'código repetido (también la pieza #{vistos[cod] + 1})')
         vistos.setdefault(cod, idx)
@@ -313,11 +315,6 @@ def main():
             falla(donde, f'grado «{p.get("grado")}» no tiene la forma 3.º')
         if m and g and m.group(1) != g.group(1):
             falla(donde, f'el código dice {m.group(1)}.º y el grado dice {p.get("grado")}')
-        sec = p.get('seccion') or ''
-        if not re.fullmatch(r'[A-Z]', sec):
-            falla(donde, f'sección «{sec}» no es una letra mayúscula')
-        elif m and m.group(2) != sec.lower():
-            falla(donde, f'el código dice sección {m.group(2)} y la pieza dice {sec}')
         # nombre: el de pila y la inicial del apellido, nunca más
         pal = (p.get('nombre') or '').split()
         sin_punto = [w for w in pal[1:] if not w.endswith('.')]
@@ -465,6 +462,16 @@ def main():
             falla(k, f'el QR {svg.name} dice {texto} y tendría que decir {url}')
         if version > 6:
             falla(k, f'el QR es de versión {version}: demasiado denso para 40 mm')
+
+    # ── los códigos viejos llevan a la pieza nueva ──
+    for viejo, nuevo in sorted(ANTES.items()):
+        if nuevo not in codigos_piezas:
+            falla(viejo, f'el código viejo lleva a {nuevo}, que no está en piezas.py')
+            continue
+        pag = mod / 'p' / viejo / 'index.html'
+        h = pag.read_text(encoding='utf-8') if pag.is_file() else ''
+        if f'url=../{nuevo}/index.html' not in h:
+            falla(viejo, f'la página del código viejo no lleva a {nuevo}')
 
     # ── noindex y nada que registre visitas ──
     htmls = sorted(mod.rglob('*.html')) if mod.is_dir() else []

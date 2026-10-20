@@ -6,9 +6,9 @@ La planilla es la del docente y NO va al repositorio (si está adentro, la
 herramienta se niega). Una fila por alumno; los encabezados pueden estar en
 cualquier orden, con o sin tildes:
 
-    grado | seccion | nombre | apellido | codigo | titulo | dificultad | pared | fila | orden
+    grado | nombre | apellido | codigo | titulo | dificultad | pared | fila | orden
 
-  · grado: 2 a 9 (sirve «3», «3.º», «3ro»).   · seccion: una letra.
+  · grado: 2 a 9 (sirve «3», «3.º», «3ro»). El colegio no tiene secciones.
   · nombre y apellido en dos columnas, o una sola columna «alumno» con la
     forma de las listas del colegio: «Apellido Apellido, Nombre Nombre».
   · codigo, titulo, dificultad, pared, fila y orden son opcionales.
@@ -17,7 +17,7 @@ A piezas.py llega solo el primer nombre y la inicial del primer apellido
 («Ana G.»). Nada más de la planilla entra al repositorio.
 
 Los códigos se asignan una sola vez. A quien no tiene código se le da el
-siguiente número libre de su sección, y la planilla se devuelve como
+siguiente número libre de su grado, y la planilla se devuelve como
 <planilla>_con_codigos.csv, al lado de la original, con la columna codigo
 llena: esa es la que hay que guardar, porque los QR se imprimen con esos
 códigos. Volver a cargar una planilla que ya tiene códigos no cambia
@@ -88,7 +88,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('planilla')
     ap.add_argument('--agregar', action='store_true',
-                    help='permitir alumnos sin código en secciones que ya tienen piezas cargadas')
+                    help='permitir alumnos sin código en grados que ya tienen piezas cargadas')
     a = ap.parse_args()
     ruta = pathlib.Path(a.planilla).resolve()
     if not ruta.is_file():
@@ -99,12 +99,12 @@ def main():
 
     encabezado, filas = lee_planilla(ruta)
     cols = [clave_col(c) for c in encabezado]
-    alias = {'seccion': 'seccion', 'grado': 'grado', 'nombre': 'nombre', 'nombres': 'nombre',
+    alias = {'grado': 'grado', 'nombre': 'nombre', 'nombres': 'nombre',
              'apellido': 'apellido', 'apellidos': 'apellido', 'alumno': 'alumno', 'alumnoa': 'alumno',
              'codigo': 'codigo', 'titulo': 'titulo', 'dificultad': 'dificultad', 'estrellas': 'dificultad',
              'pared': 'pared', 'fila': 'fila', 'orden': 'orden'}
     campos = [alias.get(c) for c in cols]
-    for falta in ('grado', 'seccion'):
+    for falta in ('grado',):
         if falta not in campos:
             sys.exit(f'Falta la columna «{falta}». Encabezados leídos: {encabezado}')
     if 'alumno' not in campos and not {'nombre', 'apellido'} <= set(campos):
@@ -113,59 +113,57 @@ def main():
     actuales = {p['codigo']: p for p in _piezas.lee()}
     usados = {}
     for c in actuales:
-        g, s, n = _piezas.CODIGO.match(c).groups()
-        usados.setdefault(g + s, set()).add(int(n))
+        g, n = _piezas.CODIGO.match(c).groups()
+        usados.setdefault(g, set()).add(int(n))
     leidas, errores = [], []
     for i, f in enumerate(filas, start=2):
         fila = {k: (f[j] if j < len(f) else '') for j, k in enumerate(campos) if k}
         try:
             g = re.search(r'[2-9]', fila.get('grado', ''))
-            s = re.fullmatch(r'\s*([A-Za-z])\s*', fila.get('seccion', ''))
-            if not g or not s:
-                raise ValueError(f'grado {fila.get("grado")!r} o sección {fila.get("seccion")!r} no se entienden')
+            if not g:
+                raise ValueError(f'el grado {fila.get("grado")!r} no se entiende')
             cod = fila.get('codigo', '').strip().lower()
             if cod and not _piezas.CODIGO.match(cod):
-                raise ValueError(f'el código {cod!r} no tiene la forma 3a-07')
-            if cod and cod[:2] != g.group(0) + s.group(1).lower():
-                raise ValueError(f'el código {cod} no es de {g.group(0)}.º {s.group(1).upper()}')
-            leidas.append((i, f, fila, g.group(0), s.group(1).upper(), cod, nombre_corto(fila)))
+                raise ValueError(f'el código {cod!r} no tiene la forma 3-07')
+            if cod and cod[0] != g.group(0):
+                raise ValueError(f'el código {cod} no es de {g.group(0)}.º')
+            leidas.append((i, f, fila, g.group(0), cod, nombre_corto(fila)))
             if cod:
-                usados.setdefault(cod[:2], set()).add(int(cod[3:]))
+                usados.setdefault(cod[0], set()).add(int(cod[2:]))
         except ValueError as ex:
             errores.append(f'fila {i}: {ex}')
     if errores:
         sys.exit('No cargué nada. Hay que arreglar la planilla:\n  ' + '\n  '.join(errores))
 
     repetidos = {}
-    for _, _, _, _, _, cod, _ in leidas:
+    for _, _, _, _, cod, _ in leidas:
         if cod:
             repetidos[cod] = repetidos.get(cod, 0) + 1
     repetidos = [c for c, k in repetidos.items() if k > 1]
     if repetidos:
         sys.exit('No cargué nada: códigos repetidos en la planilla: ' + ', '.join(repetidos))
-    secciones_cargadas = {c[:2] for c in actuales}
-    sin_codigo = {g + s.lower() for _, _, _, g, s, cod, _ in leidas if not cod}
-    choque = sorted(sin_codigo & secciones_cargadas)
+    grados_cargados = {c[0] for c in actuales}
+    sin_codigo = {g for _, _, _, g, cod, _ in leidas if not cod}
+    choque = sorted(sin_codigo & grados_cargados)
     if choque and not a.agregar:
-        sys.exit('No cargué nada. Hay alumnos sin código en secciones que ya tienen piezas: '
+        sys.exit('No cargué nada. Hay alumnos sin código en grados que ya tienen piezas: '
                  + ', '.join(choque) + '.\nSi la planilla es la vieja, usá la _con_codigos.csv. '
                  'Si de verdad son alumnos nuevos, volvé a correr con --agregar.')
 
     nuevos, salida = 0, []
     piezas = dict(actuales)
-    for i, f, fila, g, s, cod, corto in leidas:
+    for i, f, fila, g, cod, corto in leidas:
         if not cod:
-            sec = g + s.lower()
-            n = max(usados.get(sec, {0})) + 1
+            n = max(usados.get(g, {0})) + 1
             if n > 99:
-                sys.exit(f'La sección {sec} pasa de 99 alumnos.')
-            usados.setdefault(sec, set()).add(n)
-            cod = f'{sec}-{n:02d}'
+                sys.exit(f'{g}.º pasa de 99 alumnos.')
+            usados.setdefault(g, set()).add(n)
+            cod = f'{g}-{n:02d}'
             nuevos += 1
         p = piezas.get(cod) or {'codigo': cod, 'titulo': None, 'dificultad': None, 'audio': None,
                                 'problema': None, 'solucion': None, 'respuesta': None,
                                 'pared': None, 'fila': None, 'orden': None}
-        p.update({'grado': f'{g}.º', 'seccion': s, 'nombre': corto})
+        p.update({'grado': f'{g}.º', 'nombre': corto})
         if fila.get('titulo'):
             p['titulo'] = fila['titulo']
         if entero(fila.get('dificultad')):
@@ -197,17 +195,17 @@ def main():
     sobran = sorted(set(actuales) - {cod for _, cod in salida})
     por_sec = {}
     for _, cod in salida:
-        por_sec[cod[:2]] = por_sec.get(cod[:2], 0) + 1
+        por_sec[cod[0]] = por_sec.get(cod[0], 0) + 1
     print(f'Cargué {len(salida)} alumnos ({nuevos} códigos nuevos) en open2026/piezas.py.')
-    print('  Por sección: ' + ', '.join(f'{k} {v}' for k, v in sorted(por_sec.items())))
+    print('  Por grado: ' + ', '.join(f'{k}.º {v}' for k, v in sorted(por_sec.items())))
     print(f'  La planilla con los códigos: {con}')
     print('  Guardá esa: los QR se imprimen con esos códigos y no cambian nunca.')
     dobles = {}
     for p in piezas.values():
-        dobles.setdefault((p['codigo'][:2], p['nombre']), []).append(p['codigo'])
+        dobles.setdefault((p['codigo'][0], p['nombre']), []).append(p['codigo'])
     for (sec, nom), cods in sorted(dobles.items()):
         if len(cods) > 1:
-            print(f'  Aviso: en {sec} hay {len(cods)} «{nom}» ({", ".join(cods)}). '
+            print(f'  Aviso: en {sec}.º hay {len(cods)} «{nom}» ({", ".join(cods)}). '
                   'En la etiqueta los distingue el código.')
     if sobran:
         print(f'  Aviso: {len(sobran)} piezas de piezas.py no están en esta planilla y se dejaron '

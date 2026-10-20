@@ -34,7 +34,8 @@ FUENTES = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n'
            '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:'
            'ital,wght@0,500;0,700;0,800;1,500&family=IBM+Plex+Mono:wght@600&display=swap">')
 ESTRELLA, ESTRELLA_VACIA = '★', '☆'
-CODIGO = re.compile(r'^([2-9])([a-z])-(\d{2})$')
+# El código de una pieza: <grado>-<nn>. El colegio no tiene secciones.
+CODIGO = re.compile(r'^([2-9])-(\d{2})$')
 
 
 # ─────────────────── ayudas ───────────────────
@@ -55,9 +56,9 @@ def num_grado(grado):
 
 
 def clave(p):
-    """El orden de las piezas: grado, sección, número."""
-    g, s, n = CODIGO.match(p['codigo']).groups()
-    return (int(g), s, int(n))
+    """El orden de las piezas: grado y número."""
+    g, n = CODIGO.match(p['codigo']).groups()
+    return (int(g), int(n))
 
 
 def cuantas(n):
@@ -200,7 +201,7 @@ def pagina_pieza(p, ant, sig, raiz_mod):
     cod = p['codigo']
     pila = nombre_pila(p)
     titulo = p.get('titulo')
-    cab = [f'<p class="p-grado">{e(p["grado"])} grado · sección {e(p["seccion"])}</p>',
+    cab = [f'<p class="p-grado">{e(p["grado"])} grado</p>',
            f'<h1 class="p-nombre">{e(p["nombre"])}</h1>']
     if titulo:
         cab.append(f'<p class="p-titulo">{e(titulo)}</p>')
@@ -264,13 +265,13 @@ def pagina_pieza(p, ant, sig, raiz_mod):
 {''.join(nav)}
 <p class="o-pie">Pieza {e(cod)} · Open House 2026 · Albert Einstein School</p>
 </main>"""
-    tit = f'{p["nombre"]} · {titulo}' if titulo else f'{p["nombre"]} · {p["grado"]} {p["seccion"]}'
+    tit = f'{p["nombre"]} · {titulo}' if titulo else f'{p["nombre"]} · {p["grado"]} grado'
     return documento(tit, cuerpo, prof=3)
 
 
 # ─────────────────── portada ───────────────────
 def portada(piezas, salas, entrada):
-    datos = [[p['codigo'], p['nombre'], p['grado'], p['seccion'], p.get('titulo') or '']
+    datos = [[p['codigo'], p['nombre'], p['grado'], p.get('titulo') or '']
              for p in piezas]
     pasos = ''.join(f'<li>{md(x)}</li>' for x in entrada['pasos'])
     texto = ''.join(f'<p>{md(x)}</p>' for x in entrada['texto'])
@@ -285,7 +286,7 @@ def portada(piezas, salas, entrada):
 <form class="o-buscar" role="search" onsubmit="return false">
   <label for="q">Buscar una pieza</label>
   <input id="q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false"
-         placeholder="Nombre o código, por ejemplo 3a-07" enterkeyhint="go">
+         placeholder="Nombre o código, por ejemplo 3-07" enterkeyhint="go">
   <p class="o-ayuda">El código está escrito debajo del QR de cada hoja.</p>
 </form>
 <ul class="o-lista" id="resultados" aria-live="polite"></ul>
@@ -306,8 +307,9 @@ def portada(piezas, salas, entrada):
   var q = document.getElementById('q'), out = document.getElementById('resultados');
   function norm(s) {{ return s.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, ''); }}
   function comoCodigo(s) {{
-    var m = norm(s).replace(/\\s+/g, '').match(/^([2-9])([a-z])-?(\\d{{1,2}})$/);
-    return m ? m[1] + m[2] + '-' + (m[3].length < 2 ? '0' : '') + m[3] : null;
+    // «3-07», «3 7», «307»; también los códigos viejos con sección, «3a-07»
+    var m = norm(s).replace(/\\s+/g, '-').match(/^([2-9])a?-?(\\d{{1,2}})$/);
+    return m ? m[1] + '-' + (m[2].length < 2 ? '0' : '') + m[2] : null;
   }}
   function buscar() {{
     var t = q.value.trim(), cod = comoCodigo(t), palabras = norm(t).split(/\\s+/).filter(Boolean);
@@ -315,7 +317,7 @@ def portada(piezas, salas, entrada):
     if (!t) return [];
     var hall = P.filter(function (p) {{
       if (cod) return p[0] === cod;
-      var h = norm(p.join(' ') + ' ' + p[2].replace('.º', '') + p[3]);
+      var h = norm(p.join(' ') + ' ' + p[2].replace('.º', ''));
       // acá solo está la inicial del apellido: «gomez» coincide con «G.»
       var iniciales = norm(p[1]).split(/\\s+/).filter(function (x) {{ return /^.\\.$/.test(x); }})
         .map(function (x) {{ return x.charAt(0); }});
@@ -327,9 +329,9 @@ def portada(piezas, salas, entrada):
       var li = document.createElement('li'), a = document.createElement('a');
       a.href = 'p/' + p[0] + '/index.html';
       var c = document.createElement('span'); c.className = 'cod'; c.textContent = p[0];
-      var n = document.createElement('span'); n.textContent = p[1] + ' · ' + p[2] + ' ' + p[3];
+      var n = document.createElement('span'); n.textContent = p[1] + ' · ' + p[2] + ' grado';
       a.appendChild(c); a.appendChild(n);
-      if (p[4]) {{ var s = document.createElement('span'); s.className = 'tit'; s.textContent = p[4]; n.appendChild(document.createElement('br')); n.appendChild(s); }}
+      if (p[3]) {{ var s = document.createElement('span'); s.className = 'tit'; s.textContent = p[3]; n.appendChild(document.createElement('br')); n.appendChild(s); }}
       li.appendChild(a); out.appendChild(li);
     }});
     if (!hall.length) {{
@@ -476,11 +478,15 @@ body{background:#fff; background-image:none; color:#000; margin:0; font-family:s
 .hoja:last-child{break-after:auto; page-break-after:auto}
 .et{box-sizing:border-box; outline:.3mm dashed #888; outline-offset:-.15mm;
   display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
-  overflow:hidden; padding:1mm}
+  overflow:hidden; padding:.5mm}
 .et img{width:40mm; height:40mm; display:block}
-.et .cod{font-family:'IBM Plex Mono', ui-monospace, Consolas, monospace; font-weight:700; font-size:14pt;
-  line-height:1.1; margin-top:1mm}
-.et .quien{font-size:9pt; line-height:1.2; max-width:44mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+/* el nombre, lo más grande posible: los cortos en un renglón; los largos, en dos
+   renglones parejos antes que en letra chica */
+.et .quien{font-weight:700; line-height:1; margin-top:.7mm; max-width:46mm; white-space:nowrap}
+.et .q1{font-size:17pt} .et .q2{font-size:15pt} .et .q3{font-size:13pt}
+.et .q4{font-size:13pt; white-space:normal; text-wrap:balance; max-height:2.1em; overflow:hidden}
+.et .cod{font-size:8.5pt; line-height:1.1; margin-top:.4mm; color:#333}
+.et .cod b{font-family:'IBM Plex Mono', ui-monospace, Consolas, monospace}
 @media screen{
   body{background:#ddd}
   .hoja{background:#fff; margin:10mm auto; outline:10mm solid #fff; box-shadow:0 0 0 10mm #fff, 0 2px 14px 10mm rgba(0,0,0,.15)}
@@ -492,9 +498,12 @@ body{background:#fff; background-image:none; color:#000; margin:0; font-family:s
 
 def hoja_qr(piezas):
     def etiqueta(p):
+        # El nombre, lo más grande que entre en un renglón de 45 mm.
+        n = len(p['nombre'])
+        tam = 'q1' if n <= 11 else 'q2' if n <= 14 else 'q3' if n <= 17 else 'q4'
         return (f'<div class="et" data-c="{p["codigo"]}"><img src="svg/{p["codigo"]}.svg" alt="">'
-                f'<div class="cod">{p["codigo"]}</div>'
-                f'<div class="quien">{e(p["grado"])} {e(p["seccion"])} · {e(p["nombre"])}</div></div>')
+                f'<div class="quien {tam}">{e(p["nombre"])}</div>'
+                f'<div class="cod">{e(p["grado"])} grado · <b>{p["codigo"]}</b></div></div>')
     ets = [etiqueta(p) for p in piezas]
     hojas = ''.join('<section class="hoja">' + ''.join(ets[i:i + 20]) + '</section>'
                     for i in range(0, len(ets), 20))
@@ -503,7 +512,7 @@ def hoja_qr(piezas):
 Edge: Ctrl+P → A4, Márgenes <b>predeterminados</b>, Escala <b>100 %</b> (no «ajustar a la página»), sin
 encabezados. El QR tiene que medir 40 mm en el papel: medilo en la primera hoja antes de imprimir el resto.
 <br><label for="solo">Imprimir solo algunas</label> (para reponer una que se despegó): códigos o grados separados
-por coma, por ejemplo <code>3a-07, 5b-12</code> o <code>4a</code>. Vacío = todas.<br>
+por coma, por ejemplo <code>3-07, 5-12</code>, o un grado entero: <code>4</code>. Vacío = todas.<br>
 <input id="solo" type="text" autocomplete="off" spellcheck="false">
 </div>
 <div id="hojas">{hojas}</div>
@@ -515,7 +524,7 @@ por coma, por ejemplo <code>3a-07, 5b-12</code> o <code>4a</code>. Vacío = toda
     var f = solo.value.toLowerCase().split(/[\\s,;]+/).filter(Boolean);
     var sel = todas.filter(function (et) {{
       var c = et.getAttribute('data-c');
-      return !f.length || f.some(function (x) {{ return c === x || c.indexOf(x + '-') === 0 || c.charAt(0) === x; }});
+      return !f.length || f.some(function (x) {{ return c === x || c === x.replace('a-', '-') || c.indexOf(x + '-') === 0; }});
     }});
     caja.textContent = '';
     for (var i = 0; i < sel.length; i += 20) {{
@@ -576,6 +585,17 @@ deja imprimir solo esa: <a href="../qr/index.html">etiquetas QR</a>.</p>
     return documento('Mapa de la obra · Open House 2026', cuerpo, prof=2)
 
 
+# ─────────────────── códigos viejos ───────────────────
+def redireccion(viejo, nuevo):
+    """La página de un código que ya no existe: lleva a la pieza nueva, sin 404."""
+    destino = f'../{nuevo}/index.html'
+    cuerpo = f"""<main class="o-env">
+<p>Esta pieza ahora está en <a href="{destino}">{e(nuevo)}</a>.</p>
+</main>"""
+    return documento(f'Pieza {nuevo}', cuerpo, prof=3,
+                     extra_head=f'\n<meta http-equiv="refresh" content="0; url={destino}">')
+
+
 # ─────────────────── QR y manifiesto ───────────────────
 def qr_svg(url, destino):
     """Hace el SVG del QR si no existe. Devuelve True si lo escribió."""
@@ -606,6 +626,9 @@ def escribir(raiz, piezas=None, salas=None, entrada=None):
     """Escribe el módulo debajo de `raiz` (la raíz del sitio). Devuelve las rutas escritas."""
     if piezas is None:
         from open2026.piezas import PIEZAS as piezas
+        from open2026.piezas import ANTES as antes
+    else:
+        antes = {}
     if salas is None or entrada is None:
         from open2026.salas import SALAS as salas, ENTRADA as entrada
     raiz = pathlib.Path(raiz)
@@ -633,6 +656,10 @@ def escribir(raiz, piezas=None, salas=None, entrada=None):
         n = num_grado(s['grado'])
         escribe(f'sala/{n}/index.html',
                 pagina_sala(s, [p for p in piezas if num_grado(p['grado']) == n]))
+    actuales = {p['codigo'] for p in piezas}
+    for viejo, nuevo in sorted(antes.items()):
+        if nuevo in actuales and viejo not in actuales:
+            escribe(f'p/{viejo}/index.html', redireccion(viejo, nuevo))
     escribe('paneles/index.html', paneles(salas, entrada))
     escribe('qr/index.html', hoja_qr(piezas))
     escribe('mapa/index.html', mapa(piezas, mod))
@@ -653,8 +680,8 @@ def escribir(raiz, piezas=None, salas=None, entrada=None):
             manifiesto['piezas'][k] = fila
     escribe('qr/manifest.json', json.dumps(manifiesto, ensure_ascii=False, indent=1) + '\n')
 
-    actuales = {p['codigo'] for p in piezas}
-    huerfanas = sorted(d.name for d in (mod / 'p').glob('*') if d.is_dir() and d.name not in actuales) \
+    huerfanas = sorted(d.name for d in (mod / 'p').glob('*')
+                       if d.is_dir() and d.name not in actuales and d.name not in antes) \
         if (mod / 'p').is_dir() else []
     return hechas, {'qr_nuevos': nuevos, 'sin_segno': sin_segno, 'huerfanas': huerfanas,
                     'invalidas': invalidas}

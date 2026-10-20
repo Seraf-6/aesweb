@@ -1,85 +1,775 @@
 {
  "base": "https://seraf-6.github.io/aesweb/open-2026/",
  "piezas": {
-  "4a-01": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-01/",
-   "archivo": "qr/svg/4a-01.svg",
-   "pagina": "p/4a-01/index.html"
+  "2-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-01/",
+   "archivo": "qr/svg/2-01.svg",
+   "pagina": "p/2-01/index.html"
   },
-  "4a-02": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-02/",
-   "archivo": "qr/svg/4a-02.svg",
-   "pagina": "p/4a-02/index.html"
+  "2-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-02/",
+   "archivo": "qr/svg/2-02.svg",
+   "pagina": "p/2-02/index.html"
   },
-  "4a-03": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-03/",
-   "archivo": "qr/svg/4a-03.svg",
-   "pagina": "p/4a-03/index.html"
+  "2-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-03/",
+   "archivo": "qr/svg/2-03.svg",
+   "pagina": "p/2-03/index.html"
   },
-  "4a-04": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-04/",
-   "archivo": "qr/svg/4a-04.svg",
-   "pagina": "p/4a-04/index.html"
+  "2-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-04/",
+   "archivo": "qr/svg/2-04.svg",
+   "pagina": "p/2-04/index.html"
   },
-  "4a-05": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-05/",
-   "archivo": "qr/svg/4a-05.svg",
-   "pagina": "p/4a-05/index.html"
+  "2-05": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-05/",
+   "archivo": "qr/svg/2-05.svg",
+   "pagina": "p/2-05/index.html"
   },
-  "4a-06": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-06/",
-   "archivo": "qr/svg/4a-06.svg",
-   "pagina": "p/4a-06/index.html"
+  "2-06": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-06/",
+   "archivo": "qr/svg/2-06.svg",
+   "pagina": "p/2-06/index.html"
   },
-  "4a-07": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-07/",
-   "archivo": "qr/svg/4a-07.svg",
-   "pagina": "p/4a-07/index.html"
+  "2-07": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-07/",
+   "archivo": "qr/svg/2-07.svg",
+   "pagina": "p/2-07/index.html"
   },
-  "4a-08": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-08/",
-   "archivo": "qr/svg/4a-08.svg",
-   "pagina": "p/4a-08/index.html"
+  "2-08": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-08/",
+   "archivo": "qr/svg/2-08.svg",
+   "pagina": "p/2-08/index.html"
   },
-  "4a-09": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-09/",
-   "archivo": "qr/svg/4a-09.svg",
-   "pagina": "p/4a-09/index.html"
+  "2-09": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-09/",
+   "archivo": "qr/svg/2-09.svg",
+   "pagina": "p/2-09/index.html"
   },
-  "4a-10": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-10/",
-   "archivo": "qr/svg/4a-10.svg",
-   "pagina": "p/4a-10/index.html"
+  "2-10": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-10/",
+   "archivo": "qr/svg/2-10.svg",
+   "pagina": "p/2-10/index.html"
   },
-  "4a-11": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-11/",
-   "archivo": "qr/svg/4a-11.svg",
-   "pagina": "p/4a-11/index.html"
+  "2-11": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-11/",
+   "archivo": "qr/svg/2-11.svg",
+   "pagina": "p/2-11/index.html"
   },
-  "4a-12": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-12/",
-   "archivo": "qr/svg/4a-12.svg",
-   "pagina": "p/4a-12/index.html"
+  "2-12": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-12/",
+   "archivo": "qr/svg/2-12.svg",
+   "pagina": "p/2-12/index.html"
   },
-  "4a-13": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-13/",
-   "archivo": "qr/svg/4a-13.svg",
-   "pagina": "p/4a-13/index.html"
+  "2-13": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-13/",
+   "archivo": "qr/svg/2-13.svg",
+   "pagina": "p/2-13/index.html"
   },
-  "4a-14": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-14/",
-   "archivo": "qr/svg/4a-14.svg",
-   "pagina": "p/4a-14/index.html"
+  "2-14": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-14/",
+   "archivo": "qr/svg/2-14.svg",
+   "pagina": "p/2-14/index.html"
   },
-  "4a-15": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-15/",
-   "archivo": "qr/svg/4a-15.svg",
-   "pagina": "p/4a-15/index.html"
+  "2-15": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-15/",
+   "archivo": "qr/svg/2-15.svg",
+   "pagina": "p/2-15/index.html"
   },
-  "4a-16": {
-   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4a-16/",
-   "archivo": "qr/svg/4a-16.svg",
-   "pagina": "p/4a-16/index.html"
+  "2-16": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-16/",
+   "archivo": "qr/svg/2-16.svg",
+   "pagina": "p/2-16/index.html"
+  },
+  "2-17": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-17/",
+   "archivo": "qr/svg/2-17.svg",
+   "pagina": "p/2-17/index.html"
+  },
+  "2-18": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-18/",
+   "archivo": "qr/svg/2-18.svg",
+   "pagina": "p/2-18/index.html"
+  },
+  "2-19": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-19/",
+   "archivo": "qr/svg/2-19.svg",
+   "pagina": "p/2-19/index.html"
+  },
+  "2-20": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-20/",
+   "archivo": "qr/svg/2-20.svg",
+   "pagina": "p/2-20/index.html"
+  },
+  "2-21": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/2-21/",
+   "archivo": "qr/svg/2-21.svg",
+   "pagina": "p/2-21/index.html"
+  },
+  "3-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-01/",
+   "archivo": "qr/svg/3-01.svg",
+   "pagina": "p/3-01/index.html"
+  },
+  "3-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-02/",
+   "archivo": "qr/svg/3-02.svg",
+   "pagina": "p/3-02/index.html"
+  },
+  "3-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-03/",
+   "archivo": "qr/svg/3-03.svg",
+   "pagina": "p/3-03/index.html"
+  },
+  "3-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-04/",
+   "archivo": "qr/svg/3-04.svg",
+   "pagina": "p/3-04/index.html"
+  },
+  "3-05": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-05/",
+   "archivo": "qr/svg/3-05.svg",
+   "pagina": "p/3-05/index.html"
+  },
+  "3-06": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-06/",
+   "archivo": "qr/svg/3-06.svg",
+   "pagina": "p/3-06/index.html"
+  },
+  "3-07": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-07/",
+   "archivo": "qr/svg/3-07.svg",
+   "pagina": "p/3-07/index.html"
+  },
+  "3-08": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-08/",
+   "archivo": "qr/svg/3-08.svg",
+   "pagina": "p/3-08/index.html"
+  },
+  "3-09": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-09/",
+   "archivo": "qr/svg/3-09.svg",
+   "pagina": "p/3-09/index.html"
+  },
+  "3-10": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-10/",
+   "archivo": "qr/svg/3-10.svg",
+   "pagina": "p/3-10/index.html"
+  },
+  "3-11": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-11/",
+   "archivo": "qr/svg/3-11.svg",
+   "pagina": "p/3-11/index.html"
+  },
+  "3-12": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-12/",
+   "archivo": "qr/svg/3-12.svg",
+   "pagina": "p/3-12/index.html"
+  },
+  "3-13": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-13/",
+   "archivo": "qr/svg/3-13.svg",
+   "pagina": "p/3-13/index.html"
+  },
+  "3-14": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-14/",
+   "archivo": "qr/svg/3-14.svg",
+   "pagina": "p/3-14/index.html"
+  },
+  "3-15": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-15/",
+   "archivo": "qr/svg/3-15.svg",
+   "pagina": "p/3-15/index.html"
+  },
+  "3-16": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-16/",
+   "archivo": "qr/svg/3-16.svg",
+   "pagina": "p/3-16/index.html"
+  },
+  "3-17": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-17/",
+   "archivo": "qr/svg/3-17.svg",
+   "pagina": "p/3-17/index.html"
+  },
+  "3-18": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-18/",
+   "archivo": "qr/svg/3-18.svg",
+   "pagina": "p/3-18/index.html"
+  },
+  "3-19": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-19/",
+   "archivo": "qr/svg/3-19.svg",
+   "pagina": "p/3-19/index.html"
+  },
+  "3-20": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-20/",
+   "archivo": "qr/svg/3-20.svg",
+   "pagina": "p/3-20/index.html"
+  },
+  "3-21": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-21/",
+   "archivo": "qr/svg/3-21.svg",
+   "pagina": "p/3-21/index.html"
+  },
+  "3-22": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-22/",
+   "archivo": "qr/svg/3-22.svg",
+   "pagina": "p/3-22/index.html"
+  },
+  "3-23": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-23/",
+   "archivo": "qr/svg/3-23.svg",
+   "pagina": "p/3-23/index.html"
+  },
+  "3-24": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-24/",
+   "archivo": "qr/svg/3-24.svg",
+   "pagina": "p/3-24/index.html"
+  },
+  "3-25": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-25/",
+   "archivo": "qr/svg/3-25.svg",
+   "pagina": "p/3-25/index.html"
+  },
+  "3-26": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-26/",
+   "archivo": "qr/svg/3-26.svg",
+   "pagina": "p/3-26/index.html"
+  },
+  "3-27": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-27/",
+   "archivo": "qr/svg/3-27.svg",
+   "pagina": "p/3-27/index.html"
+  },
+  "3-28": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-28/",
+   "archivo": "qr/svg/3-28.svg",
+   "pagina": "p/3-28/index.html"
+  },
+  "3-29": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-29/",
+   "archivo": "qr/svg/3-29.svg",
+   "pagina": "p/3-29/index.html"
+  },
+  "3-30": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/3-30/",
+   "archivo": "qr/svg/3-30.svg",
+   "pagina": "p/3-30/index.html"
+  },
+  "4-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-01/",
+   "archivo": "qr/svg/4-01.svg",
+   "pagina": "p/4-01/index.html"
+  },
+  "4-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-02/",
+   "archivo": "qr/svg/4-02.svg",
+   "pagina": "p/4-02/index.html"
+  },
+  "4-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-03/",
+   "archivo": "qr/svg/4-03.svg",
+   "pagina": "p/4-03/index.html"
+  },
+  "4-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-04/",
+   "archivo": "qr/svg/4-04.svg",
+   "pagina": "p/4-04/index.html"
+  },
+  "4-05": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-05/",
+   "archivo": "qr/svg/4-05.svg",
+   "pagina": "p/4-05/index.html"
+  },
+  "4-06": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-06/",
+   "archivo": "qr/svg/4-06.svg",
+   "pagina": "p/4-06/index.html"
+  },
+  "4-07": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-07/",
+   "archivo": "qr/svg/4-07.svg",
+   "pagina": "p/4-07/index.html"
+  },
+  "4-08": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-08/",
+   "archivo": "qr/svg/4-08.svg",
+   "pagina": "p/4-08/index.html"
+  },
+  "4-09": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-09/",
+   "archivo": "qr/svg/4-09.svg",
+   "pagina": "p/4-09/index.html"
+  },
+  "4-10": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-10/",
+   "archivo": "qr/svg/4-10.svg",
+   "pagina": "p/4-10/index.html"
+  },
+  "4-11": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-11/",
+   "archivo": "qr/svg/4-11.svg",
+   "pagina": "p/4-11/index.html"
+  },
+  "4-12": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-12/",
+   "archivo": "qr/svg/4-12.svg",
+   "pagina": "p/4-12/index.html"
+  },
+  "4-13": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-13/",
+   "archivo": "qr/svg/4-13.svg",
+   "pagina": "p/4-13/index.html"
+  },
+  "4-14": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-14/",
+   "archivo": "qr/svg/4-14.svg",
+   "pagina": "p/4-14/index.html"
+  },
+  "4-15": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-15/",
+   "archivo": "qr/svg/4-15.svg",
+   "pagina": "p/4-15/index.html"
+  },
+  "4-16": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/4-16/",
+   "archivo": "qr/svg/4-16.svg",
+   "pagina": "p/4-16/index.html"
+  },
+  "5-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-01/",
+   "archivo": "qr/svg/5-01.svg",
+   "pagina": "p/5-01/index.html"
+  },
+  "5-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-02/",
+   "archivo": "qr/svg/5-02.svg",
+   "pagina": "p/5-02/index.html"
+  },
+  "5-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-03/",
+   "archivo": "qr/svg/5-03.svg",
+   "pagina": "p/5-03/index.html"
+  },
+  "5-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-04/",
+   "archivo": "qr/svg/5-04.svg",
+   "pagina": "p/5-04/index.html"
+  },
+  "5-05": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-05/",
+   "archivo": "qr/svg/5-05.svg",
+   "pagina": "p/5-05/index.html"
+  },
+  "5-06": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-06/",
+   "archivo": "qr/svg/5-06.svg",
+   "pagina": "p/5-06/index.html"
+  },
+  "5-07": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-07/",
+   "archivo": "qr/svg/5-07.svg",
+   "pagina": "p/5-07/index.html"
+  },
+  "5-08": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-08/",
+   "archivo": "qr/svg/5-08.svg",
+   "pagina": "p/5-08/index.html"
+  },
+  "5-09": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-09/",
+   "archivo": "qr/svg/5-09.svg",
+   "pagina": "p/5-09/index.html"
+  },
+  "5-10": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-10/",
+   "archivo": "qr/svg/5-10.svg",
+   "pagina": "p/5-10/index.html"
+  },
+  "5-11": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-11/",
+   "archivo": "qr/svg/5-11.svg",
+   "pagina": "p/5-11/index.html"
+  },
+  "5-12": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-12/",
+   "archivo": "qr/svg/5-12.svg",
+   "pagina": "p/5-12/index.html"
+  },
+  "5-13": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-13/",
+   "archivo": "qr/svg/5-13.svg",
+   "pagina": "p/5-13/index.html"
+  },
+  "5-14": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-14/",
+   "archivo": "qr/svg/5-14.svg",
+   "pagina": "p/5-14/index.html"
+  },
+  "5-15": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-15/",
+   "archivo": "qr/svg/5-15.svg",
+   "pagina": "p/5-15/index.html"
+  },
+  "5-16": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-16/",
+   "archivo": "qr/svg/5-16.svg",
+   "pagina": "p/5-16/index.html"
+  },
+  "5-17": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-17/",
+   "archivo": "qr/svg/5-17.svg",
+   "pagina": "p/5-17/index.html"
+  },
+  "5-18": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-18/",
+   "archivo": "qr/svg/5-18.svg",
+   "pagina": "p/5-18/index.html"
+  },
+  "5-19": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-19/",
+   "archivo": "qr/svg/5-19.svg",
+   "pagina": "p/5-19/index.html"
+  },
+  "5-20": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-20/",
+   "archivo": "qr/svg/5-20.svg",
+   "pagina": "p/5-20/index.html"
+  },
+  "5-21": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-21/",
+   "archivo": "qr/svg/5-21.svg",
+   "pagina": "p/5-21/index.html"
+  },
+  "5-22": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-22/",
+   "archivo": "qr/svg/5-22.svg",
+   "pagina": "p/5-22/index.html"
+  },
+  "5-23": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-23/",
+   "archivo": "qr/svg/5-23.svg",
+   "pagina": "p/5-23/index.html"
+  },
+  "5-24": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/5-24/",
+   "archivo": "qr/svg/5-24.svg",
+   "pagina": "p/5-24/index.html"
+  },
+  "6-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-01/",
+   "archivo": "qr/svg/6-01.svg",
+   "pagina": "p/6-01/index.html"
+  },
+  "6-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-02/",
+   "archivo": "qr/svg/6-02.svg",
+   "pagina": "p/6-02/index.html"
+  },
+  "6-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-03/",
+   "archivo": "qr/svg/6-03.svg",
+   "pagina": "p/6-03/index.html"
+  },
+  "6-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-04/",
+   "archivo": "qr/svg/6-04.svg",
+   "pagina": "p/6-04/index.html"
+  },
+  "6-05": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-05/",
+   "archivo": "qr/svg/6-05.svg",
+   "pagina": "p/6-05/index.html"
+  },
+  "6-06": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-06/",
+   "archivo": "qr/svg/6-06.svg",
+   "pagina": "p/6-06/index.html"
+  },
+  "6-07": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-07/",
+   "archivo": "qr/svg/6-07.svg",
+   "pagina": "p/6-07/index.html"
+  },
+  "6-08": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-08/",
+   "archivo": "qr/svg/6-08.svg",
+   "pagina": "p/6-08/index.html"
+  },
+  "6-09": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-09/",
+   "archivo": "qr/svg/6-09.svg",
+   "pagina": "p/6-09/index.html"
+  },
+  "6-10": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-10/",
+   "archivo": "qr/svg/6-10.svg",
+   "pagina": "p/6-10/index.html"
+  },
+  "6-11": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-11/",
+   "archivo": "qr/svg/6-11.svg",
+   "pagina": "p/6-11/index.html"
+  },
+  "6-12": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-12/",
+   "archivo": "qr/svg/6-12.svg",
+   "pagina": "p/6-12/index.html"
+  },
+  "6-13": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-13/",
+   "archivo": "qr/svg/6-13.svg",
+   "pagina": "p/6-13/index.html"
+  },
+  "6-14": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-14/",
+   "archivo": "qr/svg/6-14.svg",
+   "pagina": "p/6-14/index.html"
+  },
+  "6-15": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-15/",
+   "archivo": "qr/svg/6-15.svg",
+   "pagina": "p/6-15/index.html"
+  },
+  "6-16": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-16/",
+   "archivo": "qr/svg/6-16.svg",
+   "pagina": "p/6-16/index.html"
+  },
+  "6-17": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-17/",
+   "archivo": "qr/svg/6-17.svg",
+   "pagina": "p/6-17/index.html"
+  },
+  "6-18": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-18/",
+   "archivo": "qr/svg/6-18.svg",
+   "pagina": "p/6-18/index.html"
+  },
+  "6-19": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-19/",
+   "archivo": "qr/svg/6-19.svg",
+   "pagina": "p/6-19/index.html"
+  },
+  "6-20": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-20/",
+   "archivo": "qr/svg/6-20.svg",
+   "pagina": "p/6-20/index.html"
+  },
+  "6-21": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-21/",
+   "archivo": "qr/svg/6-21.svg",
+   "pagina": "p/6-21/index.html"
+  },
+  "6-22": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/6-22/",
+   "archivo": "qr/svg/6-22.svg",
+   "pagina": "p/6-22/index.html"
+  },
+  "7-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-01/",
+   "archivo": "qr/svg/7-01.svg",
+   "pagina": "p/7-01/index.html"
+  },
+  "7-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-02/",
+   "archivo": "qr/svg/7-02.svg",
+   "pagina": "p/7-02/index.html"
+  },
+  "7-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-03/",
+   "archivo": "qr/svg/7-03.svg",
+   "pagina": "p/7-03/index.html"
+  },
+  "7-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-04/",
+   "archivo": "qr/svg/7-04.svg",
+   "pagina": "p/7-04/index.html"
+  },
+  "7-05": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-05/",
+   "archivo": "qr/svg/7-05.svg",
+   "pagina": "p/7-05/index.html"
+  },
+  "7-06": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-06/",
+   "archivo": "qr/svg/7-06.svg",
+   "pagina": "p/7-06/index.html"
+  },
+  "7-07": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-07/",
+   "archivo": "qr/svg/7-07.svg",
+   "pagina": "p/7-07/index.html"
+  },
+  "7-08": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-08/",
+   "archivo": "qr/svg/7-08.svg",
+   "pagina": "p/7-08/index.html"
+  },
+  "7-09": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-09/",
+   "archivo": "qr/svg/7-09.svg",
+   "pagina": "p/7-09/index.html"
+  },
+  "7-10": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-10/",
+   "archivo": "qr/svg/7-10.svg",
+   "pagina": "p/7-10/index.html"
+  },
+  "7-11": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-11/",
+   "archivo": "qr/svg/7-11.svg",
+   "pagina": "p/7-11/index.html"
+  },
+  "7-12": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-12/",
+   "archivo": "qr/svg/7-12.svg",
+   "pagina": "p/7-12/index.html"
+  },
+  "7-13": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-13/",
+   "archivo": "qr/svg/7-13.svg",
+   "pagina": "p/7-13/index.html"
+  },
+  "7-14": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-14/",
+   "archivo": "qr/svg/7-14.svg",
+   "pagina": "p/7-14/index.html"
+  },
+  "7-15": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-15/",
+   "archivo": "qr/svg/7-15.svg",
+   "pagina": "p/7-15/index.html"
+  },
+  "7-16": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-16/",
+   "archivo": "qr/svg/7-16.svg",
+   "pagina": "p/7-16/index.html"
+  },
+  "7-17": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-17/",
+   "archivo": "qr/svg/7-17.svg",
+   "pagina": "p/7-17/index.html"
+  },
+  "7-18": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-18/",
+   "archivo": "qr/svg/7-18.svg",
+   "pagina": "p/7-18/index.html"
+  },
+  "7-19": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-19/",
+   "archivo": "qr/svg/7-19.svg",
+   "pagina": "p/7-19/index.html"
+  },
+  "7-20": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-20/",
+   "archivo": "qr/svg/7-20.svg",
+   "pagina": "p/7-20/index.html"
+  },
+  "7-21": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/7-21/",
+   "archivo": "qr/svg/7-21.svg",
+   "pagina": "p/7-21/index.html"
+  },
+  "8-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-01/",
+   "archivo": "qr/svg/8-01.svg",
+   "pagina": "p/8-01/index.html"
+  },
+  "8-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-02/",
+   "archivo": "qr/svg/8-02.svg",
+   "pagina": "p/8-02/index.html"
+  },
+  "8-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-03/",
+   "archivo": "qr/svg/8-03.svg",
+   "pagina": "p/8-03/index.html"
+  },
+  "8-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-04/",
+   "archivo": "qr/svg/8-04.svg",
+   "pagina": "p/8-04/index.html"
+  },
+  "8-05": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-05/",
+   "archivo": "qr/svg/8-05.svg",
+   "pagina": "p/8-05/index.html"
+  },
+  "8-06": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-06/",
+   "archivo": "qr/svg/8-06.svg",
+   "pagina": "p/8-06/index.html"
+  },
+  "8-07": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-07/",
+   "archivo": "qr/svg/8-07.svg",
+   "pagina": "p/8-07/index.html"
+  },
+  "8-08": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-08/",
+   "archivo": "qr/svg/8-08.svg",
+   "pagina": "p/8-08/index.html"
+  },
+  "8-09": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-09/",
+   "archivo": "qr/svg/8-09.svg",
+   "pagina": "p/8-09/index.html"
+  },
+  "8-10": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-10/",
+   "archivo": "qr/svg/8-10.svg",
+   "pagina": "p/8-10/index.html"
+  },
+  "8-11": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-11/",
+   "archivo": "qr/svg/8-11.svg",
+   "pagina": "p/8-11/index.html"
+  },
+  "8-12": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-12/",
+   "archivo": "qr/svg/8-12.svg",
+   "pagina": "p/8-12/index.html"
+  },
+  "8-13": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-13/",
+   "archivo": "qr/svg/8-13.svg",
+   "pagina": "p/8-13/index.html"
+  },
+  "8-14": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-14/",
+   "archivo": "qr/svg/8-14.svg",
+   "pagina": "p/8-14/index.html"
+  },
+  "8-15": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-15/",
+   "archivo": "qr/svg/8-15.svg",
+   "pagina": "p/8-15/index.html"
+  },
+  "8-16": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/8-16/",
+   "archivo": "qr/svg/8-16.svg",
+   "pagina": "p/8-16/index.html"
+  },
+  "9-01": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/9-01/",
+   "archivo": "qr/svg/9-01.svg",
+   "pagina": "p/9-01/index.html"
+  },
+  "9-02": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/9-02/",
+   "archivo": "qr/svg/9-02.svg",
+   "pagina": "p/9-02/index.html"
+  },
+  "9-03": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/9-03/",
+   "archivo": "qr/svg/9-03.svg",
+   "pagina": "p/9-03/index.html"
+  },
+  "9-04": {
+   "url": "https://seraf-6.github.io/aesweb/open-2026/p/9-04/",
+   "archivo": "qr/svg/9-04.svg",
+   "pagina": "p/9-04/index.html"
   }
  },
  "salas": {

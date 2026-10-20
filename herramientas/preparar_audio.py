@@ -71,7 +71,7 @@ def main():
     if not crudo.is_file():
         sys.exit(f'No existe {crudo}')
     if not _piezas.CODIGO.match(cod):
-        sys.exit(f'«{cod}» no es un código (por ejemplo 3a-07)')
+        sys.exit(f'«{cod}» no es un código (por ejemplo 3-07)')
     if not a.no_anotar and not _piezas.existe(cod):
         sys.exit(f'{cod} no está en open2026/piezas.py. ¿Está bien escrito el código?')
     ffmpeg, ffprobe = programa('ffmpeg'), programa('ffprobe')
