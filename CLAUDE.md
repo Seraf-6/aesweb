@@ -496,8 +496,9 @@ porque se movió un archivo es el error caro de este módulo. Por lo mismo:
 - La dirección base (`URL_BASE` en `generar.py`) está impresa en todos los
   QR. El verificador la tiene escrita aparte, a propósito.
 
-**Los nombres.** Al repositorio llega solo el nombre y la inicial del
-apellido («Ana G.»). La planilla con los nombres completos vive en la
+**Los nombres.** En los datos (piezas.py, las páginas, las etiquetas) va
+solo el nombre y la inicial del apellido («Ana G.»); las fotos de las hojas
+se publican como las escribieron los chicos, y los audios enteros, sin cortar. La planilla con los nombres completos vive en la
 computadora del docente; `cargar_piezas.py` se niega a leerla si está
 adentro del repositorio, y `.gitignore` rechaza las planillas y los audios y
 fotos crudos. No hay analítica ni nada que registre quién escanea.
@@ -532,14 +533,12 @@ fotos crudos. No hay analítica ni nada que registre quién escanea.
 4. **Las fotos**: `python herramientas/preparar_imagen.py <foto> 3a-07 problema`
    (o `solucion`). Necesita Pillow. La endereza según el EXIF del celular,
    la achica a 1600 px de ancho, JPEG calidad 82, y la guarda **sin EXIF**,
-   que trae la ubicación GPS de dónde se sacó. **Hay que mirar cada hoja
-   antes**: los chicos escriben su nombre y apellido completos (arriba, en
-   el enunciado, firmado al pie) y las docentes anotan encima («Audio ✓»,
-   «Grabar de nuevo», «Falta solución»). Todo eso se tapa con
-   `--tapar izquierda,arriba,derecha,abajo` en porcentajes de la hoja, que
-   pinta el rectángulo del color del papel; el nombre de pila queda. Después
-   se revisa la zona tapada con lupa: en 4.º, la primera pasada dejó
-   asomar «…randa» de un apellido.
+   que trae la ubicación GPS de dónde se sacó. Las hojas escaneadas de
+   costado se enderezan con `--girar 90|180|270` (sentido horario). Las fotos
+   **se publican tal cual**, con el nombre y apellido que el chico escribió en
+   la hoja: lo decidió Juan (octubre de 2026). `--tapar` queda para algo puntual.
+   Un alumno con dos problemas (en 2.º hubo dos tandas, V1 y V2) los tiene los
+   dos en su página: `--numero 2` en las dos herramientas.
 5. Las herramientas anotan el archivo en `piezas.py`; después, `build.py` y
    el verificador.
 6. **Los paneles se imprimen al final**, cuando cada sala tenga su párrafo
