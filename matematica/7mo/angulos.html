@@ -1,0 +1,1482 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ángulos · AESWeb</title>
+<meta name="description" content="La unidad 6 de 7.º (Geometría plana II) en sus seis temas, desde cero: punto, recta y semirrecta, qué es un grado, el sistema sexagesimal, las clases de ángulos y las paralelas cortadas por una secante. Cada ejemplo se arma sobre una figura, con tres talleres para experimentar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de esta página: las figuras de ángulos ---------- */
+.g-punta{fill:var(--tinta)}
+.g-punta2{fill:var(--acento)}
+.g-giro{fill:none; stroke:var(--acento2); stroke-width:2.6; stroke-linecap:round}
+.g-compas{fill:none; stroke:var(--lapiz); stroke-width:1.8}
+.g-transp{fill:var(--papel-2); fill-opacity:.88; stroke:var(--lapiz); stroke-width:1.4}
+.g-tick{stroke:var(--lapiz); stroke-width:1}
+.g-esc1,.g-esc2{font-family:var(--mono); font-size:10.5px; font-weight:600}
+.g-esc1{fill:var(--acento2)}
+.g-esc2{fill:var(--dest)}
+.g-lee{fill:none; stroke:var(--acento); stroke-width:2.6}
+.g-regla{fill:var(--papel-2); stroke:var(--lapiz); stroke-width:1.4}
+.g-regla-n{fill:var(--tinta); font-family:var(--mono); font-size:12px}
+.g-reloj{fill:var(--papel-2); stroke:var(--tinta); stroke-width:2.4}
+.g-hora{fill:var(--tinta); font-family:var(--mono); font-size:15px; font-weight:600}
+.g-aguja{stroke:var(--tinta); stroke-width:4; stroke-linecap:round}
+.g-aguja2{stroke:var(--acento); stroke-width:3; stroke-linecap:round}
+.g-pizza{fill:var(--dest-suave); stroke:var(--dest); stroke-width:2.4}
+.g-tenue{fill:var(--linea); stroke:var(--linea-fuerte); stroke-width:1}
+.g-vuelta{fill:none; stroke:var(--linea-fuerte); stroke-width:1.4}
+.g-x{font-style:italic; font-family:var(--serif)}
+/* ---------- los talleres ---------- */
+.taller{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,310px); gap:18px; align-items:start}
+@media (max-width:720px){.taller{grid-template-columns:minmax(0,1fr)}}
+.taller .lienzo svg{max-height:calc(100vh - 290px)}
+.perilla{display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:8px}
+.perilla-rot{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--lapiz); flex-basis:100%}
+.perilla input{font-family:var(--mono); font-size:17px; width:4.2em; text-align:center;
+  background:var(--papel); color:var(--tinta); border:1px solid var(--linea-fuerte);
+  border-radius:3px; padding:7px 6px}
+.perilla input:focus-visible{outline:2px solid var(--rojo); outline-offset:1px}
+.perilla .op{width:auto; min-width:42px; padding:0 8px; font-size:15px}
+.modos{display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 8px}
+.modos .preset[aria-pressed="true"]{background:var(--tinta); color:var(--papel); border-color:var(--tinta)}
+.cambio{margin-top:6px; font-family:var(--sans); font-size:14px; line-height:1.4; color:var(--acento2)}
+#t6 .concepto-figura{max-width:430px}
+.rotulo{fill:var(--tinta); font-family:var(--mono); font-size:13px; font-weight:600}
+.rotulo.dest{fill:var(--acento); font-size:15px}
+.rotulo.n{fill:var(--lapiz); font-size:14px}
+body[data-solo="1"] .perilla input{font-size:1em}
+body[data-solo="1"] .cambio{font-size:.8em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="index.html">7.º grado</a><span class="sep">/</span>
+      <span>Unidad 6 · págs. 112–131</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Matemática 7.º grado</p>
+    <h1>Ángulos</h1>
+    <p class="bajada">«La alegría de ver y comprender es el regalo más hermoso de la
+      naturaleza.»<span class="firma">atribuida a Albert Einstein</span></p>
+    <div class="pie-tapa">
+      <span>Unidad 6 · Geometría plana (II) · páginas 112 a 131</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Unidad 6 · págs. 112–131</p>
+    <h2>Un ángulo es un giro</h2>
+    <ul class="puntos">
+      <li>Todo arranca con dos <b>semirrectas</b> que salen del mismo punto.</li>
+      <li>Medir un ángulo es contar cuánto <b>gira</b> una para llegar a la otra: una vuelta entera son <b>360°</b>.</li>
+      <li>Con eso alcanza para todo lo demás: los complementos, los opuestos por el vértice y las <b>paralelas cortadas por una secante</b>.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de clase · Unidad 6, <i>Matemática 7</i>, Editorial En Alianza. Sigue los seis
+    temas del libro con ejemplos y figuras originales, y dos puentes armados sobre la
+    progresión de Khan Academy; las páginas indicadas remiten al libro del alumno. Cada
+    medida de esta página está verificada en <span class="ec">verificacion/angulos_7mo.py</span>.
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En esta unidad la única letra de las cuentas es la incógnita x: los
+   ángulos se nombran con mayúsculas (AÔB) o con letras griegas. */
+Pizarra.letras = /[x]/g;
+
+/* ═══ para dibujar los ángulos ═══
+   Los ángulos se miden como en el transportador: desde la derecha y en el
+   sentido contrario al reloj. En el SVG la y va hacia abajo, así que un
+   punto a `a` grados de O queda en [O.x + L cos a, O.y − L sen a]. */
+const g = Geo;
+const RAD = Math.PI / 180;
+const F = (capas, rot, vb = '0 0 400 300') => ({ tipo:'figura', vb, rot, capas });
+const en = (O, a, L) => [O[0] + L * Math.cos(a * RAD), O[1] - L * Math.sin(a * RAD)];
+/* la dirección, en grados, de la semirrecta que va de O a p */
+const dirDe = (O, p) => Math.atan2(O[1] - p[1], p[0] - O[0]) / RAD;
+const X = '<tspan class="g-x">x</tspan>';
+
+/* la punta de flecha al final de un trazo que va de p a q */
+function punta(p, q, cls = 'g-punta', s = 12){
+  const L = g.dist(p, q), u = [(q[0] - p[0]) / L, (q[1] - p[1]) / L], n = [-u[1], u[0]];
+  const b = [q[0] - u[0] * s, q[1] - u[1] * s];
+  return `<polygon class="${cls}" points="${g.pts([q, [b[0] + n[0] * s * .42, b[1] + n[1] * s * .42], [b[0] - n[0] * s * .42, b[1] - n[1] * s * .42]])}"/>`;
+}
+/* una semirrecta desde O hacia `a` grados: sigue sin fin, con su flecha */
+const semi = (O, a, L, cls = 'g-linea') => {
+  const q = en(O, a, L);
+  return g.seg(O, q, cls) + punta(O, q, cls === 'g-roja' ? 'g-punta2' : 'g-punta');
+};
+/* una recta por p y q, que se pasa de los dos lados, con una flecha en cada punta */
+const recta = (p, q, mas = 60, cls = 'g-linea') => {
+  const L = g.dist(p, q), e1 = g.hacia(q, p, L + mas), e2 = g.hacia(p, q, L + mas);
+  return g.seg(e1, e2, cls) + punta(p, e1) + punta(q, e2);
+};
+/* el arco de a1 a a2 grados: si a2 > a1 va contra el reloj, si no, a favor */
+function arcoD(O, a1, a2, r){
+  const d = a2 - a1, P1 = en(O, a1, r), P2 = en(O, a2, r), sw = d > 0 ? 0 : 1;
+  if (Math.abs(d) >= 359.99){
+    const Pm = en(O, a1 + d / 2, r);
+    return `M ${g.pts([P1])} A ${r} ${r} 0 0 ${sw} ${g.pts([Pm])} A ${r} ${r} 0 0 ${sw} ${g.pts([P1])}`;
+  }
+  return `M ${g.pts([P1])} A ${r} ${r} 0 ${Math.abs(d) > 180 ? 1 : 0} ${sw} ${g.pts([P2])}`;
+}
+/* el ángulo pintado, entre a1 y a2 */
+const sector = (O, a1, a2, r = 34, cls = 'g-arco') =>
+  `<path class="${cls} pop-suave" d="M ${g.pts([O])} L ${arcoD(O, a1, a2, r).slice(2)} Z"/>`;
+/* el arco solo, que se traza mientras el lado gira */
+const trazo = (O, a1, a2, r = 42, cls = 'g-giro') => `<path ${g.traza(cls)} d="${arcoD(O, a1, a2, r)}"/>`;
+/* el rótulo de un ángulo, sobre su bisectriz */
+const rotAng = (O, a1, a2, r, texto, cls = 'g-dato') => g.txt(en(O, (a1 + a2) / 2, r), texto, cls);
+const nombre = (p, s, dx = 0, dy = 20) => g.txt([p[0] + dx, p[1] + dy], s, 'g-rot');
+/* donde se cortan las rectas pq y rs */
+function corte(p, q, r, s){
+  const d = (q[0] - p[0]) * (s[1] - r[1]) - (q[1] - p[1]) * (s[0] - r[0]);
+  const t = ((r[0] - p[0]) * (s[1] - r[1]) - (r[1] - p[1]) * (s[0] - r[0])) / d;
+  return [p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])];
+}
+
+/* el transportador, con el centro en O y el 0 de afuera a la derecha:
+   la escala de afuera empieza a la derecha y la de adentro a la izquierda */
+function transportador(O, R){
+  let s = `<path class="g-transp" d="M ${g.pts([en(O, 0, R)])} A ${R} ${R} 0 0 0 ${g.pts([en(O, 180, R)])} Z"/>`;
+  for (let a = 0; a <= 180; a += 5){
+    const largo = a % 10 ? 7 : 13;
+    const p = en(O, a, R), q = en(O, a, R - largo);
+    s += `<line class="g-tick" x1="${g.f(p[0])}" y1="${g.f(p[1])}" x2="${g.f(q[0])}" y2="${g.f(q[1])}"/>`;
+  }
+  for (let a = 0; a <= 180; a += 10){
+    // el 0 y el 180 van un poco arriba de la base: sobre ella los tacharía el lado del ángulo
+    const sube = a % 180 === 0 ? 11 : 0, p1 = en(O, a, R - 23), p2 = en(O, a, R - 42);
+    s += g.txt([p1[0], p1[1] - sube], a, 'g-esc1') + g.txt([p2[0], p2[1] - sube], 180 - a, 'g-esc2');
+  }
+  return s + g.pto(O, 'g-vert', 3.5);
+}
+/* el número que se lee, rodeado: en la escala de afuera o en la de adentro */
+const lectura = (O, R, a, escala = 'afuera') => {
+  const p = en(O, a, escala === 'afuera' ? R - 23 : R - 42);
+  return `<circle class="g-lee pop" cx="${g.f(p[0])}" cy="${g.f(p[1])}" r="10.5"/>`;
+};
+
+/* una regla de `cm` centímetros, con el 0 en x0 */
+function regla(x0, y, cm = 10, u = 32){
+  let s = `<rect class="g-regla" x="${x0 - 12}" y="${y}" width="${cm * u + 24}" height="40" rx="3"/>`;
+  for (let i = 0; i <= 2 * cm; i++){
+    const x = x0 + i * u / 2;
+    s += `<line class="g-tick" x1="${x}" y1="${y}" x2="${x}" y2="${y + (i % 2 ? 8 : 15)}"/>`;
+    if (i % 2 === 0) s += `<text class="g-regla-n" x="${x}" y="${y + 30}" text-anchor="middle">${i / 2}</text>`;
+  }
+  return s;
+}
+
+/* un reloj: la esfera, las marcas y los números */
+function reloj(O, R){
+  let s = g.circ(O, R, 'g-reloj');
+  for (let k = 0; k < 60; k++){
+    const p = en(O, 90 - k * 6, R), q = en(O, 90 - k * 6, R - (k % 5 ? 5 : 11));
+    s += `<line class="g-tick" x1="${g.f(p[0])}" y1="${g.f(p[1])}" x2="${g.f(q[0])}" y2="${g.f(q[1])}"/>`;
+  }
+  for (let h = 1; h <= 12; h++) s += g.txt(en(O, 90 - h * 30, R - 25), h, 'g-hora');
+  return s;
+}
+
+/* ═══ las dos paralelas y la secante ═══
+   r es horizontal (y = 95); s pasa por (200, 215) con inclinación phi; la
+   secante t sube con inclinación th. Los ocho ángulos se numeran como en el
+   libro: en cada cruce, 1 arriba a la izquierda, 2 arriba a la derecha, 3
+   abajo a la izquierda y 4 abajo a la derecha; abajo, 5 a 8. */
+function paralelas(th, phi = 0){
+  const X1 = [200 + 60 * Math.cos(th * RAD) / Math.sin(th * RAD), 95];
+  const C = [200, 215];
+  const X2 = corte(X1, en(X1, th, 1), C, en(C, phi, 1));
+  const base =
+    g.seg([18, 95], [382, 95], 'g-linea') + g.txt([370, 80], 'r', 'g-rot') +
+    g.seg(en(C, phi + 180, 185), en(C, phi, 185), 'g-linea') + g.txt(en(C, phi, 172).map((v, i) => v + (i ? 18 : 0)), 's', 'g-rot') +
+    g.seg(en(X2, th + 180, 78), en(X1, th, 78), 'g-linea') + g.txt(en(X1, th, 70).map((v, i) => v + (i ? 0 : 16)), 't', 'g-rot');
+  /* cada ángulo: en qué cruce está y entre qué direcciones */
+  const reg = i => {
+    const [X, psi] = i <= 4 ? [X1, 0] : [X2, phi];
+    return [X, ...{ 1:[th, psi + 180], 2:[psi, th], 3:[psi + 180, th + 180], 4:[th + 180, psi + 360] }[(i - 1) % 4 + 1]];
+  };
+  const ang = (i, cls = 'g-arco', r = 22) => { const [Xx, a1, a2] = reg(i); return sector(Xx, a1, a2, r, cls); };
+  const num = i => { const [Xx, a1, a2] = reg(i); return rotAng(Xx, a1, a2, 34, i, 'g-dato'); };
+  const med = (i, t, r = 60) => { const [Xx, a1, a2] = reg(i); return rotAng(Xx, a1, a2, r, t, 'g-num'); };
+  return { X1, X2, base, ang, num, med };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Los seis temas de la unidad 6 del libro, en su orden, con dos puentes
+   que no están en el libro y que siguen la progresión de Khan Academy:
+   antes del tema 1, punto, recta, semirrecta y segmento; entre el 1 y el
+   2, qué es un grado (el libro pasa de "un ángulo es una región" a medir
+   en grados sin decir nunca qué es un grado).
+   Toda medida que aparece acá está calculada y verificada en
+   verificacion/angulos_7mo.py. No se escribe ninguna a mano.
+   ═══════════════════════════════════════════════════════════════ */
+const TEMAS = [
+/* ─────────────────────────── puente: la base ─────────────────────────── */
+(() => {
+  const Aa = [120, 150], Bb = [280, 100];
+  const pA = g.pto(Aa, 'g-pto', 6) + nombre(Aa, 'A', -6, 24), pB = g.pto(Bb, 'g-pto', 6) + nombre(Bb, 'B', 4, -18);
+  const masAlla = (p, q, d) => g.hacia(p, q, g.dist(p, q) + d);
+  const x = c => 40 + c * 32;
+  return {
+  n:'U3→1', id:'base', puente:true, entre:'la unidad 3 y el tema 1', corto:'Punto, recta, semirrecta',
+  titulo:'Punto, recta, semirrecta y segmento',
+  concepto:{
+    formaTxt:'las piezas con que se arma un ángulo',
+    serie:[
+      { rot:'punto', txt:'un lugar: no tiene largo ni ancho' },
+      { rot:'recta', txt:'derecha y sin fin para los dos lados' },
+      { rot:'semirrecta', txt:'empieza en un punto y sigue sin fin para un lado' },
+      { rot:'segmento', txt:'tiene dos puntas: se puede medir' },
+    ],
+    puntos:[
+      'Se nombran con mayúsculas: el punto A, la recta AB, la semirrecta AB, el segmento AB.',
+      'En la semirrecta el orden importa: la primera letra es donde empieza.',
+      'De las cuatro, la única que se mide con la regla es el segmento.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la recta AB', enun:'dos puntos, A y B', prosa:true,
+      lienzo:F([
+        [1, pA],
+        [2, pB],
+        [3, recta(Aa, Bb, 80)],
+        ['control', g.seg(g.hacia(Aa, [Aa[0] + 200, Aa[1] - 10], -60), [Aa[0] + 200, Aa[1] - 10], 'g-aux') + g.txt([330, 152], 'no llega a B', 'g-dato')],
+      ], 'Dos puntos y la única recta que pasa por los dos', '0 0 400 240'),
+      pasos:[
+        'Marco un punto A: es solo un lugar, no tiene tamaño.',
+        'Marco otro punto, B.',
+        'Con la regla los uno, y la línea sigue derecha para los dos lados, sin fin: las flechas dicen que no termina.',
+      ], final:'por A y B pasa una sola recta: la recta AB',
+      control:'Si pruebo otra línea derecha por A, con otra inclinación, no llega a B ✓' },
+    { titulo:'cambio: corto en A', enun:`la ${N('semirrecta')} AB`, prosa:true,
+      lienzo:F([
+        [0, recta(Aa, Bb, 80, 'g-aux') + pA + pB],
+        [1, g.pto(Aa, 'g-pto', 9)],
+        [2, g.seg(Aa, masAlla(Aa, Bb, 80), 'g-roja') + punta(Aa, masAlla(Aa, Bb, 80), 'g-punta2')],
+      ], 'La semirrecta que empieza en A y pasa por B', '0 0 400 240'),
+      pasos:[
+        'Me quedo con la parte de la recta que empieza en A: A es el <b>origen</b>.',
+        'Desde A pasa por B y sigue sin fin: tiene una sola flecha.',
+      ], final:'la semirrecta AB: empieza en A y no termina' },
+    { titulo:'cambio: el orden de las letras', enun:`la semirrecta ${N('BA')}`, prosa:true,
+      lienzo:F([
+        [0, recta(Aa, Bb, 80, 'g-aux') + g.seg(Aa, masAlla(Aa, Bb, 80), 'g-aux') + pA + pB],
+        [1, g.pto(Bb, 'g-pto', 9)],
+        [2, g.seg(Bb, masAlla(Bb, Aa, 80), 'g-roja') + punta(Bb, masAlla(Bb, Aa, 80), 'g-punta2')],
+      ], 'La semirrecta que empieza en B y pasa por A', '0 0 400 240'),
+      pasos:[
+        'Ahora la primera letra es B: el origen es B.',
+        'Desde B pasa por A y sigue, para el otro lado.',
+      ], final:'la semirrecta BA: empieza en B y va para el otro lado' },
+    { titulo:'cambio: corto en A y en B', enun:`el ${N('segmento')} AB, medido con la regla`, prosa:true,
+      lienzo:F([
+        [0, regla(40, 150)],
+        [1, g.pto([x(2), 110], 'g-pto', 6) + g.txt([x(2), 88], 'A', 'g-rot') + g.seg([x(2), 116], [x(2), 150], 'g-aux')],
+        [2, g.pto([x(8), 110], 'g-pto', 6) + g.txt([x(8), 88], 'B', 'g-rot') + g.seg([x(8), 116], [x(8), 150], 'g-aux')],
+        [3, g.seg([x(2), 110], [x(8), 110], 'g-roja')],
+        ['final', g.txt([(x(2) + x(8)) / 2, 92], '6 cm', 'g-num')],
+        ['control', [2, 3, 4, 5, 6, 7].map(c => `<path ${g.traza('g-giro')} d="M ${x(c)} 146 Q ${x(c) + 16} 124 ${x(c + 1)} 146"/>`).join('')],
+      ], 'Un segmento AB sobre una regla, de 2 a 8 centímetros', '0 0 400 240'),
+      pasos:[
+        'Pongo la regla debajo: A cae en el 2.',
+        'B cae en el 8.',
+        P('El segmento va de A a B y no sigue: tiene dos puntas. Resto donde termina menos donde empieza.', '8 − 2 = 6'),
+      ], final:'el segmento AB mide 6 cm',
+      control:'Cuento los saltos de un centímetro desde A: 3, 4, 5, 6, 7 y 8 son seis ✓' },
+  ],
+  preguntas:[
+    { p:'Si la recta no termina, ¿cómo la dibujamos entera?',
+      r:'No se puede: dibujamos un pedazo y le ponemos flechas, que quieren decir "sigue". Es una idea, no un dibujo.' },
+    { p:'¿La semirrecta AB y la BA son la misma?',
+      r:'No. Comparten el segmento AB, pero una empieza en A y sigue más allá de B, y la otra empieza en B y sigue más allá de A.' },
+    { p:'¿Por qué en la regla resté 8 − 2 y no leí el 8?',
+      r:'Porque A no estaba en el 0. La regla dice dónde está cada punta; el largo es la distancia entre las dos.' },
+  ],
+  notas:`<p><b>Este bloque no está en la unidad 6:</b> es lo de la unidad 3 (Geometría plana I),
+      reducido a lo que hace falta para hablar de ángulos. Khan Academy arranca exactamente
+      así ("Lines, line segments, and rays") antes de definir el ángulo, porque la
+      definición del libro (pág. 114) usa la palabra <i>semirrecta</i> como si ya se supiera.</p>
+    <p>Los tres primeros ejemplos son el mismo dibujo con un solo cambio cada vez: la recta,
+      cortada en A, y después con el orden de las letras al revés. El cuarto corta en las dos
+      puntas, y recién ahí aparece algo que se puede medir.</p>
+    <p>El ejemplo de la regla con A en el 2 es a propósito: la mayoría de los alumnos de 7.º
+      lee el número de la punta derecha sin mirar dónde empieza. Con el transportador del
+      tema 1 va a pasar lo mismo, así que conviene que el error aparezca primero acá, con
+      centímetros, donde es más fácil de ver.</p>
+    <p>Si el grupo ya tiene esto, se puede pasar en cinco minutos preguntando en voz alta
+      antes de mostrar cada respuesta.</p>`
+  };
+})(),
+
+/* ─────────────────────────── 1 ─────────────────────────── */
+(() => {
+  const B = [90, 240];
+  const Aa = en(B, 50, 200), C = en(B, 0, 220), D = en(B, 22, 215);
+  const lados = semi(B, 50, 250) + semi(B, 0, 285);
+  const ptos = g.pto(Aa, 'g-vert', 4.5) + g.pto(C, 'g-vert', 4.5) + nombre(Aa, 'A', -16, -4) + nombre(C, 'C', 0, 22);
+  const O = [200, 250], R = 170;
+  /* el ángulo de 125° y su bisectriz con compás */
+  const Ob = [200, 240], Pc = en(Ob, 0, 90), Qc = en(Ob, 125, 90);
+  const Xc = [Pc[0] + Qc[0] - Ob[0], Pc[1] + Qc[1] - Ob[1]];
+  const aP = dirDe(Pc, Xc), aQ = dirDe(Qc, Xc);
+  return {
+  n:1, corto:'Ángulo', titulo:'Ángulo', pag:'págs. 114–115',
+  concepto:{
+    formaTxt:'dos semirrectas que salen del mismo punto',
+    serie:[
+      { rot:'vértice', txt:'el punto donde empiezan' },
+      { rot:'lados', txt:'las dos semirrectas' },
+      { rot:'con tres letras', html:`<span class="caja-txt">${sombrero('AB̂C')}: el vértice va en el medio</span>` },
+      { rot:'con una letra', html:`<span class="caja-txt">${sombrero('B̂')}, o una griega: α, β</span>` },
+      { rot:'bisectriz', txt:'la semirrecta que lo parte en dos iguales' },
+    ],
+    puntos:[
+      'El ángulo es la región que queda entre los dos lados.',
+      'Se mide con el <b>transportador</b>: el centro en el vértice y un lado sobre el 0.',
+      'La bisectriz se traza con regla y compás, sin medir.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'nombrar un ángulo', enun:'el ángulo que forman las semirrectas BA y BC', prosa:true,
+      lienzo:F([
+        [0, lados + ptos],
+        [1, g.pto(B, 'g-pto', 7) + nombre(B, 'B', -14, 18)],
+        [2, g.seg(B, Aa, 'g-foco') + g.seg(B, C, 'g-foco')],
+        [3, sector(B, 0, 50, 46)],
+      ], 'Un ángulo de vértice B y lados BA y BC'),
+      pasos:[
+        'El <b>vértice</b> es B: el punto donde empiezan las dos semirrectas.',
+        'Los <b>lados</b> son las semirrectas BA y BC.',
+        'Con tres letras, la del vértice va en el medio: AB̂C. Leído al revés, CB̂A, es el mismo ángulo.',
+      ], final:'se llama AB̂C, CB̂A o B̂' },
+    { titulo:'cambio: agrego una semirrecta', enun:`el mismo ángulo, con ${N('una semirrecta BD')} en el medio`, prosa:true,
+      lienzo:F([
+        [0, lados + ptos + g.pto(B, 'g-vert', 4.5) + nombre(B, 'B', -14, 18)],
+        [1, semi(B, 22, 270) + g.pto(D, 'g-vert', 4.5) + nombre(D, 'D', 6, -16)],
+        [2, sector(B, 22, 50, 58, 'g-arco')],
+        [3, sector(B, 0, 22, 58, 'g-arco2')],
+        [4, trazo(B, 0, 50, 104, 'g-giro')],
+      ], 'Tres semirrectas desde B: tres ángulos'),
+      pasos:[
+        'Agrego la semirrecta BD, entre BA y BC.',
+        'Entre BA y BD hay un ángulo: AB̂D.',
+        'Entre BD y BC hay otro: DB̂C.',
+        'Y entre BA y BC sigue estando el grande: AB̂C.',
+      ], final:'hay tres ángulos, y B̂ sola ya no dice cuál' },
+    { titulo:'medir con el transportador', enun:'¿Cuánto mide este ángulo?', prosa:true,
+      lienzo:F([
+        [0, semi(O, 0, 190) + semi(O, 50, 200) + sector(O, 0, 50, 34)],
+        [1, transportador(O, R) + g.seg(O, en(O, 0, 190), 'g-linea') + g.seg(O, en(O, 50, 200), 'g-linea'), null, { desde:[0, 80] }],
+        [2, g.seg(O, en(O, 0, R), 'g-foco') + g.pto(O, 'g-pto', 6)],
+        [3, lectura(O, R, 50, 'afuera') + g.txt(en(O, 50, R + 24), '50', 'g-num')],
+        ['control', lectura(O, R, 50, 'adentro')],
+      ], 'Un ángulo con el transportador encima'),
+      pasos:[
+        'Pongo el centro del transportador justo en el vértice.',
+        'Lo giro hasta que un lado quede sobre el 0.',
+        'Leo por dónde pasa el otro lado, en la escala que empieza en ese 0: 50.',
+      ], final:'el ángulo mide 50°',
+      control:`Por el mismo lugar, la otra escala marca 130: es la que empieza en el 0 del otro lado.${A('180° − 130° = 50° ✓')}` },
+    { titulo:'cambio: abro el ángulo', enun:`¿Cuánto mide este ángulo, ${N('más abierto')}?`, prosa:true,
+      lienzo:F([
+        [0, semi(O, 0, 190) + semi(O, 125, 190) + sector(O, 0, 125, 34)],
+        [1, transportador(O, R) + g.seg(O, en(O, 0, 190), 'g-linea') + g.seg(O, en(O, 125, 190), 'g-linea'), null, { desde:[0, 80] }],
+        [2, lectura(O, R, 125, 'afuera') + lectura(O, R, 125, 'adentro')],
+        [3, g.txt(en(O, 125, R + 24), '125', 'g-num')],
+        ['control', g.seg(O, en(O, 90, 175), 'g-diag') + g.recto(O, en(O, 0, 1), en(O, 90, 1), 16)],
+      ], 'Un ángulo obtuso con el transportador encima'),
+      pasos:[
+        'Centro en el vértice y un lado sobre el 0, como antes.',
+        'Por el otro lado pasan dos números: 125 en una escala y 55 en la otra.',
+        'Uso la escala que empieza en el 0 donde apoyé el lado: 125.',
+      ], final:'el ángulo mide 125°',
+      control:`Es más abierto que la esquina de una hoja, así que tiene que pasar de 90°:${A('125° > 90° ✓')}` },
+    { titulo:'la bisectriz, con regla y compás', enun:'la bisectriz del ángulo de 125°', prosa:true,
+      lienzo:F([
+        [0, semi(Ob, 0, 185) + semi(Ob, 125, 185) + g.pto(Ob, 'g-vert', 4.5)],
+        [1, trazo(Ob, -8, 133, 90, 'g-compas') + g.pto(Pc, 'g-pto', 5) + g.pto(Qc, 'g-pto', 5)],
+        [2, trazo(Pc, aP - 24, aP + 24, 90, 'g-compas') + trazo(Qc, aQ - 24, aQ + 24, 90, 'g-compas') + g.pto(Xc, 'g-pto2', 6)],
+        [3, semi(Ob, 62.5, 215, 'g-roja')],
+        ['final', sector(Ob, 0, 62.5, 40, 'g-arco') + sector(Ob, 62.5, 125, 52, 'g-arco2') +
+                  rotAng(Ob, 0, 62.5, 72, '62,5°', 'g-num') + rotAng(Ob, 62.5, 125, 72, '62,5°', 'g-num')],
+      ], 'La bisectriz trazada con compás: un arco desde el vértice y dos desde los cortes'),
+      pasos:[
+        'Con la punta del compás en el vértice, trazo un arco que corte los dos lados.',
+        'Sin cambiar la abertura, trazo un arco desde cada corte. Los dos arcos se cruzan en un punto.',
+        'Uno el vértice con ese cruce: es la bisectriz.',
+      ], final:'cada mitad mide 62,5°',
+      control:`${A('62,5° + 62,5° = 125° ✓')}` },
+  ],
+  preguntas:[
+    { p:'Si alargo los lados, ¿el ángulo crece?',
+      r:'No. El ángulo es cuánto se abren, no cuánto miden los lados: las flechas dicen que los lados siguen igual, sin fin.' },
+    { p:'En el ejemplo 2, ¿por qué no alcanza con decir B̂?',
+      r:'Porque desde B salen tres ángulos. Con tres letras se dice entre qué lados está: AB̂D, DB̂C o AB̂C.' },
+    { p:'¿Cómo sé cuál de las dos escalas del transportador usar?',
+      r:'La que tiene el 0 sobre el lado que apoyé. Y antes de leer, miro el ángulo: si es más cerrado que una esquina, la respuesta tiene que ser menor que 90.' },
+    { p:'¿Por qué con el compás sale la mitad justa?',
+      r:'Porque los cuatro puntos (el vértice, los dos cortes y el cruce) quedan a la misma distancia uno del otro, con la misma abertura: forman un rombo, y la diagonal del rombo parte el ángulo en dos iguales.' },
+    { p:'¿62,5° se puede escribir sin coma?',
+      r:'Sí: 62° 30′. Es lo que vemos en el tema 2.' },
+  ],
+  notas:`<p>El libro define el ángulo como <b>región</b> (pág. 114) y enseguida usa el
+      transportador. Khan Academy hace un paso más que el libro: antes de medir, <b>nombra</b>
+      ("Name angles"), y el ejemplo 2 es su ejercicio típico. Con tres semirrectas desde el
+      mismo vértice, "el ángulo B" deja de alcanzar, y la notación con tres letras deja de
+      ser un capricho.</p>
+    <p>Los ejemplos 3 y 4 son el error más común con el transportador: leer la escala
+      equivocada. En el 4 se ven los dos números a la vez (125 y 55) antes de elegir. El
+      control del 4 es el que conviene que hagan siempre: <b>estimar antes de leer</b>
+      (¿es más o menos que una esquina?). El taller del tema 3 tiene un modo para practicar
+      exactamente eso.</p>
+    <p>La bisectriz del ejemplo 5 da 62,5°: no es un número redondo a propósito. Deja la
+      pregunta abierta para el puente y el tema 2.</p>
+    <p>El ejemplo 5 es el procedimiento de la pág. 115 con otro ángulo. El ejercicio 2 de esa
+      página (leer ángulos en un transportador dibujado) es bueno para hacer en voz alta
+      después del ejemplo 4.</p>`
+  };
+})(),
+
+/* ─────────────────────────── puente: el grado ─────────────────────────── */
+(() => {
+  const O = [200, 150], R = 110;
+  const base = g.circ(O, R, 'g-vuelta') + g.seg(O, en(O, 0, R + 22), 'g-linea') + g.pto(O, 'g-vert', 4.5);
+  const lado = (a, cls = 'g-roja') => g.seg(O, en(O, a, R + 22), cls);
+  return {
+  n:'1→2', id:'grado', puente:true, entre:'el tema 1 y el 2', corto:'¿Qué es un grado?', titulo:'Un ángulo es un giro',
+  concepto:{
+    forma:'1 vuelta = 360°', formaRot:'qué es un grado',
+    puntos:[
+      'Un <b>grado</b> es una de las 360 partes iguales de una vuelta entera.',
+      'Medir un ángulo es contar cuántos grados <b>gira</b> un lado para llegar al otro.',
+      'El largo de los lados no cambia el ángulo: lo que cuenta es el giro.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'media vuelta', enun:'¿Cuántos grados son media vuelta?', prosa:true,
+      lienzo:F([
+        [0, base],
+        [1, trazo(O, 0, 360, R, 'g-giro')],
+        [1, lado(0), 2, { gira:[360, O[0], O[1]] }],
+        [2, lado(180), null, { gira:[180, O[0], O[1]] }],
+        [2, trazo(O, 0, 180, 44)],
+        ['final', sector(O, 0, 180, 44) + rotAng(O, 0, 180, 70, '180°', 'g-num')],
+      ], 'Un lado que da media vuelta alrededor del vértice'),
+      pasos:[
+        'Una vuelta entera, como la del minutero en una hora, son 360°: así se acordó medir.',
+        P('Media vuelta es la mitad.', '360° : 2 = 180°'),
+      ], final:'media vuelta son 180°',
+      control:`Dos medias vueltas dan la vuelta entera:${A('2 · 180° = 360° ✓')}` },
+    { titulo:'cambio: un cuarto de vuelta', enun:`¿Cuántos grados son ${N('un cuarto')} de vuelta?`, prosa:true,
+      lienzo:F([
+        [0, base + lado(180, 'g-aux')],
+        [1, lado(90), null, { gira:[90, O[0], O[1]] }],
+        [1, trazo(O, 0, 90, 44)],
+        [2, sector(O, 0, 90, 44) + g.recto(O, en(O, 0, 1), en(O, 90, 1), 18)],
+        ['final', rotAng(O, 0, 90, 72, '90°', 'g-num')],
+      ], 'Un lado que da un cuarto de vuelta: el ángulo recto'),
+      pasos:[
+        P('Un cuarto de vuelta es la cuarta parte.', '360° : 4 = 90°'),
+        'Es la esquina de una hoja: el ángulo <b>recto</b>, marcado con un cuadradito.',
+      ], final:'un cuarto de vuelta son 90°',
+      control:`Cuatro esquinas de hoja, juntas en un punto, dan la vuelta:${A('4 · 90° = 360° ✓')}` },
+    { titulo:'cambio: una pizza en 8 porciones', enun:`Una pizza cortada en ${N('8')} porciones iguales: ¿cuántos grados tiene cada punta?`, prosa:true,
+      lienzo:F([
+        [0, g.circ(O, R, 'g-pizza')],
+        [1, [0, 1, 2, 3].map(k => g.seg(en(O, k * 45, R), en(O, k * 45 + 180, R), 'g-linea')).join('')],
+        [2, sector(O, 0, 45, R, 'g-arco3')],
+        ['final', rotAng(O, 0, 45, 64, '45°', 'g-num')],
+      ], 'Una pizza redonda cortada en ocho porciones iguales'),
+      pasos:[
+        'Cada corte pasa por el centro: las 8 puntas se juntan ahí y llenan la vuelta.',
+        P('La vuelta entera se reparte en 8.', '360° : 8 = 45°'),
+      ], final:'cada porción mide 45°',
+      control:`${A('8 · 45° = 360° ✓')}` },
+    { titulo:'cambio: el reloj, de una hora a la siguiente', enun:`¿Cuántos grados gira la aguja de las horas ${N('del 12 al 1')}?`, prosa:true,
+      lienzo:F([
+        [0, reloj(O, R) + g.pto(O, 'g-vert', 5)],
+        [1, g.seg(O, en(O, 90, R - 32), 'g-aux')],
+        [2, g.seg(O, en(O, 60, R - 32), 'g-aguja'), null, { gira:[-30, O[0], O[1]] }],
+        [2, trazo(O, 90, 60, 40)],
+        ['final', sector(O, 60, 90, 40) + rotAng(O, 60, 90, 60, '30°', 'g-num')],
+      ], 'Un reloj con la aguja de las horas que pasa del 12 al 1'),
+      pasos:[
+        'El reloj reparte la vuelta entera en 12 horas iguales.',
+        P('De una hora a la siguiente gira la doceava parte.', '360° : 12 = 30°'),
+      ], final:'de una hora a la siguiente hay 30°',
+      control:`Doce horas son la vuelta entera:${A('12 · 30° = 360° ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Por qué 360 y no 100, que es más redondo?',
+      r:'Porque 360 se puede repartir en muchísimas partes iguales sin coma: en 2, 3, 4, 5, 6, 8, 9, 10, 12, 15… tiene 24 divisores. 100 tiene solo 9.' },
+    { p:'¿Un ángulo de lados cortos y uno de lados largos pueden medir lo mismo?',
+      r:'Sí. Las porciones de una pizza grande y de una chica tienen el mismo ángulo si se cortan en la misma cantidad: cambia el tamaño, no el giro.' },
+    { p:'¿Y si un grado es demasiado grande para medir algo?',
+      r:'Se parte en 60 minutos, y cada minuto en 60 segundos, como las horas. Es el tema 2.' },
+  ],
+  notas:`<p><b>Este bloque no está en el libro.</b> El tema 1 dice que el ángulo es una región y
+      el tema 2 ya habla de grados, minutos y segundos, sin decir nunca qué es un grado. Es
+      el salto que un alumno observador pregunta: "¿y por qué 360?".</p>
+    <p>Khan Academy dedica a esto una lección entera ("Angle measurement &amp; circle arcs",
+      "Angles in circles") antes de usar el transportador: el ángulo como <b>fracción de una
+      vuelta</b>. Los cuatro ejemplos son la misma cuenta, 360 dividido en partes iguales,
+      con contextos que conocen: la media vuelta, la esquina de una hoja, una pizza y el
+      reloj. En cada figura el lado <b>gira</b> desde el otro: el ángulo es un giro, no un
+      dibujo quieto.</p>
+    <p>La pregunta de arranque de la unidad (el minutero en 20 minutos) usa lo mismo; se
+      puede volver a ella acá.</p>
+    <p>Pregunta para hacer antes de avanzar: "¿cuántos grados son tres porciones de la
+      pizza?". Si responden 135° sin dibujar, el puente cumplió.</p>`
+  };
+})(),
+
+/* ─────────────────────────── 2 ─────────────────────────── */
+{
+  n:2, corto:'Grados, minutos, segundos', titulo:'Unidades de medida de ángulos', pag:'págs. 116–117',
+  concepto:{
+    formaTxt:'cada unidad son 60 de la que sigue: el sistema sexagesimal',
+    serie:[
+      { rot:'un grado', ec:'1° = 60′' },
+      { rot:'un minuto', ec:'1′ = 60″' },
+      { rot:'de grande a chico', txt:'se multiplica por 60' },
+      { rot:'de chico a grande', txt:'se divide por 60' },
+    ],
+    puntos:[
+      'Es el mismo sistema de las horas: 60 minutos, y cada minuto, 60 segundos.',
+      'Para sumar o restar se trabaja por columnas: grados con grados, minutos con minutos, segundos con segundos.',
+      'Si una columna pasa de 60, se lleva 1 a la de la izquierda; si no alcanza, se pide 1 prestado.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'grados a minutos', enun:'Pasar 3° a minutos', rotCuaderno:'la conversión',
+      pasos:[
+        P('Cada grado tiene 60 minutos: multiplico por 60.', '3° = 3 · 60′', ' = 180′'),
+      ], final:'3° = 180′',
+      control:`De vuelta, divido por 60:${A('180 : 60 = 3 ✓')}` },
+    { titulo:'cambio: con minutos sueltos', enun:`Pasar ${N('3° 25′')} a minutos`, rotCuaderno:'la conversión',
+      pasos:[
+        P('Los 3 grados pasan a minutos, y los 25 minutos se suman como están.', '3° 25′ = 3 · 60′ + 25′', ' = 180′ + 25′', ' = 205′'),
+      ], final:'3° 25′ = 205′',
+      control:`Al revés: 205 entre 60 da 3, y sobran 25.${A('205 = 3 · 60 + 25 ✓')}` },
+    { titulo:'cambio: al revés, con coma', enun:`Pasar ${N('2,4°')} a grados y minutos`, rotCuaderno:'la conversión',
+      pasos:[
+        'Los 2 grados enteros quedan como están.',
+        P('La parte con coma, 0,4°, la paso a minutos.', '0,4° = 0,4 · 60′', ' = 24′'),
+        P('Junto las dos partes.', '2,4° = 2° 24′'),
+      ], final:'2,4° = 2° 24′',
+      control:`Al revés: 2° 24′ son 2 · 60 + 24 = 144 minutos, y en grados${A('144 : 60 = 2,4 ✓')}` },
+    { titulo:'sumar ángulos', enun:'25° 40′ 35″ + 18° 35′ 50″', rotCuaderno:'por columnas',
+      pasos:[
+        P('Sumo cada columna por separado: grados con grados, minutos con minutos, segundos con segundos.',
+          '25° 40′ 35″ + 18° 35′ 50″ = 43° 75′ 85″'),
+        P('85″ es más de un minuto: 85″ son 1′ y 25″. Llevo ese minuto a la columna de los minutos.', ' = 43° 76′ 25″'),
+        P('76′ es más de un grado: 76′ son 1° y 16′. Llevo ese grado.', ' = 44° 16′ 25″'),
+      ], final:'la suma es 44° 16′ 25″',
+      control:`Le resto lo que sumé, y tengo que volver al primero:${A('44° 16′ 25″ − 18° 35′ 50″ = 25° 40′ 35″ ✓')}` },
+    { titulo:'cambio: restar, pidiendo prestado', enun:`${N('90°')} − 35° 47′ 20″`, rotCuaderno:'por columnas',
+      pasos:[
+        P('A 90° no le puedo sacar minutos: no tiene. Pido prestado 1° y lo cambio por 60′.', '90° = 89° 60′'),
+        P('Tampoco tiene segundos: de esos 60′ pido 1′, que son 60″.', ' = 89° 59′ 60″'),
+        P('Ahora resto columna por columna.', '89° 59′ 60″ − 35° 47′ 20″ = 54° 12′ 40″'),
+      ], final:'la resta es 54° 12′ 40″',
+      control:`Sumo para volver:${A('54° 12′ 40″ + 35° 47′ 20″ = 89° 59′ 60″', ' = 90° ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Por qué en la suma no escribimos 43° 75′ 85″ como respuesta?',
+      r:'Porque 85″ ya es más de un minuto y 75′ más de un grado. Es como decir "1 hora y 75 minutos": se entiende, pero se escribe 2 horas y 15.' },
+    { p:'¿2,4° no es 2° 40′?',
+      r:'No: la coma es decimal, y 0,4 de grado es 0,4 de 60 minutos, o sea 24′. 2° 40′ sería 2,666…°.' },
+    { p:'En la resta, ¿por qué 90° se escribe 89° 59′ 60″?',
+      r:'Porque es lo mismo dicho con otras unidades: le saqué 1° y lo devolví como 59′ y 60″. Así cada columna tiene de dónde restar.' },
+    { p:'¿Dónde más se usa este sistema?',
+      r:'En la hora y en las coordenadas de los mapas: la latitud de Asunción se da en grados, minutos y segundos.' },
+  ],
+  notas:`<p>El tema sigue la pág. 116: conversiones primero, después suma y resta por
+      columnas. Los tres primeros ejemplos son la misma conversión con un cambio cada vez:
+      grados enteros, grados con minutos y, al final, al revés y con coma (el error más
+      común de 7.º es leer 2,4° como 2° 40′; vale la pena preguntarlo antes de resolver).</p>
+    <p>La resta del ejemplo 5 desde 90° es la que va a hacer falta en el tema 5 para el
+      complemento, y la pág. 122 la trae en el recuadro "Descomposición de un ángulo". Acá
+      aparece primero, sin la palabra complemento.</p>
+    <p>El paralelo con la hora ayuda más que cualquier regla: "una hora y 75 minutos" lo
+      corrigen todos sin pensar.</p>
+    <p>Para practicar con patrón: una serie donde cada suma lleva un pasaje más que la
+      anterior (ninguno, solo los segundos, segundos y minutos).</p>`
+},
+
+/* ─────────────────────────── 3 ─────────────────────────── */
+(() => {
+  const O = [200, 165];
+  const base = antes => semi(O, 0, 172) + g.pto(O, 'g-vert', 4.5) + (antes != null ? g.seg(O, en(O, antes, 150), 'g-aux') : '');
+  const abre = (a, antes, comparo) => F([
+    [0, base(antes)],
+    [1, g.seg(O, en(O, a, 150), 'g-roja') + punta(O, en(O, a, 150), 'g-punta2'), null, { gira:[a, O[0], O[1]] }],
+    [1, trazo(O, 0, a, a === 360 ? 40 : 44)],
+    [2, sector(O, 0, a, a === 360 ? 40 : 44) + comparo],
+    ['final', a === 360 ? g.txt([O[0] - 70, O[1] - 60], '360°', 'g-num') : rotAng(O, 0, a, 74, `${a}°`, 'g-num')],
+  ], `Un lado que gira ${a}° desde el lado fijo`);
+  const esquina = g.seg(O, en(O, 90, 150), 'g-diag') + g.recto(O, en(O, 0, 1), en(O, 90, 1), 16);
+  return {
+  n:3, corto:'Según su medida', titulo:'Clasificación de los ángulos según su medida', pag:'págs. 118–119',
+  concepto:{
+    serie:[
+      { rot:'nulo', ec:'0°' },
+      { rot:'agudo', txt:'más de 0° y menos de 90°' },
+      { rot:'recto', ec:'90°' },
+      { rot:'obtuso', txt:'más de 90° y menos de 180°' },
+      { rot:'llano', ec:'180°' },
+      { rot:'completo', ec:'360°' },
+    ],
+    puntos:[
+      'El que decide es el <b>recto</b>: más cerrado que una esquina, agudo; más abierto, obtuso.',
+      'El llano tiene los lados en línea recta, uno para cada lado.',
+      'El transportador también se llama <b>goniómetro</b>.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'un lado que gira 35°', enun:'¿Qué clase de ángulo es uno de 35°?', prosa:true,
+      lienzo:abre(35, null, esquina),
+      pasos:[
+        'El lado gira desde el lado fijo hasta 35°.',
+        'Lo comparo con un recto, la esquina de una hoja: queda más cerrado.',
+      ], final:'35° es un ángulo agudo',
+      control:`${A('0° < 35° < 90° ✓')}` },
+    { titulo:'cambio: lo abro hasta 90°', enun:`¿Y uno de ${N('90°')}?`, prosa:true,
+      lienzo:abre(90, 35, g.recto(O, en(O, 0, 1), en(O, 90, 1), 16)),
+      pasos:[
+        'Sigo girando hasta 90°.',
+        'La esquina de la hoja calza justo: los lados son perpendiculares.',
+      ], final:'90° es un ángulo recto',
+      control:`Cuatro como este dan la vuelta entera:${A('4 · 90° = 360° ✓')}` },
+    { titulo:'cambio: más allá del recto', enun:`¿Y uno de ${N('140°')}?`, prosa:true,
+      lienzo:abre(140, 90, esquina),
+      pasos:[
+        'Sigo hasta 140°.',
+        'Ya pasó la esquina de la hoja, pero los lados todavía no quedan en línea recta.',
+      ], final:'140° es un ángulo obtuso',
+      control:`${A('90° < 140° < 180° ✓')}` },
+    { titulo:'cambio: hasta quedar en línea recta', enun:`¿Y uno de ${N('180°')}?`, prosa:true,
+      lienzo:abre(180, 140, esquina),
+      pasos:[
+        'Sigo hasta 180°.',
+        'Los dos lados quedan en línea recta, uno para cada lado del vértice.',
+      ], final:'180° es un ángulo llano',
+      control:`Son dos rectos juntos:${A('90° + 90° = 180° ✓')}` },
+    { titulo:'cambio: la vuelta entera', enun:`¿Y uno de ${N('360°')}?`, prosa:true,
+      lienzo:abre(360, 180, ''),
+      pasos:[
+        'Sigo girando hasta dar la vuelta entera.',
+        'El lado vuelve a caer sobre el fijo, pero el ángulo no es nulo: dio una vuelta completa.',
+      ], final:'360° es un ángulo completo',
+      control:`Son dos llanos:${A('180° + 180° = 360° ✓')}` },
+  ],
+  taller:'lab-transportador',
+  preguntas:[
+    { p:'Si el ángulo de 360° termina donde empezó, ¿no es lo mismo que el nulo?',
+      r:'Los lados quedan en el mismo lugar, pero no es lo mismo: uno no giró nada y el otro dio una vuelta entera. Por eso importa pensar el ángulo como giro.' },
+    { p:'¿Y uno de 200°, qué es?',
+      r:'Más que un llano y menos que una vuelta. El libro no le pone nombre aparte; en otros libros se llama cóncavo.' },
+    { p:'¿Por qué el llano no tiene "esquina"?',
+      r:'Porque los lados quedan en línea recta. Sigue siendo un ángulo: un giro de media vuelta.' },
+    { p:'En el reloj, ¿a qué hora las agujas forman un llano?',
+      r:'A las 6 en punto: una apunta al 12 y la otra al 6.' },
+  ],
+  notas:`<p>Los cinco ejemplos son <b>un solo lado que sigue girando</b>: el de antes queda en
+      punteado. Así la clasificación no es una lista de seis definiciones sino un recorrido:
+      el recto y el llano son las dos paradas que separan las clases.</p>
+    <p>En Khan Academy este tema va con <b>estimar</b> ("Estimate angle measures") antes de
+      medir. El taller tiene ese modo: el ángulo aparece sin números, cada uno anota su
+      estimación en el cuaderno y recién después se muestra el transportador. Es la mejor
+      defensa contra leer la escala equivocada del tema 1.</p>
+    <p>El nulo está en el concepto pero no en los ejemplos: con los lados encimados no hay
+      nada que dibujar. La pregunta del observador sobre 0° y 360° es la que lo trae.</p>
+    <p>La actividad de la pág. 119 con relojes se puede hacer con el taller: 3 en punto
+      (90°), 2 en punto (60°), 4 en punto (120°).</p>`
+  };
+})(),
+
+/* ─────────────────────────── 4 ─────────────────────────── */
+(() => {
+  const O1 = [90, 250], A1 = en(O1, 0, 230), B1 = en(O1, 40, 220), C1 = en(O1, 75, 200);
+  const O2 = [200, 225], A2 = en(O2, 0, 160), B2 = en(O2, 40, 170), C2 = en(O2, 180, 160);
+  const O3 = [200, 150];
+  const cruce = a => recta(en(O3, 180, 150), en(O3, 0, 150), 20) + recta(en(O3, a + 180, 130), en(O3, a, 130), 20) + g.pto(O3, 'g-vert', 4.5);
+  const O5 = [200, 215];
+  return {
+  n:4, corto:'Según su posición', titulo:'Clasificación de los ángulos según su posición', pag:'págs. 120–121',
+  concepto:{
+    serie:[
+      { rot:'consecutivos', txt:'comparten el vértice y un lado' },
+      { rot:'adyacentes', txt:'consecutivos, con los otros lados en línea recta: suman 180°' },
+      { rot:'opuestos por el vértice', txt:'los lados de uno son las prolongaciones del otro: miden lo mismo' },
+    ],
+    puntos:[
+      'Dos consecutivos juntos forman un ángulo más grande: se <b>suman</b>.',
+      'Cuando dos rectas se cortan, se forman cuatro ángulos: dos pares de opuestos.',
+      'Basta saber uno de los cuatro para saber los otros tres.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'dos consecutivos', enun:'AÔB mide 40° y BÔC mide 35°. ¿Cuánto mide AÔC?', prosa:true,
+      lienzo:F([
+        [0, semi(O1, 0, 255) + semi(O1, 40, 245) + semi(O1, 75, 225) + g.pto(O1, 'g-vert', 4.5) +
+            nombre(O1, 'O', -14, 16) + nombre(A1, 'A', 0, 22) + nombre(B1, 'B', 10, -10) + nombre(C1, 'C', -16, 0) +
+            sector(O1, 0, 40, 52, 'g-arco') + rotAng(O1, 0, 40, 80, '40°') + sector(O1, 40, 75, 70, 'g-arco2') + rotAng(O1, 40, 75, 98, '35°')],
+        [1, g.seg(O1, B1, 'g-foco')],
+        [2, trazo(O1, 0, 75, 124)],
+        ['final', rotAng(O1, 0, 75, 146, '75°', 'g-num')],
+      ], 'Dos ángulos consecutivos con el lado OB en común'),
+      pasos:[
+        'AÔB y BÔC comparten el vértice O y el lado OB: son consecutivos.',
+        P('Juntos forman AÔC: se suman.', 'AÔC = 40° + 35°', ' = 75°'),
+      ], final:'AÔC mide 75°',
+      control:`Si a AÔC le saco BÔC, vuelvo a AÔB:${A('75° − 35° = 40° ✓')}` },
+    { titulo:'cambio: el otro lado en línea recta', enun:`AÔB mide 40°, y ${N('OC sigue a OA en línea recta')}. ¿Cuánto mide BÔC?`, prosa:true,
+      lienzo:F([
+        [0, semi(O2, 0, 175) + semi(O2, 40, 185) + g.pto(O2, 'g-vert', 4.5) + nombre(O2, 'O', 0, 24) +
+            nombre(A2, 'A', 0, 22) + nombre(B2, 'B', 10, -10) + sector(O2, 0, 40, 46) + rotAng(O2, 0, 40, 72, '40°')],
+        [1, semi(O2, 180, 175) + nombre(C2, 'C', 0, 22) + g.seg(en(O2, 180, 160), en(O2, 0, 160), 'g-foco')],
+        [2, sector(O2, 40, 180, 40, 'g-arco2')],
+        ['final', rotAng(O2, 40, 180, 70, '140°', 'g-num')],
+      ], 'Dos ángulos adyacentes: juntos forman un llano'),
+      pasos:[
+        'OC es la prolongación de OA: entre OA y OC hay un ángulo llano.',
+        P('AÔB y BÔC juntos forman ese llano: suman 180°.', '40° + BÔC = 180°', 'BÔC = 180° − 40°', ' = 140°'),
+      ], final:'BÔC mide 140°',
+      control:`${A('40° + 140° = 180° ✓')}` },
+    { titulo:'dos rectas que se cortan', enun:'Dos rectas se cortan y uno de los ángulos mide 40°. ¿Cuánto miden los otros tres?', prosa:true,
+      lienzo:F([
+        [0, cruce(40)],
+        [1, sector(O3, 0, 40, 40, 'g-arco') + rotAng(O3, 0, 40, 66, '40°', 'g-num')],
+        [2, sector(O3, 40, 180, 34, 'g-arco2') + rotAng(O3, 40, 180, 60, '140°', 'g-num')],
+        [3, sector(O3, 180, 220, 40, 'g-arco') + rotAng(O3, 180, 220, 66, '40°', 'g-num'), null, { gira:[180, O3[0], O3[1]] }],
+        [4, sector(O3, 220, 360, 34, 'g-arco2') + rotAng(O3, 220, 360, 60, '140°', 'g-num'), null, { gira:[180, O3[0], O3[1]] }],
+      ], 'Dos rectas que se cortan y sus cuatro ángulos'),
+      pasos:[
+        'Me dan uno de los cuatro: 40°.',
+        P('Su vecino forma con él un llano.', '180° − 40° = 140°'),
+        'El de enfrente del 40° es su <b>opuesto por el vértice</b>: es el mismo ángulo dado media vuelta. Mide 40°.',
+        'Lo mismo con el de 140°: su opuesto mide 140°.',
+      ], final:'los cuatro ángulos miden 40°, 140°, 40° y 140°',
+      control:`Los cuatro juntos dan la vuelta entera:${A('40° + 140° + 40° + 140° = 360° ✓')}` },
+    { titulo:'cambio: los opuestos vienen con x', enun:`Dos ángulos opuestos por el vértice miden ${M('3x + 10')} y 70°. ¿Cuánto vale ${M('x')}?`, prosa:true,
+      lienzo:F([
+        [0, cruce(70) + sector(O3, 0, 70, 40, 'g-arco') + rotAng(O3, 0, 70, 74, `3${X} + 10`) +
+            sector(O3, 180, 250, 40, 'g-arco') + rotAng(O3, 180, 250, 68, '70°')],
+        [1, sector(O3, 0, 70, 40, 'g-arco3') + sector(O3, 180, 250, 40, 'g-arco3')],
+        ['final', rotAng(O3, 0, 70, 100, '70°', 'g-num')],
+      ], 'Dos rectas que se cortan, con dos ángulos opuestos marcados'),
+      pasos:[
+        'Los opuestos por el vértice miden lo mismo: los igualo.',
+        P('Planteo la ecuación.', '3x + 10 = 70'),
+        P('Resto 10 a los dos miembros.', `3x + 10 ${N('− 10')} = 70 ${N('− 10')}`, '3x = 60'),
+        P('Divido por 3.', `3x ${N(': 3')} = 60 ${N(': 3')}`, 'x = 20'),
+      ], final:'<i>x</i> = 20, y los dos ángulos miden 70°',
+      control:`Reemplazo en el ángulo con x:${A('3 · 20 + 10 = 70 ✓')}` },
+    { titulo:'cambio: ahora son adyacentes', enun:`Dos ángulos ${N('adyacentes')} miden ${M('x')} y ${M('2x + 30')}. ¿Cuánto mide cada uno?`, prosa:true,
+      lienzo:F([
+        [0, recta(en(O5, 180, 150), en(O5, 0, 150), 20) + semi(O5, 50, 175) + g.pto(O5, 'g-vert', 4.5) +
+            sector(O5, 0, 50, 46, 'g-arco') + rotAng(O5, 0, 50, 72, X) +
+            sector(O5, 50, 180, 38, 'g-arco2') + rotAng(O5, 50, 180, 66, `2${X} + 30`)],
+        [1, trazo(O5, 0, 180, 104)],
+        ['final', rotAng(O5, 0, 50, 128, '50°', 'g-num') + rotAng(O5, 50, 180, 128, '130°', 'g-num')],
+      ], 'Dos ángulos adyacentes, x y 2x + 30'),
+      pasos:[
+        'Los adyacentes forman un llano: suman 180°.',
+        P('Planteo.', 'x + 2x + 30 = 180', '3x + 30 = 180'),
+        P('Resto 30 a los dos miembros.', `3x + 30 ${N('− 30')} = 180 ${N('− 30')}`, '3x = 150'),
+        P('Divido por 3.', `3x ${N(': 3')} = 150 ${N(': 3')}`, 'x = 50'),
+        P('El otro ángulo.', '2 · 50 + 30 = 130'),
+      ], final:'<i>x</i> = 50: los ángulos miden 50° y 130°',
+      control:`${A('50° + 130° = 180° ✓')}` },
+  ],
+  taller:'lab-cruce',
+  preguntas:[
+    { p:'¿Por qué los opuestos por el vértice miden lo mismo?',
+      r:'Porque los dos son "lo que le falta al mismo vecino para 180°". En el ejemplo 3, el 40° y su opuesto son los dos 180° − 140°.' },
+    { p:'¿Todos los adyacentes son consecutivos?',
+      r:'Sí: los adyacentes son consecutivos con algo más, los otros dos lados en línea recta. Al revés no: el ejemplo 1 tiene consecutivos que no son adyacentes.' },
+    { p:'En el ejemplo 5, ¿por qué después de hallar x hay que hacer otra cuenta?',
+      r:'Porque la pregunta es cuánto mide cada ángulo, no cuánto vale x. Uno mide x, 50°, pero el otro es 2x + 30.' },
+    { p:'Si dos rectas se cortan y los cuatro ángulos son iguales, ¿cuánto miden?',
+      r:'90° cada uno: 360° repartido en 4. Esas rectas son perpendiculares.' },
+  ],
+  notas:`<p>El ejemplo 3 es el centro del tema. Los opuestos por el vértice aparecen
+      <b>girando media vuelta</b> desde su par: es la mejor explicación de por qué miden lo
+      mismo, y es la misma idea que el tema 6 usa con la secante.</p>
+    <p>Los ejemplos 4 y 5 son la versión de Khan Academy ("Equation practice with vertical
+      angles", "…with supplementary angles"): la relación entre los ángulos da la ecuación,
+      y la ecuación es del tipo que ya resolvieron en la unidad 7. Cada paso de la ecuación
+      va escrito en los dos miembros, como en esa unidad.</p>
+    <p>Error esperable en el 5: responder "x = 50" y parar. La pregunta pide los dos
+      ángulos.</p>
+    <p>El taller deja girar una de las dos rectas y muestra que los opuestos siguen iguales
+      y los vecinos siguen sumando 180°, sea cual sea el giro.</p>`
+  };
+})(),
+
+/* ─────────────────────────── 5 ─────────────────────────── */
+(() => {
+  const O1 = [110, 245];
+  const O = [200, 225];
+  const llano = recta(en(O, 180, 165), en(O, 0, 165), 15) + g.pto(O, 'g-vert', 4.5);
+  return {
+  n:5, corto:'Según su suma', titulo:'Clasificación de los ángulos según su suma', pag:'págs. 122–123',
+  concepto:{
+    serie:[
+      { rot:'complementarios', txt:'suman 90°: juntos, un recto' },
+      { rot:'suplementarios', txt:'suman 180°: juntos, un llano' },
+      { rot:'el complemento de α', ec:'90° − α' },
+      { rot:'el suplemento de α', ec:'180° − α' },
+    ],
+    puntos:[
+      'El complemento es lo que le <b>falta</b> a un ángulo para llegar a un recto; el suplemento, para llegar a un llano.',
+      'Los adyacentes del tema 4 son siempre suplementarios.',
+      'Si el ángulo tiene minutos, 90° y 180° se escriben como 89° 60′ y 179° 60′ para poder restar.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el complemento', enun:'¿Cuál es el complemento de 62°?', prosa:true,
+      lienzo:F([
+        [0, semi(O1, 0, 240) + semi(O1, 90, 200) + g.recto(O1, en(O1, 0, 1), en(O1, 90, 1), 16) + g.pto(O1, 'g-vert', 4.5) +
+            semi(O1, 62, 215) + sector(O1, 0, 62, 50) + rotAng(O1, 0, 62, 80, '62°')],
+        [1, sector(O1, 62, 90, 66, 'g-arco2') + rotAng(O1, 62, 90, 94, 'β', 'g-rot')],
+        ['final', rotAng(O1, 62, 90, 124, '28°', 'g-num')],
+      ], 'Un ángulo recto partido en 62° y el complemento'),
+      pasos:[
+        'Complementarios: juntos forman un recto, 90°.',
+        P('Llamo β al que falta.', '62° + β = 90°', 'β = 90° − 62°', ' = 28°'),
+      ], final:'el complemento de 62° es 28°',
+      control:`${A('62° + 28° = 90° ✓')}` },
+    { titulo:'cambio: el suplemento', enun:`¿Cuál es el ${N('suplemento')} de 62°?`, prosa:true,
+      lienzo:F([
+        [0, llano + semi(O, 62, 180) + sector(O, 0, 62, 46) + rotAng(O, 0, 62, 74, '62°')],
+        [1, sector(O, 62, 180, 38, 'g-arco2') + rotAng(O, 62, 180, 64, 'β', 'g-rot')],
+        ['final', rotAng(O, 62, 180, 98, '118°', 'g-num')],
+      ], 'Un llano partido en 62° y el suplemento'),
+      pasos:[
+        'Suplementarios: juntos forman un llano, 180°.',
+        P('El que falta.', '62° + β = 180°', 'β = 180° − 62°', ' = 118°'),
+      ], final:'el suplemento de 62° es 118°',
+      control:`${A('62° + 118° = 180° ✓')}` },
+    { titulo:'cambio: con minutos', enun:`¿Cuál es el suplemento de ${N('62° 42′')}?`, prosa:true,
+      lienzo:F([
+        [0, llano + semi(O, 62.7, 180) + sector(O, 0, 62.7, 46) + rotAng(O, 0, 62.7, 80, '62° 42′')],
+        [1, sector(O, 62.7, 180, 38, 'g-arco2') + rotAng(O, 62.7, 180, 64, 'β', 'g-rot')],
+        ['final', rotAng(O, 62.7, 180, 106, '117° 18′', 'g-num')],
+      ], 'Un llano partido en 62° 42′ y el suplemento'),
+      pasos:[
+        P('Planteo como antes.', '62° 42′ + β = 180°', 'β = 180° − 62° 42′'),
+        P('A 180° le pido prestado 1° y lo cambio por 60′.', '180° = 179° 60′'),
+        P('Resto columna por columna.', '179° 60′ − 62° 42′ = 117° 18′'),
+      ], final:'el suplemento de 62° 42′ es 117° 18′',
+      control:`Sumo para volver:${A('62° 42′ + 117° 18′ = 179° 60′', ' = 180° ✓')}` },
+    { titulo:'con x: el suplemento es el triple', enun:'El suplemento de un ángulo es el triple del ángulo. ¿Cuánto mide cada uno?', prosa:true, fija:1,
+      lienzo:F([
+        [0, llano + semi(O, 45, 180)],
+        [1, sector(O, 0, 45, 46) + rotAng(O, 0, 45, 72, X) + sector(O, 45, 180, 38, 'g-arco2') + rotAng(O, 45, 180, 64, `3${X}`)],
+        ['final', rotAng(O, 0, 45, 112, '45°', 'g-num') + rotAng(O, 45, 180, 112, '135°', 'g-num')],
+      ], 'Un llano partido en x y 3x'),
+      pasos:[
+        `Llamo ${M('x')} al ángulo: su suplemento es ${M('3x')}.`,
+        P('Juntos forman un llano.', 'x + 3x = 180', '4x = 180'),
+        P('Divido por 4.', `4x ${N(': 4')} = 180 ${N(': 4')}`, 'x = 45'),
+        P('El suplemento.', '3 · 45 = 135'),
+      ], final:'el ángulo mide 45° y su suplemento, 135°',
+      control:`${A('45° + 135° = 180° ✓')}` },
+    { titulo:'cambio: 20° más que el triple', enun:`El suplemento de un ángulo es ${N('20° más que')} el triple del ángulo. ¿Cuánto mide cada uno?`, prosa:true, fija:1,
+      lienzo:F([
+        [0, llano + semi(O, 40, 180)],
+        [1, sector(O, 0, 40, 46) + rotAng(O, 0, 40, 72, X) + sector(O, 40, 180, 38, 'g-arco2') + rotAng(O, 40, 180, 66, `3${X} + 20`)],
+        ['final', rotAng(O, 0, 40, 112, '40°', 'g-num') + rotAng(O, 40, 180, 112, '140°', 'g-num')],
+      ], 'Un llano partido en x y 3x + 20'),
+      pasos:[
+        `Llamo ${M('x')} al ángulo: su suplemento es ${M('3x + 20')}.`,
+        P('Juntos forman un llano.', 'x + 3x + 20 = 180', '4x + 20 = 180'),
+        P('Resto 20 a los dos miembros.', `4x + 20 ${N('− 20')} = 180 ${N('− 20')}`, '4x = 160'),
+        P('Divido por 4.', `4x ${N(': 4')} = 160 ${N(': 4')}`, 'x = 40'),
+      ], final:'el ángulo mide 40° y su suplemento, 140°',
+      control:`El suplemento tiene que ser 20 más que el triple:${A('3 · 40 + 20 = 140 ✓')}` },
+  ],
+  preguntas:[
+    { p:'En los ejemplos 1 y 2, el suplemento de 62° es 118° y el complemento 28°: la diferencia es 90°. ¿Pasa siempre?',
+      r:'Sí: 180° − α y 90° − α siempre se llevan 90°, sea cual sea α. El suplemento es el complemento más un recto.' },
+    { p:'¿Un ángulo obtuso tiene complemento?',
+      r:'No: ya pasó los 90°, no le falta nada para llegar al recto. Sí tiene suplemento.' },
+    { p:'El suplemento de un agudo, ¿qué clase de ángulo es?',
+      r:'Obtuso: si a 180° le saco menos de 90°, queda más de 90°. Y el de un recto es otro recto.' },
+    { p:'En el ejemplo 4, ¿por qué el ángulo es x y no 3x?',
+      r:`Porque el enunciado compara todo con el ángulo: "el triple del ángulo". Al que se usa para comparar le conviene ser ${M('x')}.` },
+  ],
+  notas:`<p>Los tres primeros ejemplos son el mismo dibujo con un cambio cada vez: el
+      complemento, el suplemento del mismo ángulo y el suplemento con minutos (la resta
+      con préstamo del tema 2, ahora con sentido). La pregunta del observador sobre la
+      diferencia de 90° entre el 1 y el 2 es para hacerla en voz alta: es un patrón que se
+      ve solo si los ejemplos están en secuencia.</p>
+    <p>Los ejemplos 4 y 5 son los de la pág. 122 ("si el complemento es 4x…") con
+      suplemento: en Khan Academy son "Create equations to solve for missing angles". El
+      paso que se traba es el primero, nombrar: la mayoría de los alumnos de 7.º pone
+      ${M('x')} al suplemento. Por eso ese paso queda fijo arriba.</p>
+    <p>El ejercicio 1 de la pág. 123 (el suplemento de un recto, de un obtuso, de un agudo)
+      es para después del observador.</p>`
+  };
+})(),
+
+/* ─────────────────────────── 6 ─────────────────────────── */
+(() => {
+  const p65 = paralelas(65), p80 = paralelas(80), p95 = paralelas(95), pNo = paralelas(65, -10);
+  const todos = p => [1, 2, 3, 4, 5, 6, 7, 8].map(i => p.ang(i, [3, 4, 5, 6].includes(i) ? 'g-arco2' : 'g-arco') + p.num(i)).join('');
+  const nums = (p, ns) => ns.map(i => p.num(i)).join('');
+  const d65 = [p65.X1[0] - p65.X2[0], p65.X1[1] - p65.X2[1]];
+  return {
+  n:6, corto:'Paralelas y secante', titulo:'Ángulos formados por rectas paralelas cortadas por una secante', pag:'págs. 124–125',
+  concepto:{
+    serie:[
+      { rot:'miden lo mismo', txt:'correspondientes (2 y 6), alternos internos (3 y 6), alternos externos (1 y 8)' },
+      { rot:'suman 180°', txt:'conjugados internos (3 y 5) y conjugados externos (2 y 8)' },
+    ],
+    figura:`<svg viewBox="0 0 400 300" role="img" aria-label="Dos paralelas r y s cortadas por la secante t, con los ocho ángulos numerados">${p65.base + todos(p65)}</svg>`,
+    puntos:[
+      '<b>Internos</b> (en verde): entre las paralelas, 3, 4, 5 y 6. <b>Externos</b>: afuera, 1, 2, 7 y 8. <b>Alternos</b>: a distinto lado de la secante; <b>conjugados</b>: del mismo lado.',
+      'Todo sale de una idea: la secante corta a las dos paralelas con la <b>misma inclinación</b>.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'un solo cruce', enun:'Las rectas r y s son paralelas y el ángulo 2 mide 65°. ¿Cuánto miden 1, 3 y 4?', prosa:true,
+      lienzo:F([
+        [0, p65.base + p65.ang(2) + p65.med(2, '65°') + nums(p65, [1, 2, 3, 4])],
+        [1, p65.ang(1, 'g-arco2') + p65.med(1, '115°')],
+        [2, p65.ang(3) + p65.med(3, '65°') + p65.ang(4, 'g-arco2') + p65.med(4, '115°'), null, { gira:[180, p65.X1[0], p65.X1[1]] }],
+      ], 'El cruce de r con la secante y sus cuatro ángulos'),
+      pasos:[
+        P('En el cruce de arriba hay dos rectas que se cortan, como en el tema 4. El 1 y el 2 son adyacentes.', ['el 1', '180° − 65° = 115°']),
+        'El 3 es opuesto al 2 y el 4 es opuesto al 1: miden lo mismo que ellos.',
+      ], final:'arriba: 1 = 115°, 2 = 65°, 3 = 65° y 4 = 115°',
+      control:`${A('115° + 65° = 180° ✓')}` },
+    { titulo:'cambio: bajo a la otra paralela', enun:`Con el mismo ángulo 2 = 65°, ¿cuánto miden ${N('5, 6, 7 y 8')}?`, prosa:true,
+      lienzo:F([
+        [0, p65.base + [1, 2, 3, 4].map(i => p65.ang(i, i % 3 === 1 ? 'g-arco2' : 'g-arco') + p65.num(i)).join('') +
+            p65.med(1, '115°') + p65.med(2, '65°') + p65.med(3, '65°') + p65.med(4, '115°')],
+        [1, g.seg(p65.X2, p65.X1, 'g-foco')],
+        [2, [5, 6, 7, 8].map(i => p65.ang(i, i % 3 === 2 ? 'g-arco2' : 'g-arco') + p65.num(i)).join('') +
+            p65.med(5, '115°') + p65.med(6, '65°') + p65.med(7, '65°') + p65.med(8, '115°'), null, { desde:d65 }],
+        [3, p65.ang(2, 'g-arco3') + p65.ang(6, 'g-arco3')],
+      ], 'El cruce de arriba deslizado por la secante hasta el de abajo'),
+      pasos:[
+        'Como r y s son paralelas, la secante corta a s con la misma inclinación con que corta a r.',
+        'El cruce de arriba, deslizado por la secante, cae justo sobre el de abajo.',
+        'Cada ángulo de abajo es igual al que ocupa el mismo lugar arriba: son <b>correspondientes</b>. El 6 es el 2, el 5 es el 1.',
+      ], final:'abajo: 5 = 115°, 6 = 65°, 7 = 65° y 8 = 115°',
+      control:'Los alternos internos 3 y 6 quedaron iguales: los dos miden 65° ✓' },
+    { titulo:'alternos internos, con x', enun:`<i>r</i> ∥ <i>s</i>. El ángulo 4 mide ${M('3x − 5')} y el 5 mide ${M('2x + 30')}. ¿Cuánto vale ${M('x')}?`, prosa:true,
+      lienzo:F([
+        [0, p80.base + nums(p80, [1, 2, 3, 4, 5, 6, 7, 8]) + p80.ang(4) + p80.ang(5)],
+        [0, p80.med(4, `3${X} − 5`) + p80.med(5, `2${X} + 30`), 'final'],
+        [1, p80.ang(4, 'g-arco3') + p80.ang(5, 'g-arco3')],
+        ['final', p80.med(4, '100°') + p80.med(5, '100°')],
+      ], 'Los ángulos 4 y 5, alternos internos'),
+      pasos:[
+        '4 y 5 están entre las paralelas y a distinto lado de la secante: son <b>alternos internos</b>, y miden lo mismo.',
+        P('Los igualo.', '3x − 5 = 2x + 30'),
+        P('Resto 2x a los dos miembros.', `3x − 5 ${N('− 2x')} = 2x + 30 ${N('− 2x')}`, 'x − 5 = 30'),
+        P('Sumo 5.', `x − 5 ${N('+ 5')} = 30 ${N('+ 5')}`, 'x = 35'),
+        P('El ángulo 4.', '3 · 35 − 5 = 100'),
+      ], final:'<i>x</i> = 35, y los dos ángulos miden 100°',
+      control:`El 5 tiene que dar lo mismo:${A('2 · 35 + 30 = 100 ✓')}` },
+    { titulo:'cambio: ahora son conjugados', enun:`<i>r</i> ∥ <i>s</i>. El ángulo 4 mide ${M('3x − 5')} y ${N('el 6')} mide ${M('2x + 35')}. ¿Cuánto mide cada uno?`, prosa:true,
+      lienzo:F([
+        [0, p95.base + nums(p95, [1, 2, 3, 4, 5, 6, 7, 8]) + p95.ang(4) + p95.ang(6)],
+        [0, p95.med(4, `3${X} − 5`) + p95.med(6, `2${X} + 35`), 'final'],
+        [1, p95.ang(4, 'g-arco3') + p95.ang(6, 'g-arco3')],
+        ['final', p95.med(4, '85°') + p95.med(6, '95°')],
+      ], 'Los ángulos 4 y 6, conjugados internos'),
+      pasos:[
+        '4 y 6 están entre las paralelas y del mismo lado de la secante: son <b>conjugados internos</b>, y suman 180°.',
+        P('Planteo.', '3x − 5 + 2x + 35 = 180', '5x + 30 = 180'),
+        P('Resto 30 a los dos miembros.', `5x + 30 ${N('− 30')} = 180 ${N('− 30')}`, '5x = 150'),
+        P('Divido por 5.', `5x ${N(': 5')} = 150 ${N(': 5')}`, 'x = 30'),
+        P('Cada ángulo.', ['el 4', '3 · 30 − 5 = 85'], ['el 6', '2 · 30 + 35 = 95']),
+      ], final:'<i>x</i> = 30: los ángulos miden 85° y 95°',
+      control:`${A('85° + 95° = 180° ✓')}` },
+    { titulo:'cambio: ¿y si no son paralelas?', enun:`El ángulo 2 mide 65° y el 6 mide ${N('75°')}. ¿Son paralelas <i>r</i> y <i>s</i>?`, prosa:true,
+      lienzo:F([
+        [0, pNo.base + nums(pNo, [2, 6]) + pNo.ang(2) + pNo.med(2, '65°') + pNo.ang(6, 'g-arco2') + pNo.med(6, '75°')],
+        [1, pNo.ang(2, 'g-arco3') + pNo.ang(6, 'g-arco3')],
+        [2, g.seg([18, pNo.X2[1]], [382, pNo.X2[1]], 'g-aux')],
+      ], 'Dos rectas que no son paralelas cortadas por una secante'),
+      pasos:[
+        '2 y 6 ocupan el mismo lugar en cada cruce: son correspondientes.',
+        'Si r y s fueran paralelas, medirían lo mismo, y s sería la punteada.',
+        P('Pero no miden lo mismo.', '65° ≠ 75°'),
+      ], final:'r y s no son paralelas' },
+  ],
+  taller:'lab-paralelas',
+  preguntas:[
+    { p:'¿Hay que aprenderse los cinco nombres de memoria?',
+      r:'Alcanza con dos ideas: los dos cruces son copias uno del otro (correspondientes), y en cada cruce valen las reglas del tema 4. Todo lo demás sale de ahí.' },
+    { p:'En el ejemplo 2, ¿por qué el cruce de abajo es una copia del de arriba?',
+      r:'Porque las paralelas tienen la misma dirección y la secante también es la misma: los dos cruces son dos rectas con la misma inclinación entre ellas.' },
+    { p:'Si los ocho ángulos miden solo dos valores, ¿cuáles son?',
+      r:'Un ángulo y su suplemento. En los ejemplos 1 y 2, 65° y 115°: hay cuatro de cada uno.' },
+    { p:'¿Y si la secante es perpendicular a las paralelas?',
+      r:'Los ocho miden 90°. Probalo en el taller con la secante en 90.' },
+    { p:'El ejemplo 5 dice que no son paralelas. ¿De qué lado se cortan?',
+      r:'Del lado izquierdo, donde se van acercando. En el taller, torciendo s se ve hacia dónde.' },
+  ],
+  notas:`<p>El libro trae una tabla con seis nombres (pág. 124). Khan Academy los presenta
+      con <b>una sola idea</b>: los dos cruces son el mismo cruce, trasladado. El ejemplo 2
+      lo muestra literalmente: el cruce de arriba se desliza por la secante y cae sobre el
+      de abajo. Con eso y el tema 4 (adyacentes y opuestos) salen todas las reglas.</p>
+    <p>Los ejemplos 3 y 4 son el mismo planteo con un cambio: alternos (se igualan) y
+      conjugados (suman 180°). La decisión importante es esa, igualar o sumar 180°; la
+      ecuación es de la unidad 7.</p>
+    <p>El ejemplo 5 es el que más hace pensar: las reglas valen <b>solo</b> si las rectas
+      son paralelas, y al revés, si un par no cumple la regla, las rectas no son
+      paralelas. El taller tiene una perilla para torcer s y ver cómo todos los pares
+      dejan de cumplir a la vez.</p>
+    <p>Este tema es la base del tema 6 de Polígonos: la suma de los ángulos de un triángulo
+      sale de trazar una paralela por un vértice. El desafío de esta unidad la anticipa.</p>`
+  };
+})(),
+];
+
+/* ─────────────────── el desafío final ─────────────────── */
+const DESAFIO = (() => {
+  const Aa = [80, 60], Bb = [80, 240];
+  const px = 180 / (Math.tan(40 * RAD) + Math.tan(35 * RAD));
+  const Pp = [80 + px, 60 + px * Math.tan(40 * RAD)];
+  return {
+    titulo:'El zigzag entre dos paralelas', prosa:true,
+    enun:'Las rectas r y s son paralelas. ¿Cuánto mide el ángulo en P?',
+    lienzo:F([
+      [0, g.seg([18, 60], [382, 60], 'g-linea') + g.txt([372, 46], 'r', 'g-rot') + g.seg([18, 240], [382, 240], 'g-linea') + g.txt([372, 226], 's', 'g-rot') +
+          g.seg(Aa, Pp, 'g-linea') + g.seg(Bb, Pp, 'g-linea') + g.pto(Aa, 'g-vert', 4.5) + g.pto(Bb, 'g-vert', 4.5) + g.pto(Pp, 'g-pto', 6) +
+          nombre(Aa, 'A', -6, -16) + nombre(Bb, 'B', -6, 22) + nombre(Pp, 'P', 16, 0) +
+          sector(Aa, -40, 0, 40) + rotAng(Aa, -40, 0, 64, '40°') + sector(Bb, 0, 35, 40) + rotAng(Bb, 0, 35, 64, '35°')],
+      [1, g.seg([18, Pp[1]], [382, Pp[1]], 'g-diag') + g.txt([372, Pp[1] - 14], 'm', 'g-rot')],
+      [2, sector(Pp, 140, 180, 34, 'g-arco') + rotAng(Pp, 140, 180, 58, '40°', 'g-num')],
+      [3, sector(Pp, 180, 215, 46, 'g-arco2') + rotAng(Pp, 180, 215, 70, '35°', 'g-num')],
+      ['final', trazo(Pp, 140, 215, 92)],
+      ['control', sector(Pp, 215, 360, 26, 'g-arco3') + rotAng(Pp, 215, 360, 48, '145°') + sector(Pp, 0, 140, 22, 'g-arco3') + rotAng(Pp, 0, 140, 44, '140°')],
+    ], 'Dos paralelas y un zigzag de A a P y de P a B'),
+    pasos:[
+      'Parece que falta un dato: P no está sobre ninguna de las paralelas.',
+      'El truco: trazo por P una tercera recta m, paralela a r y a s.',
+      'Arriba de m, el pedazo del ángulo de P es alterno interno con el de 40° (la secante es AP): mide 40°.',
+      'Abajo de m, el pedazo es alterno interno con el de 35° (la secante es BP): mide 35°.',
+      P('El ángulo en P es la suma de los dos pedazos.', '40° + 35° = 75°'),
+    ],
+    final:'el ángulo en P mide 75°',
+    control:`Alrededor de P hay una vuelta entera. Los otros dos pedazos son los adyacentes de 40° y de 35°:${A('75° + 140° + 145° = 360° ✓')}`,
+    preguntas:[
+      { p:'¿Se puede resolver sin la recta m?',
+        r:'Con lo de esta unidad, no: hace falta un cruce en P para usar los alternos internos. Trazar una recta que no estaba es una de las ideas más útiles de la geometría.' },
+      { p:'¿Pasa siempre que el ángulo en P es la suma de los otros dos?',
+        r:'Sí, siempre que el zigzag tenga esta forma: con 30° y 50°, P mediría 80°. Probalo con otros números.' },
+      { p:'¿Esto tiene que ver con los triángulos?',
+        r:'Mucho: con la misma idea, una paralela por un vértice, se demuestra que los ángulos de cualquier triángulo suman 180°. Es lo primero que vamos a ver en Polígonos.' },
+    ],
+    notas:`<p>El desafío junta la unidad: los alternos internos (tema 6) dos veces, la suma de
+        consecutivos (tema 4) y, en el control, los adyacentes y la vuelta entera (temas 4 y
+        el puente del grado).</p>
+      <p>Antes de mostrar el paso 2, conviene dejar un minuto para que lo intenten. La mayoría
+        de los alumnos de 7.º va a querer medir con el transportador: está bien como
+        estimación, y la respuesta de la clase tiene que coincidir.</p>
+      <p>Es el problema de Khan Academy "Measures of angles formed by a transversal" en su
+        versión más conocida, y prepara la demostración de la suma de los ángulos del
+        triángulo, que abre la unidad de Polígonos.</p>`
+  };
+})();
+
+/* ─────────────────── la pregunta de arranque ─────────────────── */
+const PREGUNTA_INICIAL = (() => {
+  const O = [200, 150], R = 112;
+  return {
+    prosa:true, fija:1,
+    enun:'«¿Cuántos grados gira el minutero de un reloj en 20 minutos?»',
+    lienzo:F([
+      [0, reloj(O, R) + g.seg(O, en(O, 150, R - 50), 'g-aguja') + g.pto(O, 'g-vert', 5)],
+      [0, g.seg(O, en(O, 90, R - 18), 'g-aguja2'), 3],
+      [3, g.seg(O, en(O, -30, R - 18), 'g-aguja2'), null, { gira:[-120, O[0], O[1]] }],
+      [3, trazo(O, 90, -30, 56)],
+      ['final', sector(O, -30, 90, 56, 'g-arco3') + rotAng(O, -30, 90, 82, '120°', 'g-num')],
+    ], 'Un reloj con el minutero que pasa del 12 al 4'),
+    pasos:[
+      'En 60 minutos el minutero da una vuelta entera, y una vuelta entera son 360°.',
+      P('En un minuto gira la sesentava parte de la vuelta.', '360° : 60 = 6°'),
+      P('En 20 minutos, veinte veces eso.', '20 · 6° = 120°'),
+    ],
+    final:'el minutero gira 120°',
+    control:`Otra forma: 20 minutos son un tercio de hora.${A('360° : 3 = 120° ✓')}`,
+  };
+})();
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirven los ángulos fuera de la escuela?',
+      r:'Para todo lo que gira o se inclina: una rampa, el techo de una casa, el giro del volante, la dirección de un barco o de un avión, la cámara del celular cuando se rota la foto.' },
+    { p:'¿Por qué empezamos con un reloj?',
+      r:'Porque un ángulo es un giro, y el reloj es el giro que más vemos. Además reparte la vuelta en 60, como los minutos de un grado.' },
+  ],
+  notas:`<p><b>La unidad 6 del libro (Geometría plana II, págs. 112–131), en sus seis
+      temas</b>, con dos puentes que no están en el libro. Los puentes y el orden interno de
+      cada tema siguen la progresión de <b>Khan Academy</b> para 7.º (unidad Geometry,
+      "Vertical, complementary, and supplementary angles") y de su curso de geometría
+      básica ("Measuring angles", "Angle relationships"):</p>
+    <ul>
+      <li>punto, recta, semirrecta y segmento (puente, antes del tema 1);</li>
+      <li>el ángulo, cómo se nombra y cómo se mide (tema 1);</li>
+      <li><b>qué es un grado</b>: la fracción de una vuelta (puente, entre el 1 y el 2);</li>
+      <li>grados, minutos y segundos (tema 2), las clases por medida con estimación
+        (tema 3), por posición (tema 4) y por suma (tema 5), con ecuaciones como en Khan;</li>
+      <li>las paralelas cortadas por una secante (tema 6), presentadas con una sola idea.</li>
+    </ul>
+    <p>Está pensada para alumnos que llegan con muy poca geometría: el primer puente se
+      puede saltar si el grupo ya maneja la unidad 3.</p>
+    <p><b>Va antes de Polígonos.</b> El tema 6 de Polígonos (los ángulos del triángulo suman
+      180°) se demuestra con una paralela y alternos internos, que se ven acá; el desafío de
+      esta unidad lo anticipa.</p>
+    <p>Cada ejemplo tiene su figura a la derecha, que se arma con cada paso. Los lados
+      <b>giran</b>: el ángulo se ve como un giro, no como un dibujo quieto. Los tres talleres
+      (el transportador, dos rectas que se cortan y las paralelas) hacen sin salir del aula
+      algo parecido al laboratorio de GeoGebra de la pág. 126, que necesita la sala de
+      informática.</p>`
+};
+
+/* ═══ los talleres ═══ */
+const LABS = {
+'lab-transportador':`
+<div class="lab">
+  <h4>Probalo: el transportador</h4>
+  <p class="sub">Tocá <b>+</b> y <b>−</b> para girar el lado: el de antes queda en punteado. En
+    el modo <b>Estimar</b> el ángulo aparece sin números: anotá cuánto creés que mide y
+    después mirá el transportador.</p>
+  <div class="taller">
+    <div class="lienzo">
+      <svg id="svg-tr" viewBox="0 0 420 420" role="img"
+        aria-label="Un ángulo sobre un transportador circular"></svg>
+    </div>
+    <div>
+      <div class="modos" role="group" aria-label="Qué se hace en el taller">
+        <button class="preset" type="button" data-tr-modo="medir" aria-pressed="true">Medir</button>
+        <button class="preset" type="button" data-tr-modo="estimar" aria-pressed="false">Estimar</button>
+      </div>
+      <div id="tr-medir">
+        <div class="perilla">
+          <span class="perilla-rot">ángulo</span>
+          <button class="op" type="button" data-tr-d="-10" aria-label="Cerrar 10 grados">−10</button>
+          <button class="op" type="button" data-tr-d="-1" aria-label="Cerrar 1 grado">−1</button>
+          <input id="tr-a" type="text" value="40" inputmode="numeric" aria-label="Medida del ángulo en grados">
+          <button class="op" type="button" data-tr-d="1" aria-label="Abrir 1 grado">+1</button>
+          <button class="op" type="button" data-tr-d="10" aria-label="Abrir 10 grados">+10</button>
+        </div>
+      </div>
+      <div id="tr-estimar" hidden>
+        <div class="campos">
+          <div class="campo"><label for="tr-e">Tu estimación</label>
+            <input id="tr-e" type="text" inputmode="numeric" placeholder="grados" autocomplete="off"></div>
+          <button class="boton" type="button" id="tr-ver">Ver</button>
+          <button class="preset" type="button" id="tr-otro">Otro ángulo</button>
+        </div>
+      </div>
+      <div class="salida" id="tr-out"></div>
+    </div>
+  </div>
+</div>`,
+'lab-cruce':`
+<div class="lab">
+  <h4>Probalo: dos rectas que se cortan</h4>
+  <p class="sub">Girá una de las rectas. La de antes queda en punteado: mirá qué les pasa a
+    los opuestos y a los vecinos.</p>
+  <div class="taller">
+    <div class="lienzo">
+      <svg id="svg-cr" viewBox="0 0 420 320" role="img"
+        aria-label="Dos rectas que se cortan, con sus cuatro ángulos"></svg>
+    </div>
+    <div>
+      <div class="perilla">
+        <span class="perilla-rot">ángulo</span>
+        <button class="op" type="button" data-cr-d="-10" aria-label="Cerrar 10 grados">−10</button>
+        <button class="op" type="button" data-cr-d="-1" aria-label="Cerrar 1 grado">−1</button>
+        <input id="cr-a" type="text" value="40" inputmode="numeric" aria-label="Uno de los ángulos, en grados">
+        <button class="op" type="button" data-cr-d="1" aria-label="Abrir 1 grado">+1</button>
+        <button class="op" type="button" data-cr-d="10" aria-label="Abrir 10 grados">+10</button>
+      </div>
+      <div class="salida" id="cr-out"></div>
+    </div>
+  </div>
+</div>`,
+'lab-paralelas':`
+<div class="lab">
+  <h4>Probalo: paralelas y secante</h4>
+  <p class="sub">Elegí una clase de pares y mirá los dos ángulos marcados. Girá la secante:
+    la regla se sigue cumpliendo. Después torcé <i>s</i>, para que deje de ser paralela.</p>
+  <div class="taller">
+    <div class="lienzo">
+      <svg id="svg-pa" viewBox="0 0 400 300" role="img"
+        aria-label="Dos rectas cortadas por una secante, con un par de ángulos marcado"></svg>
+    </div>
+    <div>
+      <div class="modos" role="group" aria-label="Qué par de ángulos se marca">
+        <button class="preset" type="button" data-pa-tipo="correspondientes" aria-pressed="true">Correspondientes</button>
+        <button class="preset" type="button" data-pa-tipo="alternos internos" aria-pressed="false">Alternos internos</button>
+        <button class="preset" type="button" data-pa-tipo="alternos externos" aria-pressed="false">Alternos externos</button>
+        <button class="preset" type="button" data-pa-tipo="conjugados internos" aria-pressed="false">Conjugados internos</button>
+        <button class="preset" type="button" data-pa-tipo="conjugados externos" aria-pressed="false">Conjugados externos</button>
+        <button class="boton" type="button" data-pa-otro="1">Otro par</button>
+      </div>
+      <div class="perilla">
+        <span class="perilla-rot">secante</span>
+        <button class="op" type="button" data-pa-th="-10" aria-label="Inclinar la secante 10 grados menos">−10</button>
+        <button class="op" type="button" data-pa-th="-1" aria-label="Inclinar la secante 1 grado menos">−1</button>
+        <input id="pa-th" type="text" value="65" inputmode="numeric" aria-label="Inclinación de la secante, en grados">
+        <button class="op" type="button" data-pa-th="1" aria-label="Inclinar la secante 1 grado más">+1</button>
+        <button class="op" type="button" data-pa-th="10" aria-label="Inclinar la secante 10 grados más">+10</button>
+      </div>
+      <div class="perilla">
+        <span class="perilla-rot">torcer <i>s</i></span>
+        <button class="op" type="button" data-pa-phi="-1" aria-label="Torcer s 1 grado hacia abajo">−1</button>
+        <input id="pa-phi" type="text" value="0" inputmode="numeric" aria-label="Cuánto se tuerce s, en grados">
+        <button class="op" type="button" data-pa-phi="1" aria-label="Torcer s 1 grado hacia arriba">+1</button>
+      </div>
+      <div class="salida" id="pa-out"></div>
+    </div>
+  </div>
+</div>`
+};
+
+/* ═══ el armado ═══
+   La plantilla, los pasos, las figuras y el movimiento están en
+   assets/pizarra.js: esta página trae solo sus datos. */
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'7mo', temasLibro:6 });
+</script>
+
+<script>
+/* ═══ los talleres ═══
+   Todos los ángulos son enteros y se calculan acá, con la misma regla que
+   los ejemplos: nunca un número escrito a mano. */
+const entero = (v, min, max, def) => {
+  const n = parseInt(String(v).replace(/−/g, '-'), 10);
+  return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : def;
+};
+function claseAng(a){
+  if (a === 0) return 'nulo';
+  if (a < 90) return 'agudo';
+  if (a === 90) return 'recto';
+  if (a < 180) return 'obtuso';
+  if (a === 180) return 'llano';
+  if (a < 360) return 'más que un llano';
+  return 'completo';
+}
+const marca = (botones, b) => botones.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+
+/* ═══ el transportador ═══ */
+const tr = { modo:'medir', anterior:null, cambio:'', secreto:120, visto:false };
+
+function circularT(O, R){
+  let s = g.circ(O, R, 'g-transp');
+  for (let a = 0; a < 360; a += 5){
+    const largo = a % 30 === 0 ? 16 : a % 10 === 0 ? 10 : 6;
+    const p = en(O, a, R), q = en(O, a, R - largo);
+    s += `<line class="g-tick" x1="${g.f(p[0])}" y1="${g.f(p[1])}" x2="${g.f(q[0])}" y2="${g.f(q[1])}"/>`;
+  }
+  for (let a = 0; a < 360; a += 30) s += g.txt(en(O, a, R - 30), a, 'g-esc1');
+  return s;
+}
+
+function dibujaTr(){
+  const O = [210, 210], R = 182;
+  const midiendo = tr.modo === 'medir';
+  const a = midiendo ? entero(document.getElementById('tr-a').value, 0, 360, 40) : tr.secreto;
+  const conRegla = midiendo || tr.visto;
+  let s = conRegla ? circularT(O, R) : '';
+  if (a > 0) s += sector(O, 0, a, 52, 'g-arco');
+  if (midiendo && tr.anterior != null && tr.anterior !== a) s += g.seg(O, en(O, tr.anterior, R - 6), 'g-aux');
+  s += g.seg(O, en(O, 0, R - 6), 'g-linea') + g.seg(O, en(O, a, R - 6), 'g-roja') + g.pto(O, 'g-vert', 5);
+  if (conRegla) s += a === 360 ? g.txt([O[0] - 60, O[1] - 60], '360°', 'g-num') : g.txt(en(O, a / 2, 82), a + '°', 'g-num');
+  document.getElementById('svg-tr').innerHTML = s;
+
+  const out = document.getElementById('tr-out');
+  if (midiendo){
+    out.innerHTML = `<div><span class="ok">${a}°</span> <span class="dim">·</span> ${claseAng(a)}</div>` +
+      (tr.cambio ? `<div class="cambio">${tr.cambio}</div>` : '');
+  } else if (!tr.visto){
+    out.innerHTML = '<div class="dim">¿Cuánto mide? Escribí tu estimación y tocá Ver.</div>';
+  } else {
+    const e = entero(document.getElementById('tr-e').value, 0, 360, null);
+    const dif = e == null ? null : e - a;
+    out.innerHTML = `<div>Mide <span class="ok">${a}°</span>: ${claseAng(a)}.</div>` +
+      (dif == null ? '' : `<div class="cambio">${dif === 0 ? '¡Justo!' : dif > 0 ? `Te pasaste por ${dif}°.` : `Te faltaron ${-dif}°.`}</div>`);
+  }
+}
+
+document.querySelector('#svg-tr').closest('.lab').addEventListener('click', ev => {
+  const b = ev.target.closest('button');
+  if (!b) return;
+  if (b.dataset.trD){
+    const campo = document.getElementById('tr-a');
+    const antes = entero(campo.value, 0, 360, 40);
+    const ahora = Math.min(360, Math.max(0, antes + Number(b.dataset.trD)));
+    if (ahora === antes) return;
+    tr.anterior = antes;
+    tr.cambio = `Pasó de ${antes}° a ${ahora}°: ` +
+      (claseAng(antes) === claseAng(ahora) ? `sigue siendo ${claseAng(ahora)}.` : `ahora es ${claseAng(ahora)}.`);
+    campo.value = ahora;
+    dibujaTr();
+  }
+  if (b.dataset.trModo){
+    tr.modo = b.dataset.trModo;
+    marca([...b.parentElement.querySelectorAll('[data-tr-modo]')], b);
+    document.getElementById('tr-medir').hidden = tr.modo !== 'medir';
+    document.getElementById('tr-estimar').hidden = tr.modo !== 'estimar';
+    if (tr.modo === 'estimar'){ tr.visto = false; document.getElementById('tr-e').value = ''; }
+    dibujaTr();
+  }
+});
+document.getElementById('tr-ver').addEventListener('click', () => { tr.visto = true; dibujaTr(); });
+document.getElementById('tr-e').addEventListener('keydown', ev => {
+  if (ev.key === 'Enter'){ ev.preventDefault(); tr.visto = true; dibujaTr(); }
+});
+document.getElementById('tr-otro').addEventListener('click', () => {
+  // un ángulo nuevo, que no caiga cerca de los que se reconocen de un vistazo
+  let a;
+  do { a = 10 + Math.floor(Math.random() * 341); } while ([90, 180, 270, 360].some(c => Math.abs(a - c) < 4));
+  tr.secreto = a; tr.visto = false;
+  document.getElementById('tr-e').value = '';
+  document.getElementById('tr-e').focus();
+  dibujaTr();
+});
+document.getElementById('tr-a').addEventListener('input', () => { tr.anterior = null; tr.cambio = ''; dibujaTr(); });
+
+/* ═══ dos rectas que se cortan ═══ */
+const cr = { anterior:null, cambio:'' };
+
+function dibujaCruce(){
+  const O = [210, 160];
+  const a = entero(document.getElementById('cr-a').value, 1, 179, 40), b = 180 - a;
+  let s = '';
+  if (cr.anterior != null && cr.anterior !== a) s += g.seg(en(O, cr.anterior + 180, 150), en(O, cr.anterior, 150), 'g-aux');
+  s += sector(O, 0, a, 40, 'g-arco') + sector(O, 180, 180 + a, 40, 'g-arco') +
+       sector(O, a, 180, 32, 'g-arco2') + sector(O, 180 + a, 360, 32, 'g-arco2');
+  s += g.seg([20, 160], [400, 160], 'g-linea') + g.seg(en(O, a + 180, 160), en(O, a, 160), 'g-roja') + g.pto(O, 'g-vert', 5);
+  s += rotAng(O, 0, a, 68, a + '°', 'g-num') + rotAng(O, 180, 180 + a, 68, a + '°', 'g-num') +
+       rotAng(O, a, 180, 60, b + '°', 'g-num') + rotAng(O, 180 + a, 360, 60, b + '°', 'g-num');
+  document.getElementById('svg-cr').innerHTML = s;
+  document.getElementById('cr-out').innerHTML =
+    `<div class="fila">opuestos: <span class="ok">${a}°</span> y <span class="ok">${a}°</span></div>` +
+    `<div class="fila">opuestos: <span class="ok">${b}°</span> y <span class="ok">${b}°</span></div>` +
+    `<div class="fila">vecinos: ${a}° + ${b}° = 180°</div>` +
+    (cr.cambio ? `<div class="cambio">${cr.cambio}</div>` : '');
+}
+
+document.querySelector('#svg-cr').closest('.lab').addEventListener('click', ev => {
+  const b = ev.target.closest('button[data-cr-d]');
+  if (!b) return;
+  const campo = document.getElementById('cr-a');
+  const antes = entero(campo.value, 1, 179, 40);
+  const ahora = Math.min(179, Math.max(1, antes + Number(b.dataset.crD)));
+  if (ahora === antes) return;
+  cr.anterior = antes;
+  cr.cambio = `El ángulo pasó de ${antes}° a ${ahora}°, y su opuesto también. Los vecinos pasaron de ` +
+    `${180 - antes}° a ${180 - ahora}°: siguen sumando 180°.`;
+  campo.value = ahora;
+  dibujaCruce();
+});
+document.getElementById('cr-a').addEventListener('input', () => { cr.anterior = null; cr.cambio = ''; dibujaCruce(); });
+
+/* ═══ paralelas y secante ═══ */
+const PARES = {
+  'correspondientes':[[2, 6], [4, 8], [1, 5], [3, 7]],
+  'alternos internos':[[3, 6], [4, 5]],
+  'alternos externos':[[1, 8], [2, 7]],
+  'conjugados internos':[[3, 5], [4, 6]],
+  'conjugados externos':[[2, 8], [1, 7]],
+};
+const pa = { tipo:'correspondientes', par:0 };
+
+function dibujaParalelas(){
+  const th = entero(document.getElementById('pa-th').value, 20, 160, 65);
+  const phi = entero(document.getElementById('pa-phi').value, -12, 12, 0);
+  const p = paralelas(th, phi);
+  const d = th - phi;
+  const m = { 1:180 - th, 2:th, 3:th, 4:180 - th, 5:180 - d, 6:d, 7:d, 8:180 - d };
+  const [i, j] = PARES[pa.tipo][pa.par % PARES[pa.tipo].length];
+  let s = p.base;
+  for (let k = 1; k <= 8; k++) s += p.ang(k, k === i || k === j ? 'g-arco3' : 'g-tenue') + p.num(k);
+  s += p.med(i, m[i] + '°') + p.med(j, m[j] + '°');
+  document.getElementById('svg-pa').innerHTML = s;
+
+  const iguales = !pa.tipo.startsWith('conjugados');
+  const cumple = iguales ? m[i] === m[j] : m[i] + m[j] === 180;
+  const regla = iguales ? 'miden lo mismo' : 'suman 180°';
+  document.getElementById('pa-out').innerHTML =
+    `<div class="fila">${pa.tipo}: ${i} y ${j}</div>` +
+    `<div class="fila">${i} = <span class="ok">${m[i]}°</span>, ${j} = <span class="ok">${m[j]}°</span></div>` +
+    (iguales ? '' : `<div class="fila">${m[i]}° + ${m[j]}° = ${m[i] + m[j]}°</div>`) +
+    `<div class="cambio">${cumple ? `${regla[0].toUpperCase() + regla.slice(1)} ✓` :
+      `No ${regla}: <i>r</i> y <i>s</i> no son paralelas.`}</div>`;
+}
+
+document.querySelector('#svg-pa').closest('.lab').addEventListener('click', ev => {
+  const b = ev.target.closest('button');
+  if (!b) return;
+  if (b.dataset.paTipo){
+    pa.tipo = b.dataset.paTipo; pa.par = 0;
+    marca([...b.parentElement.querySelectorAll('[data-pa-tipo]')], b);
+  }
+  if (b.dataset.paOtro) pa.par++;
+  if (b.dataset.paTh){
+    const c = document.getElementById('pa-th');
+    c.value = Math.min(160, Math.max(20, entero(c.value, 20, 160, 65) + Number(b.dataset.paTh)));
+  }
+  if (b.dataset.paPhi){
+    const c = document.getElementById('pa-phi');
+    c.value = Math.min(12, Math.max(-12, entero(c.value, -12, 12, 0) + Number(b.dataset.paPhi)));
+  }
+  dibujaParalelas();
+});
+['pa-th', 'pa-phi'].forEach(id => document.getElementById(id).addEventListener('input', dibujaParalelas));
+
+dibujaTr();
+dibujaCruce();
+dibujaParalelas();
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

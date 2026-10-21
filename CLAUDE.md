@@ -32,6 +32,7 @@ matematica/
   index.html                los tres grados
   7mo|8vo|9no/index.html    las unidades de cada grado   ← los genera build.py
   7mo/ecuaciones.html       diapositivas                 ← escritas a mano
+  7mo/angulos.html          diapositivas                 ← escritas a mano
   7mo/poligonos.html        diapositivas                 ← escritas a mano
   8vo/factoreo.html         diapositivas                 ← escritas a mano
   8vo/sistemas.html         diapositivas                 ← escritas a mano
@@ -246,7 +247,11 @@ Las raíces se escriben `√25`, `3√3` o `√(x^2 + 9)` y se dibujan como en e
 pizarrón: la raya de arriba cubre todo lo de adentro (los paréntesis se
 sacan). En una figura, una capa puede llegar deslizándose desde otro lugar
 (`{ desde:[dx, dy] }`), como una pieza que se mueve a su lugar: así se arma
-el cuadrado de x² + 6x + 9 con sus piezas sueltas.
+el cuadrado de x² + 6x + 9 con sus piezas sueltas. O puede llegar girando
+alrededor de un punto (`{ gira:[grados, x, y] }`, positivo es el sentido del
+reloj): así el lado de un ángulo gira desde el otro lado, y el opuesto por el
+vértice aparece dando media vuelta. Si la capa trae un arco con `.traza`, el
+arco se dibuja al mismo ritmo que el giro.
 Cada página elige sus letras en cursiva con `Pizarra.letras`. Toda limpieza que espera el final de una animación
 tiene además un temporizador de respaldo (`alTerminar`): con la ventana
 oculta o el navegador ocupado el aviso de fin puede no llegar, y las cajas
@@ -326,7 +331,7 @@ cual. Así una respuesta no puede quedar mal tipeada en la página aunque la
 cuenta esté bien. Después de tocar una página de clase hay que volver a
 correrlo.
 
-Hay uno por cada página de clase (ecuaciones y polígonos de 7.º,
+Hay uno por cada página de clase (ecuaciones, ángulos y polígonos de 7.º,
 factoreo y sistemas de 8.º, ecuaciones de segundo grado de 9.º), uno para
 las siete clases de OMAPA y uno para el módulo de progreso. El Open House
 tiene el suyo: `open2026/verificar.py`.
@@ -683,9 +688,14 @@ series originales propias.
    que corresponda, con `'tipo': 'diapositiva'` y su `url`.
 5. `python build.py` y el verificador otra vez.
 
-Las cinco clases que hay (ecuaciones y polígonos de 7.º, factoreo y
-sistemas de 8.º, ecuaciones de segundo grado de 9.º) siguen esta anatomía y
-usan el mismo motor.
+Las seis clases que hay (ecuaciones, ángulos y polígonos de 7.º, factoreo
+y sistemas de 8.º, ecuaciones de segundo grado de 9.º) siguen esta anatomía
+y usan el mismo motor.
+
+Una página de clase no puede declarar arriba de todo un nombre que ya usa
+`pizarra.js` (`lee`, `paso`, `suma`, `caja`, `bloque`…): el navegador corta
+el guion entero con "Identifier has already been declared" y la página queda
+en blanco. Pasó con `lee` en ángulos.
 
 ### Una unidad nueva
 
@@ -728,7 +738,7 @@ las páginas de clase.
 ## Estado actual
 
 Hecho: portada, índices de los tres grados, listado de fichas con 26 PDF,
-las diapositivas de 7.º (ecuaciones lineales y polígonos) y las dos de 8.º
+las diapositivas de 7.º (ecuaciones lineales, ángulos y polígonos) y las dos de 8.º
 (factoreo y sistemas), la de ecuaciones de segundo grado de 9.º
 (unidades 5 y 6), todas sobre el motor de la pizarra, con su
 verificador; el panel de proyección, el timer de aula y el módulo de

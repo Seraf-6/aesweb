@@ -37,6 +37,15 @@ GRADOS = [
                 'simbolizaciones y resolución de problemas.',
         'url': 'fichas/index.html#7mo'},
      ]},
+    {'n': 6, 'titulo': 'Ángulos', 'pags': '112–131',
+     'nota': 'Geometría plana (II). Va antes de Polígonos: ahí se usan las paralelas y la secante.',
+     'material': [
+       {'tipo': 'diapositiva', 'titulo': 'Ángulos',
+        'desc': 'Los seis temas del libro desde cero, con dos puentes al estilo Khan Academy: '
+                'semirrectas y qué es un grado. Los lados giran en cada figura, y hay talleres '
+                'del transportador, dos rectas que se cortan y paralelas con secante.',
+        'url': 'matematica/7mo/angulos.html'},
+     ]},
     {'n': '8+9', 'titulo': 'Polígonos', 'pags': '152–192',
      'nota': 'Unidades 8 y 9 fusionadas en una sola, con sus quince temas.',
      'material': [

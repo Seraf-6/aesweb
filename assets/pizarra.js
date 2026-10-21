@@ -544,7 +544,11 @@ function pintaDerecha(clave, avanzando){
    Una capa con un cuarto elemento { desde:[dx, dy] } no se dibuja: llega
    deslizándose desde ese corrimiento, como una pieza que se mueve a su
    lugar. Sirve también para volver: la pieza que se había ido regresa
-   desde donde está la otra. */
+   desde donde está la otra.
+   Con { gira:[grados, x, y] } llega girando alrededor del punto (x, y):
+   arranca girada esos grados (como el rotate de CSS: positivo es el
+   sentido del reloj) y vuelve a su lugar. Es el lado de un ángulo que gira
+   desde el otro lado, o el opuesto por el vértice que da media vuelta. */
 Pizarra.lienzos.figura = (clave, ej, k, avanzando, div) => {
   const nP = ej.pasos.length;
   const num = v => v === 'final' ? nP + 1 : v === 'control' ? nP + 2 : (v == null ? Infinity : v);
@@ -555,6 +559,8 @@ Pizarra.lienzos.figura = (clave, ej, k, avanzando, div) => {
     const vuelve = !avanzando && c.hasta === k + 1;
     if ((llega || vuelve) && c.op.desde)
       return `<g class="capa capa-mueve" style="--dx:${c.op.desde[0]}px; --dy:${c.op.desde[1]}px">${c.svg}</g>`;
+    if ((llega || vuelve) && c.op.gira)
+      return `<g class="capa capa-gira" style="--giro:${c.op.gira[0]}deg; transform-origin:${c.op.gira[1]}px ${c.op.gira[2]}px">${c.svg}</g>`;
     return `<g class="capa${llega ? ' capa-nueva' : ''}">${c.svg}</g>`;
   };
   div.innerHTML = `<div class="lienzo figura-lienzo"><svg viewBox="${ej.lienzo.vb || '0 0 400 300'}" role="img"

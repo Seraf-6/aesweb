@@ -84,7 +84,8 @@ explicarlo.
 | Grado | Unidad | Cita sugerida |
 |---|---|---|
 | 7.º | Ecuaciones lineales | «La política es para el presente…» — **en uso** |
-| 7.º | Polígonos (8+9) | «No hay camino real hacia la geometría.» |
+| 7.º | Ángulos (6) | «La alegría de ver y comprender es el regalo más hermoso de la naturaleza.» — **en uso** |
+| 7.º | Polígonos (8+9) | «No hay camino real hacia la geometría.» — **en uso** |
 | 7.º | Estadística | «Lo importante es no dejar de hacerse preguntas.» |
 | 8.º | Factorización | «La matemática pura es la poesía de las ideas lógicas.» |
 | 8.º | Expresiones racionales | «Todo debería hacerse lo más simple posible, pero no más simple.» |

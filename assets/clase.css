@@ -668,6 +668,10 @@ body[data-solo="1"] .cu-rot{font-size:.55em}
 .capa-nueva{animation:funde .45s ease both}
 .capa-mueve{animation:mueve .9s cubic-bezier(.65,0,.35,1) both .1s}
 @keyframes mueve{from{transform:translate(var(--dx), var(--dy))}}
+/* una capa que llega girando alrededor de un punto: el lado de un ángulo
+   que gira desde el otro, el opuesto por el vértice que da media vuelta */
+.capa-gira{animation:gira .9s cubic-bezier(.65,0,.35,1) both .1s}
+@keyframes gira{from{transform:rotate(var(--giro))}}
 .capa-nueva .traza{stroke-dasharray:1; stroke-dashoffset:1; animation:traza .9s cubic-bezier(.65,0,.35,1) forwards .1s}
 .capa-nueva .pop{transform-box:fill-box; transform-origin:center; animation:pop .5s cubic-bezier(.3,1.6,.5,1) both .25s}
 .capa-nueva .pop-suave{transform-box:fill-box; transform-origin:center; animation:aterriza .5s ease both .2s}
@@ -757,7 +761,7 @@ body[data-solo="1"] .t-mini th{font-size:1em}
 
 @media (prefers-reduced-motion:reduce){
   .recien *,.recien > *,.fila-nueva td,.aparece,.aparece-rot,.onda,.guia,.marca-x,
-  .cuaderno *,.capa-nueva,.capa-nueva *,.capa-mueve{animation:none!important}
+  .cuaderno *,.capa-nueva,.capa-nueva *,.capa-mueve,.capa-gira{animation:none!important}
   .capa-nueva .traza{stroke-dasharray:none; stroke-dashoffset:0}
   .dibuja{animation:none; stroke-dasharray:none; stroke-dashoffset:0}
   .onda{display:none}
