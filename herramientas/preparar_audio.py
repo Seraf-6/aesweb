@@ -5,7 +5,7 @@
 Toma lo que llegó (.opus de WhatsApp, .m4a de iPhone, .mp3, un video…) y deja
 open-2026/audio/<codigo>.m4a listo para publicar:
 
-  · AAC en .m4a, mono, 40 kbps (32 o 24 si hace falta para no pasar de 400 kB:
+  · AAC en .m4a, mono, 40 kbps (32, 24 o 20 si hace falta para no pasar de 400 kB:
     las grabaciones no se cortan).
     No Opus en .ogg: no se reproduce en iPhones viejos.
   · El volumen normalizado con loudnorm, en dos pasadas (−16 LUFS): el chico
@@ -97,7 +97,7 @@ def main():
     # 2.ª pasada: recortar, normalizar y codificar
     destino = _piezas.MODULO / 'audio' / _piezas.nombre_archivo(cod, a.numero, '.m4a')
     destino.parent.mkdir(parents=True, exist_ok=True)
-    for kbps in (40, 32, 24):           # 24 solo para las grabaciones muy largas: no se cortan
+    for kbps in (40, 32, 24, 20):       # 24 y 20 solo para las grabaciones muy largas: no se cortan
         corre([ffmpeg, '-hide_banner', '-nostats', '-y', '-i', str(crudo), '-vn', '-sn', '-dn',
                '-af', filtro, '-ac', '1', '-ar', '44100', '-c:a', 'aac', '-b:a', f'{kbps}k',
                '-map_metadata', '-1', '-movflags', '+faststart', str(destino)])
