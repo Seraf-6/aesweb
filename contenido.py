@@ -194,6 +194,7 @@ FICHAS = {
   (9,  'Operaciones con racionales'),
   (10, 'Polígonos y clasificación'),
   (11, 'Triángulos y sus ángulos'),
+  (12, 'Ecuaciones lineales — 128 ejercicios graduados'),
  ],
  '8vo': [
   (1,  'Miscelánea de factoreo'),
