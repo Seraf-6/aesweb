@@ -405,6 +405,19 @@ body[data-solo="1"] .ficha-link{display:none}
   border-radius:3px; padding:0 .14em; box-decoration-break:clone;
   -webkit-box-decoration-break:clone}
 
+/* lo que se simplifica, tachado como en el pizarrón (tacha(), en pizarra.js):
+   una raya en diagonal, de rojo, de punta a punta del factor */
+.tacha{position:relative; display:inline-block}
+.tacha::after{content:''; position:absolute; inset:.08em -.06em; pointer-events:none;
+  background:linear-gradient(to top right, transparent calc(50% - .07em), var(--acento) calc(50% - .07em),
+    var(--acento) calc(50% + .07em), transparent calc(50% + .07em))}
+.cuaderno .cu-nueva .tacha::after{animation:tachar .45s cubic-bezier(.65,0,.35,1) both;
+  animation-delay:calc(.75s + var(--f, 0) * .34s)}
+.recien .tacha::after{animation:tachar .45s cubic-bezier(.65,0,.35,1) both;
+  animation-delay:calc(.6s + var(--f, 0) * .32s)}
+@keyframes tachar{from{clip-path:inset(0 100% 0 0)}}
+@media (prefers-reduced-motion:reduce){.tacha::after{animation:none!important}}
+
 /* ── pasos: se puede ir y volver ── */
 .pasos-nav{display:flex; align-items:center; gap:8px; flex:0 0 auto}
 .pasos-nav .boton[disabled]{opacity:.35; cursor:default}
@@ -505,7 +518,10 @@ body[data-libre="izq"] .cls-panel{width:max(280px, calc(var(--libre) - 28px)); r
 .alineado{
   display:grid; grid-template-columns:repeat(4, max-content); justify-content:start;
   row-gap:.12em; margin:.35em 0 .15em .2em;
-  font-family:var(--serif); font-size:1.08em; line-height:1.45; overflow-x:auto}
+  font-family:var(--serif); font-size:1.08em; line-height:1.45; overflow-x:auto;
+  /* con overflow-x:auto el navegador pone también overflow-y:auto, y una
+     fracción apilada que se pasa 2 px hace aparecer una barrita */
+  overflow-y:hidden; padding-bottom:.12em}
 .alineado i{font-style:italic}
 .al-rot{
   font-family:var(--sans); font-size:.78em; color:var(--lapiz);

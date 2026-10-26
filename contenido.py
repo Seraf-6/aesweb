@@ -80,6 +80,11 @@ GRADOS = [
      ]},
     {'n': 7, 'titulo': 'Operaciones con expresiones algebraicas racionales', 'pags': '136–154',
      'material': [
+       {'tipo': 'diapositiva', 'titulo': 'Expresiones racionales',
+        'desc': 'Los siete temas de la unidad y un puente sobre los valores que anulan el '
+                'denominador: simplificar, multiplicar, dividir y sumar, tachando como en el '
+                'pizarrón, con su control.',
+        'url': 'matematica/8vo/racionales.html'},
        {'tipo': 'ficha', 'titulo': 'Expresiones racionales',
         'desc': '94 ejercicios en ocho bloques de dificultad creciente, del dominio '
                 'a las operaciones combinadas.',

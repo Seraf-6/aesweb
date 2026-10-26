@@ -85,6 +85,12 @@ const sombrero = s => raices(s).replace(/([A-Z])̂|([ÂÊÎÔÛĈĜĤĴŜŴŶ])/
    siempre adentro de M(), de A() o de un .ec: no pone cursivas. */
 const N = s => `<span class="nuevo">${s}</span>`;
 
+/* tacha() tacha un factor que se simplifica, como en el pizarrón: el mismo
+   factor arriba y abajo, cada uno con su raya. Va adentro de M(), A(), P()
+   o Q(). En el cuaderno la raya se dibuja después de escribir el renglón,
+   cuando ya se leyó lo que se tacha. */
+const tacha = s => `<span class="tacha">${s}</span>`;
+
 /* A() alinea una cadena de igualdades: una por renglón y todos los signos
    = en la misma columna, como en el cuaderno. Cada fila es una igualdad
    ('3(1 + 2) = 3 · 1 + 6'), una continuación (' = 9'), o un par

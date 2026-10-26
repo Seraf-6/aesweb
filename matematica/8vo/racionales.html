@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Expresiones racionales · AESWeb</title>
+<meta name="description" content="La unidad 7 de 8.º en los siete temas del libro: expresiones algebraicas racionales, MCD y MCM, simplificación, multiplicación, división, suma y resta y operaciones combinadas, con ejemplos resueltos paso a paso, su control, las notas del docente y las preguntas de un alumno observador.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de esta página: el taller de probar con un número ---------- */
+.lab select{font:inherit; padding:6px 8px; border:1px solid var(--linea-fuerte); border-radius:4px;
+  background:var(--papel); color:var(--tinta); max-width:100%}
+.lab .paso-x{display:flex; gap:6px; align-items:center}
+.lab .paso-x input{width:6em}
+.salida .no-existe{color:var(--acento); font-weight:700}
+.salida .fila{white-space:normal}
+.salida .probados{margin-top:10px; font-size:.9em}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="index.html">8.º grado</a><span class="sep">/</span>
+      <span>Unidad 7 · págs. 136–155</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Matemática 8.º grado</p>
+    <h1>Expresiones algebraicas racionales</h1>
+    <p class="bajada">«Todo debería hacerse lo más simple posible, pero no más
+      simple.»<span class="firma">atribuida a Albert Einstein</span></p>
+    <div class="pie-tapa">
+      <span>Unidad 7 · páginas 136 a 155</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Unidad 7 · págs. 136–155</p>
+    <h2>Fracciones con letras: las mismas reglas de siempre</h2>
+    <ul class="puntos">
+      <li>Una <b>expresión racional</b> es una fracción con polinomios arriba y abajo, como
+        <span class="ec"><span class="fr"><span><i>x</i> + 3</span><span><i>x</i> − 2</span></span></span>.</li>
+      <li>Se simplifica, se multiplica, se divide y se suma <b>igual que una fracción de números</b>.
+        Lo único nuevo es que, antes de tachar, hay que <b>factorizar</b>: la unidad anterior.</li>
+      <li>Y todo resultado <b>se controla</b>: se reemplaza la letra por un número en el
+        enunciado y en el resultado, y los dos tienen que dar lo mismo.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de clase · Unidad 7, <i>Matemática 8</i>, Editorial En Alianza. Sigue los
+    siete temas del libro con ejemplos originales; las páginas indicadas remiten al libro
+    del alumno. Cada resultado de esta página está verificado en
+    <span class="ec">verificacion/racionales_8vo.py</span>.
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* Las letras de esta unidad. Los exponentes se escriben con ^ (x^2). */
+Pizarra.letras = /[abnxy]/g;
+
+/* una fracción algebraica sola, como resultado o como enunciado */
+const R = (n, d) => `<span class="ec">${Q(n, d)}</span>`;
+
+/* el control: se reemplaza la letra por un número en el enunciado y en el
+   resultado, y los dos tienen que dar lo mismo */
+const ctrl = (valores, ...filas) => `Control con ${valores}:${A(...filas)}`;
+
+/* ═══════════════════════════════════════════════════════════════
+   Los siete temas de la unidad 7 del libro, y un puente
+   Todo resultado que aparece acá está comprobado en
+   verificacion/racionales_8vo.py, con sympy y con fracciones exactas.
+   ═══════════════════════════════════════════════════════════════ */
+const TEMAS = [
+/* ─────────────────────────── 1 ─────────────────────────── */
+{
+  n:1, corto:'MCD y MCM', titulo:'Expresiones algebraicas racionales. MCD y MCM', pag:'tema 1 · págs. 138–139',
+  concepto:{
+    forma:Q('A(x)', 'B(x)'), formaRot:'un polinomio sobre otro, con B(x) distinto de cero',
+    puntos:[
+      `Son <b>homogéneas</b> si tienen el mismo denominador, como ${R('x + 3y', '2x')} y ${R('x^2 + 5y', '2x')}, y <b>heterogéneas</b> si no.`,
+      '<b>MCD</b>: se factoriza cada expresión y se toman los factores <b>comunes</b>, con su <b>menor</b> exponente.',
+      '<b>MCM</b>: los factores comunes <b>y no comunes</b>, con su <b>mayor</b> exponente. Es el denominador común de la suma (tema 6).',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el MCD de dos monomios', enun:`MCD de ${M('12x^2y')} y ${M('18xy^3')}`,
+      pasos:[
+        P('Números: el MCD de 12 y 18.', 'MCD(12, 18) = 6'),
+        P('Letras: las que están en los dos, con su menor exponente.', ['la x', 'x^2 | x  →  x'], ['la y', 'y | y^3  →  y']),
+      ], final:M('6xy'),
+      control:ctrl(`${M('x = 2')} y ${M('y = 1')}`, '12 · 4 · 1 = 48', '18 · 2 · 1 = 36', ['el MCD', '6 · 2 · 1 = 12'],
+        '48 : 12 = 4', '36 : 12 = 3 ✓') },
+    { titulo:'cambio: ahora el MCM de los mismos', enun:`${N('MCM')} de ${M('12x^2y')} y ${M('18xy^3')}`,
+      pasos:[
+        P('Números: el MCM de 12 y 18.', 'MCM(12, 18) = 36'),
+        P('Letras: todas, con su mayor exponente.', ['la x', 'x^2 | x  →  x^2'], ['la y', 'y | y^3  →  y^3']),
+      ], final:M('36x^2y^3'),
+      control:ctrl(`${M('x = 2')} y ${M('y = 1')}`, ['el MCM', '36 · 4 · 1 = 144'], '144 : 48 = 3', '144 : 36 = 4 ✓') },
+    { titulo:'con polinomios: primero se factoriza', enun:`MCD de ${M('x^2 − 9')} y ${M('x^2 + 6x + 9')}`,
+      pasos:[
+        P('Factorizo cada uno: una diferencia de cuadrados y un trinomio cuadrado perfecto.',
+          'x^2 − 9 = (x + 3)(x − 3)', 'x^2 + 6x + 9 = (x + 3)^2'),
+        `El factor común es ${M('(x + 3)')}, con su menor exponente: 1.`,
+      ], final:M('x + 3'),
+      control:ctrl(M('x = 10'), '10^2 − 9 = 91', '10^2 + 60 + 9 = 169', ['el MCD', '10 + 3 = 13'],
+        '91 : 13 = 7', '169 : 13 = 13 ✓') },
+    { titulo:'cambio: el MCM de los mismos', enun:`${N('MCM')} de ${M('x^2 − 9')} y ${M('x^2 + 6x + 9')}`,
+      pasos:[
+        P('Las mismas factorizaciones.', 'x^2 − 9 = (x + 3)(x − 3)', 'x^2 + 6x + 9 = (x + 3)^2'),
+        `Todos los factores, con su mayor exponente: ${M('(x + 3)^2')} y ${M('(x − 3)')}.`,
+      ], final:M('(x + 3)^2(x − 3)'),
+      control:ctrl(M('x = 10'), ['el MCM', '13^2 · 7 = 1183'], '1183 : 91 = 13', '1183 : 169 = 7 ✓') },
+    { titulo:'cambio: tres polinomios, uno con un número', enun:`MCM de ${M('x^2 − 4')}, ${M('x^2 + 4x + 4')} y ${M(N('2x + 4'))}`,
+      pasos:[
+        P('Factorizo los tres.', 'x^2 − 4 = (x + 2)(x − 2)', 'x^2 + 4x + 4 = (x + 2)^2', '2x + 4 = 2(x + 2)'),
+        `Comunes y no comunes, con su mayor exponente: el ${M('2')}, ${M('(x + 2)^2')} y ${M('(x − 2)')}.`,
+      ], final:M('2(x + 2)^2(x − 2)'),
+      control:ctrl(M('x = 10'), ['los tres', '96 | 144 | 24'], ['el MCM', '2 · 144 · 8 = 2304'],
+        '2304 : 96 = 24', '2304 : 144 = 16', '2304 : 24 = 96 ✓') },
+  ],
+  preguntas:[
+    { p:'¿Por qué en el MCD va el menor exponente y en el MCM el mayor?',
+      r:`El MCD tiene que <b>caber</b> en todas: ${M('x^2')} no cabe en ${M('x')}. El MCM tiene que <b>contener</b> a todas: si tuviera solo ${M('x')}, ${M('x^2')} no entraría.` },
+    { p:'En el ejemplo 5, ¿por qué el 2 va en el MCM y no en el MCD?',
+      r:'Porque el 2 está solo en 2x + 4: no es común. El MCM lleva también los no comunes; el MCD, solo los que están en todas.' },
+    { p:'¿El control con números prueba que el MCM está bien?',
+      r:'Prueba que es múltiplo de las tres, que es lo que más se equivoca. Que sea el menor lo asegura la factorización: no tiene ningún factor de más.' },
+  ],
+  notas:`<p>El libro abre la unidad con la definición de expresión racional (pág. 138) y
+      enseguida va al MCD y al MCM: son la herramienta de la suma con distinto
+      denominador (tema 6), que es donde más se usan. Conviene decirlo ahora para que el
+      tema no quede suelto.</p>
+    <p>Los ejemplos 1–2 y 3–4 son el mismo par con las dos preguntas: así se ve que el MCD y
+      el MCM salen de las mismas factorizaciones y solo cambia la elección de exponentes.</p>
+    <p>El control con números es nuevo para el MCD y el MCM: el valor del MCD divide a los
+      valores de las expresiones, y el del MCM es múltiplo de cada uno.</p>`
+},
+
+/* ────────────────────── el puente ────────────────────── */
+{
+  n:'1→2', id:'puente', puente:true, entre:'el tema 1 y el 2', corto:'Cuándo no existe', titulo:'¿Para qué valores no está definida?',
+  concepto:{
+    forma:'B(x) ≠ 0', formaRot:'el denominador no puede valer cero',
+    puntos:[
+      `Dividir por cero no tiene sentido: ${R('5', '0')} no es ningún número.`,
+      'Para saber cuándo una expresión no existe, se busca qué valores de la letra hacen <b>cero el denominador</b>.',
+      'Si el denominador es un polinomio, se <b>factoriza</b>: un producto da cero cuando alguno de sus factores da cero.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la de partida', enun:R('5', 'x − 3'),
+      pasos:[
+        P('Busco cuándo el denominador vale cero.', 'x − 3 = 0', ['entonces', 'x = 3']),
+      ], final:`no está definida para ${M('x = 3')}`,
+      control:ctrl(M('x = 3'), `${Q('5', '3 − 3')} = ${Q('5', '0')}`, ['', 'no es ningún número ✓']) },
+    { titulo:'cambio: el denominador es una diferencia de cuadrados', enun:R('x + 1', N('x^2 − 9')),
+      pasos:[
+        P('Factorizo el denominador.', 'x^2 − 9 = (x + 3)(x − 3)'),
+        P('El producto da cero si alguno de los factores da cero.', ['si', 'x + 3 = 0'], ['entonces', 'x = −3'],
+          ['si', 'x − 3 = 0'], ['entonces', 'x = 3']),
+      ], final:`no está definida para ${M('x = 3')} ni para ${M('x = −3')}`,
+      control:ctrl(M('x = −3'), '(−3)^2 − 9 = 9 − 9', ' = 0 ✓') },
+    { titulo:'cambio: el denominador es un trinomio', enun:R('x − 2', N('x^2 − 5x + 6')),
+      pasos:[
+        P('Factorizo: dos números que sumen −5 y multiplicados den 6.', 'x^2 − 5x + 6 = (x − 2)(x − 3)'),
+        P('Cada factor da cero en un número.', ['si', 'x − 2 = 0'], ['entonces', 'x = 2'],
+          ['si', 'x − 3 = 0'], ['entonces', 'x = 3']),
+      ], final:`no está definida para ${M('x = 2')} ni para ${M('x = 3')}`,
+      control:ctrl(M('x = 2'), '4 − 10 + 6 = 0 ✓') },
+    { titulo:'cambio: una suma de cuadrados', enun:R('7', N('x^2 + 4')),
+      pasos:[
+        `${M('x^2')} nunca es negativo: un número por sí mismo es cero o positivo.`,
+        P('Entonces el denominador vale por lo menos 4: nunca es cero.', ['con x = 0', '0^2 + 4 = 4']),
+      ], final:'está definida para todos los números',
+      control:ctrl(`${M('x = −2')}, que anulaba ${M('x^2 − 4')}`, '(−2)^2 + 4 = 8 ✓') },
+  ],
+  preguntas:[
+    { p:'Si simplifico una expresión, ¿el número prohibido desaparece?',
+      r:`No. ${R('x^2 − 25', 'x + 5')} se simplifica a ${M('x − 5')}, pero con ${M('x = −5')} la de partida no existe y la simplificada da −10. La simplificada vale lo mismo <b>en todos los números menos en ese</b>. El taller del tema 2 lo muestra.` },
+    { p:'¿Y si el que da cero es el numerador?',
+      r:`No hay problema: ${R('0', '7')} es 0. Lo único que no se puede es dividir por cero.` },
+    { p:'¿x^2 + 4 no se factoriza?',
+      r:'Con números reales, no: es una suma de cuadrados, y por eso nunca da cero.' },
+  ],
+  notas:`<p><b>No está en el libro como tema.</b> La definición de la pág. 138 dice que el
+      denominador no puede ser cero, y no vuelve sobre eso. Pero sin este paso el tema 2
+      tiene un hueco: la simplificada y la de partida no son iguales en todos los números.</p>
+    <p>Es también la primera aplicación nueva de factorizar: cuando un producto da cero,
+      alguno de sus factores da cero. La van a usar en 9.º para las ecuaciones de segundo
+      grado.</p>
+    <p>El ejemplo 4 está para que no crean que siempre hay valores prohibidos.</p>`
+},
+
+/* ─────────────────────────── 2 ─────────────────────────── */
+{
+  n:2, corto:'Simplificación', titulo:'Simplificación de expresiones algebraicas racionales', pag:'tema 2 · págs. 140–141', ficha:6,
+  concepto:{
+    forma:`${Q('a · c', 'b · c')} = ${Q('a', 'b')}`, formaRot:'un factor que está arriba y abajo se tacha',
+    puntos:[
+      'Como con números: en 12/18 se tacha el 6 de 2 · 6 y de 3 · 6, y queda 2/3.',
+      'Primero se <b>factoriza</b> arriba y abajo; recién después se tacha lo que se repite.',
+      'Solo se tachan <b>factores</b> (lo que multiplica a todo el numerador y a todo el denominador), nunca términos sueltos.',
+      'Cuando ya no queda ningún factor común, la expresión es <b>irreducible</b>.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'dos monomios', enun:R('12x^3y', '18xy^2'),
+      pasos:[
+        P('Los números: el MCD de 12 y 18 es 6.', `${Q('12', '18')} = ${Q('2', '3')}`),
+        P('Las letras: se restan los exponentes, y cada letra queda donde tenía más.', `${Q('x^3', 'x')} = x^2`, `${Q('y', 'y^2')} = ${Q('1', 'y')}`),
+      ], final:R('2x^2', '3y'),
+      control:ctrl(`${M('x = 2')} y ${M('y = 1')}`, ['la de partida', `${Q('12 · 8 · 1', '18 · 2 · 1')} = ${Q('96', '36')}`],
+        ` = ${Q('8', '3')}`, ['la simplificada', `${Q('2 · 4', '3 · 1')} = ${Q('8', '3')} ✓`]) },
+    { titulo:'cambio: un polinomio arriba', enun:R(N('5x^2 + 10x'), '5x'),
+      pasos:[
+        P(`Factorizo el numerador: el factor común es ${M('5x')}.`, `${Q('5x^2 + 10x', '5x')} = ${Q('5x(x + 2)', '5x')}`),
+        P(`Tacho ${M('5x')}, que está arriba y abajo.`, ` = ${Q(tacha('5x') + '(x + 2)', tacha('5x'))}`, ' = x + 2'),
+      ], final:M('x + 2'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('500 + 100', '50')} = 12`], ['la simplificada', '10 + 2 = 12 ✓']) },
+    { titulo:'cambio: una diferencia de cuadrados', enun:R(N('x^2 − 25'), 'x + 5'),
+      pasos:[
+        P('Factorizo el numerador.', `${Q('x^2 − 25', 'x + 5')} = ${Q('(x − 5)(x + 5)', 'x + 5')}`),
+        P(`Tacho ${M('(x + 5)')}.`, ` = ${Q('(x − 5)' + tacha('(x + 5)'), tacha('(x + 5)'))}`, ' = x − 5'),
+      ], final:M('x − 5'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('75', '15')} = 5`], ['la simplificada', '10 − 5 = 5 ✓']) },
+    { titulo:'cambio: los dos son polinomios', enun:R(N('x^2 + 5x + 6'), N('x^2 − 4')),
+      pasos:[
+        P('Factorizo arriba y abajo: un trinomio y una diferencia de cuadrados.',
+          `${Q('x^2 + 5x + 6', 'x^2 − 4')} = ${Q('(x + 3)(x + 2)', '(x − 2)(x + 2)')}`),
+        P(`El factor ${M('(x + 2)')} está arriba y abajo: lo tacho.`,
+          ` = ${Q('(x + 3)' + tacha('(x + 2)'), '(x − 2)' + tacha('(x + 2)'))}`, ` = ${Q('x + 3', 'x − 2')}`),
+      ], final:R('x + 3', 'x − 2'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('100 + 50 + 6', '100 − 4')} = ${Q('156', '96')}`],
+        ` = ${Q('13', '8')}`, ['la simplificada', `${Q('10 + 3', '10 − 2')} = ${Q('13', '8')} ✓`]) },
+    { titulo:'cambio: factores opuestos', enun:R(N('6 − 2x'), 'x^2 − 9'),
+      pasos:[
+        P(`Arriba saco factor común ${M('−2')}: así queda ${M('x − 3')}, como abajo.`,
+          `${Q('6 − 2x', 'x^2 − 9')} = ${Q('−2(x − 3)', '(x + 3)(x − 3)')}`),
+        P(`Tacho ${M('(x − 3)')}. El menos queda arriba.`,
+          ` = ${Q('−2' + tacha('(x − 3)'), '(x + 3)' + tacha('(x − 3)'))}`, ` = ${Q('−2', 'x + 3')}`),
+      ], final:R('−2', 'x + 3'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('6 − 20', '100 − 9')} = ${Q('−14', '91')}`],
+        ` = ${Q('−2', '13')}`, ['la simplificada', `${Q('−2', '10 + 3')} = ${Q('−2', '13')} ✓`]) },
+  ],
+  taller:'lab-prueba',
+  preguntas:[
+    { p:'¿Por qué no puedo tachar la x en (x + 2)/x?',
+      r:`Porque arriba la ${M('x')} no multiplica a todo: está <b>sumando</b>. Con ${M('x = 2')}, ${R('x + 2', 'x')} da 2; si tachara, quedaría 3. Es el error de la pregunta del principio.` },
+    { p:'En el ejemplo 5, ¿6 − 2x y x − 3 son opuestos?',
+      r:`Casi: ${M('6 − 2x')} es ${M('−2(x − 3)')}. Sacar un factor negativo da vuelta los signos de adentro, y aparece el mismo factor que abajo.` },
+    { p:'¿Por qué el control se hace con 10?',
+      r:'Porque con 10 las cuentas salen de memoria y casi nunca anula un denominador. Si la simplificación está mal, casi siempre dan números distintos.' },
+    { p:'¿La simplificada y la de partida son iguales siempre?',
+      r:`En todos los números menos en los que anulan el denominador de partida: con ${M('x = −2')}, ${R('x^2 + 5x + 6', 'x^2 − 4')} no existe y ${R('x + 3', 'x − 2')} da ${Q('−1', '4')}. Probalo en el taller.` },
+  ],
+  notas:`<p>El libro simplifica primero monomios y después polinomios, factorizando (pág. 140).
+      Los ejemplos van en ese orden, y cada uno cambia una sola cosa: el numerador, después el
+      caso de factoreo, después los dos, después el signo.</p>
+    <p>La regla que más se rompe es tachar términos: (x + 2)/x = 3. La pregunta de arranque
+      está para eso, y el control con un número la desarma en un renglón. Vale la pena
+      repetirla en cada ejemplo: <b>solo se tachan factores</b>.</p>
+    <p>El taller lleva a lo que dice el puente: la simplificada vale en todos los números menos
+      en los que anulan el denominador de la de partida.</p>`
+},
+
+/* ─────────────────────────── 3 ─────────────────────────── */
+{
+  n:3, corto:'Multiplicación', titulo:'Multiplicación de expresiones algebraicas racionales', pag:'tema 3 · págs. 142–143',
+  concepto:{
+    forma:`${Q('a', 'b')} · ${Q('c', 'd')} = ${Q('a · c', 'b · d')}`, formaRot:'numerador por numerador, denominador por denominador',
+    puntos:[
+      'Conviene <b>factorizar antes</b> de multiplicar: así se ve qué se tacha y las cuentas quedan chicas.',
+      'Un factor de un numerador se puede tachar con uno de <b>cualquier</b> denominador.',
+      'Lo que queda se multiplica al final, y el resultado tiene que quedar irreducible.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'dos monomios', enun:M(`${Q('3x', '4y')} · ${Q('8y^2', '9x^2')}`),
+      pasos:[
+        P('Multiplico arriba con arriba y abajo con abajo, sin hacer las cuentas todavía.',
+          `${Q('3x', '4y')} · ${Q('8y^2', '9x^2')} = ${Q('3 · 8 · x · y^2', '4 · 9 · y · x^2')}`),
+        P('Simplifico: 24 y 36 tienen MCD 12, y las letras restan sus exponentes.', ` = ${Q('2y', '3x')}`),
+      ], final:R('2y', '3x'),
+      control:ctrl(`${M('x = 2')} y ${M('y = 1')}`, ['la de partida', `${Q('6', '4')} · ${Q('8', '36')} = ${Q('48', '144')}`],
+        ` = ${Q('1', '3')}`, ['el resultado', `${Q('2', '6')} = ${Q('1', '3')} ✓`]) },
+    { titulo:'cambio: con polinomios', enun:M(`${Q(N('x + 2'), '3')} · ${Q('6', N('x^2 − 4'))}`),
+      pasos:[
+        P('Factorizo el denominador de la segunda.',
+          `${Q('x + 2', '3')} · ${Q('6', 'x^2 − 4')} = ${Q('x + 2', '3')} · ${Q('6', '(x + 2)(x − 2)')}`),
+        P(`Multiplico y tacho ${M('(x + 2)')}. El 6 con el 3 da 2.`,
+          ` = ${Q('6' + tacha('(x + 2)'), '3' + tacha('(x + 2)') + '(x − 2)')}`, ` = ${Q('2', 'x − 2')}`),
+      ], final:R('2', 'x − 2'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('12', '3')} · ${Q('6', '96')} = ${Q('72', '288')}`],
+        ` = ${Q('1', '4')}`, ['el resultado', `${Q('2', '8')} = ${Q('1', '4')} ✓`]) },
+    { titulo:'cambio: hay que factorizar las dos', enun:M(`${Q('x^2 − 9', 'x^2 + 2x')} · ${Q('x', 'x − 3')}`),
+      pasos:[
+        P('Factorizo todo lo que se puede.',
+          `${Q('x^2 − 9', 'x^2 + 2x')} · ${Q('x', 'x − 3')} = ${Q('(x + 3)(x − 3)', 'x(x + 2)')} · ${Q('x', 'x − 3')}`),
+        P(`Tacho ${M('(x − 3)')} y ${M('x')}, que están arriba y abajo.`,
+          ` = ${Q('(x + 3)' + tacha('(x − 3)') + ' · ' + tacha('x'), tacha('x') + '(x + 2) · ' + tacha('(x − 3)'))}`,
+          ` = ${Q('x + 3', 'x + 2')}`),
+      ], final:R('x + 3', 'x + 2'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('91', '120')} · ${Q('10', '7')} = ${Q('910', '840')}`],
+        ` = ${Q('13', '12')}`, ['el resultado', `${Q('13', '12')} ✓`]) },
+    { titulo:'cambio: un trinomio arriba', enun:M(`${Q(N('x^2 + 5x + 6'), 'x^2 − 1')} · ${Q('x − 1', 'x + 2')}`),
+      pasos:[
+        P('Factorizo el trinomio y la diferencia de cuadrados.',
+          `${Q('x^2 + 5x + 6', 'x^2 − 1')} · ${Q('x − 1', 'x + 2')} = ${Q('(x + 2)(x + 3)', '(x + 1)(x − 1)')} · ${Q('x − 1', 'x + 2')}`),
+        P(`Tacho ${M('(x + 2)')} y ${M('(x − 1)')}.`,
+          ` = ${Q(tacha('(x + 2)') + '(x + 3)' + tacha('(x − 1)'), '(x + 1)' + tacha('(x − 1)') + tacha('(x + 2)'))}`,
+          ` = ${Q('x + 3', 'x + 1')}`),
+      ], final:R('x + 3', 'x + 1'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('156', '99')} · ${Q('9', '12')} = ${Q('1404', '1188')}`],
+        ` = ${Q('13', '11')}`, ['el resultado', `${Q('13', '11')} ✓`]) },
+    { titulo:'cambio: factores opuestos', enun:M(`${Q('x − 4', 'x + 1')} · ${Q('x^2 − 1', N('8 − 2x'))}`),
+      pasos:[
+        P(`Factorizo. Abajo saco ${M('−2')}, para que quede ${M('x − 4')}.`,
+          `${Q('x − 4', 'x + 1')} · ${Q('x^2 − 1', '8 − 2x')} = ${Q('x − 4', 'x + 1')} · ${Q('(x + 1)(x − 1)', '−2(x − 4)')}`),
+        P(`Tacho ${M('(x − 4)')} y ${M('(x + 1)')}.`,
+          ` = ${Q(tacha('(x − 4)') + tacha('(x + 1)') + '(x − 1)', tacha('(x + 1)') + ' · (−2)' + tacha('(x − 4)'))}`,
+          ` = ${Q('x − 1', '−2')}`),
+        P('El menos va arriba, como siempre: cambia los dos signos del numerador.', ` = ${Q('1 − x', '2')}`),
+      ], final:R('1 − x', '2'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('6', '11')} · ${Q('99', '−12')} = ${Q('−594', '132')}`],
+        ` = ${Q('−9', '2')}`, ['el resultado', `${Q('1 − 10', '2')} = ${Q('−9', '2')} ✓`]) },
+  ],
+  preguntas:[
+    { p:'¿Por qué factorizar antes y no multiplicar primero?',
+      r:`Porque multiplicando primero, en el ejemplo 4 quedaría ${R('x^3 + 4x^2 + x − 6', 'x^3 + 2x^2 − x − 2')}, y para simplificar habría que factorizar eso: mucho más difícil.` },
+    { p:'¿Puedo tachar el x de arriba de la primera con el x de abajo de la segunda?',
+      r:'Sí: en una multiplicación todo lo de arriba es un solo numerador y todo lo de abajo un solo denominador. Lo que importa es que sean factores.' },
+    { p:'En el ejemplo 5, ¿(x − 1)/(−2) estaba mal?',
+      r:'No: es el mismo número. Pero en la casa el signo va arriba, para que todas las respuestas se escriban igual y se puedan comparar.' },
+  ],
+  notas:`<p>El libro (pág. 142) multiplica primero monomios y después factoriza los polinomios
+      antes de multiplicar. Los ejemplos siguen ese orden y terminan con factores opuestos,
+      que es el caso de los ejercicios de la pág. 143 donde más se equivocan.</p>
+    <p>Que se tacha "en cruz" (un numerador con el otro denominador) lo hacen sin pensarlo,
+      pero algunos creen que no se puede: la segunda pregunta del observador está para eso.</p>
+    <p>El ejemplo 3 y el 4 tienen respuestas parecidas a propósito: cambia un solo factor.</p>`
+},
+
+/* ─────────────────────────── 4 ─────────────────────────── */
+{
+  n:4, corto:'División', titulo:'División de expresiones algebraicas racionales', pag:'tema 4 · págs. 144–145',
+  concepto:{
+    forma:`${Q('a', 'b')} : ${Q('c', 'd')} = ${Q('a', 'b')} · ${Q('d', 'c')}`, formaRot:'dividir es multiplicar por la recíproca',
+    puntos:[
+      'La segunda fracción se da vuelta y la división se convierte en una multiplicación: el tema 3.',
+      'Recién <b>después de dar vuelta</b> se factoriza y se tacha.',
+      'Una <b>fracción compleja</b> (una fracción de fracciones) es una división escrita de otra forma: el numerador dividido por el denominador.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'dos monomios', enun:M(`${Q('2x', '3')} : ${Q('4x^2', '9')}`),
+      pasos:[
+        P('Doy vuelta la segunda y multiplico.', `${Q('2x', '3')} : ${Q('4x^2', '9')} = ${Q('2x', '3')} · ${Q('9', '4x^2')}`),
+        P('Multiplico y simplifico: 18 y 12 tienen MCD 6, y una x se va.', ` = ${Q('18x', '12x^2')}`, ` = ${Q('3', '2x')}`),
+      ], final:R('3', '2x'),
+      control:ctrl(M('x = 3'), ['la de partida', `${Q('6', '3')} : ${Q('36', '9')} = 2 : 4`], ` = ${Q('1', '2')}`,
+        ['el resultado', `${Q('3', '6')} = ${Q('1', '2')} ✓`]) },
+    { titulo:'cambio: con polinomios', enun:M(`${Q(N('x^2 − 4'), 'x')} : ${Q(N('x + 2'), 'x^2')}`),
+      pasos:[
+        P('Doy vuelta la segunda.', `${Q('x^2 − 4', 'x')} : ${Q('x + 2', 'x^2')} = ${Q('x^2 − 4', 'x')} · ${Q('x^2', 'x + 2')}`),
+        P(`Factorizo: ${M('x^2 − 4')} es una diferencia de cuadrados y ${M('x^2')} es ${M('x · x')}.`,
+          ` = ${Q('(x + 2)(x − 2)', 'x')} · ${Q('x · x', 'x + 2')}`),
+        P(`Tacho ${M('(x + 2)')} y una ${M('x')}.`,
+          ` = ${Q(tacha('(x + 2)') + '(x − 2) · ' + tacha('x') + ' · x', tacha('x') + tacha('(x + 2)'))}`, ' = x(x − 2)'),
+      ], final:M('x(x − 2)'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('96', '10')} : ${Q('12', '100')} = ${Q('96', '10')} · ${Q('100', '12')}`],
+        ' = 80', ['el resultado', '10 · 8 = 80 ✓']) },
+    { titulo:'cambio: un trinomio arriba', enun:M(`${Q(N('x^2 − x − 6'), 'x + 1')} : ${Q('x − 3', 'x^2 − 1')}`),
+      pasos:[
+        P('Doy vuelta la segunda.', `${Q('x^2 − x − 6', 'x + 1')} : ${Q('x − 3', 'x^2 − 1')} = ${Q('x^2 − x − 6', 'x + 1')} · ${Q('x^2 − 1', 'x − 3')}`),
+        P('Factorizo el trinomio y la diferencia de cuadrados.', ` = ${Q('(x − 3)(x + 2)', 'x + 1')} · ${Q('(x + 1)(x − 1)', 'x − 3')}`),
+        P(`Tacho ${M('(x − 3)')} y ${M('(x + 1)')}.`,
+          ` = ${Q(tacha('(x − 3)') + '(x + 2)' + tacha('(x + 1)') + '(x − 1)', tacha('(x + 1)') + tacha('(x − 3)'))}`, ' = (x + 2)(x − 1)'),
+      ], final:M('(x + 2)(x − 1)'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('84', '11')} : ${Q('7', '99')} = ${Q('84', '11')} · ${Q('99', '7')}`],
+        ' = 108', ['el resultado', '12 · 9 = 108 ✓']) },
+    { titulo:'cambio: la división escrita como fracción compleja', enun:M(Q(Q('a^2 − 1', 'a'), Q('a + 1', 'a^2'))),
+      pasos:[
+        P('Una fracción compleja es el numerador dividido por el denominador.',
+          `${Q(Q('a^2 − 1', 'a'), Q('a + 1', 'a^2'))} = ${Q('a^2 − 1', 'a')} : ${Q('a + 1', 'a^2')}`),
+        P('Doy vuelta la segunda y factorizo.', ` = ${Q('(a + 1)(a − 1)', 'a')} · ${Q('a · a', 'a + 1')}`),
+        P(`Tacho ${M('(a + 1)')} y una ${M('a')}.`,
+          ` = ${Q(tacha('(a + 1)') + '(a − 1) · ' + tacha('a') + ' · a', tacha('a') + tacha('(a + 1)'))}`, ' = a(a − 1)'),
+      ], final:M('a(a − 1)'),
+      control:ctrl(M('a = 10'), ['la de partida', `${Q('99', '10')} : ${Q('11', '100')} = ${Q('99', '10')} · ${Q('100', '11')}`],
+        ' = 90', ['el resultado', '10 · 9 = 90 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿Se da vuelta la primera o la segunda?',
+      r:'La segunda, el divisor. La primera se queda como está: 6 : 2 es 6 · ½, no ⅙ · 2.' },
+    { p:'¿Puedo tachar antes de dar vuelta?',
+      r:`No: en ${M(`${Q('x^2 − 4', 'x')} : ${Q('x + 2', 'x^2')}`)} el ${M('x + 2')} está abajo de la división, no abajo de una fracción. Hasta que no se da vuelta no se sabe dónde termina cada factor.` },
+    { p:'¿Para qué sirve escribirla como fracción compleja?',
+      r:'Es la misma división, pero aparece así en los problemas (una velocidad dividida por otra, un promedio de fracciones). Saber leerla como división es lo que importa.' },
+  ],
+  notas:`<p>El libro (pág. 144) define la división como multiplicar por el recíproco y en la
+      misma página reduce fracciones complejas. Los ejemplos 2 y 4 son la misma estructura,
+      uno escrito con dos puntos y el otro como fracción de fracciones: así se ve que son lo
+      mismo.</p>
+    <p>El error más común es dar vuelta la primera, o tachar antes de dar vuelta. Las dos
+      primeras preguntas del observador apuntan ahí.</p>`
+},
+
+/* ─────────────────────────── 5 ─────────────────────────── */
+{
+  n:5, corto:'Igual denominador', titulo:'Adición y sustracción de expresiones algebraicas racionales homogéneas', pag:'tema 5 · págs. 146–147',
+  concepto:{
+    forma:`${Q('a', 'c')} + ${Q('b', 'c')} = ${Q('a + b', 'c')}`, formaRot:'mismo denominador: se suman los numeradores',
+    puntos:[
+      'El denominador se copia; se opera solo arriba.',
+      'En la resta, el numerador que se resta va <b>entre paréntesis</b>: el menos cambia todos sus signos.',
+      'Al final se factoriza y se simplifica, si se puede.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'una suma', enun:M(`${Q('3x + 1', 'x − 2')} + ${Q('x − 9', 'x − 2')}`),
+      pasos:[
+        P('El denominador es el mismo: sumo los numeradores.',
+          `${Q('3x + 1', 'x − 2')} + ${Q('x − 9', 'x − 2')} = ${Q('3x + 1 + x − 9', 'x − 2')}`),
+        P('Reduzco los términos semejantes.', ` = ${Q('4x − 8', 'x − 2')}`),
+        P(`Factorizo arriba: aparece ${M('(x − 2)')} arriba y abajo.`, ` = ${Q('4' + tacha('(x − 2)'), tacha('(x − 2)'))}`, ' = 4'),
+      ], final:M('4'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('31', '8')} + ${Q('1', '8')} = ${Q('32', '8')}`], ' = 4 ✓') },
+    { titulo:'cambio: resto en vez de sumar', enun:M(`${Q('3x + 1', 'x − 2')} ${N('−')} ${Q('x − 9', 'x − 2')}`),
+      pasos:[
+        P('Resto los numeradores. El segundo va entre paréntesis.',
+          `${Q('3x + 1', 'x − 2')} − ${Q('x − 9', 'x − 2')} = ${Q('3x + 1 ' + N('− (x − 9)'), 'x − 2')}`),
+        P('El menos cambia los dos signos del paréntesis: el −9 pasa a +9.', ` = ${Q('3x + 1 − x ' + N('+ 9'), 'x − 2')}`),
+        P('Reduzco y factorizo arriba. Esta vez no queda nada para tachar.', ` = ${Q('2x + 10', 'x − 2')}`, ` = ${Q('2(x + 5)', 'x − 2')}`),
+      ], final:R('2(x + 5)', 'x − 2'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('31', '8')} − ${Q('1', '8')} = ${Q('30', '8')}`],
+        ` = ${Q('15', '4')}`, ['el resultado', `${Q('2 · 15', '8')} = ${Q('15', '4')} ✓`]) },
+    { titulo:'cambio: arriba queda un trinomio', enun:M(`${Q('x^2 + 2x', 'x + 1')} + ${Q('x + 2', 'x + 1')}`),
+      pasos:[
+        P('Sumo los numeradores.', `${Q('x^2 + 2x', 'x + 1')} + ${Q('x + 2', 'x + 1')} = ${Q('x^2 + 2x + x + 2', 'x + 1')}`),
+        P('Reduzco y factorizo el trinomio.', ` = ${Q('x^2 + 3x + 2', 'x + 1')}`, ` = ${Q('(x + 2)' + tacha('(x + 1)'), tacha('(x + 1)'))}`, ' = x + 2'),
+      ], final:M('x + 2'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('120', '11')} + ${Q('12', '11')} = ${Q('132', '11')}`],
+        ' = 12', ['el resultado', '10 + 2 = 12 ✓']) },
+    { titulo:'cambio: resto un polinomio de dos términos con x²', enun:M(`${Q('2x^2 + 3', 'x − 1')} ${N('−')} ${Q('x^2 + 4', 'x − 1')}`),
+      pasos:[
+        P('Resto los numeradores, el segundo entre paréntesis.',
+          `${Q('2x^2 + 3', 'x − 1')} − ${Q('x^2 + 4', 'x − 1')} = ${Q('2x^2 + 3 ' + N('− (x^2 + 4)'), 'x − 1')}`),
+        P('Saco el paréntesis: cambian los dos signos. Reduzco.', ` = ${Q('2x^2 + 3 − x^2 − 4', 'x − 1')}`, ` = ${Q('x^2 − 1', 'x − 1')}`),
+        P(`Diferencia de cuadrados arriba: tacho ${M('(x − 1)')}.`, ` = ${Q('(x + 1)' + tacha('(x − 1)'), tacha('(x − 1)'))}`, ' = x + 1'),
+      ], final:M('x + 1'),
+      control:ctrl(M('x = 10'), ['la de partida', `${Q('203', '9')} − ${Q('104', '9')} = ${Q('99', '9')}`],
+        ' = 11', ['el resultado', '10 + 1 = 11 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿Por qué el paréntesis en la resta?',
+      r:`Porque se resta <b>todo</b> el numerador. Sin paréntesis, en el ejemplo 2 quedaría ${M('3x + 1 − x − 9')}: se restó la ${M('x')} pero se sumó mal el 9. Con ${M('x = 10')} el control lo detecta.` },
+    { p:'¿Se suman también los denominadores?',
+      r:'No. Con números: un quinto más dos quintos son tres quintos, no tres décimos. El denominador dice de qué tamaño son las partes, y no cambia.' },
+    { p:'En el ejemplo 1 dio 4 para cualquier x. ¿Para cualquiera?',
+      r:'Para cualquiera menos x = 2, donde las fracciones de partida no existen. Es el puente otra vez.' },
+  ],
+  notas:`<p>El libro (pág. 146) da tres pasos: sumar o restar los numeradores, reducir y
+      simplificar. Los ejemplos 1 y 2 son la misma pareja de fracciones, una vez sumadas y otra
+      restadas: se ve qué cambia cuando aparece el menos.</p>
+    <p>El signo menos delante de una fracción es donde más se equivocan en esta parte, y el libro le dedica un recuadro ("Signo negativo en la resta"). Conviene
+      escribir siempre el paréntesis, aunque el numerador tenga un solo término.</p>`
+},
+
+/* ─────────────────────────── 6 ─────────────────────────── */
+{
+  n:6, corto:'Distinto denominador', titulo:'Adición y sustracción de expresiones algebraicas racionales heterogéneas', pag:'tema 6 · págs. 148–149',
+  concepto:{
+    serie:[
+      { rot:'paso 1', txt:'el MCM de los denominadores' },
+      { rot:'paso 2', txt:'cada numerador, por lo que le falta a su denominador' },
+      { rot:'paso 3', txt:'se suma o se resta como con igual denominador' },
+      { rot:'paso 4', txt:'se factoriza y se simplifica' },
+    ],
+    puntos:[
+      'Primero se <b>factorizan</b> los denominadores: el MCM sale solo (tema 1).',
+      'Cada fracción se agranda: arriba y abajo por lo que le falta a su denominador para llegar al MCM.',
+      `Si dos denominadores son <b>opuestos</b>, como ${M('x − 3')} y ${M('3 − x')}, basta cambiar un signo.`,
+    ]
+  },
+  ejemplos:[
+    { titulo:'denominadores monomios', enun:M(`${Q('x + 1', '4x')} + ${Q('x − 2', '6x')}`),
+      pasos:[
+        P(`El MCM de ${M('4x')} y ${M('6x')}.`, 'MCM(4x, 6x) = 12x'),
+        P('A la primera le falta 3 y a la segunda, 2.',
+          `${Q('x + 1', '4x')} + ${Q('x − 2', '6x')} = ${Q(N('3') + '(x + 1) + ' + N('2') + '(x − 2)', '12x')}`),
+        P('Distribuyo y reduzco.', ` = ${Q('3x + 3 + 2x − 4', '12x')}`, ` = ${Q('5x − 1', '12x')}`),
+      ], final:R('5x − 1', '12x'),
+      control:ctrl(M('x = 1'), ['la de partida', `${Q('2', '4')} + ${Q('−1', '6')} = ${Q('6 − 2', '12')}`],
+        ` = ${Q('1', '3')}`, ['el resultado', `${Q('4', '12')} = ${Q('1', '3')} ✓`]) },
+    { titulo:'cambio: denominadores sin nada en común, y una resta', enun:M(`${Q('3', 'x')} ${N('−')} ${Q('2', N('x + 1'))}`),
+      pasos:[
+        P('No tienen factores comunes: el MCM es el producto.', 'MCM = x(x + 1)'),
+        P(`A la primera le falta ${M('(x + 1)')} y a la segunda, ${M('x')}.`,
+          `${Q('3', 'x')} − ${Q('2', 'x + 1')} = ${Q('3' + N('(x + 1)') + ' − 2' + N('x'), 'x(x + 1)')}`),
+        P('Distribuyo y reduzco.', ` = ${Q('3x + 3 − 2x', 'x(x + 1)')}`, ` = ${Q('x + 3', 'x(x + 1)')}`),
+      ], final:R('x + 3', 'x(x + 1)'),
+      control:ctrl(M('x = 1'), ['la de partida', `${Q('3', '1')} − ${Q('2', '2')} = 3 − 1`], ' = 2',
+        ['el resultado', `${Q('4', '1 · 2')} = 2 ✓`]) },
+    { titulo:'cambio: un denominador se factoriza', enun:M(`${Q('1', 'x − 2')} + ${Q('4', N('x^2 − 4'))}`),
+      pasos:[
+        P('Factorizo el segundo denominador.', 'x^2 − 4 = (x + 2)(x − 2)'),
+        P(`El MCM es ${M('(x + 2)(x − 2)')}. A la primera le falta ${M('(x + 2)')}; a la segunda, nada.`,
+          `${Q('1', 'x − 2')} + ${Q('4', 'x^2 − 4')} = ${Q(N('(x + 2)') + ' + 4', '(x + 2)(x − 2)')}`),
+        P('Reduzco. No queda nada para tachar.', ` = ${Q('x + 6', '(x + 2)(x − 2)')}`),
+      ], final:R('x + 6', '(x + 2)(x − 2)'),
+      control:ctrl(M('x = 3'), ['la de partida', `${Q('1', '1')} + ${Q('4', '5')} = ${Q('9', '5')}`],
+        ['el resultado', `${Q('9', '5 · 1')} = ${Q('9', '5')} ✓`]) },
+    { titulo:'cambio: al final se simplifica', enun:M(`${Q('x', 'x − 2')} − ${Q('4', N('x^2 − 2x'))}`),
+      pasos:[
+        P(`Factorizo: ${M('x^2 − 2x')} es ${M('x(x − 2)')}, que es el MCM.`, 'x^2 − 2x = x(x − 2)'),
+        P(`A la primera le falta ${M('x')}.`, `${Q('x', 'x − 2')} − ${Q('4', 'x^2 − 2x')} = ${Q('x · ' + N('x') + ' − 4', 'x(x − 2)')}`),
+        P('Arriba queda una diferencia de cuadrados: la factorizo y tacho.',
+          ` = ${Q('x^2 − 4', 'x(x − 2)')}`, ` = ${Q('(x + 2)' + tacha('(x − 2)'), 'x' + tacha('(x − 2)'))}`, ` = ${Q('x + 2', 'x')}`),
+      ], final:R('x + 2', 'x'),
+      control:ctrl(M('x = 4'), ['la de partida', `${Q('4', '2')} − ${Q('4', '8')} = 2 − ${Q('1', '2')}`],
+        ` = ${Q('3', '2')}`, ['el resultado', `${Q('6', '4')} = ${Q('3', '2')} ✓`]) },
+    { titulo:'cambio: denominadores opuestos', enun:M(`${Q('5', 'x − 3')} + ${Q('2', N('3 − x'))}`),
+      pasos:[
+        P(`${M('3 − x')} es el opuesto de ${M('x − 3')}: cambio el signo del denominador y el de adelante de la fracción.`,
+          `${Q('5', 'x − 3')} + ${Q('2', '3 − x')} = ${Q('5', 'x − 3')} ${N('−')} ${Q('2', 'x − 3')}`),
+        P('Ahora tienen el mismo denominador.', ` = ${Q('5 − 2', 'x − 3')}`, ` = ${Q('3', 'x − 3')}`),
+      ], final:R('3', 'x − 3'),
+      control:ctrl(M('x = 4'), ['la de partida', `${Q('5', '1')} + ${Q('2', '−1')} = 5 − 2`], ' = 3',
+        ['el resultado', `${Q('3', '1')} = 3 ✓`]) },
+  ],
+  preguntas:[
+    { p:'¿No es más fácil multiplicar los dos denominadores siempre?',
+      r:`Da bien, pero más largo: en el ejemplo 4 el producto sería ${M('(x − 2) · x(x − 2)')}, con un ${M('(x − 2)')} de más que después hay que tachar. El MCM es el denominador más chico que sirve.` },
+    { p:'¿Por qué en el ejemplo 5 cambian dos signos?',
+      r:`Porque ${R('2', '3 − x')} y ${R('−2', 'x − 3')} son el mismo número: se cambió el signo de abajo y el de arriba. Cambiar uno solo cambiaría el valor.` },
+    { p:'¿Siempre hay que simplificar al final?',
+      r:'Hay que probar: se factoriza el numerador y se mira si aparece algún factor del denominador. En el ejemplo 3 no aparece; en el 4, sí.' },
+  ],
+  notas:`<p>El libro da cinco pasos (pág. 148). Acá van en cuatro cajitas, porque "reducir los
+      términos semejantes" y "factorizar y simplificar" se hacen juntos en el último renglón.</p>
+    <p>Los ejemplos agregan una dificultad por vez: el MCM de monomios, el MCM que es el
+      producto, el que sale de factorizar, el que deja algo para tachar y el de los
+      denominadores opuestos, que el libro resuelve con un recuadro aparte (pág. 149).</p>
+    <p>El desafío final usa la resta del ejemplo 2 con números: conviene volver a este tema
+      antes de mostrarlo.</p>`
+},
+
+/* ─────────────────────────── 7 ─────────────────────────── */
+{
+  n:7, corto:'Combinadas', titulo:'Operaciones combinadas', pag:'tema 7 · págs. 150–151', ficha:10,
+  concepto:{
+    serie:[
+      { rot:'primero', txt:'paréntesis y corchetes, de adentro para afuera' },
+      { rot:'después', txt:'multiplicaciones y divisiones' },
+      { rot:'al final', txt:'sumas y restas' },
+    ],
+    puntos:[
+      'El orden es el mismo que con números.',
+      'Cada operación es una de los temas anteriores: se resuelve una por vez, y se simplifica en cada paso.',
+      'El resultado tiene que quedar irreducible.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'un paréntesis y un producto', enun:M(`(1 + ${Q('1', 'x')}) · ${Q('x', 'x + 1')}`),
+      pasos:[
+        P(`Primero el paréntesis: el 1 es ${M(Q('x', 'x'))}.`, `1 + ${Q('1', 'x')} = ${Q('x + 1', 'x')}`),
+        P('Ahora multiplico, y se tacha todo.',
+          `(1 + ${Q('1', 'x')}) · ${Q('x', 'x + 1')} = ${Q(tacha('(x + 1)'), tacha('x'))} · ${Q(tacha('x'), tacha('(x + 1)'))}`, ' = 1'),
+      ], final:M('1'),
+      control:ctrl(M('x = 4'), ['la de partida', `(1 + ${Q('1', '4')}) · ${Q('4', '5')} = ${Q('5', '4')} · ${Q('4', '5')}`], ' = 1 ✓') },
+    { titulo:'cambio: dos paréntesis y una división', enun:M(`(${Q('x', 'y')} − ${Q('y', 'x')}) : (${Q('1', 'y')} − ${Q('1', 'x')})`),
+      pasos:[
+        P(`El primer paréntesis, con MCM ${M('xy')}.`, `${Q('x', 'y')} − ${Q('y', 'x')} = ${Q('x^2 − y^2', 'xy')}`),
+        P(`El segundo, también con MCM ${M('xy')}.`, `${Q('1', 'y')} − ${Q('1', 'x')} = ${Q('x − y', 'xy')}`),
+        P('Divido: doy vuelta el segundo.', `${Q('x^2 − y^2', 'xy')} : ${Q('x − y', 'xy')} = ${Q('x^2 − y^2', 'xy')} · ${Q('xy', 'x − y')}`),
+        P('Factorizo la diferencia de cuadrados y tacho.',
+          ` = ${Q('(x + y)' + tacha('(x − y)') + ' · ' + tacha('xy'), tacha('xy') + ' · ' + tacha('(x − y)'))}`, ' = x + y'),
+      ], final:M('x + y'),
+      control:ctrl(`${M('x = 3')} y ${M('y = 1')}`, ['la de partida', `(3 − ${Q('1', '3')}) : (1 − ${Q('1', '3')}) = ${Q('8', '3')} : ${Q('2', '3')}`],
+        ' = 4', ['el resultado', '3 + 1 = 4 ✓']) },
+    { titulo:'cambio: la división como fracción compleja', enun:M(Q(`1 − ${Q('1', 'x^2')}`, `1 + ${Q('1', 'x')}`)),
+      pasos:[
+        P('Resuelvo arriba y abajo por separado.', `1 − ${Q('1', 'x^2')} = ${Q('x^2 − 1', 'x^2')}`, `1 + ${Q('1', 'x')} = ${Q('x + 1', 'x')}`),
+        P('El numerador dividido por el denominador.', `${Q('x^2 − 1', 'x^2')} : ${Q('x + 1', 'x')} = ${Q('x^2 − 1', 'x^2')} · ${Q('x', 'x + 1')}`),
+        P(`Factorizo y tacho ${M('(x + 1)')} y una ${M('x')}.`,
+          ` = ${Q(tacha('(x + 1)') + '(x − 1) · ' + tacha('x'), tacha('x') + ' · x · ' + tacha('(x + 1)'))}`, ` = ${Q('x − 1', 'x')}`),
+      ], final:R('x − 1', 'x'),
+      control:ctrl(M('x = 2'), ['la de partida', `${Q('3', '4')} : ${Q('3', '2')} = ${Q('6', '12')}`],
+        ` = ${Q('1', '2')}`, ['el resultado', `${Q('2 − 1', '2')} = ${Q('1', '2')} ✓`]) },
+    { titulo:'cambio: un corchete con una suma', enun:M(`[${Q('1', 'x − 1')} + ${Q('1', 'x + 1')}] : ${Q('2', 'x^2 − 1')}`),
+      pasos:[
+        P(`El corchete: el MCM es ${M('(x − 1)(x + 1)')}.`,
+          `${Q('1', 'x − 1')} + ${Q('1', 'x + 1')} = ${Q('x + 1 + x − 1', '(x − 1)(x + 1)')}`, ` = ${Q('2x', '(x − 1)(x + 1)')}`),
+        P(`Divido: doy vuelta la segunda; ${M('x^2 − 1')} es ${M('(x − 1)(x + 1)')}.`,
+          `${Q('2x', '(x − 1)(x + 1)')} : ${Q('2', 'x^2 − 1')} = ${Q('2x', '(x − 1)(x + 1)')} · ${Q('(x − 1)(x + 1)', '2')}`),
+        P('Tacho todo lo que se repite.',
+          ` = ${Q(tacha('2') + 'x · ' + tacha('(x − 1)(x + 1)'), tacha('(x − 1)(x + 1)') + ' · ' + tacha('2'))}`, ' = x'),
+      ], final:M('x'),
+      control:ctrl(M('x = 3'), ['la de partida', `(${Q('1', '2')} + ${Q('1', '4')}) : ${Q('2', '8')} = ${Q('3', '4')} : ${Q('1', '4')}`],
+        ' = 3', ['el resultado', 'x = 3 ✓']) },
+  ],
+  preguntas:[
+    { p:'¿Puedo hacer primero la multiplicación del ejemplo 1?',
+      r:`Sí, con la distributiva: ${M(`1 · ${Q('x', 'x + 1')} + ${Q('1', 'x')} · ${Q('x', 'x + 1')}`)}, y se llega al mismo 1. Pero es más largo: el paréntesis primero es el camino corto.` },
+    { p:'El ejemplo 1 dio 1 y el 4 dio x. ¿Es casualidad?',
+      r:'No: son problemas armados para que todo se tache. Los de verdad no siempre quedan así de limpios, pero el control vale igual.' },
+    { p:'¿La fracción compleja del ejemplo 3 es la misma idea que el tema 4?',
+      r:'Sí: es el numerador dividido por el denominador. Lo nuevo es que antes hay que hacer una resta arriba y una suma abajo.' },
+  ],
+  notas:`<p>El libro (pág. 150) da el orden de las operaciones y dos ejemplos. Acá cada ejemplo
+      junta dos temas anteriores: suma y multiplicación, resta y división, fracción compleja,
+      suma y división.</p>
+    <p>Para la ficha 10 (bloque H, de examen) conviene que resuelvan uno solos en el pizarrón
+      antes de la clase siguiente.</p>`
+},
+];
+
+/* ─────────────────────── el desafío ─────────────────────── */
+const DESAFIO = {
+  titulo:'Una suma de 99 fracciones, sin calculadora',
+  enun:M(`${Q('1', '1 · 2')} + ${Q('1', '2 · 3')} + ${Q('1', '3 · 4')} + … + ${Q('1', '99 · 100')}`),
+  pasos:[
+    P('Cada término es 1 sobre un número por el siguiente. Resto dos fracciones así, como en el tema 6.',
+      `${Q('1', 'n')} − ${Q('1', 'n + 1')} = ${Q('n + 1 − n', 'n(n + 1)')}`, ` = ${Q('1', 'n(n + 1)')}`),
+    P('Entonces cada término se puede escribir como una resta.',
+      `${Q('1', '1 · 2')} = 1 − ${Q('1', '2')}`, `${Q('1', '2 · 3')} = ${Q('1', '2')} − ${Q('1', '3')}`,
+      `${Q('1', '99 · 100')} = ${Q('1', '99')} − ${Q('1', '100')}`),
+    P('Al sumar, cada fracción se va con la siguiente: queda solo la primera y la última.',
+      ['la suma', `1 ${N('− ' + Q('1', '2') + ' + ' + Q('1', '2'))} − … − ${Q('1', '100')} = 1 − ${Q('1', '100')}`], ` = ${Q('99', '100')}`),
+  ],
+  final:R('99', '100'),
+  control:ctrl('los tres primeros', `${Q('1', '2')} + ${Q('1', '6')} + ${Q('1', '12')} = ${Q('6 + 2 + 1', '12')}`,
+    ` = ${Q('3', '4')}`, ['con la resta', `1 − ${Q('1', '4')} = ${Q('3', '4')} ✓`]),
+  preguntas:[
+    { p:'¿Y si sigo hasta 999 · 1000?',
+      r:'Da 999/1000: queda siempre 1 menos la última fracción. Cuanto más términos, más cerca de 1, pero nunca llega.' },
+    { p:'¿Cómo se le ocurre a alguien escribirla como resta?',
+      r:'Mirando para atrás: si 1/n − 1/(n + 1) da 1/(n(n + 1)), se puede leer al revés. Es la misma cuenta del tema 6, usada en la otra dirección.' },
+  ],
+  notas:`<p>El desafío usa la resta con distinto denominador del tema 6, pero leída al revés:
+      una fracción se parte en dos. Es una suma "telescópica": se pliega como un catalejo.</p>
+    <p>Que calculen primero los tres o cuatro primeros términos (1/2, 2/3, 3/4…) y que
+      adivinen el patrón antes de ver la demostración.</p>`
+};
+
+/* ─────────────────── la pregunta de arranque ─────────────────── */
+const PREGUNTA_INICIAL = {
+  prosa:true,
+  enun:`«Un compañero simplificó ${R('x + 2', 'x')} tachando las ${M('x')}, y le quedó 3. ¿Está bien?»`,
+  pasos:[
+    P(`Lo pruebo con un número: ${M('x = 2')}.`, `${Q('2 + 2', '2')} = ${Q('4', '2')}`, ' = 2'),
+    `Da 2, no 3. Con ${M('x = 1')} sí da 3, pero de casualidad: con cualquier otro número, no.`,
+    `La ${M('x')} de arriba no multiplica a todo el numerador: está <b>sumando</b>. Solo se tacha lo que multiplica a todo lo de arriba y a todo lo de abajo.`,
+  ],
+  final:'no: solo se tachan factores, nunca términos sueltos',
+};
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve todo esto?',
+      r:'Para las ecuaciones con letras en el denominador (los sistemas de la pág. 192 los usan), para las fórmulas de física y química, y para simplificar antes de calcular.' },
+    { p:'¿Hace falta saber factorizar?',
+      r:'Sí: todo lo de esta unidad empieza por factorizar. Si un caso no sale, conviene volver a la clase de factoreo.' },
+  ],
+  notas:`<p><b>Es la unidad 7 del libro, en sus siete temas y en su orden</b>, con un puente
+      entre el 1 y el 2 (los valores que anulan el denominador), que el libro menciona en la
+      definición y no vuelve a tocar.</p>
+    <p>Cada ejemplo termina con un <b>control</b>: se reemplaza la letra por un número en el
+      enunciado y en el resultado, y los dos tienen que dar lo mismo. Es el mismo control de la
+      unidad de factoreo, ahora con fracciones.</p>
+    <p>Lo que se simplifica se <b>tacha</b> en el cuaderno, como en el pizarrón: primero
+      aparece el renglón factorizado y después se tacha lo que se repite.</p>
+    <p>Los ejemplos son todos propios; los del libro quedan para que los trabajen los alumnos.
+      Para practicar están la ficha 6 y la ficha 10, de 94 ejercicios graduados.</p>`
+};
+
+/* ═══ el taller: probar con un número ═══ */
+const LABS = {
+'lab-prueba':`
+<div class="lab">
+  <h4>Probalo: ¿la simplificada vale lo mismo?</h4>
+  <p class="sub">Elegí una expresión y probá con distintos números. La de partida y la
+    simplificada dan lo mismo… salvo en algunos números. ¿Cuáles?</p>
+  <div class="campos">
+    <div class="campo"><label for="lp-exp">Expresión</label>
+      <select id="lp-exp">
+        <option value="0">(x² − 25)/(x + 5)  →  x − 5</option>
+        <option value="1">(x² + 5x + 6)/(x² − 4)  →  (x + 3)/(x − 2)</option>
+        <option value="2">(6 − 2x)/(x² − 9)  →  −2/(x + 3)</option>
+      </select></div>
+    <div class="campo"><label for="lp-x">x</label>
+      <div class="paso-x">
+        <button class="boton" type="button" id="lp-menos" aria-label="Restar 1">−</button>
+        <input id="lp-x" type="number" value="10">
+        <button class="boton" type="button" id="lp-mas" aria-label="Sumar 1">+</button>
+      </div></div>
+  </div>
+  <div class="salida" id="lp-out"></div>
+</div>`
+};
+
+/* ═══ el armado ═══
+   La plantilla, los pasos, el cuaderno y el movimiento están en
+   assets/pizarra.js: esta página trae solo sus datos. */
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'8vo', temasLibro:7 });
+
+/* ——— taller: probar con un número ———
+   Cada expresión: [numerador y denominador de la de partida], [los de la
+   simplificada], como funciones de x con fracciones exactas. */
+const EXPRESIONES = [
+  { de:[x => fr(x * x - 25), x => fr(x + 5)], si:[x => fr(x - 5), () => fr(1)],
+    partida:R('x^2 − 25', 'x + 5'), simple:M('x − 5') },
+  { de:[x => fr(x * x + 5 * x + 6), x => fr(x * x - 4)], si:[x => fr(x + 3), x => fr(x - 2)],
+    partida:R('x^2 + 5x + 6', 'x^2 − 4'), simple:R('x + 3', 'x − 2') },
+  { de:[x => fr(6 - 2 * x), x => fr(x * x - 9)], si:[() => fr(-2), x => fr(x + 3)],
+    partida:R('6 − 2x', 'x^2 − 9'), simple:R('−2', 'x + 3') },
+];
+const probados = [];
+function evalua(par, x){
+  const n = par[0](x), d = par[1](x);
+  return cero(d) ? null : coc(n, d);
+}
+function calcPrueba(){
+  const e = EXPRESIONES[Number(document.getElementById('lp-exp').value)];
+  const x = parseInt(document.getElementById('lp-x').value, 10);
+  const out = document.getElementById('lp-out');
+  if (!Number.isFinite(x)){ out.innerHTML = '<span class="dim">Escribí un número entero.</span>'; return; }
+  const a = evalua(e.de, x), b = evalua(e.si, x);
+  const ver = v => v === null ? '<span class="no-existe">no existe: el denominador da 0</span>' : `<span class="ok">${txt(v)}</span>`;
+  const iguales = a !== null && b !== null && igual(a, b);
+  const clave = e.partida + x;
+  if (!probados.some(p => p.clave === clave)) probados.unshift({ clave, x, a, b, e });
+  probados.splice(6);
+  out.innerHTML = `
+    <div class="fila"><span class="dim">con x = ${x}, la de partida</span> ${e.partida} <span class="dim">da</span> ${ver(a)}</div>
+    <div class="fila"><span class="dim">y la simplificada</span> ${e.simple} <span class="dim">da</span> ${ver(b)}</div>
+    <div class="fila"><span class="dim">${iguales ? 'dan lo mismo.' :
+      a === null && b !== null ? 'la simplificada da un número, pero la de partida no existe: este x es uno de los prohibidos.' :
+      'ninguna de las dos existe con este x.'}</span></div>
+    <div class="probados"><span class="dim">los últimos que probaste:</span> ${probados.map(p =>
+      `<span class="ec">x = ${p.x}</span> → ${p.a === null ? '<span class="no-existe">no existe</span>' : txt(p.a)}`).join(' &nbsp;|&nbsp; ')}</div>`;
+}
+document.getElementById('lp-exp').addEventListener('change', () => { probados.length = 0; calcPrueba(); });
+document.getElementById('lp-x').addEventListener('input', calcPrueba);
+document.getElementById('lp-menos').addEventListener('click', () => { const c = document.getElementById('lp-x'); c.value = (parseInt(c.value, 10) || 0) - 1; calcPrueba(); });
+document.getElementById('lp-mas').addEventListener('click', () => { const c = document.getElementById('lp-x'); c.value = (parseInt(c.value, 10) || 0) + 1; calcPrueba(); });
+calcPrueba();
+</script>
+
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>
