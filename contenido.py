@@ -96,8 +96,10 @@ GRADOS = [
        {'tipo': 'diapositiva', 'titulo': 'Sistemas de ecuaciones',
         'desc': 'Los siete temas de la unidad: los tres casos, el método gráfico, los tres métodos algebraicos y problemas.',
         'url': 'matematica/8vo/sistemas.html'},
-       {'tipo': 'pendiente', 'titulo': 'Ficha de sistemas',
-        'desc': 'Los cuatro métodos, con problemas de planteo.'},
+       {'tipo': 'ficha', 'titulo': 'Sistemas de ecuaciones',
+        'desc': '60 ejercicios en ocho bloques: verificar, clasificar, los cuatro métodos, '
+                'paréntesis y denominadores, y problemas de planteo.',
+        'url': 'fichas/index.html#8vo'},
      ]},
     {'n': 10, 'titulo': 'Estadística', 'pags': '198–218',
      'nota': 'Proyecto de Google Forms. El libro trae el laboratorio en la pág. 213.',
@@ -209,6 +211,7 @@ FICHAS = {
   (5,  'Combinación de casos'),
   (6,  'Expresiones racionales'),
   (10, 'Expresiones racionales — 94 ejercicios graduados'),
+  (11, 'Sistemas de ecuaciones — 60 ejercicios graduados'),
  ],
  '9no': [
   (1,  'Cuadráticas sin denominadores'),
