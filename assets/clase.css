@@ -39,6 +39,12 @@ h1{
   margin-inline:-20px; padding-inline:20px;
 }
 .nav-int{display:flex; gap:6px; overflow-x:auto; padding-block:9px; scrollbar-width:thin}
+/* los botones de arriba a la derecha no tapan los últimos temas (clase.js
+   mide cuánto se pisan) */
+.nav{padding-right:calc(20px + var(--dock-tapa, 0px))}
+/* en una clase, la barra de temas es la que queda pegada arriba; la ruta del
+   sitio sube con la página (y sigue a mano en el menú ☰) */
+.sitio-nav{position:relative}
 .chip{
   flex:0 0 auto; font-family:var(--mono); font-size:12px; font-weight:600;
   border:1px solid var(--linea-fuerte); background:var(--papel-2); color:var(--lapiz);
@@ -450,6 +456,18 @@ body[data-solo="1"] .pasos-cuenta{font-size:.62em}
   border:1px solid var(--linea-fuerte); border-radius:6px;
   box-shadow:0 8px 30px rgba(0,0,0,.28)}
 .cls-obs{width:min(600px, calc(100vw - 28px))}
+.dock-menu{font-size:17px; padding:5px 14px; line-height:1.2}
+.cls-menu{width:min(340px, calc(100vw - 28px))}
+.menu-rot{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--lapiz); margin:0 0 8px}
+.menu-rot ~ .menu-rot{margin-top:18px}
+.menu-ruta{display:flex; flex-direction:column; gap:6px}
+.menu-ruta a,.menu-op{
+  display:flex; align-items:center; gap:10px; width:100%; text-align:left; cursor:pointer;
+  padding:10px 12px; border:1px solid var(--linea-fuerte); border-radius:4px;
+  background:var(--papel-2); color:var(--tinta); text-decoration:none;
+  font-family:var(--sans); font-size:15px; font-weight:600}
+.menu-ruta a:hover,.menu-op:hover,.menu-ruta a:focus-visible,.menu-op:focus-visible{border-color:var(--tinta)}
 .cls-cab{
   display:flex; align-items:center; gap:8px; padding:10px 12px;
   border-bottom:1px solid var(--linea-fuerte)}

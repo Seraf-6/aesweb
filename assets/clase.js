@@ -1,11 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════
    AESWeb · los paneles de una página de clase
 
-   Dos botones flotantes, en fila con el del timer:
+   Botones flotantes, en fila con el del timer:
 
-   · Notas       las notas del docente
    · Observador  lo que preguntaría un alumno observador, de a una
                  pregunta, con la respuesta tapada hasta que se pide
+   · ☰ (menú)    a dónde volver (el grado, Matemática, el inicio: la misma
+                 ruta de la barra de arriba, que en el modo "una a la vez"
+                 no se ve) y las notas del docente
 
    Los dos saben en qué tema está la clase —la diapositiva activa en el
    modo "una a la vez", o lo que está en pantalla si se hace scroll— y
@@ -53,7 +55,7 @@
     return actual || S[0].id;
   }
 
-  // ── los botones, en fila con el del timer ──
+  // ── los botones, en fila con el del timer: Observador, Timer y el menú ──
   var dock = document.createElement('div');
   dock.className = 'dock';
   function boton(texto, clave) {
@@ -65,12 +67,49 @@
     return b;
   }
   var bObs = boton('Observador', 'obs');
-  var bNot = boton('Notas', 'notas');
+  var bMenu = boton('☰', 'menu');
+  bMenu.classList.add('dock-menu');
+  bMenu.setAttribute('aria-label', 'Menú: ir a otra página y notas del docente');
   dock.appendChild(bObs);
-  dock.appendChild(bNot);
   var tmr = document.getElementById('tmr-btn');
   if (tmr) dock.appendChild(tmr);
+  dock.appendChild(bMenu);
   document.body.appendChild(dock);
+  var bNot = bMenu;                       // las notas se abren desde el menú
+
+  // ── el menú: a dónde volver (la misma ruta de la barra de arriba, que en
+  //    el modo "una a la vez" no se ve) y las notas del docente ──
+  var pMenu = document.createElement('div');
+  pMenu.className = 'cls-panel cls-menu';
+  pMenu.hidden = true;
+  pMenu.setAttribute('role', 'dialog');
+  pMenu.setAttribute('aria-label', 'Menú');
+  var ruta = Array.prototype.slice.call(document.querySelectorAll('.sitio-ruta a'));
+  var aqui = document.querySelector('.sitio-ruta span:last-child');
+  pMenu.innerHTML = '<div class="cls-cab"><div class="cls-tit"><span class="cls-rot">Menú</span>' +
+      '<b>' + (aqui ? aqui.textContent : document.title) + '</b></div>' +
+      '<button class="cls-cerrar" type="button" data-cls="cerrar" aria-label="Cerrar">×</button></div>' +
+    '<div class="cls-cuerpo">' +
+      '<p class="menu-rot">Ir a</p><nav class="menu-ruta">' +
+      ruta.map(function (a, k) {
+        return '<a href="' + a.getAttribute('href') + '">' + a.textContent + '</a>';
+      }).reverse().join('') + '</nav>' +
+      '<p class="menu-rot">Para el docente</p>' +
+      '<button class="menu-op" type="button" data-cls="notas">Notas del tema que se está viendo</button>' +
+    '</div>';
+  document.body.appendChild(pMenu);
+
+  // la barra de temas no queda debajo de los botones de arriba
+  var barra = document.querySelector('.nav');
+  function haceLugar() {
+    if (!barra) return;
+    barra.style.removeProperty('--dock-tapa');
+    var tapa = barra.getBoundingClientRect().right - dock.getBoundingClientRect().left + 12;
+    if (tapa > 0) barra.style.setProperty('--dock-tapa', tapa + 'px');
+  }
+  window.addEventListener('resize', haceLugar);
+  window.addEventListener('load', haceLugar);
+  haceLugar();
 
   // ── los paneles ──
   function cabecera(rotulo, idTit) {
@@ -144,25 +183,36 @@
     pObs.querySelector('[data-cls="sig"]').disabled = estado.obs === S.length - 1;
   }
 
-  function abre(clave) {
-    var panel = clave === 'notas' ? pNot : pObs;
-    var otro = clave === 'notas' ? pObs : pNot;
-    var yaAbierto = !panel.hidden;
-    otro.hidden = true;
-    bNot.setAttribute('aria-expanded', 'false');
+  // un panel abierto por vez: el menú, las notas (se llega desde el menú) o el observador
+  function cierraTodo() {
+    pNot.hidden = true; pObs.hidden = true; pMenu.hidden = true;
+    bMenu.setAttribute('aria-expanded', 'false');
     bObs.setAttribute('aria-expanded', 'false');
-    if (yaAbierto) { panel.hidden = true; return; }
+  }
+  function abre(clave) {
+    var panel = { notas: pNot, obs: pObs, menu: pMenu }[clave];
+    var yaAbierto = !panel.hidden;
+    // el menú, abierto sobre las notas, las cierra
+    if (clave === 'menu' && !pNot.hidden) yaAbierto = true;
+    cierraTodo();
+    if (yaAbierto) return;
     estado.siguiendo = true;
     var i = indice(temaActual());
     if (clave === 'notas') { estado.notas = i; pintaNotas(); }
-    else { if (estado.obs !== i) estado.preg = 0; estado.obs = i; pintaObs(); }
+    if (clave === 'obs') { if (estado.obs !== i) estado.preg = 0; estado.obs = i; pintaObs(); }
     panel.hidden = false;
-    (clave === 'notas' ? bNot : bObs).setAttribute('aria-expanded', 'true');
+    (clave === 'obs' ? bObs : bMenu).setAttribute('aria-expanded', 'true');
   }
 
   dock.addEventListener('click', function (ev) {
     var b = ev.target.closest('[data-cls-abre]');
     if (b) abre(b.getAttribute('data-cls-abre'));
+  });
+  pMenu.addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-cls]');
+    if (!b) return;
+    if (b.getAttribute('data-cls') === 'cerrar') cierraTodo();
+    if (b.getAttribute('data-cls') === 'notas') abre('notas');
   });
 
   function mueve(panel, paso) {
@@ -182,7 +232,7 @@
       var b = ev.target.closest('[data-cls]');
       if (!b) return;
       var a = b.getAttribute('data-cls');
-      if (a === 'cerrar') { panel.hidden = true; bNot.setAttribute('aria-expanded', 'false'); bObs.setAttribute('aria-expanded', 'false'); }
+      if (a === 'cerrar') cierraTodo();
       if (a === 'ant') mueve(panel, -1);
       if (a === 'sig') mueve(panel, 1);
       if (a === 'ver') { document.getElementById('cls-obs-r').hidden = false; b.hidden = true; }
@@ -211,11 +261,7 @@
   window.addEventListener('scroll', pide, { passive: true });
   document.addEventListener('click', function () { setTimeout(pide, 0); });
   document.addEventListener('keydown', function (ev) {
-    if (ev.key === 'Escape') {
-      pNot.hidden = true; pObs.hidden = true;
-      bNot.setAttribute('aria-expanded', 'false'); bObs.setAttribute('aria-expanded', 'false');
-      return;
-    }
+    if (ev.key === 'Escape') { cierraTodo(); return; }
     setTimeout(pide, 0);
   });
 })();

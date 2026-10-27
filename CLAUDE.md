@@ -145,8 +145,13 @@ dice qué pasó ("la recta gira alrededor de (0, −1) y queda más empinada").
 Donde el taller elige valores solo, hay también un modo manual para que el
 docente pruebe los que surjan en clase.
 
-**Los botones Observador y Notas** los pone `assets/clase.js`, en fila con el
-del timer. Saben en qué tema está la clase —la diapositiva activa, o lo que
+**Los botones Observador, Timer y ☰** los pone `assets/clase.js`, en fila
+arriba a la derecha. El ☰ abre un menú con la ruta para volver (el grado,
+Matemática, el inicio: en «una a la vez» la barra del sitio no se ve) y las
+Notas, que se usan menos. En una clase la barra del sitio no queda pegada
+arriba: la que queda es la de los temas, y deja lugar para los botones.
+El modo «una a la vez» queda guardado, pero solo se aplica en páginas con
+diapositivas: un índice nunca pierde su barra. Observador y Notas Saben en qué tema está la clase —la diapositiva activa, o lo que
 está en pantalla si se hace scroll— y abren ese tema; con las flechas se va a
 los temas vecinos. Mientras no se usen las flechas, el panel abierto acompaña
 a la clase cuando cambia de tema. Con zona libre para escribir, los paneles

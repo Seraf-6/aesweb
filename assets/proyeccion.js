@@ -165,7 +165,9 @@
       b.setAttribute('aria-pressed', String(b.dataset.libreOp === estado.libre));
     });
 
-    cuerpo.setAttribute('data-solo', String(estado.solo));
+    // el modo queda guardado para todo el sitio, pero solo se aplica en las
+    // páginas que tienen diapositivas: un índice "una a la vez" perdía su barra
+    cuerpo.setAttribute('data-solo', String(estado.solo && diapos.length ? 1 : 0));
     nav.hidden = !estado.solo || diapos.length < 2;
     if (estado.solo && diapos.length){
       estado.i = Math.max(0, Math.min(diapos.length - 1, estado.i));
