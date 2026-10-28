@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Los dos hechos de ángulos · AESWeb</title>
+<meta name="description" content="Bloque A de la geometría a la manera de los griegos, en 7.º: los opuestos por el vértice y las paralelas cortadas por una secante, demostrados como en los Elementos de Euclides y usados en problemas de la OMA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<style>
+/* ---------- solo de esta página ---------- */
+.g-punta{fill:var(--tinta)}
+.g-punta2{fill:var(--acento)}
+.g-giro{fill:none; stroke:var(--acento2); stroke-width:2.6; stroke-linecap:round}
+.g-x{font-style:italic; font-family:var(--serif)}
+.fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
+body[data-solo="1"] .fuente{font-size:.45em}
+/* la lista de lo que ya sabemos: crece clase a clase */
+.lista-teoremas{display:grid; gap:6px; margin:10px 0 0; padding:0; list-style:none}
+.lista-teoremas li{display:grid; grid-template-columns:3.2em minmax(0,1fr); gap:10px; align-items:baseline;
+  font-family:var(--sans); font-size:16px; line-height:1.35}
+.lista-teoremas b{font-family:var(--mono); font-size:13px; color:var(--acento2)}
+body[data-solo="1"] .lista-teoremas li{font-size:1em}
+body[data-solo="1"] .lista-teoremas b{font-size:.8em}
+/* la figura del concepto va a la derecha y los puntos la rodean: abajo no entraba */
+#t1 .concepto-figura,#t2 .concepto-figura{float:right; width:min(360px, 42%); margin:4px 0 8px 22px}
+#t1 .puntos,#t2 .puntos{overflow:visible}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="index.html">7.º grado</a><span class="sep">/</span>
+      <span>Geometría griega · bloque A</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Matemática 7.º grado</p>
+    <h1>Los dos hechos de ángulos</h1>
+    <p class="bajada">«Esta claridad y esta certeza me causaron una impresión
+      indescriptible.»<span class="firma">Albert Einstein, sobre el librito de geometría que leyó a los doce años</span></p>
+    <div class="pie-tapa">
+      <span>Geometría a la manera de los griegos · bloque A · clases A1 y A2</span>
+      <span>Docentes: Eduardo Ovelar / Juan Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Bloque A · geometría a la manera de los griegos</p>
+    <h2>No se mide: se demuestra</h2>
+    <ul class="puntos">
+      <li>Los griegos no medían con el transportador: <b>demostraban</b>. Cada cosa nueva se apoya en lo que ya está en la lista.</li>
+      <li>De los ángulos alcanzan <b>dos hechos</b>: los opuestos por el vértice y las paralelas cortadas por una secante.</li>
+      <li>La lista arranca con lo que se acepta sin demostrar:</li>
+    </ul>
+    <ul class="lista-teoremas">
+      <li><b>R3</b><span>Dos ángulos que juntos forman un llano suman 180°.</span></li>
+      <li><b>R4</b><span>Dos rectas cortadas por una secante son paralelas si y solo si sus ángulos correspondientes son iguales.</span></li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de clase · Geometría a la manera de los griegos, bloque A. El orden y las
+    demostraciones siguen el Libro I de los <i>Elementos</i> de Euclides (I.15 y I.27–29),
+    reescritos para 7.º. Los problemas de olimpiada son de la OMA (Argentina), con su
+    certamen y año; los de la tira de papel, la bisectriz y el zigzag, de <i>100 problemas
+    de geometría básica</i> (Taller de verano, 2025). Cada medida de esta página está
+    verificada en <span class="ec">verificacion/euclides_angulos_7mo.py</span>.
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+
+<script>
+/* En esta página las letras de las cuentas son x e y; los ángulos se
+   nombran con griegas (α, β, γ) o con tres letras y sombrero (AÔB). */
+Pizarra.letras = /[xy]/g;
+
+/* ═══ para dibujar ═══
+   Los ángulos se miden como en el transportador: desde la derecha y en el
+   sentido contrario al reloj. En el SVG la y va hacia abajo, así que un
+   punto a `a` grados de O queda en [O.x + L cos a, O.y − L sen a]. */
+const g = Geo;
+const RAD = Math.PI / 180;
+const F = (capas, rot, vb = '0 0 400 260') => ({ tipo:'figura', vb, rot, capas });
+const en = (O, a, L) => [O[0] + L * Math.cos(a * RAD), O[1] - L * Math.sin(a * RAD)];
+const X = '<tspan class="g-x">x</tspan>';
+const Y = '<tspan class="g-x">y</tspan>';
+const fte = s => `<span class="fuente">${s}</span>`;
+
+/* la punta de flecha al final de un trazo que va de p a q */
+function punta(p, q, cls = 'g-punta', s = 12){
+  const L = g.dist(p, q), u = [(q[0] - p[0]) / L, (q[1] - p[1]) / L], n = [-u[1], u[0]];
+  const b = [q[0] - u[0] * s, q[1] - u[1] * s];
+  return `<polygon class="${cls}" points="${g.pts([q, [b[0] + n[0] * s * .42, b[1] + n[1] * s * .42], [b[0] - n[0] * s * .42, b[1] - n[1] * s * .42]])}"/>`;
+}
+/* una semirrecta desde O hacia `a` grados */
+const semi = (O, a, L, cls = 'g-linea') => {
+  const q = en(O, a, L);
+  return g.seg(O, q, cls) + punta(O, q, cls === 'g-roja' ? 'g-punta2' : 'g-punta');
+};
+/* la recta que pasa por O con dirección a, de largo 2L, con una flecha en cada punta */
+const recta = (O, a, L, cls = 'g-linea') => {
+  const p = en(O, a + 180, L), q = en(O, a, L);
+  return g.seg(p, q, cls) + (cls === 'g-linea' ? punta(O, p) + punta(O, q) : '');
+};
+/* el arco de a1 a a2 grados, contra el reloj */
+function arcoD(O, a1, a2, r){
+  const d = a2 - a1, P1 = en(O, a1, r), P2 = en(O, a2, r), sw = d > 0 ? 0 : 1;
+  return `M ${g.pts([P1])} A ${r} ${r} 0 ${Math.abs(d) > 180 ? 1 : 0} ${sw} ${g.pts([P2])}`;
+}
+/* el ángulo pintado, entre a1 y a2 */
+const sector = (O, a1, a2, r = 34, cls = 'g-arco') =>
+  `<path class="${cls} pop-suave" d="M ${g.pts([O])} L ${arcoD(O, a1, a2, r).slice(2)} Z"/>`;
+/* el arco solo, que se traza */
+const trazo = (O, a1, a2, r = 42, cls = 'g-giro') => `<path ${g.traza(cls)} d="${arcoD(O, a1, a2, r)}"/>`;
+/* el rótulo de un ángulo, sobre su bisectriz */
+const rotAng = (O, a1, a2, r, texto, cls = 'g-dato') => g.txt(en(O, (a1 + a2) / 2, r), texto, cls);
+const nombre = (p, s, dx = 0, dy = 20) => g.txt([p[0] + dx, p[1] + dy], s, 'g-rot');
+/* donde se cortan las rectas pq y rs */
+function corte(p, q, r, s){
+  const d = (q[0] - p[0]) * (s[1] - r[1]) - (q[1] - p[1]) * (s[0] - r[0]);
+  const t = ((r[0] - p[0]) * (s[1] - r[1]) - (r[1] - p[1]) * (s[0] - r[0])) / d;
+  return [p[0] + t * (q[0] - p[0]), p[1] + t * (q[1] - p[1])];
+}
+/* el simétrico de p respecto de la recta ab: lo que hace un doblez */
+function refleja(p, a, b){
+  const d = [b[0] - a[0], b[1] - a[1]], L2 = d[0] * d[0] + d[1] * d[1];
+  const t = ((p[0] - a[0]) * d[0] + (p[1] - a[1]) * d[1]) / L2;
+  const h = [a[0] + t * d[0], a[1] + t * d[1]];
+  return [2 * h[0] - p[0], 2 * h[1] - p[1]];
+}
+/* una horizontal de lado a lado, con su nombre a la derecha */
+const horizontal = (y, rot, cls = 'g-linea') =>
+  g.seg([18, y], [382, y], cls) + (rot ? g.txt([372, y - 12], rot, 'g-rot') : '');
+
+/* ═══════════════════════════════════════════════════════════════
+   Las dos clases del bloque A, con la cadena de teoremas de la
+   currícula: T1 (opuestos por el vértice, Euclides I.15) y T2 (paralelas
+   y secante, I.27–29), cada uno demostrado con R3 y R4 y lo anterior.
+   Toda medida está calculada y verificada en
+   verificacion/euclides_angulos_7mo.py. No se escribe ninguna a mano.
+   ═══════════════════════════════════════════════════════════════ */
+const TEMAS = [
+/* ─────────────────────────── A1 ─────────────────────────── */
+(() => {
+  /* la demostración: la recta a va a 20°, la b a 80° */
+  const O1 = [200, 130];
+  const cruz = recta(O1, 20, 150) + recta(O1, 80, 120) + g.pto(O1, 'g-vert', 4.5) +
+    g.txt(en(O1, 20, 160), 'a', 'g-rot') + g.txt(en(O1, 80, 128), 'b', 'g-rot');
+  /* la tira: el borde de abajo en y = 240, el doblez sale de F a 50° */
+  const Fp = [230, 240], arriba = 170, der = 330;
+  const T = corte(Fp, en(Fp, 50, 1), [0, arriba], [1, arriba]);
+  const izq = g.pol([[30, arriba], [30, 240], Fp, T], 'g-fig');
+  const derecha = g.pol([Fp, [der, 240], [der, arriba], T], 'g-fig');
+  const doblada = g.pol([Fp, refleja([der, 240], Fp, T), refleja([der, arriba], Fp, T), T], 'g-fig2');
+  /* la bisectriz: A, O y B alineados, OV vertical */
+  const O3 = [200, 205], C3 = en(O3, 58, 165), P3 = en(O3, 29, 175), V3 = en(O3, 90, 165);
+  /* las bisectrices de dos consecutivos de 96° y 40° */
+  const O4 = [200, 225];
+  /* la semicircunferencia de la OMA 2022 */
+  const O5 = [200, 205], R5 = 160;
+  const pt5 = { A:180, B:165, C:90, D:30, E:0 };
+  return {
+  n:1, corto:'Opuestos por el vértice', titulo:'Los ángulos opuestos por el vértice', pag:'clase A1 · Euclides, Elementos I.15',
+  concepto:{
+    serie:[
+      { rot:'lo que ya sabemos · R3', txt:'dos ángulos que forman un llano suman 180°' },
+      { rot:'teorema 1', txt:'los ángulos opuestos por el vértice son iguales' },
+    ],
+    figura:`<svg viewBox="0 0 400 260" role="img" aria-label="Dos rectas que se cortan y sus ángulos α, β y γ">${
+      cruz + sector(O1, 20, 80, 34) + rotAng(O1, 20, 80, 56, 'α') + sector(O1, 80, 200, 26, 'g-arco2') + rotAng(O1, 80, 200, 50, 'β') +
+      sector(O1, 200, 260, 34) + rotAng(O1, 200, 260, 56, 'γ')}</svg>`,
+    puntos:[
+      'Dos ángulos son <b>opuestos por el vértice</b> si los lados de uno son las prolongaciones de los lados del otro, como α y γ.',
+      'No se mide: se <b>demuestra</b> con R3. Desde hoy, el teorema 1 entra en la lista y se puede usar.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la demostración', enun:'Las rectas a y b se cortan. ¿Por qué α y γ, opuestos por el vértice, miden lo mismo?', prosa:true,
+      lienzo:F([
+        [0, cruz + sector(O1, 20, 80, 34) + rotAng(O1, 20, 80, 56, 'α') + sector(O1, 200, 260, 34) + rotAng(O1, 200, 260, 56, 'γ')],
+        [1, sector(O1, 80, 200, 26, 'g-arco2') + rotAng(O1, 80, 200, 50, 'β')],
+        [1, g.seg(en(O1, 200, 140), en(O1, 20, 140), 'g-foco'), 2],
+        [2, g.seg(en(O1, 260, 115), en(O1, 80, 115), 'g-foco'), 3],
+        [3, sector(O1, 200, 260, 34, 'g-arco3'), null, { gira:[180, O1[0], O1[1]] }],
+        [3, sector(O1, 20, 80, 34, 'g-arco3')],
+      ], 'Dos rectas que se cortan: α y β forman un llano sobre a, β y γ forman un llano sobre b'),
+      pasos:[
+        P('α y β están uno al lado del otro sobre la recta a: forman un llano (R3).', 'α + β = 180°'),
+        P('β y γ también forman un llano, sobre la recta b.', 'γ + β = 180°'),
+        P('Los dos son lo que le falta a β para llegar a 180°.', 'α = 180° − β', 'γ = 180° − β'),
+      ], final:'α = γ: los opuestos por el vértice son iguales (T1)',
+      control:`En la figura β mide 120°. Lo pruebo con ese número:${A('α = 180° − 120°', ' = 60°', 'γ = 180° − 120°', ' = 60° ✓')}` },
+    { titulo:'el doblez copia un ángulo', enun:'Se dobla una tira de papel por la línea punteada, que forma 50° con el borde. ¿Cuánto mide el ángulo x?', prosa:true,
+      lienzo:F([
+        [0, izq + derecha + g.seg(Fp, T, 'g-aux') + sector(Fp, 0, 50, 34) + rotAng(Fp, 0, 50, 58, '50°'), 1],
+        [1, izq + doblada + g.seg(Fp, T, 'g-linea') + sector(Fp, 100, 180, 30, 'g-arco3') + rotAng(Fp, 100, 180, 52, X)],
+        [1, sector(Fp, 50, 100, 34) + rotAng(Fp, 50, 100, 58, '50°')],
+        [2, g.seg(Fp, [390, 240], 'g-aux') + sector(Fp, 0, 50, 46, 'g-arco2') + rotAng(Fp, 0, 50, 72, '50°')],
+        ['final', rotAng(Fp, 100, 180, 82, '80°', 'g-num')],
+      ], 'Una tira de papel doblada por una línea que forma 50° con el borde'),
+      pasos:[
+        'Al doblar, la parte de la derecha se da vuelta sobre la línea del doblez.',
+        'El doblez no cambia los ángulos: el borde doblado forma 50° con la línea del doblez, igual que el borde de antes.',
+        P('Sobre el borde de abajo hay un llano: x, 50° y 50° (R3).', 'x + 50° + 50° = 180°', 'x = 180° − 100°', ' = 80°'),
+      ], final:'x mide 80°',
+      control:`${A('80° + 50° + 50° = 180° ✓')}` },
+    { titulo:'la bisectriz parte en dos', enun:'A, O y B están alineados, OV es perpendicular a AB y OP es la bisectriz de BÔC. ¿Cuánto mide α?', prosa:true,
+      lienzo:F([
+        [0, g.seg([30, O3[1]], [370, O3[1]], 'g-linea') + semi(O3, 90, 165) + semi(O3, 58, 165) + semi(O3, 29, 175, 'g-roja') +
+            g.recto(O3, [30, O3[1]], V3) + g.pto(O3, 'g-vert', 4.5) +
+            nombre([30, O3[1]], 'A', 4, 22) + nombre(O3, 'O', 0, 24) + nombre([370, O3[1]], 'B', -4, 22) +
+            nombre(C3, 'C', 10, -6) + nombre(P3, 'P', 12, 0) + nombre(V3, 'V', 14, 6) +
+            sector(O3, 58, 90, 64, 'g-arco2') + rotAng(O3, 58, 90, 88, '32°') + sector(O3, 0, 29, 46) + rotAng(O3, 0, 29, 70, 'α')],
+        [1, sector(O3, 0, 58, 104, 'g-arco3') + rotAng(O3, 0, 58, 126, '58°', 'g-num'), 2],
+        [2, sector(O3, 29, 58, 46, 'g-arco3') + sector(O3, 0, 29, 46, 'g-arco3') + rotAng(O3, 29, 58, 70, '29°', 'g-num')],
+        ['final', rotAng(O3, 0, 29, 98, '29°', 'g-num')],
+      ], 'Un ángulo recto partido en 32° y BÔC, con la bisectriz OP', '0 0 400 240'),
+      pasos:[
+        P('Entre OB y OV hay un recto. BÔC es lo que queda al sacarle los 32°.', 'BÔC = 90° − 32°', ' = 58°'),
+        P('OP es la bisectriz: parte BÔC en dos ángulos iguales.', 'α = 58° : 2', ' = 29°'),
+      ], final:'α mide 29°',
+      control:`Los tres pedazos del recto:${A('29° + 29° + 32° = 90° ✓')}` },
+    { titulo:'cambio: dos bisectrices', enun:`Dos ángulos consecutivos suman 136°. ¿Qué ángulo forman ${N('sus bisectrices')}?`, prosa:true,
+      lienzo:F([
+        [0, semi(O4, 0, 170) + semi(O4, 96, 170) + semi(O4, 136, 170) + g.pto(O4, 'g-vert', 4.5) +
+            sector(O4, 0, 96, 36) + rotAng(O4, 0, 96, 60, 'a') + sector(O4, 96, 136, 50, 'g-arco2') + rotAng(O4, 96, 136, 74, 'b')],
+        [1, semi(O4, 48, 150, 'g-roja') + semi(O4, 116, 150, 'g-roja')],
+        [2, sector(O4, 48, 116, 92, 'g-arco3')],
+        ['final', rotAng(O4, 48, 116, 116, '68°', 'g-num')],
+      ], 'Dos ángulos consecutivos, a y b, con sus bisectrices', '0 0 400 250'),
+      pasos:[
+        'Llamo a y b a los dos ángulos. No sé cuánto mide cada uno: solo que a + b = 136°.',
+        P('Cada bisectriz se queda con la mitad de su ángulo. Entre las dos hay media a y media b.', 'a : 2 + b : 2 = (a + b) : 2'),
+        P('Y a + b ya lo sé.', ' = 136° : 2', ' = 68°'),
+      ], final:'las bisectrices forman 68°',
+      control:`En la figura a = 96° y b = 40°. Las mitades:${A('48° + 20° = 68° ✓')}` },
+    { titulo:'de la OMA: cuatro ángulos en un llano', enun:`En una semicircunferencia de centro O y diámetro AE se marcan B, C y D, en ese orden. AÔB es la quinta parte de BÔC, la cuarta parte de CÔD y la mitad de DÔE. ¿Cuánto mide cada ángulo?${fte('OMA 2022 · Intercolegial · Nivel 1 · problema 3')}`, prosa:true,
+      lienzo:F([
+        [0, `<path class="g-linea" d="${arcoD(O5, 0, 180, R5)}"/>` + g.seg(en(O5, 180, R5), en(O5, 0, R5), 'g-linea') +
+            ['B', 'C', 'D'].map(k => g.seg(O5, en(O5, pt5[k], R5), 'g-linea')).join('') + g.pto(O5, 'g-vert', 4.5) +
+            Object.entries(pt5).map(([k, a]) => g.pto(en(O5, a, R5), 'g-pto', 4) + g.txt(en(O5, a, R5 + 18), k, 'g-rot')).join('') +
+            nombre(O5, 'O', 0, 22)],
+        [0, rotAng(O5, 165, 180, 128, X) + rotAng(O5, 90, 165, 110, `5${X}`) + rotAng(O5, 30, 90, 110, `4${X}`) + rotAng(O5, 0, 30, 118, `2${X}`), 'final'],
+        [2, trazo(O5, 0, 180, 52)],
+        ['final', rotAng(O5, 165, 180, 128, '15°', 'g-num') + rotAng(O5, 90, 165, 110, '75°', 'g-num') +
+                  rotAng(O5, 30, 90, 110, '60°', 'g-num') + rotAng(O5, 0, 30, 118, '30°', 'g-num')],
+      ], 'Una semicircunferencia de diámetro AE con los radios OB, OC y OD', '0 0 400 230'),
+      pasos:[
+        P('Pongo todo en función del más chico, AÔB = x.', 'BÔC = 5x', 'CÔD = 4x', 'DÔE = 2x'),
+        P('Los cuatro juntos forman el llano AÔE (R3).', 'x + 5x + 4x + 2x = 180', '12x = 180'),
+        P('Divido por 12.', `12x ${N(': 12')} = 180 ${N(': 12')}`, 'x = 15'),
+        P('Los otros tres.', ['BÔC', '5 · 15 = 75'], ['CÔD', '4 · 15 = 60'], ['DÔE', '2 · 15 = 30']),
+      ], final:'AÔB = 15°, BÔC = 75°, CÔD = 60° y DÔE = 30°',
+      control:`${A('15° + 75° + 60° + 30° = 180° ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Para qué demostrar que α = γ si con el transportador se ve que miden lo mismo?',
+      r:'El transportador dice que en este dibujo miden casi lo mismo. La demostración dice que en cualquier par de rectas que se cortan miden exactamente lo mismo, aunque nadie las haya dibujado.' },
+    { p:'En la demostración, ¿por qué no hizo falta saber cuánto mide β?',
+      r:'Porque α y γ son los dos "180° menos β": sea cual sea β, les falta lo mismo. Por eso el teorema vale para todas las rectas.' },
+    { p:'En la tira, ¿por qué el doblez copia el ángulo de 50°?',
+      r:'Porque la parte doblada es el mismo pedazo de papel, dado vuelta: el ángulo que formaba con la línea del doblez no cambia.' },
+    { p:'¿Y si los dos ángulos consecutivos del ejemplo 4 forman un llano?',
+      r:'Entonces suman 180°, y las bisectrices forman 180° : 2 = 90°. Las bisectrices de dos adyacentes siempre son perpendiculares.' },
+    { p:'En el de la OMA, ¿por qué conviene llamar x al más chico?',
+      r:'Porque los otros son múltiplos de él: 5x, 4x y 2x. Si llamaba x a otro, aparecían fracciones.' },
+  ],
+  notas:`<p><b>La clase A1 abre el bloque.</b> El primer ejemplo es la demostración del teorema 1
+      (Euclides I.15) en tres renglones: es la primera vez que los chicos ven una demostración,
+      y conviene escribirla entera en el pizarrón y pedirles que la copien. Al final, T1 se
+      agrega a la lista de teoremas del cuaderno.</p>
+    <p>Los ejemplos 2 a 4 usan lo mismo, el llano (R3), en tres disfraces: un papel doblado,
+      un recto partido y dos bisectrices. El 4 tiene una sorpresa: no hace falta saber cuánto
+      mide cada ángulo. La pregunta del observador sobre los adyacentes (90°, siempre) es la
+      que tiene que hacer ruido.</p>
+    <p>El 5 es un problema 3 de Intercolegial: los chicos ya pueden resolver un problema de la
+      OMA en la primera clase. La ecuación es de la unidad de ecuaciones lineales.</p>
+    <p>Los de la tira y la bisectriz son de <i>100 problemas de geometría básica</i> (tópico 2).
+      En la ficha del bloque A quedan el de la bisectriz con 46° (α = 67°), el de las
+      bisectrices que forman 52° y la OMA 2001 Intercolegial.</p>`
+  };
+})(),
+
+/* ─────────────────────────── A2 ─────────────────────────── */
+(() => {
+  /* r: y = 80, s: y = 210; la secante t pasa por X1 con 65° */
+  const yr = 80, ys = 210, X1 = [235, yr];
+  const X2 = corte(X1, en(X1, 245, 1), [0, ys], [1, ys]);
+  const base = horizontal(yr, 'r') + horizontal(ys, 's') + g.seg(en(X1, 65, 60), en(X2, 245, 40), 'g-linea') +
+    g.txt(en(X1, 65, 70), 't', 'g-rot') + g.pto(X1, 'g-vert', 4) + g.pto(X2, 'g-vert', 4);
+  const sube = [X2[0] - X1[0], X2[1] - X1[1]];
+  /* el zigzag de los 100 problemas: 120° en P, 35° en B */
+  const P3 = [160, 50], A3 = en(P3, 300, 110);
+  const B3 = corte(A3, en(A3, 215, 1), [0, 220], [1, 220]);
+  /* la OMA 2020: PQ en y = 50, RS en y = 200 */
+  const B4 = [140, 200], C4 = en(B4, 27, 200);
+  const A4 = corte(C4, en(C4, 139, 1), [0, 50], [1, 50]);
+  /* al revés: 72° y 72° */
+  const Y1 = [230, 60], Y2 = corte(Y1, en(Y1, 252, 1), [0, 190], [1, 190]);
+  return {
+  n:2, corto:'Paralelas y secante', ficha:13, titulo:'Dos paralelas cortadas por una secante', pag:'clase A2 · Euclides, Elementos I.27–29',
+  concepto:{
+    serie:[
+      { rot:'lo que aceptamos · R4', txt:'r ∥ s si y solo si los ángulos correspondientes son iguales' },
+      { rot:'teorema 2', txt:'entre paralelas, los alternos internos son iguales y los conjugados internos suman 180°; y al revés' },
+    ],
+    figura:`<svg viewBox="0 0 400 260" role="img" aria-label="Dos paralelas r y s cortadas por la secante t">${
+      base + sector(X1, 180, 245, 30) + rotAng(X1, 180, 245, 52, 'α') + sector(X2, 0, 65, 30) + rotAng(X2, 0, 65, 52, 'γ') +
+      sector(X1, 0, 65, 30, 'g-arco2') + rotAng(X1, 0, 65, 52, 'δ') + sector(X2, 65, 180, 24, 'g-arco2') + rotAng(X2, 65, 180, 46, 'ε')}</svg>`,
+    puntos:[
+      '<b>Correspondientes</b>, como δ y γ: el mismo lugar en cada cruce. <b>Alternos internos</b>, como α y γ: entre las paralelas, a distinto lado de t. <b>Conjugados internos</b>, como α y ε: entre las paralelas, del mismo lado.',
+      'R4 no se demuestra: es el quinto postulado de Euclides, mirado de frente. El teorema 2 sale de R4 y del teorema 1.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la demostración: alternos internos', enun:'r ∥ s y la secante t las corta. ¿Por qué α y γ, alternos internos, miden lo mismo?', prosa:true,
+      lienzo:F([
+        [0, base + sector(X1, 180, 245, 30) + rotAng(X1, 180, 245, 52, 'α') + sector(X2, 0, 65, 30) + rotAng(X2, 0, 65, 52, 'γ')],
+        [1, sector(X1, 0, 65, 30, 'g-arco2') + rotAng(X1, 0, 65, 52, 'δ'), null, { desde:sube }],
+        [2, sector(X1, 180, 245, 30, 'g-arco3'), null, { gira:[180, X1[0], X1[1]] }],
+        ['final', sector(X2, 0, 65, 30, 'g-arco3')],
+      ], 'Dos paralelas cortadas por una secante, con α, γ y δ'),
+      pasos:[
+        'δ está arriba a la derecha del cruce de r, y γ arriba a la derecha del cruce de s: son correspondientes. Como r ∥ s, δ = γ (R4).',
+        'δ y α son opuestos por el vértice: δ = α (T1).',
+      ], final:'α = γ: los alternos internos son iguales (T2)',
+      control:`En la figura t corta a r con 65°:${A('δ = 65°', 'α = 65°', 'γ = 65° ✓')}` },
+    { titulo:'cambio: el ángulo de al lado', enun:`r ∥ s. ¿Cuánto suman α y ${N('ε')}, conjugados internos?`, prosa:true,
+      lienzo:F([
+        [0, base + sector(X1, 180, 245, 30) + rotAng(X1, 180, 245, 52, 'α') + sector(X2, 65, 180, 24, 'g-arco2') + rotAng(X2, 65, 180, 46, 'ε')],
+        [1, sector(X2, 0, 65, 30) + rotAng(X2, 0, 65, 52, 'γ') + g.seg([X2[0] - 120, ys], [X2[0] + 120, ys], 'g-foco')],
+        [2, sector(X2, 0, 65, 30, 'g-arco3') + sector(X1, 180, 245, 30, 'g-arco3')],
+      ], 'Dos paralelas cortadas por una secante, con α, γ y ε'),
+      pasos:[
+        P('ε y γ forman un llano sobre s (R3).', 'ε + γ = 180°'),
+        P('Pero γ = α: lo acabamos de demostrar. Cambio γ por α.', `ε + ${N('α')} = 180°`),
+      ], final:'α + ε = 180°: los conjugados internos suman 180° (T2)',
+      control:`Con t a 65°, ε es el vecino de 65° sobre s:${A('115° + 65° = 180° ✓')}` },
+    { titulo:'el zigzag', enun:'r ∥ s. ¿Cuánto mide el ángulo x?', prosa:true,
+      lienzo:F([
+        [0, horizontal(50, 'r') + horizontal(220, 's') + g.seg(P3, A3, 'g-linea') + g.seg(A3, B3, 'g-linea') +
+            g.pto(P3, 'g-vert', 4.5) + g.pto(A3, 'g-pto', 5) + g.pto(B3, 'g-vert', 4.5) +
+            nombre(P3, 'P', 0, -12) + nombre(A3, 'A', 18, 4) + nombre(B3, 'B', -14, 4) +
+            sector(P3, 180, 300, 28) + rotAng(P3, 180, 300, 50, '120°') + sector(B3, 0, 35, 40) + rotAng(B3, 0, 35, 62, '35°') +
+            sector(A3, 120, 215, 26, 'g-arco3') + rotAng(A3, 120, 215, 44, X)],
+        [1, g.seg([18, A3[1]], [382, A3[1]], 'g-diag') + g.txt([372, A3[1] - 12], 'm', 'g-rot')],
+        [2, sector(P3, 300, 360, 40, 'g-arco2') + rotAng(P3, 300, 360, 62, '60°', 'g-num')],
+        [3, sector(A3, 120, 180, 40, 'g-arco2') + rotAng(A3, 120, 180, 62, '60°', 'g-num')],
+        [4, sector(A3, 180, 215, 52, 'g-arco') + rotAng(A3, 180, 215, 76, '35°', 'g-num')],
+        ['final', rotAng(A3, 120, 215, 98, '95°', 'g-num')],
+      ], 'Dos paralelas y un zigzag de P a A y de A a B'),
+      pasos:[
+        'Trazo por A una recta m, paralela a r y a s. Es una recta que no estaba en la figura.',
+        P('En P, el vecino del de 120° completa un llano sobre r (R3).', '180° − 120° = 60°'),
+        'Ese 60° y el pedazo de x de arriba son alternos internos entre r y m, con la secante PA: el pedazo mide 60° (T2).',
+        'Abajo, el pedazo de x y el de 35° son alternos internos entre m y s, con la secante AB: mide 35°.',
+        P('x es la suma de los dos pedazos.', 'x = 60° + 35°', ' = 95°'),
+      ], final:'x mide 95°',
+      control:`Alrededor de A hay una vuelta entera. Los otros dos pedazos son los vecinos de 60° y de 35° sobre m:${A('95° + 120° + 145° = 360° ✓')}` },
+    { titulo:'cambio: falta una punta', enun:`PQ ∥ RS. A está en PQ y B en RS, AĈB = 68° y CB̂S = 27°. ¿Cuánto mide ${N('QÂC')}?${fte('OMA 2020 · Zonal · Nivel 1 · problema 3')}`, prosa:true,
+      lienzo:F([
+        [0, g.seg([60, 50], [382, 50], 'g-linea') + g.seg([60, 200], [382, 200], 'g-linea') + g.seg(A4, C4, 'g-linea') + g.seg(C4, B4, 'g-linea') +
+            [[[100, 50], 'P', 0, -12], [A4, 'A', 0, -12], [[350, 50], 'Q', 0, -12], [[90, 200], 'R', 0, 24], [B4, 'B', 0, 24], [[350, 200], 'S', 0, 24]]
+              .map(([p, s, dx, dy]) => g.pto(p, 'g-pto', 4) + nombre(p, s, dx, dy)).join('') +
+            g.pto(C4, 'g-pto', 5) + nombre(C4, 'C', 16, 4) +
+            sector(C4, 139, 207, 24) + rotAng(C4, 139, 207, 42, '68°') + sector(B4, 0, 27, 44) + rotAng(B4, 0, 27, 66, '27°') +
+            sector(A4, 319, 360, 34, 'g-arco3')],
+        [0, rotAng(A4, 319, 360, 58, '?'), 'final'],
+        [1, g.seg([18, C4[1]], [382, C4[1]], 'g-diag') + g.txt([30, C4[1] - 10], 'm', 'g-rot')],
+        [2, sector(C4, 180, 207, 62, 'g-arco2') + rotAng(C4, 180, 207, 86, '27°', 'g-num')],
+        [3, sector(C4, 139, 180, 62, 'g-arco2') + rotAng(C4, 139, 180, 86, '41°', 'g-num')],
+        ['final', sector(A4, 319, 360, 34, 'g-arco3') + rotAng(A4, 319, 360, 58, '41°', 'g-num')],
+      ], 'Dos paralelas PQ y RS y un zigzag de A a C y de C a B', '0 0 400 240'),
+      pasos:[
+        'Es el zigzag del ejemplo anterior, pero ahora me dan el ángulo del medio y falta una punta. Trazo por C la paralela m.',
+        'Abajo de m, el pedazo de C y CB̂S son alternos internos entre m y RS: el pedazo mide 27°.',
+        P('Arriba de m queda el resto de los 68°.', '68° − 27° = 41°'),
+        'Ese pedazo y QÂC son alternos internos entre PQ y m, con la secante AC.',
+      ], final:'QÂC mide 41°',
+      control:`El del medio es la suma de las puntas:${A('41° + 27° = 68° ✓')}` },
+    { titulo:'al revés: de los ángulos a las paralelas', enun:`La secante t forma con r y con s dos ${N('ángulos alternos internos')} de 72°. ¿Son paralelas r y s?`, prosa:true,
+      lienzo:F([
+        [0, horizontal(60, 'r') + horizontal(190, 's') + g.seg(en(Y1, 72, 50), en(Y2, 252, 40), 'g-linea') + g.txt([en(Y1, 72, 44)[0] + 14, en(Y1, 72, 44)[1]], 't', 'g-rot') +
+            g.pto(Y1, 'g-vert', 4) + g.pto(Y2, 'g-vert', 4) +
+            sector(Y1, 180, 252, 30) + rotAng(Y1, 180, 252, 52, '72°') + sector(Y2, 0, 72, 30) + rotAng(Y2, 0, 72, 52, '72°')],
+        [1, sector(Y1, 0, 72, 30, 'g-arco2') + rotAng(Y1, 0, 72, 52, '72°'), null, { gira:[180, Y1[0], Y1[1]] }],
+        [2, sector(Y1, 0, 72, 30, 'g-arco3') + sector(Y2, 0, 72, 30, 'g-arco3')],
+        ['control', sector(Y2, 72, 180, 24, 'g-arco2') + rotAng(Y2, 72, 180, 46, '108°')],
+      ], 'Dos rectas cortadas por una secante con dos alternos internos de 72°', '0 0 400 240'),
+      pasos:[
+        'El opuesto por el vértice del 72° de arriba también mide 72° (T1).',
+        'Ese opuesto y el 72° de abajo ocupan el mismo lugar en cada cruce: son correspondientes, y son iguales.',
+        'R4 dice que si los correspondientes son iguales, las rectas son paralelas.',
+      ], final:'sí: r y s son paralelas',
+      control:`Entonces los conjugados tienen que sumar 180°. En s, el vecino del 72° mide 108°:${A('72° + 108° = 180° ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Por qué R4 se acepta sin demostrar y el teorema 2 no?',
+      r:'Porque R4 no se puede demostrar con lo que hay antes: Euclides lo puso como postulado, y durante dos mil años muchos intentaron demostrarlo sin lograrlo. El teorema 2 sí sale de R4 y del teorema 1.' },
+    { p:'En el ejemplo 1, ¿por qué δ se desliza por la secante hasta γ?',
+      r:'Porque r y s tienen la misma dirección: el cruce de abajo es una copia del de arriba, corrida a lo largo de t.' },
+    { p:'En el zigzag, ¿de dónde sale la recta m?',
+      r:'De nosotros: no estaba en la figura. Trazar una recta que no estaba es una de las ideas más útiles de la geometría, y se puede porque por A pasa una paralela a r (lo vamos a construir en la clase B2).' },
+    { p:'¿El del medio es siempre la suma de las puntas?',
+      r:'Si las puntas se miden entre el segmento y la paralela, hacia el lado de adentro del zigzag, sí. En el ejemplo 3 la punta de arriba no era 120° sino su vecino, 60°.' },
+    { p:'En el último, ¿y si abajo hubiera 74° en vez de 72°?',
+      r:'Los correspondientes serían 72° y 74°: distintos. Por R4, r y s no serían paralelas, y se cortarían de algún lado.' },
+  ],
+  notas:`<p><b>La clase A2 cierra el bloque.</b> El teorema 2 (Euclides I.27–29) se demuestra
+      con R4 y el teorema 1: el cruce de abajo es una copia del de arriba (correspondientes), y
+      adentro de un cruce valen los opuestos. Los ejemplos 1 y 2 son las dos mitades de la
+      demostración; el 5 es la vuelta (I.27), que es la que se usa en B2 para trazar una
+      paralela.</p>
+    <p>El zigzag (ejemplo 3, de <i>100 problemas de geometría básica</i>, tópico 5) introduce
+      la idea más útil del bloque: <b>trazar una recta que no estaba</b>. El 4 es el mismo
+      zigzag al revés, y es el problema 3 del Zonal 2020: en el examen, con la figura.</p>
+    <p>Error esperable en el 3: sumar 120° + 35°. El 120° no está entre PA y la paralela del
+      lado de adentro; su vecino sí. Conviene que lo encuentren ellos, con el control de la
+      vuelta entera.</p>
+    <p>Para experimentar con la secante y con rectas que dejan de ser paralelas, el taller de
+      la clase de Ángulos (unidad 6) sirve tal cual.</p>`
+  };
+})(),
+];
+
+/* ─────────────────── el desafío final ─────────────────── */
+const DESAFIO = (() => {
+  const O = [200, 205], R = 165;
+  const pos = { A:180, M:150, P:120, Q:75, N:60, B:0 };
+  const p = k => en(O, pos[k], R);
+  return {
+    titulo:'Bisectrices en una semicircunferencia', prosa:true,
+    enun:`AB es el diámetro de una semicircunferencia de centro O. M y N están en ella, con MÔN = 90° y M en el arco AN. OP es bisectriz de AÔN, OQ es bisectriz de BÔM, y OM es bisectriz de AÔP. ¿Cuánto mide QÔN?${fte('OMA 2007 · Intercolegial · Nivel 1 · problema 3')}`,
+    lienzo:F([
+      [0, `<path class="g-linea" d="${arcoD(O, 0, 180, R)}"/>` + g.seg(p('A'), p('B'), 'g-linea') +
+          ['M', 'N', 'P'].map(k => g.seg(O, p(k), 'g-linea')).join('') + g.seg(O, p('Q'), 'g-roja') +
+          Object.keys(pos).map(k => g.pto(p(k), 'g-pto', 4) + g.txt(en(O, pos[k], R + 18), k, 'g-rot')).join('') +
+          g.recto(O, p('M'), p('N'), 12) + g.pto(O, 'g-vert', 4.5) + nombre(O, 'O', 0, 22)],
+      [1, sector(O, 150, 180, 70) + rotAng(O, 150, 180, 92, X)],
+      [2, sector(O, 120, 150, 70) + rotAng(O, 120, 150, 92, X)],
+      [3, sector(O, 60, 120, 52, 'g-arco2') + rotAng(O, 60, 120, 76, `2${X}`)],
+      [5, trazo(O, 0, 60, 40) + rotAng(O, 0, 60, 62, '60°', 'g-num') + trazo(O, 75, 150, 112) + rotAng(O, 75, 150, 128, '75°', 'g-num')],
+      ['final', sector(O, 60, 75, 110, 'g-arco3') + rotAng(O, 60, 75, 138, '15°', 'g-num')],
+    ], 'Una semicircunferencia de diámetro AB con los radios OM, OP, OQ y ON', '0 0 400 230'),
+    pasos:[
+      'Llamo x a AÔM.',
+      P('OM es bisectriz de AÔP: AÔP es el doble.', 'AÔP = 2x'),
+      P('OP es bisectriz de AÔN: AÔN es el doble de AÔP.', 'AÔN = 4x'),
+      P('Pero AÔN también es AÔM más el recto MÔN.', '4x = x + 90', `4x ${N('− x')} = x + 90 ${N('− x')}`, '3x = 90', 'x = 30'),
+      P('Ahora ubico N y Q.', ['NÔB', '180 − 4 · 30 = 60'], ['BÔM', '180 − 30 = 150'], ['BÔQ', '150 : 2 = 75']),
+      P('QÔN es lo que hay entre ON y OQ.', 'QÔN = 75° − 60°', ' = 15°'),
+    ],
+    final:'QÔN mide 15°',
+    control:`Q tiene que quedar entre M y N, y los dos pedazos tienen que dar el recto MÔN. MÔQ es la otra mitad de BÔM:${A('MÔQ + QÔN = 75° + 15°', ' = 90° ✓')}`,
+    preguntas:[
+      { p:'¿Por qué empezar por AÔM y no por QÔN, que es lo que piden?',
+        r:'Porque AÔM es el primero de una cadena: con él salen AÔP, AÔN, y de ahí todo. QÔN está al final de la cadena.' },
+      { p:'¿Dónde se usó que MÔN es recto?',
+        r:'En el paso 4: AÔN se puede escribir de dos maneras, 4x y x + 90. Esa doble cuenta es la ecuación.' },
+      { p:'¿Hay algún opuesto por el vértice o alguna paralela acá?',
+        r:'No: todo sale del llano AÔB y de las bisectrices. Pero es la misma manera de pensar del bloque: nombrar lo que no se sabe y usar lo que ya está en la lista.' },
+    ],
+    notas:`<p>El desafío es el problema 3 de Intercolegial 2007. Junta lo de A1 (el llano y las
+        bisectrices, como el ejemplo 5) con una cadena larga: conviene dejar que lo intenten
+        antes de mostrar los pasos. La mayoría de los alumnos de 7.º va a querer probar
+        números; está bien, y la cadena de bisectrices sale sola cuando prueban con 30°.</p>
+      <p>La OMA 2001 Intercolegial (bisectrices de bisectrices, BÔC = 48°) es del mismo tipo y
+        quedó para la ficha.</p>`
+  };
+})();
+
+/* ─────────────────── la pregunta de arranque ─────────────────── */
+const PREGUNTA_INICIAL = (() => {
+  const O = [200, 110], m = 13.5;
+  return {
+    prosa:true,
+    enun:'Dos rectas se cortan y uno de los ángulos mide 153°. Sin transportador: ¿cuánto vale x + y?',
+    lienzo:F([
+      [0, recta(O, m, 175) + recta(O, 180 - m, 175) + g.pto(O, 'g-vert', 4.5) +
+          sector(O, m, 180 - m, 28) + rotAng(O, m, 180 - m, 46, '153°') +
+          sector(O, 180 - m, 180 + m, 52, 'g-arco2') + rotAng(O, 180 - m, 180 + m, 72, X) +
+          sector(O, -m, m, 52, 'g-arco2') + rotAng(O, -m, m, 72, Y)],
+      [1, g.seg(en(O, 180 + m, 165), en(O, m, 165), 'g-foco'), 2],
+      [1, rotAng(O, 180 - m, 180 + m, 108, '27°', 'g-num')],
+      [2, rotAng(O, -m, m, 108, '27°', 'g-num'), null, { gira:[180, O[0], O[1]] }],
+    ], 'Dos rectas que se cortan: arriba 153°, x a la izquierda e y a la derecha', '0 0 400 220'),
+    pasos:[
+      P('x y el de 153° están uno al lado del otro sobre la misma recta: forman un llano.', 'x = 180° − 153°', ' = 27°'),
+      P('Con y pasa lo mismo, sobre la otra recta.', 'y = 180° − 153°', ' = 27°'),
+      P('Sumo.', 'x + y = 27° + 27°', ' = 54°'),
+    ],
+    final:'x + y = 54°',
+    control:'x e y son opuestos por el vértice: tenían que salir iguales, y salieron iguales ✓',
+  };
+})();
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Por qué no se puede usar el transportador?',
+      r:'Porque mide un dibujo, y un dibujo siempre tiene un error. Una demostración vale para todos los dibujos a la vez, incluso los que nadie hizo.' },
+    { p:'¿Quién fue Euclides?',
+      r:'Un matemático griego que vivió en Alejandría hace unos 2300 años. Escribió los Elementos: arranca con cinco reglas y demuestra, una por una, cientos de propiedades. Se usó para enseñar geometría durante más de dos mil años.' },
+    { p:'¿Qué tiene que ver la cita de Einstein?',
+      r:'A los doce años leyó un librito de geometría y le impresionó que algo que no es evidente, como que las tres alturas de un triángulo se cortan en un punto, se pudiera demostrar con total certeza. Eso vamos a hacer en esta unidad.' },
+  ],
+  notas:`<p><b>La unidad «Geometría a la manera de los griegos»</b> reemplaza, para el taller de
+      verano, la geometría del libro: se dicta de corrido, en tres bloques. Este es el bloque
+      A, con dos clases: A1 (opuestos por el vértice, teorema 1) y A2 (paralelas y secante,
+      teorema 2). Siguen B (construcciones con regla y compás) y C (triángulos). La currícula
+      completa está en <span class="ec">Curricula_Geometria_7mo.md</span>.</p>
+    <p>De los ángulos quedan solo estos dos hechos: clasificar, consecutivos y complementarios
+      aparecen cuando hacen falta, en una línea. Lo demás de la unidad 6 del libro está en la
+      clase de Ángulos, que sigue publicada.</p>
+    <p><b>La lista de teoremas</b> es la columna vertebral de la unidad: cada alumno la lleva
+      pegada en el cuaderno y crece clase a clase. Arranca con R3 y R4 (en la introducción);
+      después de A1 se agrega T1, y después de A2, T2. La regla es que <b>toda respuesta se
+      justifica con algo de la lista</b>, entre paréntesis, como en los pasos de los ejemplos.</p>
+    <p>La cita es de las <i>Notas autobiográficas</i> de Einstein (1949), sobre el «librito
+      sagrado de geometría» que leyó a los doce años; la traducción es nuestra.</p>`
+};
+
+/* ═══ el armado ═══
+   La plantilla, los pasos, las figuras y el movimiento están en
+   assets/pizarra.js: esta página trae solo sus datos. */
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, grado:'7mo', temasLibro:2 });
+</script>
+<script src="../../assets/proyeccion.js" defer></script>
+<script src="../../assets/timer.js" defer></script>
+<script src="../../assets/clase.js" defer></script>
+</body>
+</html>

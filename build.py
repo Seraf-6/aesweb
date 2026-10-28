@@ -187,7 +187,8 @@ def indice_grado(g):
 </header>""")
     for u in g['unidades']:
         cuerpo.append('<section class="bloque">')
-        cuerpo.append(f'<p class="eyebrow">Unidad {u["n"]} · págs. {u["pags"]}</p>')
+        rotulo = u.get('eyebrow') or f'Unidad {u["n"]} · págs. {u["pags"]}'
+        cuerpo.append(f'<p class="eyebrow">{html.escape(rotulo)}</p>')
         cuerpo.append(f'<h2>{html.escape(u["titulo"])}</h2>')
         if u.get('nota'):
             cuerpo.append(f'<p>{html.escape(u["nota"])}</p>')

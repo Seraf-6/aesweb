@@ -33,6 +33,7 @@ matematica/
   7mo|8vo|9no/index.html    las unidades de cada grado   ← los genera build.py
   7mo/ecuaciones.html       diapositivas                 ← escritas a mano
   7mo/angulos.html          diapositivas                 ← escritas a mano
+  7mo/euclides-angulos.html diapositivas (geometría griega, bloque A) ← escritas a mano
   7mo/poligonos.html        diapositivas                 ← escritas a mano
   8vo/factoreo.html         diapositivas                 ← escritas a mano
   8vo/sistemas.html         diapositivas                 ← escritas a mano
@@ -256,7 +257,10 @@ el cuadrado de x² + 6x + 9 con sus piezas sueltas. O puede llegar girando
 alrededor de un punto (`{ gira:[grados, x, y] }`, positivo es el sentido del
 reloj): así el lado de un ángulo gira desde el otro lado, y el opuesto por el
 vértice aparece dando media vuelta. Si la capa trae un arco con `.traza`, el
-arco se dibuja al mismo ritmo que el giro.
+arco se dibuja al mismo ritmo que el giro. El nombre de un ángulo con
+sombrero (AÔB) no se corta entre dos renglones, y el sombrero se mide desde
+la letra y no desde el renglón: con el interlineado grande de los
+enunciados quedaba casi en el renglón de arriba.
 Lo que se simplifica se tacha con `tacha('(x + 2)')`: en el cuaderno, una raya
 roja que se dibuja después de escribir el renglón (las fracciones algebraicas de 8.º).
 Cada página elige sus letras en cursiva con `Pizarra.letras`. Toda limpieza que espera el final de una animación
@@ -338,7 +342,7 @@ cual. Así una respuesta no puede quedar mal tipeada en la página aunque la
 cuenta esté bien. Después de tocar una página de clase hay que volver a
 correrlo.
 
-Hay uno por cada página de clase (ecuaciones, ángulos y polígonos de 7.º,
+Hay uno por cada página de clase (ecuaciones, ángulos, polígonos y el bloque A de la geometría griega de 7.º,
 factoreo, expresiones racionales y sistemas de 8.º, ecuaciones de segundo grado de 9.º), uno para
 las siete clases de OMAPA y uno para el módulo de progreso. El Open House
 tiene el suyo: `open2026/verificar.py`.
@@ -707,7 +711,9 @@ en blanco. Pasó con `lee` en ángulos.
 ### Una unidad nueva
 
 Se agrega el dict a `GRADOS[...]['unidades']` en `contenido.py` y se corre el
-generador. Mientras no haya material, se ponen entradas con
+generador. Una unidad que no sigue el libro (la geometría griega de 7.º) no
+tiene páginas: lleva `'eyebrow'` con su propio rótulo y `build.py` lo usa en
+lugar de «Unidad N · págs.». Mientras no haya material, se ponen entradas con
 `'tipo': 'pendiente'` y sin `url`: salen como tarjetas punteadas, que es la
 forma honesta de decir "todavía no está".
 
@@ -744,8 +750,9 @@ las páginas de clase.
 
 ## Estado actual
 
-Hecho: portada, índices de los tres grados, listado de fichas con 28 PDF,
-las diapositivas de 7.º (ecuaciones lineales, ángulos y polígonos) y las tres de 8.º
+Hecho: portada, índices de los tres grados, listado de fichas con 29 PDF,
+las diapositivas de 7.º (ecuaciones lineales, ángulos y polígonos, y el bloque A de la
+geometría a la manera de los griegos, con su ficha 13) y las tres de 8.º
 (factoreo, expresiones racionales y sistemas), la de ecuaciones de segundo grado de 9.º
 (unidades 5 y 6), todas sobre el motor de la pizarra, con su
 verificador; el panel de proyección, el timer de aula y el módulo de
@@ -753,7 +760,8 @@ progreso; y en OMAPA, las siete clases del cuadernillo de herramientas y las
 fichas de alumno de OMAPA y Kanguro; y el módulo del Open House 2026, con
 sus herramientas y su verificador, esperando la lista de alumnos.
 
-Pendiente: el proyecto de estadística compartido por los tres grados (falta
+Pendiente: los bloques B (construcciones) y C (triángulos) de la geometría griega de 7.º
+(la currícula está en `Curricula_Geometria_7mo.md`, fuera del repositorio), el proyecto de estadística compartido por los tres grados (falta
 definir el tema), las diapositivas de cuerpos geométricos de 9.º, el
 material de circunferencia de 8.º,
 las clases de OMAPA para los 25 arquetipos (hoy están los 7 bloques del

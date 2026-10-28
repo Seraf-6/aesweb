@@ -28,6 +28,7 @@ una de las cosas que enseñamos es a preguntar de dónde sale un dato.
 | «La matemática pura es, a su manera, la poesía de las ideas lógicas.» | Carta al *New York Times* por la muerte de Emmy Noether, 1935 |
 | «Lo importante es no dejar de hacerse preguntas.» | Revista *LIFE*, 2 de mayo de 1955 |
 | «Él no juega a los dados.» | Carta a Max Born, 1926 — de ahí viene el «Dios no juega a los dados» |
+| «Esta claridad y esta certeza me causaron una impresión indescriptible.» | *Notas autobiográficas*, 1949, sobre el «librito sagrado de geometría» que leyó a los doce años; traducción nuestra |
 
 ## Einstein, atribuidas
 
@@ -86,6 +87,7 @@ explicarlo.
 | 7.º | Ecuaciones lineales | «La política es para el presente…» — **en uso** |
 | 7.º | Ángulos (6) | «La alegría de ver y comprender es el regalo más hermoso de la naturaleza.» — **en uso** |
 | 7.º | Polígonos (8+9) | «No hay camino real hacia la geometría.» — **en uso** |
+| 7.º | Geometría griega · bloque A | «Esta claridad y esta certeza me causaron una impresión indescriptible.» — **en uso** |
 | 7.º | Estadística | «Lo importante es no dejar de hacerse preguntas.» |
 | 8.º | Factorización | «La matemática pura es la poesía de las ideas lógicas.» |
 | 8.º | Expresiones racionales | «Todo debería hacerse lo más simple posible, pero no más simple.» |

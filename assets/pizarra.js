@@ -76,9 +76,10 @@ const S = (...ecs) => `<span class="sistema"><span class="llave">{</span><span c
 
 /* Los ángulos con sombrero (Â, B̂, Ĉ, D̂): B̂ y D̂ no existen como una sola
    letra, y en cursiva el sombrero se corre. Se escriben como siempre y acá
-   se dibujan todos igual (.ang, en clase.css). No va dentro de un SVG. */
-const sombrero = s => raices(s).replace(/([A-Z])̂|([ÂÊÎÔÛĈĜĤĴŜŴŶ])/g,
-  (m, l, pre) => `<span class="ang">${l || pre.normalize('NFD')[0]}</span>`);
+   se dibujan todos igual (.ang, en clase.css). El nombre entero (AÔB) va
+   en un .ang-nom, que no se corta entre dos renglones. No va dentro de un SVG. */
+const sombrero = s => raices(s).replace(/([A-Z]?)(?:([A-Z])̂|([ÂÊÎÔÛĈĜĤĴŜŴŶ]))([A-Z]?)/g,
+  (m, a, l, pre, b) => `<span class="ang-nom">${a}<span class="ang">${l || pre.normalize('NFD')[0]}</span>${b}</span>`);
 
 /* N() resalta lo nuevo: lo que se agrega a los dos miembros, el valor que
    se reemplaza, la palabra que cambió respecto del ejemplo anterior. Va

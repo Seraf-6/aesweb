@@ -23,3 +23,7 @@ Thumbs.db
 *.opus
 *.ogg
 *.heic
+
+# Material de entrenamiento de aurea.academy (PDF de terceros): se queda en la
+# computadora del docente, no se publica.
+omapa/Entrenamiento JT Aurea/

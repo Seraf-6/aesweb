@@ -37,6 +37,22 @@ GRADOS = [
                 'simbolizaciones y resolución de problemas.',
         'url': 'fichas/index.html#7mo'},
      ]},
+    {'n': 'G', 'titulo': 'Geometría a la manera de los griegos',
+     'eyebrow': 'Unidad aparte · taller de verano · no sigue el libro',
+     'nota': 'Regla, compás y una lista de teoremas, como en los Elementos de Euclides: '
+             'ángulos (bloque A), construcciones (B) y triángulos antes que circunferencias (C).',
+     'material': [
+       {'tipo': 'diapositiva', 'titulo': 'Bloque A · Los dos hechos de ángulos',
+        'desc': 'Opuestos por el vértice y paralelas cortadas por una secante, demostrados con R3 y R4 '
+                'y usados en problemas de la OMA. Dos clases, A1 y A2, y un desafío del Intercolegial.',
+        'url': 'matematica/7mo/euclides-angulos.html'},
+       {'tipo': 'ficha', 'titulo': 'Bloque A: opuestos y paralelas',
+        'desc': 'Ficha 13.', 'url': 'fichas/index.html#7mo'},
+       {'tipo': 'pendiente', 'titulo': 'Bloque B · Construcciones con regla y compás',
+        'desc': 'El triángulo de Euclides y los criterios, paralela, perpendicular, mediatriz, bisectriz.'},
+       {'tipo': 'pendiente', 'titulo': 'Bloque C · Triángulos',
+        'desc': 'Suma de 180°, isósceles, puntos notables y recta de Euler.'},
+     ]},
     {'n': 6, 'titulo': 'Ángulos', 'pags': '112–131',
      'nota': 'Geometría plana (II). Va antes de Polígonos: ahí se usan las paralelas y la secante.',
      'material': [
@@ -202,6 +218,7 @@ FICHAS = {
   (10, 'Polígonos y clasificación'),
   (11, 'Triángulos y sus ángulos'),
   (12, 'Ecuaciones lineales — 128 ejercicios graduados'),
+  (13, 'Geometría griega · bloque A: opuestos y paralelas'),
  ],
  '8vo': [
   (1,  'Miscelánea de factoreo'),

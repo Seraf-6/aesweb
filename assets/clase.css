@@ -693,7 +693,10 @@ body[data-solo="1"] .cu-rot{font-size:.55em}
 .raiz-r{border-top:.075em solid currentColor; padding:.12em .12em 0 .1em; line-height:1.15}
 
 /* un ángulo con sombrero: B̂ (sombrero() de pizarra.js) */
-.ang{display:inline-block; position:relative; font-style:normal}
+/* line-height:1 hace que la caja abrace la letra: con el interlineado del
+   renglón, el sombrero quedaba en el aire, casi en el renglón de arriba */
+.ang-nom{white-space:nowrap}
+.ang{display:inline-block; position:relative; font-style:normal; line-height:1}
 .ang::after{content:"\02C6"; position:absolute; left:0; right:0; top:-.3em; text-align:center;
   font-style:normal; line-height:1}
 
