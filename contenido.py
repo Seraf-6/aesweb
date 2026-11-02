@@ -197,6 +197,13 @@ OMAPA = {
     ('cadete-7', '7.º y 8.º grado · Cadete', ['01', '02', '03']),
     ('junior-9', '9.º grado · Junior', ['01', '02', '03']),
   ],
+  # Ñandú (OMA, Argentina), Certamen Interescolar: fichas de alumno, sin claves.
+  'fichas_nandu': [
+    ('3grado', '3.º grado', ['01', '02', '03']),
+    ('4grado', '4.º grado', ['01', '02', '03']),
+    ('5grado', '5.º grado', ['01', '02', '03']),
+    ('6grado', '6.º grado', ['01', '02', '03']),
+  ],
 }
 
 # ══════════════════════════════════════════════════════════════════

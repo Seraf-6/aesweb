@@ -245,6 +245,17 @@ def indice_omapa():
       <span class="nombre">{html.escape(nombre)} · fichas {enlaces}</span></li>""")
     cuerpo.append('</ul></section>')
 
+    cuerpo.append("""<section class="bloque" id="nandu">
+  <h2>Fichas de competencia Ñandú</h2>
+  <p>La olimpiada Ñandú de la OMA (Argentina), para la primaria: tres problemas de
+    respuesta abierta en 40 minutos, como en el Certamen Interescolar.</p>
+  <ul class="lista-fichas">""")
+    for cod, nombre, tandas in OMAPA['fichas_nandu']:
+        enlaces = ' '.join(f'<a href="fichas/nandu/ficha-nandu-{cod}-{t}.pdf">{t}</a>' for t in tandas)
+        cuerpo.append(f"""<li><span class="num">Ñ</span>
+      <span class="nombre">{html.escape(nombre)} · fichas {enlaces}</span></li>""")
+    cuerpo.append('</ul></section>')
+
     cuerpo.append("""<section class="bloque" id="cuadernillos">
   <h2>Cuadernillos de herramientas</h2>
   <ul class="lista-fichas">
@@ -259,7 +270,7 @@ def indice_omapa():
   <p>En la olimpiada el problema no avisa de qué tema es. Por eso el material se organiza
     por la herramienta que hace falta —contar bien, comparar, patrones, paridad, casos
     extremos— y no por la unidad del libro donde apareció.</p>
-  <div class="aviso"><strong>Los problemas son de OMAPA y del Kanguro.</strong> Cada ficha
+  <div class="aviso"><strong>Los problemas son de OMAPA, del Kanguro y del Ñandú.</strong> Cada ficha
     indica al pie de qué ronda y año es cada problema. Las claves de respuestas no están en
     este sitio.</div>
 </section></div>""")
