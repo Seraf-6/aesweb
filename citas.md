@@ -96,5 +96,6 @@ explicarlo.
 | 9.º | Cuadráticas y parábola | «La imaginación es más importante que el conocimiento.» |
 | 9.º | Cuerpos geométricos | «Lo que sabemos es una gota; lo que ignoramos, un océano.» |
 | 9.º | Estadística y probabilidad | «Él no juega a los dados.» |
+| Química | Números cuánticos y configuración | «Él no juega a los dados.» — **en uso** (para 9.º Estadística, buscar otra) |
 | — | OMAPA | «Si no podés resolver un problema, hay uno más fácil que sí podés resolver: encontralo.» |
 | — | Para una prueba difícil | «No te preocupes por tus dificultades con la matemática; las mías son mayores.» |

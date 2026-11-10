@@ -17,7 +17,7 @@ import os
 import pathlib
 import shutil
 
-from contenido import SITIO, GRADOS, OMAPA, FICHAS
+from contenido import SITIO, GRADOS, OMAPA, FICHAS, QUIMICA
 from open2026 import generar as open2026
 
 RAIZ = pathlib.Path(__file__).resolve().parent
@@ -111,6 +111,11 @@ def portada():
       <span class="rotulo">7.º · 8.º · 9.º grado</span>
       <h3>Matemática</h3>
       <p>Las unidades del año, con sus diapositivas y sus fichas.</p></a>""")
+    cuerpo.append("""<a class="tarjeta" href="quimica/index.html">
+      <span class="rotulo">Una clase</span>
+      <h3>Química</h3>
+      <p>Números cuánticos y configuración electrónica: del último electrón al lugar
+        en la tabla periódica.</p></a>""")
     cuerpo.append("""<a class="tarjeta" href="omapa/index.html">
       <span class="rotulo">2.º a 9.º grado</span>
       <h3>OMAPA</h3>
@@ -174,6 +179,31 @@ def indice_matematica():
     cuerpo.append('</div></section></div>')
     cuerpo.append(pie(1))
     return pagina('Matemática', '\n'.join(cuerpo), prof=1)
+
+
+def indice_quimica():
+    cuerpo = [barra(1, [('Química', None)])]
+    cuerpo.append('<div class="envoltura ancha">')
+    cuerpo.append("""<header class="portada">
+  <p class="sello">Albert Einstein School</p>
+  <h1>Química</h1>
+  <p class="bajada">Clases para proyectar, sobre el mismo motor que las de Matemática:
+    cada ejemplo, paso a paso y con su control.</p>
+</header>""")
+    for b in QUIMICA:
+        cuerpo.append('<section class="bloque">')
+        cuerpo.append(f'<p class="eyebrow">{html.escape(b["eyebrow"])}</p>')
+        cuerpo.append(f'<h2>{html.escape(b["titulo"])}</h2>')
+        if b.get('nota'):
+            cuerpo.append(f'<p>{html.escape(b["nota"])}</p>')
+        cuerpo.append('<div class="tarjetas">')
+        for m in b['material']:
+            cuerpo.append(tarjeta(m, prof=1))
+        cuerpo.append('</div></section>')
+    cuerpo.append('</div>')
+    cuerpo.append(pie(1))
+    return pagina('Química', '\n'.join(cuerpo), prof=1,
+                  descripcion='Material de clase de Química: números cuánticos y configuración electrónica.')
 
 
 def indice_grado(g):
@@ -321,6 +351,7 @@ def main():
     hechas = [
         escribe('index.html', portada()),
         escribe('matematica/index.html', indice_matematica()),
+        escribe('quimica/index.html', indice_quimica()),
         escribe('omapa/index.html', indice_omapa()),
         escribe('fichas/index.html', indice_fichas()),
     ]

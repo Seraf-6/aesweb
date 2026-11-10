@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Números cuánticos y configuración electrónica · AESWeb</title>
+<meta name="description" content="Química: capas, subcapas y orbitales, los cuatro números cuánticos, el orden de llenado, el diagrama de orbitales, la configuración abreviada y el lugar en la tabla periódica, con ejemplos resueltos paso a paso para hallar un elemento a partir de su último electrón.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500;1,700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="../assets/base.css">
+<link rel="stylesheet" href="../assets/sitio.css">
+<link rel="stylesheet" href="../assets/clase.css">
+<style>
+/* ---------- solo de esta página: la tabla periódica y las cajitas ---------- */
+.cfg{white-space:normal}
+.pt-c rect{stroke:var(--linea-fuerte); stroke-width:1}
+.pt-s rect{fill:var(--acento2-suave)}
+.pt-p rect{fill:var(--dest-suave)}
+.pt-d rect{fill:var(--acento-suave)}
+.pt-sim{font-family:var(--sans); font-weight:700; font-size:14px; fill:var(--tinta); text-anchor:middle}
+.pt-z{font-family:var(--mono); font-size:8px; fill:var(--lapiz)}
+.pt-num{font-family:var(--mono); font-size:10px; fill:var(--lapiz); text-anchor:middle}
+.pt-bloque{font-family:var(--sans); font-weight:700; font-size:13px; fill:var(--tinta); text-anchor:middle}
+.pt-fila{fill:none; stroke:var(--acento); stroke-width:3.5}
+.pt-col{fill:none; stroke:var(--acento2); stroke-width:3.5}
+.pt-tramo{fill:none; stroke:var(--dest); stroke-width:3.5; stroke-dasharray:7 4}
+.pt-foco{fill:none; stroke:var(--tinta); stroke-width:3}
+.pt-marca rect{fill:var(--acento); stroke:var(--tinta); stroke-width:1.5}
+.pt-marca .pt-sim,.pt-marca .pt-z{fill:var(--papel)}
+.cj{fill:var(--papel); stroke:var(--tinta); stroke-width:2}
+.fl{stroke:var(--tinta); stroke-width:2.6; fill:none; stroke-linecap:round; stroke-linejoin:round}
+.cj-m{font-family:var(--mono); font-size:11px; fill:var(--lapiz); text-anchor:middle}
+.cj-sub{font-family:var(--serif); font-weight:700; font-size:17px; fill:var(--tinta); text-anchor:middle}
+.cj-foco{fill:none; stroke:var(--acento); stroke-width:4}
+.fig-txt{font-family:var(--sans); font-size:14px; fill:var(--tinta); text-anchor:middle}
+.fig-txt.chico{font-size:12px; fill:var(--lapiz)}
+.fig-txt.no{fill:var(--acento); font-weight:700}
+.fig-txt.si{fill:var(--acento2); font-weight:700}
+.diag-sub{font-family:var(--serif); font-weight:700; font-size:17px; fill:var(--tinta); text-anchor:middle; dominant-baseline:middle}
+.diag-fl{stroke:var(--acento); stroke-width:2; fill:none; stroke-linecap:round; opacity:.75}
+/* el taller */
+.lab select{font:inherit; padding:6px 8px; border:1px solid var(--linea-fuerte); border-radius:4px;
+  background:var(--papel); color:var(--tinta)}
+.lab .paso-x{display:flex; gap:6px; align-items:center}
+.lab .paso-x input{width:6em}
+.lz-tabla svg{display:block; width:100%; height:auto; max-width:720px; margin:0 0 12px}
+.lz-tabla [data-z]{cursor:pointer}
+.lz-tabla [data-z]:hover rect{stroke:var(--tinta); stroke-width:2}
+.lz-tabla .pt-elegida rect{fill:var(--acento)}
+.lz-tabla .pt-elegida text{fill:var(--papel)}
+.lz-cajas svg{display:block; height:auto; max-width:100%; margin:6px 0}
+#lz-out .fila,#lz-out2 .fila{white-space:normal}
+.salida .aviso-ex{color:var(--acento); font-weight:600}
+.lab .lz-tit2{margin-top:22px}
+#t6 .concepto-figura{max-width:820px}
+</style>
+</head>
+<body data-diapos=".intro, .concepto, .ejemplo-diapo, .taller-diapo, .desafio">
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../index.html">AESWeb</a>
+    <div class="sitio-ruta">
+      <a href="../index.html">Inicio</a><span class="sep">/</span>
+      <a href="index.html">Química</a><span class="sep">/</span>
+      <span>Números cuánticos</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">Albert Einstein School · Química</p>
+    <h1>Números cuánticos y configuración electrónica</h1>
+    <p class="bajada">«Él no juega a los dados.»<span class="firma">Albert Einstein</span></p>
+    <div class="pie-tapa">
+      <span>Del último electrón al lugar en la tabla periódica</span>
+      <span>Autor humano: Juan Marcos Serafini</span>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Ir a un tema">
+    <div class="nav-int" id="nav"></div>
+  </nav>
+
+  <section class="intro" id="inicio" data-tema="unidad">
+    <p class="cinta">Química · una clase</p>
+    <h2>La tabla periódica es un archivo, no una lista</h2>
+    <ul class="puntos">
+      <li>El lugar de un elemento en la tabla dice <b>cómo están ordenados sus electrones</b>:
+        la fila, la columna y el bloque salen de su configuración electrónica.</li>
+      <li>Cada electrón tiene una <b>dirección de cuatro datos</b>: los números cuánticos
+        <i>n</i>, <i>l</i>, <i>m</i><sub><i>l</i></sub> y <i>m</i><sub><i>s</i></sub>.</li>
+      <li>Con la dirección del <b>último electrón</b> se encuentra al elemento en la tabla. Y al revés:
+        con el lugar en la tabla se escribe la configuración.</li>
+    </ul>
+    <div class="recorrido" id="recorrido"></div>
+  </section>
+
+  <main id="temas"></main>
+
+  <footer class="creditos">
+    Material de clase de Química. El recorrido sigue dos artículos de Khan Academy,
+    <a href="https://es.khanacademy.org/science/chemistry/electronic-structure-of-atoms/orbitals-and-electrons/a/the-quantum-mechanical-model-of-the-atom">«El
+    modelo mecánico cuántico del átomo»</a> y
+    <a href="https://es.khanacademy.org/science/chemistry/periodic-table/copy-of-periodic-table-of-elements/a/the-periodic-table-electron-shells-and-orbitals-article">«La
+    tabla periódica, capas de electrones y orbitales»</a>, y los lleva hasta los números cuánticos y
+    los problemas de hallar el elemento; los ejemplos son propios. Cada resultado de esta página está
+    verificado en <span class="ec">verificacion/configuracion_quimica.py</span>.
+  </footer>
+</div>
+
+<script src="../assets/pizarra.js"></script>
+
+<script>
+/* En química no va nada en cursiva por su cuenta: los símbolos de los
+   elementos (S, Ca, K) y las subcapas (2p, 3d) son rectos. Las letras de
+   los números cuánticos se escriben a mano con <i>. Los superíndices, con ^. */
+Pizarra.letras = /(?!)/g;
+
+const n_ = '<i>n</i>', l_ = '<i>l</i>';
+const ml = '<i>m</i><sub><i>l</i></sub>', ms = '<i>m</i><sub><i>s</i></sub>';
+/* una configuración: '1s^2 2s^2 2p^4'. Cada subcapa no se corta; la
+   configuración entera sí puede seguir en el renglón de abajo */
+const Cf = s => `<span class="cfg">${s.split(' ').map(t => `<span class="ec">${I(t)}</span>`).join(' ')}</span>`;
+/* notación suelta, que no se corta: un cuarteto (3, 1, 0, −½), n = 2 */
+const Ec = s => `<span class="ec">${s}</span>`;
+
+/* ═══ los elementos hasta el xenón ═══ */
+const SIM = ('H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn ' +
+             'Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe').split(' ');
+const NOM = ('hidrógeno helio litio berilio boro carbono nitrógeno oxígeno flúor neón sodio magnesio ' +
+  'aluminio silicio fósforo azufre cloro argón potasio calcio escandio titanio vanadio cromo manganeso ' +
+  'hierro cobalto níquel cobre cinc galio germanio arsénico selenio bromo criptón rubidio estroncio itrio ' +
+  'circonio niobio molibdeno tecnecio rutenio rodio paladio plata cadmio indio estaño antimonio telurio ' +
+  'yodo xenón').split(' ');
+const AB = ['IA', 'IIA', 'IIIB', 'IVB', 'VB', 'VIB', 'VIIB', 'VIIIB', 'VIIIB', 'VIIIB', 'IB', 'IIB',
+            'IIIA', 'IVA', 'VA', 'VIA', 'VIIA', 'VIIIA'];
+
+/* el lugar por el armado de la tabla: dónde empieza cada período */
+const ARRANQUE = [1, 3, 11, 19, 37, 55];
+function casilla(Z){
+  let p = 0;
+  while (ARRANQUE[p + 1] <= Z) p++;
+  const i = Z - ARRANQUE[p], largo = ARRANQUE[p + 1] - ARRANQUE[p];
+  return [p + 1, largo === 2 ? (i ? 18 : 1) : largo === 8 ? (i < 2 ? i + 1 : i + 11) : i + 1];
+}
+const bloqueZ = Z => { const g = casilla(Z)[1]; return Z === 2 || g <= 2 ? 's' : g >= 13 ? 'p' : 'd'; };
+
+/* ═══ la tabla, en SVG: períodos 1 a 5 ═══
+   oy corre la tabla hacia abajo, para dejar arriba lugar a las cajitas */
+const TX = g => 30 + (g - 1) * 34, TY = (p, oy) => oy + 22 + (p - 1) * 34;
+function celda(Z, oy, cls, extra = ''){
+  const [p, g] = casilla(Z), x = TX(g), y = TY(p, oy);
+  return `<g class="${cls}"${extra}><rect x="${x + 1}" y="${y + 1}" width="32" height="32" rx="3"/>` +
+    `<text class="pt-z" x="${x + 4}" y="${y + 10}">${Z}</text><text class="pt-sim" x="${x + 17}" y="${y + 27}">${SIM[Z - 1]}</text></g>`;
+}
+function tabla(oy = 0){
+  let s = '';
+  for (let g = 1; g <= 18; g++) s += `<text class="pt-num" x="${TX(g) + 17}" y="${oy + 14}">${g}</text>`;
+  for (let p = 1; p <= 5; p++) s += `<text class="pt-num" x="14" y="${TY(p, oy) + 21}">${p}</text>`;
+  for (let Z = 1; Z <= 54; Z++) s += celda(Z, oy, `pt-c pt-${bloqueZ(Z)}`, ` data-z="${Z}"`);
+  return s;
+}
+const fila = (p, oy = 0) => `<rect class="pt-fila" x="${TX(1) - 3}" y="${TY(p, oy) - 2}" width="${18 * 34 + 6}" height="38" rx="6"/>`;
+const tramo = (p, g1, g2, oy = 0) => `<rect class="pt-tramo" x="${TX(g1) - 1}" y="${TY(p, oy)}" width="${(g2 - g1 + 1) * 34 + 2}" height="34" rx="4"/>`;
+function columna(g, oy = 0){
+  const p1 = g === 1 || g === 18 ? 1 : g === 2 || g >= 13 ? 2 : 4;
+  return `<rect class="pt-col" x="${TX(g) - 2}" y="${TY(p1, oy) - 2}" width="38" height="${(6 - p1) * 34 + 4}" rx="6"/>`;
+}
+const marca = (Z, oy = 0) => celda(Z, oy, 'pt-marca pop');
+const foco = (Z, oy = 0) => { const [p, g] = casilla(Z); return `<rect class="pt-foco" x="${TX(g) - 1}" y="${TY(p, oy) - 1}" width="36" height="36" rx="5"/>`; };
+const ALTO_T = oy => oy + 22 + 5 * 34 + 8;
+/* un ejemplo cuya derecha es la tabla: TABLA('rótulo', [paso, capa], …) */
+const TABLA = (rot, ...capas) => ({ tipo:'figura', vb:`0 0 650 ${ALTO_T(0)}`, rot, capas:[[0, tabla()], ...capas] });
+
+/* ═══ las cajitas: un orbital, una cajita; un electrón, una flecha ═══
+   La convención de esta clase: las cajitas van de m = −l a +l, de izquierda
+   a derecha; primero una ↑ (+½) en cada una y después las ↓ (−½), en el
+   mismo orden. */
+const CJ = 36, CG = 20;
+const signo = m => m === 0 ? '0' : m > 0 ? '+' + m : '−' + (-m);
+function flecha(x, y, arriba){
+  const y1 = y + CJ - 7, y2 = y + 7;
+  return arriba
+    ? `<path class="fl pop" d="M${x} ${y1} V${y2} M${x - 5} ${y2 + 7} L${x} ${y2} L${x + 5} ${y2 + 7}"/>`
+    : `<path class="fl pop" d="M${x} ${y2} V${y1} M${x - 5} ${y1 - 7} L${x} ${y1} L${x + 5} ${y1 - 7}"/>`;
+}
+/* subs: [[n, l], …]. Devuelve las cajitas vacías y dónde empieza cada subcapa */
+function cajitas(subs, x0, y0){
+  let x = x0, base = '';
+  const pos = [];
+  subs.forEach(([n, l]) => {
+    const k = 2 * l + 1;
+    pos.push(x);
+    for (let j = 0; j < k; j++){
+      base += `<rect class="cj" x="${x + j * CJ}" y="${y0}" width="${CJ}" height="${CJ}"/>` +
+              `<text class="cj-m" x="${x + j * CJ + CJ / 2}" y="${y0 + CJ + 15}">${signo(j - l)}</text>`;
+    }
+    base += `<text class="cj-sub" x="${x + k * CJ / 2}" y="${y0 + CJ + 37}">${n}${'spdf'[l]}</text>`;
+    x += k * CJ + CG;
+  });
+  return { base, pos, ancho:x - CG - x0 };
+}
+/* el electrón número e (desde 0) de una subcapa con k cajitas: [cajita, ↑?] */
+const dondeVa = (e, k) => e < k ? [e, true] : [e - k, false];
+function flechas(l, x, y0, desde, hasta){
+  const k = 2 * l + 1;
+  let s = '';
+  for (let e = desde; e < hasta; e++){
+    const [j, up] = dondeVa(e, k);
+    s += flecha(x + j * CJ + (up ? CJ * .34 : CJ * .66), y0, up);
+  }
+  return s;
+}
+const recuadro = (l, x, y0, e) => { const [j] = dondeVa(e - 1, 2 * l + 1);
+  return `<rect class="cj-foco pop" x="${x + j * CJ - 3}" y="${y0 - 3}" width="${CJ + 6}" height="${CJ + 6}" rx="4"/>`; };
+
+/* El diagrama de un ejemplo. subs: [[n, l, e], …] en el orden de llenado;
+   plan[s] = [[i, hasta], …]: en el paso s + 1, la subcapa i se llena hasta
+   `hasta`. En el paso siguiente al plan se recuadra el último electrón. */
+function diagrama(subs, plan, rot){
+  const y0 = 14, c = cajitas(subs, 16, y0), lleno = subs.map(() => 0), capas = [[0, c.base]];
+  plan.forEach((p, s) => p.forEach(([i, h]) => {
+    capas.push([s + 1, flechas(subs[i][1], c.pos[i], y0, lleno[i], h)]);
+    lleno[i] = h;
+  }));
+  const u = subs.length - 1;
+  capas.push([plan.length + 1, recuadro(subs[u][1], c.pos[u], y0, subs[u][2])]);
+  return { tipo:'figura', vb:`0 0 ${c.ancho + 32} ${y0 + CJ + 48}`, rot, capas };
+}
+
+/* La tabla con las cajitas de una subcapa arriba (tema 7). */
+const OY = 96;
+function hallar(rot, subs, capas){
+  const ancho = subs.reduce((a, [, l]) => a + (2 * l + 1) * CJ + CG, -CG);
+  const c = cajitas(subs, (650 - ancho) / 2, 8);
+  return { tipo:'figura', vb:`0 0 650 ${ALTO_T(OY)}`, rot,
+           capas:[[0, tabla(OY)], ...capas(c)] };
+}
+
+/* ═══ las figuras de los conceptos ═══ */
+const FIG_BOHR = `<svg viewBox="0 0 560 230" role="img" aria-label="A la izquierda, el modelo de Bohr: tres capas con 2, 8 y 18 electrones. A la derecha, un orbital 1s: una nube, más densa cerca del núcleo">
+  <defs><radialGradient id="nube-1s"><stop offset="0" stop-color="var(--acento)" stop-opacity=".75"/>
+    <stop offset=".55" stop-color="var(--acento)" stop-opacity=".25"/><stop offset="1" stop-color="var(--acento)" stop-opacity="0"/></radialGradient></defs>
+  <circle cx="130" cy="112" r="34" class="g-circ"/><circle cx="130" cy="112" r="62" class="g-circ"/><circle cx="130" cy="112" r="92" class="g-circ"/>
+  <circle cx="130" cy="112" r="9" class="g-pto"/>
+  <text class="fig-txt chico" x="130" y="72">n = 1: 2</text><text class="fig-txt chico" x="130" y="44">n = 2: 8</text>
+  <text class="fig-txt chico" x="130" y="15">n = 3: 18</text>
+  <text class="fig-txt" x="130" y="224">Bohr (1913): capas</text>
+  <circle cx="420" cy="112" r="95" fill="url(#nube-1s)"/>
+  <circle cx="420" cy="112" r="70" class="g-aux"/><circle cx="420" cy="112" r="6" class="g-pto"/>
+  <text class="fig-txt chico" x="420" y="196">90 % del tiempo, adentro</text>
+  <text class="fig-txt" x="420" y="224">Schrödinger: el orbital 1s</text>
+</svg>`;
+
+const FIG_FORMAS = `<svg viewBox="0 0 560 190" role="img" aria-label="Las formas de los orbitales: s es una esfera; p son tres pesas, una por eje">
+  <circle cx="70" cy="80" r="42" class="g-fig"/>
+  <text class="fig-txt" x="70" y="150">s (l = 0)</text><text class="fig-txt chico" x="70" y="170">1 orbital: m = 0</text>
+  <g transform="translate(220 80)"><ellipse cx="-27" cy="0" rx="26" ry="15" class="g-fig2"/><ellipse cx="27" cy="0" rx="26" ry="15" class="g-fig2"/></g>
+  <g transform="translate(330 80)"><ellipse cx="0" cy="-27" rx="15" ry="26" class="g-fig2"/><ellipse cx="0" cy="27" rx="15" ry="26" class="g-fig2"/></g>
+  <g transform="translate(450 80) rotate(-35)"><ellipse cx="-27" cy="0" rx="26" ry="15" class="g-fig2"/><ellipse cx="27" cy="0" rx="26" ry="15" class="g-fig2"/></g>
+  <text class="fig-txt" x="335" y="150">p (l = 1)</text><text class="fig-txt chico" x="335" y="170">3 orbitales: m = −1, 0, +1</text>
+</svg>`;
+
+/* el diagrama de las diagonales: se sigue cada flecha de arriba abajo */
+const FIG_DIAG = (() => {
+  const X = l => 50 + l * 74, Y = n => 24 + (n - 1) * 38, subs = [];
+  for (let n = 1; n <= 7; n++) for (let l = 0; l <= Math.min(n - 1, 3, n === 6 ? 2 : n === 7 ? 1 : 3); l++) subs.push([n, l]);
+  let s = '';
+  for (let k = 1; k <= 8; k++){
+    const g = subs.filter(([n, l]) => n + l === k).sort((a, b) => a[0] - b[0]);
+    if (!g.length) continue;
+    const [na, la] = g[0], [nb, lb] = g[g.length - 1];
+    const ax = X(la) + 30, ay = Y(na) - 15, bx = X(lb) - 30, by = Y(nb) + 15;
+    const d = Math.hypot(bx - ax, by - ay), ux = (bx - ax) / d, uy = (by - ay) / d;
+    s += `<path class="diag-fl" d="M${ax} ${ay} L${bx} ${by} M${bx - 9 * ux - 5 * uy} ${by - 9 * uy + 5 * ux} L${bx} ${by} L${bx - 9 * ux + 5 * uy} ${by - 9 * uy - 5 * ux}"/>`;
+  }
+  s += subs.map(([n, l]) => `<text class="diag-sub" x="${X(l)}" y="${Y(n)}">${n}${'spdf'[l]}</text>`).join('');
+  return `<svg viewBox="0 0 330 290" role="img" aria-label="El diagrama de las diagonales: 1s, 2s, 2p, 3s, 3p, 4s, 3d, 4p, 5s, 4d, 5p, 6s">${s}</svg>`;
+})();
+
+const FIG_HUND = (() => {
+  const a = cajitas([[2, 1]], 20, 30), b = cajitas([[2, 1]], 300, 30);
+  return `<svg viewBox="0 0 440 150" role="img" aria-label="Tres electrones en 2p: así, uno en cada cajita; así no, dos juntos y una cajita vacía">
+    ${a.base}${flechas(1, a.pos[0], 30, 0, 3)}${b.base}${flechas(1, b.pos[0], 30, 0, 2)}${flechas(1, b.pos[0], 30, 3, 4)}
+    <text class="fig-txt si" x="74" y="18">así (Hund)</text><text class="fig-txt no" x="354" y="18">así no</text></svg>`;
+})();
+
+const FIG_BLOQUES = `<svg viewBox="0 0 650 ${ALTO_T(0) + 26}" role="img" aria-label="La tabla periódica hasta el período 5, pintada por bloques: s a la izquierda, d en el medio, p a la derecha">
+  ${tabla()}
+  <text class="pt-bloque" x="${TX(1) + 34}" y="${ALTO_T(0) + 16}">bloque s</text>
+  <text class="pt-bloque" x="${TX(3) + 170}" y="${ALTO_T(0) + 16}">bloque d: 10 columnas</text>
+  <text class="pt-bloque" x="${TX(13) + 102}" y="${ALTO_T(0) + 16}">bloque p: 6 columnas</text></svg>`;
+
+/* ═══════════════════════════════════════════════════════════════
+   Los siete temas
+   Todo resultado que aparece acá está comprobado en
+   verificacion/configuracion_quimica.py, por dos caminos: el orden de
+   llenado y el armado de la tabla.
+   ═══════════════════════════════════════════════════════════════ */
+const TEMAS = [
+/* ─────────────────────────── 1 ─────────────────────────── */
+{
+  n:1, corto:'Capas y orbitales', titulo:'Capas, subcapas y orbitales', pag:'del modelo de Bohr al orbital',
+  concepto:{
+    serie:[
+      { rot:'capa', txt:`${n_} = 1, 2, 3…` },
+      { rot:'subcapas', txt:'s, p, d, f' },
+      { rot:'orbitales', txt:'1, 3, 5, 7' },
+      { rot:'por orbital', txt:'2 electrones' },
+    ],
+    figura:FIG_BOHR,
+    puntos:[
+      'Bohr (1913): los electrones van en <b>capas</b>. Las de adentro tienen menos energía y se llenan primero.',
+      'Hoy: un <b>orbital</b> es la región donde está el electrón el 90 % del tiempo. No es una órbita: es una nube.',
+      `La capa ${n_} tiene ${n_} subcapas. Cada <b>s</b> tiene 1 orbital; cada <b>p</b>, 3; cada <b>d</b>, 5; cada <b>f</b>, 7.`,
+      'En un orbital entran <b>2 electrones</b> como máximo.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'la capa 1', enun:`¿Cuántos orbitales y cuántos electrones entran en la capa ${Ec(`${n_} = 1`)}?`,
+      pasos:[
+        P('La capa 1 tiene una sola subcapa: la 1s.', ['subcapas', '1s']),
+        P('Una subcapa s tiene un orbital, y en cada orbital entran 2 electrones.', ['orbitales', '1'], ['electrones', '1 · 2 = 2']),
+      ], final:'1 orbital y 2 electrones',
+      control:`Bohr: en la capa ${n_} entran 2${n_}<sup>2</sup> electrones.${A('2 · 1^2 = 2 ✓')}` },
+    { titulo:'cambio: la capa 2', enun:`¿Cuántos orbitales y cuántos electrones entran en la capa ${Ec(`${n_} = ${N('2')}`)}?`,
+      pasos:[
+        P('La capa 2 tiene dos subcapas: 2s y 2p.', ['subcapas', '2s | 2p']),
+        P('La s tiene 1 orbital y la p tiene 3.', ['orbitales', '1 + 3 = 4']),
+        P('En cada orbital, 2 electrones.', ['electrones', '4 · 2 = 8']),
+      ], final:'4 orbitales y 8 electrones',
+      control:`Con la cuenta de Bohr:${A('2 · 2^2 = 8 ✓')}Y el período 2 de la tabla tiene 8 elementos, del litio al neón.` },
+    { titulo:'cambio: la capa 3', enun:`¿Cuántos orbitales y cuántos electrones entran en la capa ${Ec(`${n_} = ${N('3')}`)}?`,
+      pasos:[
+        P('La capa 3 tiene tres subcapas: 3s, 3p y 3d.', ['subcapas', '3s | 3p | 3d']),
+        P('La d tiene 5 orbitales.', ['orbitales', '1 + 3 + 5 = 9']),
+        P('En cada orbital, 2 electrones.', ['electrones', '9 · 2 = 18']),
+      ], final:'9 orbitales y 18 electrones',
+      control:`Con la cuenta de Bohr:${A('2 · 3^2 = 18 ✓')}` },
+    { titulo:'cambio: una subcapa sola', enun:`¿Cuántos orbitales y cuántos electrones entran en la subcapa ${Ec(N('4d'))}?`,
+      pasos:[
+        'El 4 dice la capa; la letra dice la forma. Para contar orbitales alcanza la letra.',
+        P('Una subcapa d tiene 5 orbitales, en cualquier capa.', ['orbitales', '5']),
+        P('En cada orbital, 2 electrones.', ['electrones', '5 · 2 = 10']),
+      ], final:'5 orbitales y 10 electrones',
+      control:`En la tabla, el bloque d tiene 10 columnas, del grupo 3 al 12:${A('12 − 3 + 1 = 10 ✓')}` },
+    { titulo:'cambio: la capa 4, con la f', enun:`¿Cuántos orbitales y cuántos electrones entran en la capa ${Ec(`${n_} = ${N('4')}`)}?`,
+      pasos:[
+        P('La capa 4 tiene cuatro subcapas: aparece la f.', ['subcapas', '4s | 4p | 4d | 4f']),
+        P('La f tiene 7 orbitales.', ['orbitales', '1 + 3 + 5 + 7 = 16']),
+        P('En cada orbital, 2 electrones.', ['electrones', '16 · 2 = 32']),
+      ], final:'16 orbitales y 32 electrones',
+      control:`Con la cuenta de Bohr:${A('2 · 4^2 = 32 ✓')}` },
+  ],
+  preguntas:[
+    { p:'Si el orbital es una nube, ¿dónde está el electrón?',
+      r:'No se puede decir un punto: se sabe dónde es más probable encontrarlo. El orbital marca la zona donde está el 90 % del tiempo.' },
+    { p:'¿Por qué la capa 2 tiene 8 y la 3 tiene 18? ¿Hay una regla?',
+      r:`Sí: los orbitales de la capa ${n_} son ${n_}<sup>2</sup> (1, 4, 9, 16), y con 2 electrones por orbital quedan 2${n_}<sup>2</sup>: 2, 8, 18, 32.` },
+    { p:'Si en la capa 3 entran 18, ¿por qué el argón ya es estable con 8?',
+      r:'Porque el 3d tiene más energía y se llena recién en el período 4. El argón tiene llenos 3s y 3p: es la pregunta del arranque.' },
+  ],
+  notas:`<p>Este tema sigue los dos artículos de Khan Academy: arranca con las capas de Bohr (2, 8, 18) y
+      las parte en subcapas y orbitales. El modelo de Bohr funciona bien para el hidrógeno y falla
+      con más de un electrón; el modelo cuántico (De Broglie, Schrödinger) trata al electrón como una
+      onda, y lo que se calcula es <b>la probabilidad</b> de encontrarlo en cada lugar.</p>
+    <p>Acá entra la cita de la tapa: a Einstein no le gustaba que la física dijera «probablemente»
+      («Él no juega a los dados», carta a Max Born, 1926). La química de hoy trabaja con esas
+      probabilidades: un orbital es la zona del 90 %.</p>
+    <p>No hace falta la ecuación de Schrödinger ni el principio de incertidumbre para esta clase:
+      alcanza con que entiendan que el orbital no es una órbita. La palabra <b>subcapa</b> es la de
+      Khan; muchos libros dicen <b>subnivel</b>, y capa es <b>nivel</b>. Conviene decir las dos.</p>
+    <p>El ejemplo 4 prepara el tema 6: las 10 columnas del bloque d son los 10 electrones de una d.</p>`
+},
+/* ─────────────────────────── 2 ─────────────────────────── */
+{
+  n:2, corto:'Números cuánticos', titulo:'Los cuatro números cuánticos', pag:'la dirección de un electrón',
+  concepto:{
+    serie:[
+      { rot:'la capa', txt:`${n_} = 1, 2, 3…` },
+      { rot:'la subcapa', txt:`${l_} = 0 a ${n_} − 1 (s = 0, p = 1, d = 2, f = 3)` },
+      { rot:'el orbital', txt:`${ml} = −${l_} a +${l_}` },
+      { rot:'el espín', txt:`${ms} = +½ (↑) o −½ (↓)` },
+    ],
+    figura:FIG_FORMAS,
+    puntos:[
+      `Los cuatro juntos son la dirección de un electrón: ${Ec(`(${n_}, ${l_}, ${ml}, ${ms})`)}.`,
+      'El <b>espín</b>: en el experimento de Stern y Gerlach (1922), los electrones se comportan como imanes que apuntan solo para arriba o para abajo.',
+      '<b>Principio de exclusión de Pauli</b>: en un átomo no hay dos electrones con los cuatro números iguales. Por eso en un orbital entran 2, con espín opuesto.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'un electrón que existe', enun:`¿Existe el electrón ${Ec('(2, 1, 0, +½)')}? Si existe, ¿en qué subcapa está?`,
+      pasos:[
+        P(`${n_} = 2: la capa 2.`, [n_, '2']),
+        P(`${l_} va de 0 a ${n_} − 1: con ${n_} = 2, puede ser 0 o 1. Acá es 1: la subcapa p.`, [l_, '1 → p ✓']),
+        P(`${ml} va de −${l_} a +${l_}: con ${l_} = 1, es −1, 0 o +1.`, [ml, '0 ✓']),
+        P(`${ms} es +½ o −½.`, [ms, '+½ ✓']),
+      ], final:'existe: es un electrón 2p',
+      control:'Tema 1: la capa 2 tiene las subcapas 2s y 2p. La 2p está ✓' },
+    { titulo:'cambio: otra l', enun:`¿Existe el electrón ${Ec(`(2, ${N('2')}, 0, +½)`)}?`,
+      pasos:[
+        P(`${n_} = 2: la capa 2.`, [n_, '2']),
+        P(`Con ${n_} = 2, ${l_} puede ser 0 o 1. Acá es 2.`, [l_, '2 ✗']),
+        'No hace falta mirar los otros dos: con un número que no puede ser, el electrón no existe.',
+      ], final:'no existe: la capa 2 no tiene subcapa d',
+      control:'Tema 1: la capa 2 tiene solo 2s y 2p. La primera d es la 3d ✓' },
+    { titulo:'cambio: otra n', enun:`¿Existe el electrón ${Ec(`(${N('3')}, 2, 0, +½)`)}? Si existe, ¿en qué subcapa está?`,
+      pasos:[
+        P(`${n_} = 3: la capa 3.`, [n_, '3']),
+        P(`Con ${n_} = 3, ${l_} puede ser 0, 1 o 2. Acá es 2: la subcapa d.`, [l_, '2 → d ✓']),
+        P(`Con ${l_} = 2, ${ml} va de −2 a +2.`, [ml, '0 ✓']),
+        P(`${ms} es +½ o −½.`, [ms, '+½ ✓']),
+      ], final:'existe: es un electrón 3d',
+      control:`Una d tiene 5 orbitales: ${ml} = −2, −1, 0, +1, +2. Son 5 valores ✓` },
+    { titulo:'cambio: otra m_l', enun:`¿Existe el electrón ${Ec(`(3, 2, ${N('−3')}, +½)`)}?`,
+      pasos:[
+        P(`${n_} = 3 y ${l_} = 2: la subcapa 3d, como antes.`, [n_, '3'], [l_, '2 → d ✓']),
+        P(`Con ${l_} = 2, ${ml} va de −2 a +2. Acá es −3.`, [ml, '−3 ✗']),
+      ], final:'no existe: la 3d tiene solo 5 orbitales',
+      control:`Si existiera ${ml} = −3, la 3d tendría un sexto orbital, y entrarían 12 electrones y no 10 ✓` },
+  ],
+  preguntas:[
+    { p:'¿Por qué l llega solo hasta n − 1?',
+      r:'Sale de la ecuación de Schrödinger. Se ve en la tabla: la capa 1 tiene solo s, la 2 tiene s y p, la 3 tiene s, p y d.' },
+    { p:'¿El electrón gira de verdad, como un trompo?',
+      r:'No: espín es un nombre. Es una propiedad del electrón que se comporta como un imán chico, y solo tiene dos valores.' },
+    { p:'Si m_l puede ser 0, ¿por qué m_s nunca es 0?',
+      r:'Porque el espín tiene solo dos valores, +½ y −½. Es lo que mostró el experimento de Stern y Gerlach: el haz se partió en dos y no en tres.' },
+  ],
+  notas:`<p>El concepto pone cada número con lo que nombra: capa, subcapa, orbital, espín. Así el tema 1
+      no queda separado: <i>l</i> es la letra (s, p, d, f) y <i>m</i><sub><i>l</i></sub> es cuál de los
+      orbitales de esa subcapa.</p>
+    <p>El experimento de Stern y Gerlach está en el segundo artículo de Khan, con un video corto que
+      vale la pena mostrar: el haz de átomos de plata no se abre en abanico, se parte en dos.</p>
+    <p>Los ejemplos van de a un cambio: el primero existe; el segundo cambia <i>l</i> y no existe;
+      el tercero cambia <i>n</i> y vuelve a existir; el cuarto cambia <i>m</i><sub><i>l</i></sub> y no
+      existe. La pregunta es siempre la misma: ¿cada número está en el rango que le deja el anterior?</p>
+    <p>Algunos libros escriben <i>m</i> en lugar de <i>m</i><sub><i>l</i></sub>, y <i>s</i> en lugar de
+      <i>m</i><sub><i>s</i></sub>. Conviene usar los nombres del libro de la casa.</p>`
+},
+/* ─────────────────────────── 3 ─────────────────────────── */
+{
+  n:3, corto:'Configuración', titulo:'El orden de llenado y la configuración electrónica', pag:'el orden de llenado',
+  concepto:{
+    formaTxt:`primero la subcapa de menor ${n_} + ${l_}; si empatan, la de menor ${n_}`,
+    figura:FIG_DIAG,
+    puntos:[
+      'Los electrones ocupan primero las subcapas de <b>menor energía</b>.',
+      `La energía la ordena ${n_} + ${l_}: el 4s (4 + 0 = 4) va <b>antes</b> que el 3d (3 + 2 = 5).`,
+      `Se escribe ${Cf('1s^2 2s^2 2p^4')}: cada subcapa y, arriba, cuántos electrones tiene.`,
+      '<b>Control</b>: los superíndices suman Z, el número atómico.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el oxígeno', enun:'Escribí la configuración electrónica del oxígeno (Z = 8).',
+      inicio:[['O', 'Z = 8']],
+      pasos:[
+        P('1s: entran 2. Quedan 6.', [I('1s^2'), '8 − 2 = 6']),
+        P('2s: entran 2. Quedan 4.', [I('2s^2'), '6 − 2 = 4']),
+        P('2p: entran hasta 6, pero quedan 4. Van los 4.', [I('2p^4'), '4 − 4 = 0']),
+      ], final:Cf('1s^2 2s^2 2p^4'),
+      control:`Sumo los superíndices:${A('2 + 2 + 4 = 8 ✓')}` },
+    { titulo:'cambio: más electrones', enun:`Escribí la configuración electrónica del cloro (Z = ${N('17')}).`,
+      inicio:[['Cl', 'Z = 17']],
+      pasos:[
+        P('Como en el oxígeno, pero ahora el 2p se llena entero.', ['hasta 2p', '2 + 2 + 6 = 10'], ['quedan', '17 − 10 = 7']),
+        P('3s: entran 2. Quedan 5.', [I('3s^2'), '7 − 2 = 5']),
+        P('3p: quedan 5. Van los 5.', [I('3p^5'), '5 − 5 = 0']),
+      ], final:Cf('1s^2 2s^2 2p^6 3s^2 3p^5'),
+      control:`Sumo los superíndices:${A('2 + 2 + 6 + 2 + 5 = 17 ✓')}` },
+    { titulo:'cambio: el que abre el período 4', enun:`Escribí la configuración electrónica del potasio (Z = ${N('19')}).`,
+      inicio:[['K', 'Z = 19']],
+      pasos:[
+        P('Hasta el 3p, todo lleno.', ['hasta 3p', '2 + 2 + 6 + 2 + 6 = 18'], ['quedan', '19 − 18 = 1']),
+        P(`¿Sigue el 3d o el 4s? Comparo ${n_} + ${l_}.`, ['3d', '3 + 2 = 5'], ['4s', '4 + 0 = 4']),
+        P('Gana el 4s: menos energía. El último electrón va ahí.', [I('4s^1'), '1 − 1 = 0']),
+      ], final:Cf('1s^2 2s^2 2p^6 3s^2 3p^6 4s^1'),
+      control:`Sumo los superíndices:${A('2 + 2 + 6 + 2 + 6 + 1 = 19 ✓')}` },
+    { titulo:'cambio: ahora sí entra el 3d', enun:`Escribí la configuración electrónica del hierro (Z = ${N('26')}).`,
+      inicio:[['Fe', 'Z = 26']],
+      pasos:[
+        P('Hasta el 4s, todo lleno.', ['hasta 4s', '18 + 2 = 20'], ['quedan', '26 − 20 = 6']),
+        P(`Empatan el 3d y el 4p. A igual suma, va el de menor ${n_}: el 3d.`, ['3d', '3 + 2 = 5'], ['4p', '4 + 1 = 5']),
+        P('3d: entran hasta 10, pero quedan 6.', [I('3d^6'), '6 − 6 = 0']),
+      ], final:Cf('1s^2 2s^2 2p^6 3s^2 3p^6 4s^2 3d^6'),
+      control:`Sumo los superíndices:${A('2 + 2 + 6 + 2 + 6 + 2 + 6 = 26 ✓')}` },
+    { titulo:'cambio: el 3d lleno y sigue el 4p', enun:`Escribí la configuración electrónica del bromo (Z = ${N('35')}).`,
+      inicio:[['Br', 'Z = 35']],
+      pasos:[
+        P('Hasta el 3d, todo lleno: el 3d se lleva 10.', ['hasta 3d', '20 + 10 = 30'], ['quedan', '35 − 30 = 5']),
+        P('Sigue el 4p. Quedan 5.', [I('4p^5'), '5 − 5 = 0']),
+      ], final:Cf('1s^2 2s^2 2p^6 3s^2 3p^6 4s^2 3d^10 4p^5'),
+      control:`Sumo los superíndices:${A('2 + 2 + 6 + 2 + 6 + 2 + 10 + 5 = 35 ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Por qué el 4s tiene menos energía que el 3d, si 4 es más que 3?',
+      r:'Porque la energía no depende solo de la capa: la forma también cuenta. El orbital s llega más cerca del núcleo que el d, y eso lo baja. La regla n + l lo resume.' },
+    { p:'¿Siempre se cumple el orden de llenado?',
+      r:'Casi siempre. Hasta el xenón hay ocho excepciones; las más conocidas son el cromo y el cobre, que pasan un electrón del 4s al 3d. El taller las muestra.' },
+    { p:'¿Hay que aprenderse el orden de memoria?',
+      r:'No hace falta: el diagrama de las diagonales lo da. Y la tabla también: se lee de izquierda a derecha, fila por fila.' },
+  ],
+  notas:`<p>La regla <i>n</i> + <i>l</i> se llama de Madelung, y el dibujo de las diagonales, diagrama de
+      Moeller. El nombre no importa: importa que lo usen para decidir, como en el ejemplo 3, y no que
+      lo reciten.</p>
+    <p>Los cinco ejemplos van agregando electrones: el oxígeno no llega al 3s; el cloro termina en
+      3p; el potasio obliga a decidir entre 3d y 4s; el hierro decide entre 3d y 4p (empate); el bromo
+      tiene el 3d lleno. Desde el cloro, el cuaderno junta lo que ya se sabe en un renglón.</p>
+    <p>El error más común es escribir el 3d antes del 4s, o escribir el potasio como
+      1s<sup>2</sup> 2s<sup>2</sup> 2p<sup>6</sup> 3s<sup>2</sup> 3p<sup>6</sup> 3d<sup>1</sup>. Conviene
+      preguntar: ¿en qué columna de la tabla está el potasio? En la del sodio: termina en s.</p>
+    <p>Algunos libros escriben la configuración en el orden de las capas (3d antes que 4s) una vez
+      llena. En esta clase va siempre en el orden de llenado: así se lee el último electrón.</p>`
+},
+/* ─────────────────────────── 4 ─────────────────────────── */
+{
+  n:4, corto:'Diagrama de orbitales', titulo:'El diagrama de orbitales y el último electrón', pag:'Pauli y Hund',
+  concepto:{
+    serie:[
+      { rot:'Pauli', txt:'en una cajita, 2 flechas como máximo: ↑↓' },
+      { rot:'Hund', txt:'en una subcapa, primero una ↑ en cada cajita' },
+      { rot:'la convención de esta clase', txt:`cajitas de ${ml} = −${l_} a +${l_}; primero las ↑ (+½), después las ↓ (−½)` },
+    ],
+    figura:FIG_HUND,
+    puntos:[
+      'Cada orbital es una <b>cajita</b> y cada electrón, una <b>flecha</b>.',
+      'Los electrones se reparten <b>uno por cajita</b> antes de aparearse, como los pasajeros de un colectivo: nadie se sienta al lado de otro si hay un asiento doble vacío.',
+      'El último electrón que entra es el <b>diferencial</b>: sus cuatro números cuánticos identifican al elemento.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el nitrógeno', enun:'Hacé el diagrama de orbitales del nitrógeno (Z = 7) y da los números cuánticos de su último electrón.',
+      lienzo:diagrama([[1, 0, 2], [2, 0, 2], [2, 1, 3]], [[[0, 2]], [[1, 2]], [[2, 3]]], 'Las cajitas de 1s, 2s y 2p del nitrógeno'),
+      pasos:[
+        '1s: dos flechas en la misma cajita, una ↑ y otra ↓. Es lo más que entra (Pauli).',
+        '2s: lo mismo, dos más.',
+        '2p: quedan 3. Una ↑ en cada cajita, sin aparear (Hund).',
+        P('El último es la tercera flecha del 2p: la cajita de la derecha.', [n_, '2'], [l_, '1 (p)'], [ml, '+1'], [ms, '+½']),
+      ], final:Ec('(2, 1, +1, +½)'),
+      control:`Cuento las flechas:${A('2 + 2 + 3 = 7 ✓')}` },
+    { titulo:'cambio: un electrón más', enun:`El mismo diagrama para el oxígeno (Z = ${N('8')}).`,
+      lienzo:diagrama([[1, 0, 2], [2, 0, 2], [2, 1, 4]], [[[0, 2], [1, 2], [2, 3]], [[2, 4]]], 'Las cajitas de 1s, 2s y 2p del oxígeno'),
+      pasos:[
+        'Hasta el 2p con 3, igual que el nitrógeno: 7 flechas.',
+        'El octavo ya no tiene cajita vacía: se aparea ↓ en la primera del 2p.',
+        P('El último es esa ↓.', [n_, '2'], [l_, '1 (p)'], [ml, '−1'], [ms, '−½']),
+      ], final:Ec('(2, 1, −1, −½)'),
+      control:`Cuento las flechas:${A('2 + 2 + 4 = 8 ✓')}` },
+    { titulo:'cambio: una capa nueva', enun:`El diagrama del sodio (Z = ${N('11')}).`,
+      lienzo:diagrama([[1, 0, 2], [2, 0, 2], [2, 1, 6], [3, 0, 1]], [[[0, 2], [1, 2], [2, 6]], [[3, 1]]], 'Las cajitas del sodio, hasta 3s'),
+      pasos:[
+        'Hasta el 2p, todo lleno: 10 flechas, como el neón.',
+        'El undécimo abre la capa 3: una ↑ sola en el 3s.',
+        P('El último es esa ↑.', [n_, '3'], [l_, '0 (s)'], [ml, '0'], [ms, '+½']),
+      ], final:Ec('(3, 0, 0, +½)'),
+      control:`Cuento las flechas:${A('2 + 2 + 6 + 1 = 11 ✓')}` },
+    { titulo:'cambio: un 3p casi lleno', enun:`El diagrama del cloro (Z = ${N('17')}).`,
+      lienzo:diagrama([[1, 0, 2], [2, 0, 2], [2, 1, 6], [3, 0, 2], [3, 1, 5]], [[[0, 2], [1, 2], [2, 6], [3, 2]], [[4, 3]], [[4, 5]]], 'Las cajitas del cloro, hasta 3p'),
+      pasos:[
+        'Hasta el 3s, todo lleno: 12 flechas.',
+        '3p: quedan 5. Primero una ↑ en cada cajita: 3.',
+        'Las otras 2 se aparean, ↓, de izquierda a derecha.',
+        P('El último es la segunda ↓: la cajita del medio.', [n_, '3'], [l_, '1 (p)'], [ml, '0'], [ms, '−½']),
+      ], final:Ec('(3, 1, 0, −½)'),
+      control:`Cuento las flechas:${A('2 + 2 + 6 + 2 + 5 = 17 ✓')}` },
+    { titulo:'cambio: una subcapa d', enun:`El diagrama del hierro (Z = ${N('26')}).`,
+      lienzo:diagrama([[1, 0, 2], [2, 0, 2], [2, 1, 6], [3, 0, 2], [3, 1, 6], [4, 0, 2], [3, 2, 6]],
+        [[[0, 2], [1, 2], [2, 6], [3, 2], [4, 6], [5, 2]], [[6, 5]], [[6, 6]]], 'Las cajitas del hierro, hasta 3d'),
+      pasos:[
+        'Hasta el 4s, todo lleno: 20 flechas.',
+        '3d: quedan 6. Primero una ↑ en cada una de las 5 cajitas.',
+        'El sexto se aparea, ↓, en la primera: la de −2.',
+        P('El último es esa ↓.', [n_, '3'], [l_, '2 (d)'], [ml, '−2'], [ms, '−½']),
+      ], final:Ec('(3, 2, −2, −½)'),
+      control:`Cuento las flechas:${A('2 + 2 + 6 + 2 + 6 + 2 + 6 = 26 ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Por qué en el oxígeno el octavo va a la primera cajita y no a la del medio?',
+      r:'Por la convención de la clase: las ↓ van de izquierda a derecha, como las ↑. Otro libro puede usar otro orden; lo que no cambia es que se aparea recién cuando no hay cajita vacía.' },
+    { p:'En el hierro el último electrón es de la capa 3, pero el 4s ya estaba. ¿Cuál es el último?',
+      r:'El último que entra, siguiendo el orden de llenado: el del 3d. El 4s entró antes.' },
+    { p:'¿Para qué sirve saber cuántos quedan sin pareja?',
+      r:'Los desapareados son los que forman enlaces, y hacen que la sustancia sea atraída por un imán. El oxígeno tiene 2: el oxígeno líquido se pega a un imán.' },
+  ],
+  notas:`<p><b>La convención.</b> Para que los números cuánticos del último electrón tengan una sola
+      respuesta hace falta un orden para las cajitas y para los giros. En esta clase: las cajitas van
+      de <i>m</i><sub><i>l</i></sub> = −<i>l</i> a +<i>l</i>, de izquierda a derecha, y primero entra
+      +½ (↑). <b>Hay libros que empiezan por +<i>l</i>, o que ponen −½ primero</b>: con un libro que
+      empiece por +<i>l</i>, el oxígeno da (2, 1, +1, −½). Si el libro de la casa usa otra, se cambia la
+      convención y se dice en voz alta: es una convención, no una ley.</p>
+    <p>La analogía del colectivo es la de Hund; la de Pauli es más simple: en un asiento doble entran
+      dos, y mirando para lados distintos.</p>
+    <p>El ejemplo 1 hace los pasos uno por uno; desde el 2, los llenos se dibujan juntos, y se
+      detiene solo donde pasa algo (el apareamiento, la capa nueva, el d).</p>`
+},
+/* ─────────────────────────── 5 ─────────────────────────── */
+{
+  n:5, corto:'Abreviada', titulo:'La configuración abreviada y los electrones de valencia', pag:'el gas noble de antes',
+  concepto:{
+    formaTxt:'[el gas noble de antes] + lo que viene después',
+    serie:[
+      { rot:'helio', txt:'[He], Z = 2' }, { rot:'neón', txt:'[Ne], Z = 10' }, { rot:'argón', txt:'[Ar], Z = 18' },
+      { rot:'criptón', txt:'[Kr], Z = 36' }, { rot:'xenón', txt:'[Xe], Z = 54' },
+    ],
+    puntos:[
+      'Los gases nobles cierran cada fila de la tabla: tienen la capa de afuera completa y casi no reaccionan.',
+      'Lo de adentro del corchete es igual a ese gas noble. Lo de afuera son los electrones que importan.',
+      'Los de la última capa son los <b>electrones de valencia</b>: el grupo 1 tiene 1, el grupo 17 tiene 7.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el sodio', enun:'Escribí la configuración abreviada del sodio (Z = 11). ¿Cuántos electrones de valencia tiene?',
+      inicio:[['Na', 'Z = 11']],
+      pasos:[
+        P('El gas noble de antes es el neón, Z = 10.', ['[Ne]', '1s^2 2s^2 2p^6']),
+        P('Quedan los que vienen después del neón.', ['quedan', '11 − 10 = 1']),
+        P('Ese electrón va al 3s.', [I('3s^1'), '1 − 1 = 0']),
+      ], final:`${Cf('[Ne] 3s^1')}: 1 electrón de valencia`,
+      control:`La completa es ${Cf('1s^2 2s^2 2p^6 3s^1')}${A('2 + 2 + 6 + 1 = 11 ✓')}` },
+    { titulo:'cambio: el otro extremo del período 3', enun:`La abreviada del cloro (Z = ${N('17')}). ¿Cuántos de valencia?`,
+      inicio:[['Cl', 'Z = 17']],
+      pasos:[
+        P('El gas noble de antes sigue siendo el neón.', ['[Ne]', 'Z = 10'], ['quedan', '17 − 10 = 7']),
+        P('3s: entran 2. Quedan 5.', [I('3s^2'), '7 − 2 = 5']),
+        P('3p: van los 5.', [I('3p^5'), '5 − 5 = 0']),
+      ], final:`${Cf('[Ne] 3s^2 3p^5')}: 7 electrones de valencia`,
+      control:`La de valencia es la capa 3:${A('2 + 5 = 7 ✓')}Le falta 1 para la capa completa del argón.` },
+    { titulo:'cambio: un período más abajo que el sodio', enun:`La abreviada del potasio (Z = ${N('19')}).`,
+      inicio:[['K', 'Z = 19']],
+      pasos:[
+        P('El gas noble de antes es el argón, Z = 18.', ['[Ar]', 'Z = 18'], ['quedan', '19 − 18 = 1']),
+        P('Ese electrón va al 4s (tema 3).', [I('4s^1'), '1 − 1 = 0']),
+      ], final:`${Cf('[Ar] 4s^1')}: 1 electrón de valencia`,
+      control:'El sodio también termina en un s con 1: los dos están en el grupo 1 ✓' },
+    { titulo:'cambio: dos períodos más abajo', enun:`La abreviada del estroncio (Z = ${N('38')}).`,
+      inicio:[['Sr', 'Z = 38']],
+      pasos:[
+        P('El gas noble de antes es el criptón, Z = 36.', ['[Kr]', 'Z = 36'], ['quedan', '38 − 36 = 2']),
+        P('Después del criptón sigue el 5s (5 + 0 = 5, antes que el 4d).', [I('5s^2'), '2 − 2 = 0']),
+      ], final:`${Cf('[Kr] 5s^2')}: 2 electrones de valencia`,
+      control:`Sumo:${A('36 + 2 = 38 ✓')}` },
+    { titulo:'cambio: un metal de transición', enun:`La abreviada del hierro (Z = ${N('26')}).`,
+      inicio:[['Fe', 'Z = 26']],
+      pasos:[
+        P('El gas noble de antes es el argón.', ['[Ar]', 'Z = 18'], ['quedan', '26 − 18 = 8']),
+        P('4s: entran 2.', [I('4s^2'), '8 − 2 = 6']),
+        P('3d: van los 6.', [I('3d^6'), '6 − 6 = 0']),
+      ], final:`${Cf('[Ar] 4s^2 3d^6')}: 8 electrones afuera del corchete`,
+      control:`Es la del tema 3, con [Ar] en lugar de los primeros 18:${A('18 + 2 + 6 = 26 ✓')}` },
+  ],
+  preguntas:[
+    { p:'¿Por qué el corchete tiene que ser un gas noble y no cualquier elemento?',
+      r:'Porque el gas noble tiene todas sus subcapas llenas: lo de adentro no cambia y no reacciona. Con otro elemento quedaría una subcapa a medias adentro del corchete.' },
+    { p:'En el hierro, ¿los 8 de afuera son todos de valencia?',
+      r:'En los de transición se cuentan el s de afuera y el d de adentro, y eso da el grupo (tema 6). Pero no los 8 participan siempre: el hierro suele perder 2 o 3.' },
+    { p:'El sodio y el potasio terminan igual. ¿Se parecen?',
+      r:'Mucho: los dos reaccionan con agua y pierden su electrón para quedar como Na⁺ y K⁺. La misma terminación hace la misma columna, y la misma química.' },
+  ],
+  notas:`<p>El primer artículo de Khan explica la reactividad por la capa de valencia: el grupo 18 tiene la
+      capa completa y no reacciona; el grupo 1 pierde su electrón (Na⁺); el grupo 17 gana uno (Cl⁻).
+      Este tema le pone configuración a esa idea.</p>
+    <p>La serie de cajitas del concepto son los cinco corchetes posibles hasta el xenón. Conviene
+      que los tengan anotados: Z = 2, 10, 18, 36, 54.</p>
+    <p>El ejemplo del potasio y el del sodio están puestos para que vean la misma terminación una
+      fila más abajo: es la puerta al tema 6.</p>`
+},
+/* ─────────────────────────── 6 ─────────────────────────── */
+{
+  n:6, corto:'Lugar en la tabla', titulo:'Del lugar en la tabla a la configuración, y al revés', pag:'período, grupo y bloque',
+  concepto:{
+    serie:[
+      { rot:'período', txt:`el mayor ${n_}` },
+      { rot:'bloque', txt:'la última subcapa que se llena: s, p o d' },
+      { rot:'grupo, bloque s', txt:`los del ${n_}s` },
+      { rot:'grupo, bloque d', txt:`los del ${n_}s + los del (${n_} − 1)d` },
+      { rot:'grupo, bloque p', txt:`10 + los del ${n_}s + los del ${n_}p` },
+    ],
+    figura:FIG_BLOQUES,
+    puntos:[
+      'La tabla tiene la forma de las subcapas: 2 columnas de s, 10 de d y 6 de p.',
+      'Los grupos van del 1 al 18. En algunos libros, con números romanos y A o B: el 16 es el VIA.',
+      'El helio está en el grupo 18 aunque termina en s: tiene la capa completa, como los gases nobles.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'el azufre', enun:'El azufre tiene Z = 16. ¿En qué período y en qué grupo está?',
+      lienzo:TABLA('La tabla: el período 3 y el grupo 16', [2, fila(3)], [3, columna(16)], ['final', marca(16)]),
+      pasos:[
+        P('La abreviada: el gas noble de antes es el neón; quedan 6.', ['S', '[Ne] 3s^2 3p^4']),
+        P(`El mayor ${n_} es 3.`, ['período', '3']),
+        P('Termina en p: bloque p. El grupo es 10 más los de la capa 3.', ['grupo', '10 + 2 + 4 = 16']),
+      ], final:'período 3, grupo 16 (VIA): bloque p',
+      control:'El período 3 empieza en Z = 11. Cuento: 11, 12, y en el bloque p, 13, 14, 15, 16: la sexta casilla es la del grupo 16 ✓' },
+    { titulo:'cambio: bloque s', enun:`El calcio tiene Z = ${N('20')}. ¿En qué período y en qué grupo está?`,
+      lienzo:TABLA('La tabla: el período 4 y el grupo 2', [2, fila(4)], [3, columna(2)], ['final', marca(20)]),
+      pasos:[
+        P('El gas noble de antes es el argón; quedan 2.', ['Ca', '[Ar] 4s^2']),
+        P(`El mayor ${n_} es 4.`, ['período', '4']),
+        P('Termina en s: bloque s. El grupo es lo que tiene el 4s.', ['grupo', '2']),
+      ], final:'período 4, grupo 2 (IIA): bloque s',
+      control:'El período 4 empieza en el potasio, Z = 19. El 20 es la segunda casilla ✓' },
+    { titulo:'cambio: bloque d', enun:`El hierro tiene Z = ${N('26')}. ¿En qué período y en qué grupo está?`,
+      lienzo:TABLA('La tabla: el período 4 y el grupo 8', [2, fila(4)], [3, columna(8)], ['final', marca(26)]),
+      pasos:[
+        P('La del tema 5.', ['Fe', '[Ar] 4s^2 3d^6']),
+        P(`El mayor ${n_} es 4: el del 4s. El 3d es de la capa 3, pero se llena en el período 4.`, ['período', '4']),
+        P('Termina en d: bloque d. El grupo junta los del 4s y los del 3d.', ['grupo', '2 + 6 = 8']),
+      ], final:'período 4, grupo 8 (VIIIB): bloque d',
+      control:`Cuento desde el argón:${A('26 − 18 = 8 ✓')}es la octava casilla del período 4.` },
+    { titulo:'cambio: al revés, del lugar al elemento', enun:`Un elemento está en el ${N('período 4, grupo 15')}. ¿Cuál es su configuración? ¿Quién es?`,
+      lienzo:TABLA('La tabla: el período 4, el bloque p y el grupo 15', [1, fila(4)], [2, tramo(4, 13, 18)], [3, columna(15)], ['final', marca(33)]),
+      pasos:[
+        P('Período 4: empieza después del argón.', ['período 4', '[Ar] …']),
+        P('El grupo 15 está en el bloque p: antes pasan el 4s y el 3d enteros.', ['hasta 3d', '[Ar] 4s^2 3d^10']),
+        P('En el bloque p, el grupo 15 es la tercera columna: 4p con 3.', ['grupo', '10 + 2 + 3 = 15']),
+        P('Cuento los electrones.', ['Z', '18 + 2 + 10 + 3 = 33']),
+      ], final:`${Cf('[Ar] 4s^2 3d^10 4p^3')}: Z = 33, el arsénico (As)`,
+      control:'El período 4 va del 19 al 36. La casilla del grupo 15 es la 33 ✓' },
+    { titulo:'cambio: una fila más abajo', enun:`Un elemento está en el ${N('período 5, grupo 17')}. ¿Cuál es su configuración? ¿Quién es?`,
+      lienzo:TABLA('La tabla: el período 5, el bloque p y el grupo 17', [1, fila(5)], [2, tramo(5, 13, 18)], [3, columna(17)], ['final', marca(53)]),
+      pasos:[
+        P('Período 5: empieza después del criptón.', ['período 5', '[Kr] …']),
+        P('El grupo 17 está en el bloque p: antes pasan el 5s y el 4d enteros.', ['hasta 4d', '[Kr] 5s^2 4d^10']),
+        P('En el bloque p, el grupo 17 es la quinta columna: 5p con 5.', ['grupo', '10 + 2 + 5 = 17']),
+        P('Cuento los electrones.', ['Z', '36 + 2 + 10 + 5 = 53']),
+      ], final:`${Cf('[Kr] 5s^2 4d^10 5p^5')}: Z = 53, el yodo (I)`,
+      control:`El de arriba, el bromo (tema 3), termina en ${Cf('4p^5')}: la misma terminación, una capa más abajo ✓` },
+  ],
+  preguntas:[
+    { p:'¿Por qué el hierro está en el período 4 si su último electrón es de la capa 3?',
+      r:'Porque el período lo da la capa más alta que tiene electrones, y el hierro ya tiene el 4s. El 3d se llena recién en el período 4: entra tarde.' },
+    { p:'Los del mismo grupo, ¿tienen todos la misma terminación?',
+      r:'Sí, cambiando el número de la capa: el flúor, el cloro, el bromo y el yodo terminan en p con 5. Por eso la tabla se armó así, antes de saber de electrones.' },
+    { p:'¿Por qué el bloque d empieza en el período 4 y no en el 3?',
+      r:'Porque la primera d es la 3d, y se llena después del 4s: en el período 4.' },
+  ],
+  notas:`<p>Es el corazón de la clase: la tabla y la configuración son la misma información. Mendeléyev
+      armó la tabla en 1869 mirando propiedades, sin saber nada de electrones; que las columnas
+      coincidan con las terminaciones es una de las cosas lindas de la química.</p>
+    <p>Los grupos se escriben del 1 al 18 (IUPAC), y entre paréntesis con la numeración vieja de A
+      y B, que todavía usan muchos libros: grupo 16 = VIA, grupo 8 = VIIIB.</p>
+    <p>Los tres primeros ejemplos van de la configuración al lugar, uno por bloque; los dos últimos,
+      del lugar a la configuración. El 4 y el 5 son el mismo camino una fila más abajo.</p>
+    <p>El helio es la excepción de la tabla: es del bloque s y está en el grupo 18. Vale la pena que
+      lo descubran mirando la figura del concepto.</p>`
+},
+/* ─────────────────────────── 7 ─────────────────────────── */
+{
+  n:7, corto:'Hallar el elemento', titulo:'Hallar el elemento a partir de su último electrón', pag:'del último electrón al elemento',
+  concepto:{
+    formaTxt:`${n_} y ${l_} → la subcapa → ${ml} y ${ms} → cuántos electrones tiene → el lugar en la tabla`,
+    puntos:[
+      `${n_} y ${l_} dicen en qué subcapa está. ${ml} y ${ms}, con la convención de las cajitas, dicen cuántos electrones tiene.`,
+      'Con eso se arma la configuración, se cuenta Z y se busca en la tabla.',
+      '<b>Control</b>: con el elemento encontrado se hace el camino de ida, y tiene que dar el mismo electrón.',
+    ]
+  },
+  ejemplos:[
+    { titulo:'un electrón p', enun:`El último electrón de un átomo tiene ${Ec('(3, 1, 0, −½)')}. ¿Qué elemento es?`,
+      lienzo:hallar('Las cajitas del 3p y la tabla', [[3, 1]], c => [
+        [1, c.base], [1, tramo(3, 13, 18, OY)],
+        [2, flechas(1, c.pos[0], 8, 0, 5)], [2, recuadro(1, c.pos[0], 8, 5)],
+        [3, columna(17, OY)], ['final', marca(17, OY)]]),
+      pasos:[
+        P(`${n_} = 3 y ${l_} = 1: la subcapa 3p, la del bloque p del período 3.`, ['subcapa', '3p']),
+        P(`${ms} = −½: es de la segunda vuelta. Las tres ↑ ya están, y las ↓ llegan de izquierda a derecha hasta ${ml} = 0.`, ['3p', '3 + 2 = 5']),
+        P('El 3p tiene 5. Bloque p del período 3, grupo 10 más los de la capa 3.', ['grupo', '10 + 2 + 5 = 17']),
+      ], final:`el cloro, Cl: ${Cf('[Ne] 3s^2 3p^5')}`,
+      control:`De ida: Z = 17 da ${Cf('1s^2 2s^2 2p^6 3s^2 3p^5')}, y la quinta flecha del 3p es la ↓ del medio ✓` },
+    { titulo:'cambio: un electrón s', enun:`El último electrón tiene ${Ec(`(${N('4')}, ${N('0')}, 0, ${N('+½')})`)}. ¿Qué elemento es?`,
+      lienzo:hallar('La cajita del 4s y la tabla', [[4, 0]], c => [
+        [1, c.base], [1, tramo(4, 1, 2, OY)],
+        [2, flechas(0, c.pos[0], 8, 0, 1)], [2, recuadro(0, c.pos[0], 8, 1)],
+        [3, columna(1, OY)], ['final', marca(19, OY)]]),
+      pasos:[
+        P(`${n_} = 4 y ${l_} = 0: la subcapa 4s, la del bloque s del período 4.`, ['subcapa', '4s']),
+        P('Una sola cajita, y +½: es la primera flecha.', ['4s', '1']),
+        P('Bloque s: el grupo es lo que tiene el 4s.', ['grupo', '1']),
+      ], final:`el potasio, K: ${Cf('[Ar] 4s^1')}`,
+      control:`De ida: el tema 3 dio el potasio terminado en ${Cf('4s^1')}. Una flecha sola es ↑: el último es ${Ec('(4, 0, 0, +½)')} ✓` },
+    { titulo:'cambio: un electrón d', enun:`El último electrón tiene ${Ec(`(3, ${N('2')}, ${N('−1')}, −½)`)}. ¿Qué elemento es?`,
+      lienzo:hallar('Las cajitas del 3d y la tabla', [[3, 2]], c => [
+        [1, c.base], [1, tramo(4, 3, 12, OY)],
+        [2, flechas(2, c.pos[0], 8, 0, 7)], [2, recuadro(2, c.pos[0], 8, 7)],
+        [3, columna(9, OY)], ['final', marca(27, OY)]]),
+      pasos:[
+        P(`${n_} = 3 y ${l_} = 2: la subcapa 3d. Ojo: el 3d se llena en el período 4.`, ['subcapa', '3d']),
+        P(`−½: segunda vuelta. Las cinco ↑ ya están; las ↓ van por −2 y llegan a −1.`, ['3d', '5 + 2 = 7']),
+        P('Antes del 3d, el 4s lleno. Bloque d: el grupo junta 4s y 3d.', ['grupo', '2 + 7 = 9'], ['Z', '18 + 2 + 7 = 27']),
+      ], final:`el cobalto, Co: ${Cf('[Ar] 4s^2 3d^7')}`,
+      control:`El hierro (tema 4) terminaba en ${Cf('3d^6')} con la ↓ en −2. Con uno más, la ↓ pasa a −1: ${Ec('(3, 2, −1, −½)')} ✓` },
+    { titulo:'cambio: otra pista', enun:`Un átomo tiene ${N('3 electrones desapareados')} y su último electrón está en la capa 2. ¿Quién es?`,
+      lienzo:hallar('Las cajitas de la capa 2 y la tabla', [[2, 0], [2, 1]], c => [
+        [1, c.base], [1, fila(2, OY)],
+        [2, flechas(0, c.pos[0], 8, 0, 2)], [2, flechas(1, c.pos[1], 8, 0, 3)],
+        [3, columna(15, OY)], ['final', marca(7, OY)]]),
+      pasos:[
+        P('La capa 2 tiene una cajita s y tres p.', ['capa 2', '2s | 2p']),
+        P('En el 2s cabe a lo sumo un desapareado. Tres desapareados piden tres cajitas con una flecha: el 2p con 3.', ['2p', '↑ | ↑ | ↑']),
+        P('Antes, 1s y 2s llenos.', ['Z', '2 + 2 + 3 = 7'], ['grupo', '10 + 2 + 3 = 15']),
+      ], final:`el nitrógeno, N: ${Cf('1s^2 2s^2 2p^3')}`,
+      control:'Con el 2p con 4 (oxígeno) ya hay un par: quedan 2 desapareados. Con 2 (carbono), también 2. Solo el 2p con 3 da 3 ✓' },
+    { titulo:'cambio: un ion', enun:`Un ion X<sup>2−</sup> tiene la ${N('configuración del argón')}. ¿Quién es X?`,
+      lienzo:TABLA('La tabla: el argón y el elemento X', [1, foco(18)], ['final', marca(16)]),
+      pasos:[
+        P('El argón tiene 18 electrones.', ['Ar', 'Z = 18']),
+        P('El signo 2− dice que X ganó 2 electrones. El átomo neutro tenía 2 menos.', ['X', '18 − 2 = 16']),
+        P('Z = 16: período 3, bloque p.', ['grupo', '10 + 2 + 4 = 16']),
+      ], final:'el azufre: el ion es S<sup>2−</sup>',
+      control:`De ida: S es ${Cf('[Ne] 3s^2 3p^4')}; con 2 más, ${Cf('[Ne] 3s^2 3p^6')}, que es el argón ✓` },
+  ],
+  taller:'lab-elemento',
+  preguntas:[
+    { p:'¿Puede haber dos elementos con el mismo último electrón?',
+      r:'No: con la convención de las cajitas, cada cuarteto corresponde a un solo lugar de una subcapa, y cada lugar es un solo elemento. Por eso estos problemas tienen una sola respuesta.' },
+    { p:'¿Y si el libro usa otra convención?',
+      r:'Cambia el elemento. Con −½ primero, (3, 1, 0, −½) sería el 3p con 2, el silicio. Por eso hay que saber qué convención usa cada libro.' },
+    { p:'El ion S²⁻ y el argón tienen los mismos electrones. ¿Son lo mismo?',
+      r:'No: el azufre tiene 16 protones y el argón 18. Lo que cambia la química es el núcleo; los electrones solo cuentan cómo están acomodados.' },
+  ],
+  notas:`<p>Este es el tipo de problema que más aparece en las evaluaciones: dan los cuatro números y
+      piden el elemento. El camino es siempre el mismo y conviene escribirlo en el pizarrón:
+      subcapa → cuántos electrones → configuración → Z → tabla.</p>
+    <p>El ejemplo del cobalto tiene la trampa del período: el último electrón es de la capa 3, pero
+      el elemento está en el período 4. Si alguien lo busca en el período 3, preguntarle dónde está
+      el bloque d en la tabla.</p>
+    <p>El ion conecta con el primer artículo de Khan: el cloro gana un electrón (Cl⁻) y el sodio lo
+      pierde (Na⁺) para quedar como un gas noble.</p>
+    <p><b>El taller.</b> Arriba: se toca una casilla y aparece todo lo de la clase para ese elemento.
+      Abajo: se arma un cuarteto y dice de quién es, o por qué no existe. Sirve para probar los que
+      inventen los alumnos.</p>`
+},
+];
+
+/* ─────────────────────── el desafío ─────────────────────── */
+const DESAFIO = {
+  titulo:'Tres elementos con el mismo final',
+  enun:`En el período 4, ¿qué elementos tienen el último electrón con ${Ec(`${ml} = 0`)} y ${Ec(`${ms} = −½`)}?`,
+  lienzo:TABLA('La tabla: el período 4 y los tres elementos', [1, fila(4)], [2, marca(20)], [3, marca(28)], [4, marca(35)]),
+  pasos:[
+    'En el período 4 se llenan tres subcapas, en este orden: 4s, 3d y 4p. Hay que buscar en las tres.',
+    P(`4s: una sola cajita, con ${ml} = 0. El −½ es el segundo electrón.`, [I('4s^2'), '18 + 2 = 20']),
+    P(`3d: ${ml} = 0 es la cajita del medio. Con −½ es de la segunda vuelta: ↓ en −2, en −1 y en 0.`, [I('3d^8'), '20 + 8 = 28']),
+    P(`4p: ${ml} = 0 es la del medio. Segunda vuelta: ↓ en −1 y en 0.`, [I('4p^5'), '30 + 5 = 35']),
+  ],
+  final:'el calcio (Ca), el níquel (Ni) y el bromo (Br)',
+  control:'En cada subcapa hay una sola cajita con m = 0, y en ella una sola ↓. Tres subcapas, tres elementos: no hay otro ✓',
+  preguntas:[
+    { p:'¿Y en el período 3?',
+      r:'Solo dos: el magnesio (3s con 2) y el cloro (3p con 5). El período 3 no tiene d.' },
+    { p:'¿Hay algún elemento con m = 0 y +½ en el período 4?',
+      r:'Tres también, uno por subcapa: el potasio (4s con 1), el vanadio (3d con 3) y el germanio (4p con 2). Se puede comprobar con el taller.' },
+  ],
+  notas:`<p>El desafío junta todo: el orden de llenado (qué subcapas tiene el período 4), las cajitas
+      (dónde cae <i>m</i><sub><i>l</i></sub> = 0 en cada una) y la tabla (contar Z).</p>
+    <p>El error esperable es buscar solo en el 4s y el 4p, porque «es el período 4». El primer paso
+      está puesto para eso: el 3d también se llena en esta fila.</p>
+    <p>La segunda pregunta del observador es el mismo problema con +½: sale el potasio
+      (4s<sup>1</sup>), el vanadio (3d<sup>3</sup>) y el germanio (4p<sup>2</sup>). Conviene pedirla
+      antes de mostrar la respuesta, y comprobarla con el taller.</p>`
+};
+
+/* ─────────────────── la pregunta de arranque ─────────────────── */
+const PREGUNTA_INICIAL = {
+  prosa:true,
+  enun:'«En la capa 3 entran 18 electrones. Pero el período 3 de la tabla tiene solo 8 elementos: termina en el argón. ¿Dónde están los otros 10?»',
+  lienzo:TABLA('La tabla: el período 3, el potasio y los diez del bloque d', [2, fila(3)], [3, marca(19)], [4, tramo(4, 3, 12)]),
+  pasos:[
+    P('La capa 3 tiene tres subcapas: 3s, 3p y 3d.', ['capa 3', '2 + 6 + 10 = 18']),
+    P('El período 3 llena solo el 3s y el 3p: del sodio al argón.', ['período 3', '2 + 6 = 8']),
+    'El 3d tiene más energía que el 4s. Después del argón, el electrón 19 va al 4s: el potasio abre el período 4.',
+    'Recién después del calcio entra el 3d: diez elementos, del escandio al cinc.',
+  ],
+  final:'en el período 4: los diez del bloque d, del escandio al cinc',
+};
+
+const UNIDAD = {
+  preguntas:[
+    { p:'¿Para qué sirve saber la configuración?',
+      r:'Para predecir cómo reacciona un elemento: con cuántos electrones se queda, cuántos enlaces forma, si es metal o no. Es lo que se usa en todo el resto de la química.' },
+    { p:'¿Hay que aprenderse la tabla de memoria?',
+      r:'No: hay que saber leerla. Con el orden de llenado se arma la tabla entera, y con la tabla se escribe cualquier configuración.' },
+  ],
+  notas:`<p><b>Una sola clase, en siete temas.</b> Juan pidió una clase de números cuánticos y
+      configuración electrónica con problemas de hallar el elemento guiándose por la tabla. El
+      recorrido sigue los dos artículos de Khan Academy que Juan eligió: el del modelo mecánico
+      cuántico (orbital, espín, Pauli) y el de la tabla, capas y orbitales (capas, subcapas,
+      valencia, tabla). Los números cuánticos y los problemas inversos no están en esos artículos:
+      son el agregado de la clase.</p>
+    <p><b>La convención.</b> Para que los cuatro números del último electrón tengan una sola
+      respuesta, la clase fija: cajitas de <i>m</i><sub><i>l</i></sub> = −<i>l</i> a +<i>l</i> y primero
+      +½. Varía de libro en libro (ver las notas del tema 4).</p>
+    <p><b>Hasta el xenón.</b> Los ejemplos y el taller llegan a Z = 54: los períodos 6 y 7 traen el
+      bloque f, que no hace falta para entender la idea. El taller avisa las ocho excepciones al
+      orden de llenado hasta el xenón (cromo, cobre, niobio, molibdeno, rutenio, rodio, paladio y
+      plata); la clase usa la configuración de la regla, que es la que piden los ejercicios.</p>
+    <p>Cada ejemplo termina con un <b>control</b>: sumar los superíndices, contar las flechas, contar
+      casillas en la tabla, o hacer el camino de ida con el elemento encontrado.</p>`
+};
+
+/* ═══ el taller: elegí un elemento, o un electrón ═══ */
+const LABS = {
+'lab-elemento':`
+<div class="lab">
+  <h4>Elegí un elemento</h4>
+  <p class="sub">Tocá una casilla o cambiá Z con − y +: aparece todo lo de la clase para ese elemento.</p>
+  <div class="campos">
+    <div class="campo"><label for="lz-z">Z</label>
+      <div class="paso-x">
+        <button class="boton" type="button" id="lz-menos" aria-label="Restar 1">−</button>
+        <input id="lz-z" type="number" min="1" max="54" value="26">
+        <button class="boton" type="button" id="lz-mas" aria-label="Sumar 1">+</button>
+      </div></div>
+  </div>
+  <div class="lz-tabla"><svg viewBox="0 0 650 ${ALTO_T(0)}" role="img" aria-label="La tabla periódica hasta el período 5: tocá un elemento" id="lz-svg">${tabla()}</svg></div>
+  <div class="salida" id="lz-out"></div>
+
+  <h4 class="lz-tit2">Del último electrón al elemento</h4>
+  <p class="sub">Armá los cuatro números de un último electrón. Si existe, dice de qué elemento es; si no, por qué.</p>
+  <div class="campos">
+    <div class="campo"><label for="lz-n">n</label><select id="lz-n">${[1, 2, 3, 4, 5].map(v => `<option${v === 3 ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
+    <div class="campo"><label for="lz-l">l</label><select id="lz-l">${[0, 1, 2, 3].map(v => `<option${v === 1 ? ' selected' : ''}>${v}</option>`).join('')}</select></div>
+    <div class="campo"><label for="lz-m">m_l</label><select id="lz-m">${[-3, -2, -1, 0, 1, 2, 3].map(v => `<option value="${v}"${v === 0 ? ' selected' : ''}>${signo(v)}</option>`).join('')}</select></div>
+    <div class="campo"><label for="lz-s">m_s</label><select id="lz-s"><option value="1">+½</option><option value="-1" selected>−½</option></select></div>
+  </div>
+  <div class="salida" id="lz-out2"></div>
+</div>`
+};
+
+/* ═══ el armado ═══
+   La plantilla, los pasos y el movimiento están en assets/pizarra.js. */
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS, grado:'quimica' });
+
+/* ——— el taller ———
+   La misma regla de la clase: orden n + l, cajitas de −l a +l, primero ↑.
+   Las ocho excepciones hasta el xenón, con su configuración medida. */
+const EXCEPCIONES = {24:'[Ar] 4s^1 3d^5', 29:'[Ar] 4s^1 3d^10', 41:'[Kr] 5s^1 4d^4', 42:'[Kr] 5s^1 4d^5',
+                     44:'[Kr] 5s^1 4d^7', 45:'[Kr] 5s^1 4d^8', 46:'[Kr] 4d^10', 47:'[Kr] 5s^1 4d^10'};
+const ORDEN = [];
+for (let n = 1; n <= 7; n++) for (let l = 0; l < Math.min(n, 4); l++) ORDEN.push([n, l]);
+ORDEN.sort((a, b) => (a[0] + a[1]) - (b[0] + b[1]) || a[0] - b[0]);
+function cfgDe(Z){
+  const out = [];
+  let quedan = Z;
+  for (const [n, l] of ORDEN){
+    if (!quedan) break;
+    const e = Math.min(quedan, 2 * (2 * l + 1));
+    out.push([n, l, e]);
+    quedan -= e;
+  }
+  return out;
+}
+const textoCfg = c => c.map(([n, l, e]) => `${n}${'spdf'[l]}^${e}`).join(' ');
+const GASES = [[36, 'Kr'], [18, 'Ar'], [10, 'Ne'], [2, 'He']];
+function abrevDe(Z){
+  const g = GASES.find(([z]) => z < Z);
+  return g ? { gas:g, resto:cfgDe(Z).slice(cfgDe(g[0]).length) } : { gas:null, resto:cfgDe(Z) };
+}
+function difDe(Z){
+  const [n, l, e] = cfgDe(Z).slice(-1)[0], k = 2 * l + 1;
+  return e <= k ? [n, l, -l + e - 1, 1] : [n, l, -l + e - k - 1, -1];
+}
+const cuartetoTxt = ([n, l, m, s]) => `(${n}, ${l}, ${signo(m)}, ${s > 0 ? '+½' : '−½'})`;
+
+function dibujaZ(){
+  const campo = document.getElementById('lz-z');
+  let Z = Math.max(1, Math.min(54, parseInt(campo.value, 10) || 1));
+  campo.value = Z;
+  document.querySelectorAll('#lz-svg [data-z]').forEach(g => g.classList.toggle('pt-elegida', +g.dataset.z === Z));
+  const c = cfgDe(Z), ab = abrevDe(Z), [p, g] = casilla(Z), b = bloqueZ(Z), q = difDe(Z);
+  // las cajitas de lo que queda afuera del corchete
+  const subs = ab.resto, caj = cajitas(subs, 16, 14);
+  let fl = '';
+  subs.forEach(([, l, e], i) => { fl += flechas(l, caj.pos[i], 14, 0, e); });
+  const u = subs.length - 1;
+  fl += recuadro(subs[u][1], caj.pos[u], 14, subs[u][2]);
+  const ancho = caj.ancho + 32;
+  document.getElementById('lz-out').innerHTML = `
+    <div class="fila"><b>${SIM[Z - 1]}</b>, ${NOM[Z - 1]} (Z = ${Z})</div>
+    <div class="fila"><span class="dim">configuración</span> ${Cf(textoCfg(c))}</div>
+    <div class="fila"><span class="dim">abreviada</span> ${Cf((ab.gas ? `[${ab.gas[1]}] ` : '') + textoCfg(ab.resto))}</div>
+    <div class="lz-cajas"><svg viewBox="0 0 ${ancho} ${14 + CJ + 48}" style="width:${ancho}px" role="img"
+      aria-label="Las cajitas de lo que está afuera del corchete">${caj.base}${fl}</svg></div>
+    <div class="fila"><span class="dim">último electrón (n, l, m<sub>l</sub>, m<sub>s</sub>)</span> ${Ec(cuartetoTxt(q))}</div>
+    <div class="fila"><span class="dim">lugar</span> período ${p}, grupo ${g} (${AB[g - 1]}), bloque ${b}${Z === 2 ? ' <span class="dim">(el helio es s, pero va con los gases nobles)</span>' : ''}</div>
+    ${EXCEPCIONES[Z] ? `<div class="fila aviso-ex">Ojo: el ${NOM[Z - 1]} es una excepción. Medido, es ${Cf(EXCEPCIONES[Z])}: un electrón del s pasa al d, que así queda lleno o a la mitad. Los ejercicios usan la regla.</div>` : ''}`;
+}
+function dibujaCuarteto(){
+  const n = +document.getElementById('lz-n').value, l = +document.getElementById('lz-l').value;
+  const m = +document.getElementById('lz-m').value, s = +document.getElementById('lz-s').value;
+  const q = cuartetoTxt([n, l, m, s]), out = document.getElementById('lz-out2');
+  if (l > n - 1){
+    out.innerHTML = `<div class="fila">${Ec(q)}: <span class="aviso-ex">no existe</span>. Con n = ${n}, l llega hasta ${n - 1}: la capa ${n} no tiene subcapa ${'spdf'[l]}.</div>`;
+    return;
+  }
+  if (Math.abs(m) > l){
+    out.innerHTML = `<div class="fila">${Ec(q)}: <span class="aviso-ex">no existe</span>. Con l = ${l}, m<sub>l</sub> va de ${signo(-l)} a ${signo(l)}: la subcapa ${n}${'spdf'[l]} tiene ${2 * l + 1} ${l ? 'orbitales' : 'orbital'}.</div>`;
+    return;
+  }
+  const k = 2 * l + 1, e = s > 0 ? m + l + 1 : k + m + l + 1;
+  const Z = Array.from({ length:54 }, (_, i) => i + 1).find(z => difDe(z).join() === [n, l, m, s].join());
+  out.innerHTML = `<div class="fila">${Ec(q)}: la subcapa ${n}${'spdf'[l]}, con ${e} ${e === 1 ? 'electrón' : 'electrones'}.</div>` + (Z
+    ? `<div class="fila">Es el <b>${NOM[Z - 1]}</b>, ${SIM[Z - 1]} (Z = ${Z}). <button class="boton" type="button" id="lz-ver">Verlo arriba</button></div>`
+    : `<div class="fila dim">Existe, pero ningún elemento hasta el xenón (Z = 54) termina ahí.</div>`);
+  const ver = document.getElementById('lz-ver');
+  if (ver) ver.addEventListener('click', () => { document.getElementById('lz-z').value = Z; dibujaZ(); });
+}
+document.getElementById('lz-z').addEventListener('input', dibujaZ);
+document.getElementById('lz-menos').addEventListener('click', () => { const c = document.getElementById('lz-z'); c.value = (parseInt(c.value, 10) || 2) - 1; dibujaZ(); });
+document.getElementById('lz-mas').addEventListener('click', () => { const c = document.getElementById('lz-z'); c.value = (parseInt(c.value, 10) || 0) + 1; dibujaZ(); });
+document.getElementById('lz-svg').addEventListener('click', ev => {
+  const g = ev.target.closest('[data-z]');
+  if (!g) return;
+  document.getElementById('lz-z').value = g.dataset.z;
+  dibujaZ();
+});
+['lz-n', 'lz-l', 'lz-m', 'lz-s'].forEach(id => document.getElementById(id).addEventListener('change', dibujaCuarteto));
+dibujaZ();
+dibujaCuarteto();
+</script>
+
+<script src="../assets/proyeccion.js" defer></script>
+<script src="../assets/timer.js" defer></script>
+<script src="../assets/clase.js" defer></script>
+</body>
+</html>

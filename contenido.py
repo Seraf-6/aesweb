@@ -207,6 +207,24 @@ OMAPA = {
 }
 
 # ══════════════════════════════════════════════════════════════════
+#  Química
+#  Por ahora, una sola clase. Cada bloque es una sección del índice.
+# ══════════════════════════════════════════════════════════════════
+QUIMICA = [
+  {'titulo': 'Estructura del átomo',
+   'eyebrow': 'Configuración electrónica y tabla periódica',
+   'nota': 'Sigue dos artículos de Khan Academy: el modelo mecánico cuántico del átomo, '
+           'y la tabla periódica con sus capas y orbitales.',
+   'material': [
+     {'tipo': 'diapositiva', 'titulo': 'Números cuánticos y configuración electrónica',
+      'desc': 'Capas, subcapas y orbitales; los cuatro números cuánticos; el orden de llenado; '
+              'Pauli y Hund; la abreviada; el lugar en la tabla, y cómo hallar un elemento a partir '
+              'de su último electrón. Con un taller para tocar la tabla.',
+      'url': 'quimica/configuracion.html'},
+   ]},
+]
+
+# ══════════════════════════════════════════════════════════════════
 #  Fichas de ejercitación
 #  Los PDF se copian a fichas/pdf/<grado>/ al construir el sitio.
 #  Las CLAVES no van al repositorio: quedan en la computadora del docente.
