@@ -43,6 +43,8 @@ matematica/
   8vo/factoreo.html         diapositivas                 ← escritas a mano
   8vo/sistemas.html         diapositivas                 ← escritas a mano
   9no/cuadraticas.html      diapositivas                 ← escritas a mano
+  elementos/libro-1.html    Euclides, libro I (la página) ← lee libro1.js
+  elementos/libro1.js       Euclides, libro I (los datos, JSON tras el =)
 fichas/
   index.html                listado                      ← lo genera build.py
   pdf/<grado>/Ficha_NN.pdf  los archivos
@@ -56,6 +58,12 @@ progreso/index.html         progreso del tramo           ← escrita a mano
 open-2026/                  Open House 2026: piezas, salas, QR  ← lo genera build.py
 open2026/                   las piezas y las salas (la fuente), el generador, el verificador
 herramientas/               cargar la lista de alumnos, preparar audios y fotos
+valoraciones/               editor de valoraciones escritas (herramienta del docente, VACÍA) ← se entra por URL
+  index.html                el editor y las vistas Fila A, Fila B y Clave  ← escrita a mano
+  motor.js                  el motor exacto (BigInt): resolver, cuadrática, factorizar, valor numérico
+  editor.css                pantalla e impresión (A4, blanco y negro)
+  prueba_motor.js           verificador del motor
+  prueba_pagina.js          verificador de la página
 assets/
   base.css                  colores, tipografía, notación, panel de proyección
   clase.css                 los componentes de las páginas de clase
@@ -275,6 +283,78 @@ Cada página elige sus letras en cursiva con `Pizarra.letras`. Toda limpieza que
 tiene además un temporizador de respaldo (`alTerminar`): con la ventana
 oculta o el navegador ocupado el aviso de fin puede no llegar, y las cajas
 viejas quedaban acumuladas.
+
+**Las diapositivas de teoría** (`teoria-diapo`) son una idea por diapositiva:
+una palabra nueva, un postulado, un teorema, una estrategia. Cada una dice en
+qué cajón de la caja de herramientas va (`cajon`: definicion, postulado,
+nocion, teorema, construccion, estrategia o lenguaje; el color sale de ahí),
+con su enunciado, una o dos líneas más, una comparación (`como`), su dibujo
+y la fuente. Aparecen por partes, como los pasos de un ejemplo. **Al
+principio se ve solo el título y una pregunta** (`pregunta`, obligatoria: la
+piensan ellos antes de ver nada); con «Siguiente», el enunciado con su dibujo
+(el dibujo está desde el principio solo si la pregunta lo necesita:
+`verFigura`), la caja, la respuesta (`revela`), cada línea más y la
+comparación. Van **justo antes del ejemplo donde la palabra aparece por
+primera vez** (`ej.antes:[…]`), al final de un tema (`t.despues`, como la
+caja llena al terminar la clase) o al principio de la unidad (`INICIO`, en
+el lugar `#teoria-inicio` de la página). Si la página tiene
+`#arranque-lugar`, la pregunta de arranque sale de la introducción y va en
+su propia diapositiva. La página agrega `.arranque, .teoria-diapo` a
+`data-diapos`. Lo pidió Juan: el lenguaje también se enseña, y nada de una
+sola diapositiva cargada de recuadros.
+
+**Los Elementos de Euclides** (`matematica/elementos/`) son el material de
+referencia completo del libro I, pedido por Juan el 28/10: no es una clase,
+es el libro. Cada entrada (definición, postulado, noción común, proposición)
+trae **dos versiones**, como pidió Juan: la edición de Madrid de 1774 (sobre
+el latín de Comandino, con las notas de Simson) y un dicho sencillo. **El
+texto antiguo va con letra de imprenta vieja sobre papel envejecido**
+(`elementos/antiguo.css`, fuente IM Fell English): Juan probó recortes del
+escaneo y no le gustaron. Después, la figura del enunciado; **la demostración
+paso a paso con «Siguiente», donde la figura se construye con regla y compás**
+(`elementos/construcciones.js`: la regla se apoya y el lápiz traza, el compás
+se abre de centro a radio, gira una vuelta y se retira; lo que el paso declara
+igual se resalta y queda con su rayita; un dibujo por paso del texto).
+**Cuando una proposición usa la construcción de otra anterior, sus pasos se
+hacen uno por uno** como subpasos (2.1, 2.2…, `{ sub:true }`), sin volver a
+demostrarlos, con sus trazos como ayudas tenues (`aux:N`) que se borran al
+terminar: así lo pidió Juan, porque se ve lo que de verdad hace el compás
+(en la I.3, el segmento copiado queda girado). Todo segmento lleva dos letras
+aunque Euclides lo nombre con una («la recta C»): eso se cuenta en la
+historia. **Los ángulos iguales se marcan con el mismo color, no con arcos
+dobles o triples**: un arco y su cuña pintada (`color:1` a `4`), y los dos del
+par con el mismo radio. Juan encontró confusos los arcos múltiples, y los
+triples engañan a la vista porque se ven más grandes. Si un ángulo está
+adentro de otro en el mismo vértice, el entero va solo con su arco
+(`cuna:false`) y las partes pintadas adentro. Las proposiciones llevan color según su clase: **teoremas en rojo, problemas
+(construcciones) en azul** (`cajonDe`, `[data-cajon="problema"]`), en el chip y en el
+índice, que tiene su leyenda; lo pidió Juan. Una entrada puede tener un
+**corolario** (`corolario`: el texto de 1774 y uno sencillo) y un **desafío**
+(`desafio`: enunciado, qué explorar, comandos de GeoGebra, lo que hace falta
+saber, pista y solución desplegables). El primero lo pidió Juan en la I.2:
+AL forma siempre 120° con AB, algo que se demuestra recién con las I.13 y
+I.32. Lo demás de la entrada: la
+demostración de 1774 con sus citas clicables (`[[id|texto]]`); «¿Qué necesito
+antes?» (lo que usa y toda la cadena) e historia. **Zamorano (Sevilla, 1576)
+va en la historia**, con la misma letra antigua: sirve para enriquecerla.
+`herramientas/recortes_elementos.py` saca las páginas del prólogo a
+`elementos/img/`. Los prólogos van completos, cada uno en su página,
+**por partes**: el texto antiguo, «en pocas palabras» y bloques «detrás de la
+historia» que aparecen con Siguiente (`prologo-zamorano.html` es el modelo).
+Lo que se afirma en la historia es lo seguro; lo dudoso se dice como dudoso. **La numeración es la de hoy** (23 definiciones, 5 postulados, 5
+nociones comunes); al lado va el número de cada edición (en 1774, el
+postulado 5 es el axioma XII). **El vínculo con las clases va y vuelve**: la
+diapositiva lleva `elementos:[[id, nombre]]` y la entrada, `enClase`; el
+verificador `elementos_libro1.py` falla si falta una de las dos puntas, si
+una proposición usa algo posterior o si quedó un error del OCR de 1774 («reda»
+por «recta»). Los escaneos están fuera del repo, en `../fuentes/`; Zamorano no
+tiene texto reconocido (se transcribe mirando la página), 1774 sí (OCR de
+Google Books, que hay que corregir). Transcripción con ortografía original;
+en Zamorano la ſ larga va como s y las abreviaturas se desarrollan.
+
+**El dibujo se puede tapar** desde Proyección → Dibujo → Ocultar, para que
+los chicos lo hagan a partir del enunciado. Se tapa sin mover nada (queda el
+lugar libre) y no se guarda: al pasar a otra diapositiva, vuelve.
 
 **Lo nuevo va resaltado** con `N()`: lo que se agrega a los dos miembros (el
 `+ 5`, el `· 2`, el m.c.m. adelante de cada término), el valor que se
@@ -661,6 +741,92 @@ sección "Dos nombres reservados".
 
 ---
 
+## El editor de valoraciones
+
+`valoraciones/index.html` es la herramienta para armar, editar e imprimir las
+valoraciones escritas de unidad. No está en `contenido.py` ni en la portada:
+no es material de alumno, se entra por la dirección
+(`…/aesweb/valoraciones/`). Se abre con doble clic, anda sin conexión y no
+tiene dependencias: la matemática la dibuja el motor en HTML y CSS, sin KaTeX.
+
+**Ningún contenido de valoración entra al repositorio**, ni como ejemplo. Lo
+que se versiona es la herramienta vacía. Lo que Juan escribe queda en el
+`localStorage` de su navegador (clave `aesweb-valoraciones`, guardado
+automático después de cada cambio) y se respalda con «Exportar esta» o
+«Respaldo completo», que bajan un `.json` que él guarda fuera del repo. Con
+«Importar…» se abre uno, para pasar de una computadora a otra o editar una
+vieja. `.gitignore` rechaza `valoraciones/*.json` y `valoraciones/respaldos/`.
+La página abre con un ítem de muestra evidentemente ficticio (`2x + 1 = 7`).
+
+**El modelo.** `{ grados: [valoración, …] }`. Una valoración tiene `nombre`
+(«7.º grado»), `unidad` («Unidad 7»), `numero` (el del título), `titulo`,
+`anio`, `docentes`, `capacidades`, `consignas` e `items`. Un ítem: `tema`,
+`indicador`, `tipo`, `enunciado`, `formulas`, `respuesta` (solo en
+`redactado`), `clave` (el desarrollo), `pts`, `espacio` (cm) y, en las
+cuadráticas, `pide` (qué datos entran en la respuesta). El enunciado es prosa
+con marcadores `{1}`, `{2}`… que se reemplazan por las fórmulas: el lenguaje y
+las ecuaciones se editan por separado. Además, `**negrita**`, `*cursiva*` y
+`` `x^2` `` para una fórmula suelta; un renglón con solo marcadores sale
+aparte y con sangría.
+
+**Los tipos.** `resolver`, `cuadratica`, `factorizar` y `valor`: la respuesta
+la calcula el motor y se verifica por otro camino (sustituir en la ecuación
+tal como está escrita; en la cuadrática, raíces, vértice y ordenada
+sustituidos en la función, y Δ, suma y producto cruzados; en la
+factorización, desarrollar las dos; en el valor numérico, desarrollar el
+polinomio y sumar término a término). `redactado`: la respuesta la escribe
+Juan y queda marcada «sin verificación automática», en otro color. Los
+errores del motor se muestran tal cual, al lado del campo.
+
+**Los avisos** son errores que ya pasaron: dos ítems con la misma respuesta
+final, una fórmula que no parsea o no verifica, un «justificá» o «explicá»
+con un número pelado como respuesta, la respuesta escrita en el propio
+enunciado, una fórmula que no se usa, un ítem sin indicador.
+
+**Las filas y la hoja.** La B rota de a tres ((a, b, c) → (c, a, b), y si
+sobran dos se intercambian); con 3k + 1 ítems el último no se mueve, y el
+editor lo avisa. La hoja sigue el formato de la valoración de noviembre de
+`Proyecto OMAPA/04-valoraciones` (ver su CLAUDE.md, «Formato institucional»):
+membrete con los dos logos, título en rojo (el único color), «Fila», T. P.
+como suma de los pts, capacidades e indicadores en un recuadro de línea a
+6,6 pt con el número de ítem de cada fila, consignas, ítems con su puntaje al
+margen y su espacio, y la rejilla de 3 × 5 sin rótulos al pie, pegada al
+último ítem para que no quede sola. **Nada lleva fondo**: lo que pinta fondos
+en `editor.css` está dentro de `@media screen`. Se imprime con Ctrl+P (A4,
+márgenes predeterminados, sin los encabezados del navegador); el pie
+«Dpto. de Evaluación · n · Coordinación» lo ponen las cajas de margen de
+`@page`, que Chrome y Edge respetan. Si se imprime desde el editor, sale la
+fila A. El nombre que propone el PDF es el de siempre: «Valoración U7 - 7mo
+grado - Fila A», «Clave de corrección U7 - 7mo grado».
+
+**El código.** La lógica pura (respuestas, avisos, las hojas como HTML) está
+en `<script id="nucleo">` y no toca el DOM; el bloque siguiente es la
+interfaz. `motor.js` no se toca salvo por un error real, y primero se agrega
+el caso a `prueba_motor.js`; tampoco se extiende fuera del programa del ciclo
+(nada de trigonometría, logaritmos, sistemas ni grado 3). La alineación de
+las fracciones se corrige en `editor.css` (`vertical-align: middle`), no en
+el `CSS_MATEMATICA` del motor.
+
+**Verificar.** Con Node, sin dependencias:
+
+```bash
+node valoraciones/prueba_motor.js
+node valoraciones/prueba_pagina.js
+node valoraciones/prueba_pagina.js "C:/…/Respaldo valoraciones 2026-10-30.json"
+```
+
+`prueba_pagina.js` levanta el bloque `nucleo` del HTML, arma las hojas de
+una valoración ficticia generada y controla que las dos filas tengan los
+mismos ítems en distinto lugar, que ninguna respuesta esté en su enunciado,
+que la hoja del alumno no traiga nada de la clave, que el total sea la suma
+de los pts, que la rejilla sea de 3 × 5 y que no haya fondos fuera de
+`@media screen`. Con un respaldo como argumento hace lo mismo con las
+valoraciones de verdad, sin que entren al repositorio. En esta computadora no
+hay Node instalado: se puede usar el de VS Code,
+`ELECTRON_RUN_AS_NODE=1 "$LOCALAPPDATA/Programs/Microsoft VS Code/Code.exe" valoraciones/prueba_pagina.js`.
+
+---
+
 ## Lo que NO va en este repositorio
 
 **Las claves de corrección.** Se decidió a propósito. En un repositorio público
@@ -749,6 +915,12 @@ Las fuentes (Alegreya, Alegreya Sans, IBM Plex Mono) se cargan desde Google
 Fonts. Sin conexión el sitio funciona igual, pero cae a las alternativas
 del sistema (Georgia y la sans del sistema operativo).
 
+**Toda página de clase pide Alegreya con la cursiva negrita** (`1,700` en
+`family=Alegreya:ital,wght@0,500;0,700;0,800;1,500;1,700`): los rótulos de
+las figuras (`.g-rot`, los puntos de las construcciones) son cursiva 700. Sin
+ella, el navegador la fabrica a partir de la cursiva 500, y con el halo de los
+rótulos algunas letras (la A, la E) salían con el relleno gris.
+
 Para que también la tipografía ande sin conexión: bajar los `.woff2`, ponerlos
 en `assets/fuentes/`, agregar las reglas `@font-face` al principio de
 `base.css` y sacar el `<link>` de Google de las plantillas en `build.py` y de
@@ -758,9 +930,9 @@ las páginas de clase.
 
 ## Estado actual
 
-Hecho: portada, índices de los tres grados, listado de fichas con 29 PDF,
+Hecho: portada, índices de los tres grados, listado de fichas con 28 PDF,
 las diapositivas de 7.º (ecuaciones lineales, ángulos y polígonos, y el bloque A de la
-geometría a la manera de los griegos, con su ficha 13) y las tres de 8.º
+geometría a la manera de los griegos, todavía sin ficha) y las tres de 8.º
 (factoreo, expresiones racionales y sistemas), la de ecuaciones de segundo grado de 9.º
 (unidades 5 y 6), todas sobre el motor de la pizarra, con su
 verificador; el panel de proyección, el timer de aula y el módulo de

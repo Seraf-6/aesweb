@@ -46,8 +46,6 @@ GRADOS = [
         'desc': 'Opuestos por el vértice y paralelas cortadas por una secante, demostrados con R3 y R4 '
                 'y usados en problemas de la OMA. Dos clases, A1 y A2, y un desafío del Intercolegial.',
         'url': 'matematica/7mo/euclides-angulos.html'},
-       {'tipo': 'ficha', 'titulo': 'Bloque A: opuestos y paralelas',
-        'desc': 'Ficha 13.', 'url': 'fichas/index.html#7mo'},
        {'tipo': 'pendiente', 'titulo': 'Bloque B · Construcciones con regla y compás',
         'desc': 'El triángulo de Euclides y los criterios, paralela, perpendicular, mediatriz, bisectriz.'},
        {'tipo': 'pendiente', 'titulo': 'Bloque C · Triángulos',
@@ -272,7 +270,6 @@ FICHAS = {
   (10, 'Polígonos y clasificación'),
   (11, 'Triángulos y sus ángulos'),
   (12, 'Ecuaciones lineales — 128 ejercicios graduados'),
-  (13, 'Geometría griega · bloque A: opuestos y paralelas'),
  ],
  '8vo': [
   (1,  'Miscelánea de factoreo'),

@@ -1,0 +1,378 @@
+/* ═══════════════════════════════════════════════════════════════
+   Editor de valoraciones · estilos
+
+   Tres partes:
+   1. La hoja (alumno y clave). Vale para la pantalla y para el papel.
+      NINGÚN FONDO: las valoraciones se fotocopian, y un bloque gris
+      sale como una mancha que compite con la letra. Todo recuadro es
+      de línea; lo que se destaca va en negro y negrita. El único color
+      es el título del membrete.
+   2. @media screen: la interfaz del editor. Acá sí hay fondos, porque
+      no se imprime.
+   3. @media print: A4, márgenes del colegio, pie de página, y fuera
+      todo lo que es interfaz.
+
+   prueba_pagina.js controla que fuera de @media screen no haya ningún
+   background pintado.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. la hoja ─────────────────────────────────────────────────── */
+.hoja {
+  --tinta-hoja: #000;
+  --rojo-membrete: #C8102E;
+  font-family: "Latin Modern Roman", "CMU Serif", Cambria, Georgia, "Times New Roman", serif;
+  font-size: 10.5pt;
+  line-height: 1.45;
+  color: var(--tinta-hoja);
+  text-align: left;
+}
+.hoja .mat { font-family: inherit; }
+.hoja b { font-weight: 700; }
+
+.membrete {
+  display: grid;
+  grid-template-columns: 2.6cm 1fr 2.6cm;
+  align-items: center;
+  margin-bottom: 4pt;
+}
+.membrete .logo { height: 1.45cm; width: auto; }
+.membrete .logo:last-child { justify-self: end; height: 1.15cm; }
+.membrete .inst { display: flex; flex-direction: column; align-items: center; gap: 3pt; font-size: 9pt; }
+.membrete .inst b { font-size: 12.5pt; letter-spacing: .04em; }
+
+.titulo {
+  margin: 4pt 0 2pt;
+  text-align: center;
+  font-size: 17pt;
+  font-weight: 400;
+  letter-spacing: .02em;
+  color: var(--rojo-membrete);
+}
+.subtitulo { margin: 0; text-align: center; font-weight: 700; font-size: 11pt; }
+.materia { margin: 3pt 0 10pt; text-align: center; font-size: 9pt; }
+.bul { margin: 0 .35em; }
+
+.datos { margin-bottom: 8pt; }
+.dl { display: flex; align-items: baseline; gap: 5pt; margin: 0 0 8pt; }
+.raya { display: inline-block; border-bottom: .6pt solid var(--tinta-hoja); height: 1em; }
+.raya.larga { flex: 1; margin-right: 14pt; }
+.raya.corta { width: 1.4cm; margin-right: 14pt; }
+.raya.mini { width: .9cm; }
+.raya.media { width: 2.6cm; margin-right: auto; }
+.dl .tp { margin-right: auto; }
+.dl b + .raya.media:last-child { margin-right: 0; }
+
+.capind {
+  border: .6pt solid var(--tinta-hoja);
+  padding: 3pt 6pt;
+  font-size: 6.6pt;
+  line-height: 1.3;
+  text-align: justify;
+  margin-bottom: 7pt;
+}
+.capind p { margin: 0 0 2pt; }
+.capind p:last-child { margin-bottom: 0; }
+
+.consignas {
+  border: .8pt solid var(--tinta-hoja);
+  padding: 4pt 7pt;
+  font-size: 10pt;
+  line-height: 1.35;
+  margin-bottom: 10pt;
+}
+.consignas p { margin: 0 0 3pt; }
+.consignas p:last-child { margin-bottom: 0; }
+
+/* un ítem: número, enunciado, puntaje al margen; la raya; el espacio */
+.item { margin: 0; }
+.item-cab {
+  display: grid;
+  grid-template-columns: 2.1em 1fr auto;
+  column-gap: 4pt;
+  align-items: baseline;
+  padding: 7pt 0 4pt;
+  border-bottom: .5pt solid #777;
+}
+.item-n, .k-cab .item-n { font-weight: 700; }
+.item-pts { font-size: 8.5pt; white-space: nowrap; padding-left: 10pt; }
+.item-enun .r { min-height: 1.45em; }
+.item-enun .f-sola { padding-left: 1.2em; margin: 2pt 0; }
+/* sin margen propio: el espacio alrededor de una fórmula es el que se
+   escribió (si no, quedaba «x = −3 .» con el punto despegado) */
+.item-enun .mat, .k-des .mat, .k-resp .mat { margin: 0; }
+.item-espacio { display: block; }
+
+/* las fracciones necesitan aire entre renglones, y la raya va a la altura
+   del + y del =: con el vertical-align de CSS_MATEMATICA los signos
+   quedaban por encima de la raya */
+body .frac { vertical-align: middle; line-height: 1.15; }
+.hoja .frac { margin-top: 2pt; margin-bottom: 2pt; }
+
+/* el recuadro de respuestas finales */
+.respuestas { margin-top: 14pt; }
+.resp-tit { font-size: 7.5pt; margin: 0 0 3pt; }
+.resp-tit b { font-size: 8.5pt; }
+.rejilla { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.rejilla td {
+  border: .6pt solid var(--tinta-hoja);
+  height: .95cm;
+  vertical-align: top;
+  padding: 2pt 4pt;
+  font-size: 8pt;
+}
+.rj-n { font-weight: 700; margin-right: 4pt; }
+.rj-r { font-size: 9pt; }
+
+/* la clave */
+.hoja-clave .consignas { font-size: 9.5pt; }
+.k-item { padding: 5pt 0 6pt; border-bottom: .5pt solid #999; }
+.k-meta { margin: 0 0 2pt; font-size: 7.5pt; font-style: italic; }
+.k-cab { display: grid; grid-template-columns: 2.1em 1fr; column-gap: 4pt; align-items: baseline; }
+.k-resp { margin: 4pt 0 2pt 2.1em; }
+.k-alerta { text-decoration: underline; }
+.k-des { margin-left: 2.1em; font-size: 9.5pt; }
+.k-des .r { min-height: 1.4em; }
+.k-rejillas { margin-top: 12pt; }
+.k-rej { margin-bottom: 10pt; }
+.k-rej .rejilla td { height: auto; min-height: .95cm; }
+.k-rej .rejilla .mat { white-space: normal; }
+
+.f-mal { text-decoration: underline wavy; }
+
+/* ── 2. la interfaz (solo pantalla) ─────────────────────────────── */
+@media screen {
+  :root {
+    --papel: #F3F5F7;
+    --blanco: #FFFFFF;
+    --linea: #DBE4EA;
+    --linea-fuerte: #B9C7D2;
+    --tinta: #16283A;
+    --lapiz: #5D7080;
+    --acento: #C8102E;
+    --acento-suave: #FCEEF0;
+    --ok: #0B6E75;
+    --ok-suave: #E3F3F3;
+    --manual: #8A5A00;
+    --manual-suave: #FFF3D6;
+    --mal: #B3261E;
+    --mal-suave: #FDECEA;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--papel);
+    color: var(--tinta);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  button, select, input, textarea { font: inherit; color: inherit; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: .9em; background: var(--papel); padding: 0 .25em; border-radius: 3px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: .3em;
+    border: 1px solid var(--linea-fuerte); background: var(--blanco);
+    border-radius: 6px; padding: .35em .75em; cursor: pointer; white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--tinta); }
+  .btn:focus-visible, .pestanas button:focus-visible { outline: 2px solid var(--acento); outline-offset: 1px; }
+  .btn-fuerte { background: var(--tinta); color: var(--blanco); border-color: var(--tinta); }
+  .btn-peligro { color: var(--mal); border-color: #E3B4B0; }
+  .btn-peligro:hover { border-color: var(--mal); }
+  .btn-ancho { width: 100%; justify-content: center; margin-top: 8px; }
+  .nota { color: var(--lapiz); font-size: .88em; }
+
+  /* barra superior */
+  .barra {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--blanco); border-bottom: 1px solid var(--linea);
+    padding: 8px 16px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .barra-fila { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+  .marca { font-size: 1.05em; color: var(--acento); letter-spacing: .02em; }
+  .sel-val select { max-width: min(52ch, 70vw); padding: .3em .4em; border: 1px solid var(--linea-fuerte); border-radius: 6px; background: var(--blanco); }
+  .total { margin-left: auto; color: var(--lapiz); }
+  .total b { color: var(--tinta); font-size: 1.15em; }
+  .pestanas { display: inline-flex; border: 1px solid var(--linea-fuerte); border-radius: 8px; overflow: hidden; }
+  .pestanas button { border: 0; background: var(--blanco); padding: .35em .9em; cursor: pointer; border-right: 1px solid var(--linea); }
+  .pestanas button:last-child { border-right: 0; }
+  .pestanas button[aria-pressed="true"] { background: var(--tinta); color: var(--blanco); }
+  .archivo { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+  .guardado { color: var(--lapiz); font-size: .85em; margin-left: auto; }
+  .guardado-mal { color: var(--mal); font-weight: 600; }
+
+  /* editor: lista a la izquierda, ítem a la derecha */
+  #editor {
+    display: grid; grid-template-columns: minmax(250px, 320px) 1fr;
+    gap: 16px; padding: 16px; max-width: 1400px; margin: 0 auto; align-items: start;
+  }
+  body:not([data-vista="editor"]) #editor { display: none; }
+  .lado { position: sticky; top: 104px; max-height: calc(100vh - 120px); overflow: auto; padding-right: 2px; }
+  .lista-datos {
+    width: 100%; text-align: left; padding: 8px 10px; margin-bottom: 8px; cursor: pointer;
+    border: 1px solid var(--linea); border-radius: 8px; background: var(--blanco); font-weight: 600;
+  }
+  .lista-datos[aria-current="true"] { border-color: var(--tinta); box-shadow: inset 3px 0 0 var(--acento); }
+  .lista-items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .lista-items li {
+    display: grid; grid-template-columns: 1.6em 1fr auto auto auto; align-items: center; gap: 6px;
+    padding: 6px 6px 6px 8px; border: 1px solid var(--linea); border-radius: 8px;
+    background: var(--blanco); cursor: pointer; font-size: .92em;
+  }
+  .lista-items li:hover { border-color: var(--linea-fuerte); }
+  .lista-items li[aria-current="true"] { border-color: var(--tinta); box-shadow: inset 3px 0 0 var(--acento); }
+  .lista-items li.arrastrando { opacity: .4; }
+  .lista-items li.sobre { border-color: var(--acento); border-style: dashed; }
+  .li-n { font-weight: 700; color: var(--lapiz); text-align: right; }
+  .li-t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .li-p { color: var(--lapiz); font-variant-numeric: tabular-nums; }
+  .li-flechas { display: inline-flex; }
+  .li-flechas button {
+    border: 1px solid transparent; background: transparent; cursor: pointer; padding: 0 .3em;
+    border-radius: 4px; color: var(--lapiz); line-height: 1.4;
+  }
+  .li-flechas button:hover:not(:disabled) { border-color: var(--linea-fuerte); color: var(--tinta); }
+  .li-flechas button:disabled { opacity: .25; cursor: default; }
+  .punto { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .e-ok { background: var(--ok); }
+  .e-manual { background: #D49B1F; }
+  .e-falla, .e-error { background: var(--mal); }
+  .e-vacio { background: transparent; border: 1.5px solid var(--linea-fuerte); }
+
+  .avisos { margin-top: 14px; font-size: .88em; }
+  .avisos h2 { font-size: 1em; margin: 0 0 6px; }
+  .avisos ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .avisos li { padding: 6px 8px; border-radius: 6px; border-left: 3px solid; }
+  .avisos li[data-ir] { cursor: pointer; }
+  .av-error { background: var(--mal-suave); border-color: var(--mal) !important; }
+  .av-aviso { background: var(--manual-suave); border-color: #D49B1F !important; }
+  .sin-avisos { color: var(--ok); margin: 0; }
+
+  .panel {
+    background: var(--blanco); border: 1px solid var(--linea); border-radius: 10px;
+    padding: 16px 18px 22px; min-width: 0;
+  }
+  .panel-cab { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+  .panel-tit { font-size: 1.15em; margin: 0 0 10px; }
+  .acciones { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+  .panel > .acciones { margin-top: 14px; }
+  .sub { font-size: .8em; text-transform: uppercase; letter-spacing: .06em; color: var(--lapiz); margin: 16px 0 6px; }
+  .ayuda { color: var(--lapiz); font-size: .86em; margin: 4px 0 8px; }
+
+  .campo { display: flex; flex-direction: column; gap: 3px; margin: 0 0 10px; flex: 1; min-width: 0; }
+  .campo > span { font-weight: 600; font-size: .9em; }
+  .campo small { font-weight: 400; color: var(--lapiz); }
+  .campo input, .campo select, .campo textarea, .formula input {
+    width: 100%; padding: .4em .55em; border: 1px solid var(--linea-fuerte); border-radius: 6px; background: var(--blanco);
+  }
+  .campo textarea { resize: vertical; line-height: 1.4; }
+  .campo input:focus, .campo select:focus, .campo textarea:focus, .formula input:focus { outline: 2px solid var(--acento); outline-offset: -1px; border-color: transparent; }
+  .campo .corto, .campo input.corto { max-width: 9em; }
+  .fila-campos { display: flex; gap: 12px; flex-wrap: wrap; }
+  .fila-campos > .campo { min-width: 12em; }
+
+  .formulas { border: 1px solid var(--linea); border-radius: 8px; padding: 8px 12px 12px; margin-bottom: 10px; }
+  .formula { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; margin-bottom: 10px; align-items: end; }
+  .formula label { display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 3px 6px; font-size: .9em; }
+  .formula label input { grid-column: 1 / -1; }
+  .formula input { font-family: ui-monospace, Consolas, monospace; font-size: 1.02em; }
+  .marcador { font-family: ui-monospace, Consolas, monospace; font-weight: 700; color: var(--acento); }
+  .f-rot { font-weight: 600; }
+  .btn-x { border: 1px solid var(--linea-fuerte); background: var(--blanco); border-radius: 6px; width: 2em; height: 2.1em; cursor: pointer; }
+  .f-vivo { grid-column: 1 / -1; min-height: 1.4em; padding: 2px 4px; font-size: 1.12em; }
+  .f-vivo .mat { font-family: Georgia, "Times New Roman", serif; }
+  .f-error { color: var(--mal); font-size: .85em; font-family: system-ui, sans-serif; }
+
+  .pide { border: 1px solid var(--linea); border-radius: 8px; padding: 6px 12px 10px; margin: 0 0 10px; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+  .pide legend { font-weight: 600; font-size: .9em; padding: 0 4px; }
+  .pide label { display: inline-flex; gap: 5px; align-items: center; }
+
+  /* la hoja en miniatura, dentro del editor */
+  .hoja-vivo {
+    background: var(--blanco); border: 1px solid var(--linea); border-radius: 4px;
+    padding: 2px 14px 8px; margin-bottom: 12px; max-width: 18cm;
+    box-shadow: 0 1px 3px rgba(22, 40, 58, .08);
+  }
+  .k-des-vivo { padding: 8px 14px; font-size: 10pt; }
+  .nada { color: var(--lapiz); font-style: italic; font-family: system-ui, sans-serif; font-size: 13px; }
+
+  .respuesta-viva { border: 1px solid var(--linea); border-radius: 8px; padding: 8px 12px; margin: 0 0 14px; border-left-width: 4px; }
+  .rv-ok { border-left-color: var(--ok); background: var(--ok-suave); }
+  .rv-manual { border-left-color: #D49B1F; background: var(--manual-suave); }
+  .rv-falla, .rv-error { border-left-color: var(--mal); background: var(--mal-suave); }
+  .rv-vacio { border-left-color: var(--linea-fuerte); }
+  .rv-cab { display: flex; align-items: center; gap: 10px; }
+  .rv-rot { font-weight: 600; font-size: .9em; }
+  .rv-valor { font-family: Georgia, "Times New Roman", serif; font-size: 1.25em; margin: 4px 0; }
+  .rv-msj { font-size: .86em; color: var(--lapiz); }
+  .rv-falla .rv-msj, .rv-error .rv-msj, .rv-mal { color: var(--mal); font-weight: 600; }
+  .rv-detalle { display: flex; flex-wrap: wrap; gap: 2px 18px; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--linea-fuerte); font-size: .88em; }
+  .rv-detalle span { font-family: Georgia, serif; }
+  .rv-detalle b { font-family: system-ui, sans-serif; font-weight: 600; color: var(--lapiz); }
+  .chip { font-size: .78em; padding: 1px 8px; border-radius: 99px; font-weight: 600; }
+  .chip-ok { background: var(--ok); color: var(--blanco); }
+  .chip-manual { background: #D49B1F; color: var(--blanco); }
+  .chip-falla, .chip-error { background: var(--mal); color: var(--blanco); }
+  .chip-vacio { border: 1px solid var(--linea-fuerte); color: var(--lapiz); }
+  .campo-manual textarea { border-color: #D49B1F; background: #FFFBF0; }
+  .etiqueta-manual { color: var(--manual) !important; font-weight: 600 !important; }
+
+  .f-mal { color: var(--mal); }
+
+  /* las vistas de impresión, en pantalla: una hoja A4 */
+  .vista-barra { display: none; }
+  body:not([data-vista="editor"]) .vista-barra {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+    max-width: 21cm; margin: 16px auto 0; padding: 0 16px;
+  }
+  #vista-nombre { font-weight: 600; }
+  body[data-vista="editor"] #impresion { display: none; }
+  #impresion > .hoja {
+    background: var(--blanco); width: 21cm; max-width: calc(100vw - 32px);
+    margin: 12px auto 40px; padding: 1.3cm 1.6cm 1.7cm;
+    box-shadow: 0 2px 10px rgba(22, 40, 58, .15);
+  }
+  .hoja-alumno .item-espacio { border-bottom: 1px dashed #E6EBEF; }
+
+  /* confirmaciones */
+  .modal { position: fixed; inset: 0; z-index: 20; background: rgba(22, 40, 58, .45); display: grid; place-items: center; padding: 16px; }
+  .modal[hidden] { display: none; }
+  .modal-caja { background: var(--blanco); border-radius: 10px; padding: 18px 20px; max-width: 520px; width: 100%; box-shadow: 0 10px 40px rgba(0, 0, 0, .25); }
+  .modal-caja p { margin: 0 0 10px; }
+  .modal-caja ul { margin: 0 0 10px; padding-left: 1.2em; }
+  .modal-botones { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+
+  /* angosto: apilado, que Juan a veces lo abre desde el celular */
+  @media (max-width: 860px) {
+    .barra { position: static; }
+    #editor { grid-template-columns: 1fr; padding: 12px 16px; }
+    .lado { position: static; max-height: none; overflow: visible; }
+    .total, .guardado { margin-left: 0; }
+    #impresion > .hoja { padding: 16px; width: auto; }
+    .membrete { grid-template-columns: 1.6cm 1fr 1.6cm; }
+    .membrete .logo { height: 1cm; }
+  }
+}
+
+/* ── 3. la impresión ────────────────────────────────────────────── */
+@page {
+  size: A4;
+  margin: 1.3cm 1.6cm 1.7cm;
+  @bottom-left   { content: "Dpto. de Evaluación"; font: 8pt Cambria, Georgia, serif; border-top: .6pt solid #000; vertical-align: top; padding-top: 4pt; }
+  @bottom-center { content: counter(page); font: 8pt Cambria, Georgia, serif; border-top: .6pt solid #000; vertical-align: top; padding-top: 4pt; }
+  @bottom-right  { content: "Coordinación"; font: 8pt Cambria, Georgia, serif; border-top: .6pt solid #000; vertical-align: top; padding-top: 4pt; }
+}
+
+@media print {
+  .ui { display: none !important; }
+  html, body { margin: 0; padding: 0; }
+  #impresion { display: block !important; }
+  #impresion > .hoja { width: auto; margin: 0; padding: 0; box-shadow: none; border: 0; }
+  .item, .k-item { break-inside: avoid; }
+  .item-cab, .k-cab { break-after: avoid; }
+  /* el último ítem y el recuadro de respuestas van juntos: el recuadro
+     nunca queda solo en una página */
+  .cierre { break-inside: avoid; }
+  .respuestas, .k-rej { break-inside: avoid; }
+  .capind, .consignas { break-inside: avoid; }
+  img { max-width: 100%; }
+}

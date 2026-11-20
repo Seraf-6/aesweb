@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Editor de valoraciones</title>
+<link rel="stylesheet" href="editor.css">
+<script src="motor.js"></script>
+</head>
+<!--
+  Editor de valoraciones · herramienta del docente, no material de alumno.
+
+  Esta página es la herramienta VACÍA. Las valoraciones que se escriben acá
+  viven en el localStorage del navegador y en los respaldos .json que el
+  docente guarda fuera del repositorio. Nada de su contenido se versiona:
+  ver la sección «El editor de valoraciones» del CLAUDE.md.
+
+  Dos bloques de código:
+  · <script id="nucleo">: lógica pura (respuestas, avisos, las hojas como
+    HTML). No toca el DOM; valoraciones/prueba_pagina.js lo levanta en Node.
+  · el bloque siguiente: la interfaz.
+-->
+<body data-vista="editor">
+
+<header class="barra ui">
+  <div class="barra-fila">
+    <strong class="marca">Valoraciones</strong>
+    <label class="sel-val"><span class="oculto">Valoración</span><select id="sel-val"></select></label>
+    <button type="button" id="nueva-val" class="btn">+ Nueva</button>
+    <span class="total" title="La suma de los puntajes de los ítems">T. P.: <b id="total">0</b> puntos · <span id="n-items">0 ítems</span></span>
+  </div>
+  <div class="barra-fila">
+    <nav class="pestanas" aria-label="Vista">
+      <button type="button" data-vista="editor">Editor</button>
+      <button type="button" data-vista="A">Fila A</button>
+      <button type="button" data-vista="B">Fila B</button>
+      <button type="button" data-vista="clave">Clave</button>
+    </nav>
+    <span class="archivo">
+      <button type="button" class="btn" id="exportar-esta" title="Descarga un .json con esta valoración">Exportar esta</button>
+      <button type="button" class="btn" id="exportar-todo" title="Descarga un .json con todas las valoraciones de este navegador">Respaldo completo</button>
+      <label class="btn" title="Abre un .json exportado antes">Importar…<input type="file" id="importar" accept=".json,application/json" hidden></label>
+    </span>
+    <span id="guardado" class="guardado"></span>
+  </div>
+</header>
+
+<main id="editor" class="ui">
+  <aside class="lado">
+    <button type="button" class="lista-datos" data-abrir="__datos">Datos de la valoración</button>
+    <ol id="lista-items" class="lista-items"></ol>
+    <button type="button" id="agregar" class="btn btn-ancho">+ Agregar ítem</button>
+    <section id="avisos" class="avisos" aria-live="polite"></section>
+  </aside>
+  <section id="panel" class="panel"></section>
+</main>
+
+<div id="vista-barra" class="vista-barra ui">
+  <span id="vista-nombre"></span>
+  <button type="button" class="btn btn-fuerte" id="imprimir">Imprimir o guardar como PDF</button>
+  <span class="nota">En el diálogo de impresión: tamaño A4, márgenes «Predeterminados» y sin «Encabezados y pies de página» del navegador.</span>
+</div>
+
+<div id="impresion"></div>
+
+<div id="modal" class="modal ui" hidden>
+  <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="modal-texto">
+    <div id="modal-texto"></div>
+    <div class="modal-botones"></div>
+  </div>
+</div>
+
+<script id="nucleo">
+var NUCLEO = (function () {
+  'use strict';
+  const M = MOTOR;
+
+  // ── qué es cada tipo y qué fórmulas pide ──────────────────────
+  const TIPOS = {
+    resolver:   { nombre: 'Resolver una ecuación', campos: ['Ecuación'] },
+    cuadratica: { nombre: 'Cuadrática', campos: ['Ecuación o función'] },
+    factorizar: { nombre: 'Factorizar', campos: ['Expresión', 'Forma factorizada (es la respuesta: no va en el enunciado)'] },
+    valor:      { nombre: 'Valor numérico', campos: ['Expresión', 'Sustitución (x = -3)'] },
+    redactado:  { nombre: 'Redactado (respuesta a mano)', campos: [] },
+  };
+  // en factorizar, la fórmula 2 es la respuesta
+  const ES_RESPUESTA = { factorizar: [1] };
+  const PIDE = [
+    ['raices', 'raíces'], ['vertice', 'vértice'], ['ordenada', 'ordenada al origen'],
+    ['delta', 'discriminante Δ'], ['sumaProducto', 'suma y producto'], ['extremo', 'máximo o mínimo'],
+  ];
+  const PTS = [1, 1.5, 2, 3];
+  const CONSIGNAS = 'En esta valoración no alcanza con llegar al resultado: donde el ítem lo pide hay que ' +
+    '**explicar o justificar** lo que hiciste, y una respuesta correcta sin esa justificación recibe la mitad ' +
+    'del puntaje. El **procedimiento completo** va en el espacio en blanco debajo de cada pregunta; en el ' +
+    'recuadro del final se copia **solamente el resultado**. No está permitido el uso de calculadora.';
+
+  const escH = (s) => String(s == null ? '' : s)
+    .replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  /** Para comparar textos: sin espacios, un solo signo menos, un solo tipo de paréntesis. */
+  const norm = (s) => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, '')
+    .replace(/[−–—]/g, '-').replace(/[·×]/g, '*').replace(/[[{]/g, '(').replace(/[\]}]/g, ')');
+  const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+
+  // ── las dos filas ─────────────────────────────────────────────
+  // La B rota de a tres: (a, b, c) sale (c, a, b); si sobran dos, se
+  // intercambian. Nadie se corre más de dos lugares.
+  function orden(n, fila) {
+    const idx = [...Array(n).keys()];
+    if (fila !== 'B') return idx;
+    let i = 0;
+    for (; i + 3 <= n; i += 3) {
+      [idx[i], idx[i + 1], idx[i + 2]] = [idx[i + 2], idx[i], idx[i + 1]];
+    }
+    if (n - i === 2) [idx[i], idx[i + 1]] = [idx[i + 1], idx[i]];
+    return idx;
+  }
+
+  // ── números y puntajes ────────────────────────────────────────
+  const redondea = (x) => Math.round(x * 100) / 100;
+  const fmtNum = (x) => String(redondea(x)).replace('.', ',');
+  const fmtPts = (p) => `(${fmtNum(p)} ${+p === 1 ? 'pto' : 'ptos'})`;
+  /** El total es la suma de los pts. Nunca un número fijo. */
+  const total = (val) => redondea(val.items.reduce((s, it) => s + (+it.pts || 0), 0));
+
+  // ── datos nuevos y datos importados ───────────────────────────
+  const nuevoId = () => Math.random().toString(36).slice(2, 8);
+
+  /** Un ítem de muestra evidentemente ficticio, para no abrir en blanco. */
+  function itemMuestra() {
+    return {
+      id: nuevoId(), tema: 'Ítem de muestra', indicador: 'Indicador de muestra: reemplazalo o borrá este ítem.',
+      tipo: 'resolver', enunciado: 'Resolvé: {1}', formulas: ['2x + 1 = 7'],
+      respuesta: '', clave: '', pts: 1, espacio: 3.5, pide: { raices: true },
+    };
+  }
+  function itemVacio() {
+    return {
+      id: nuevoId(), tema: '', indicador: '', tipo: 'resolver', enunciado: 'Resolvé: {1}',
+      formulas: [''], respuesta: '', clave: '', pts: 1, espacio: 3.5, pide: { raices: true },
+    };
+  }
+  function nuevaValoracion() {
+    return {
+      id: nuevoId(), nombre: '7.º grado', unidad: 'Unidad 1', numero: '1', titulo: 'Nombre de la unidad',
+      anio: '2026', docentes: 'Eduardo Ovelar / Juan Serafini', capacidades: '', consignas: CONSIGNAS,
+      items: [itemMuestra()],
+    };
+  }
+  /** Completa lo que falte en una valoración leída de un archivo o del navegador. */
+  function normalizar(v) {
+    const base = nuevaValoracion();
+    const r = Object.assign({}, base, v || {});
+    for (const k of ['id', 'nombre', 'unidad', 'numero', 'titulo', 'anio', 'docentes', 'capacidades', 'consignas'])
+      r[k] = r[k] == null ? '' : String(r[k]);
+    if (!r.id) r.id = nuevoId();
+    r.items = (Array.isArray(v && v.items) ? v.items : []).map((it) => {
+      const x = Object.assign(itemVacio(), it || {});
+      if (!TIPOS[x.tipo]) x.tipo = 'redactado';
+      x.formulas = Array.isArray(x.formulas) ? x.formulas.map((f) => String(f == null ? '' : f)) : [];
+      while (x.formulas.length < TIPOS[x.tipo].campos.length) x.formulas.push('');
+      x.pts = +x.pts || 0;
+      x.espacio = x.espacio === '' || x.espacio == null ? 3.5 : +x.espacio || 0;
+      x.pide = Object.assign({}, x.pide || { raices: true });
+      for (const k of ['id', 'tema', 'indicador', 'enunciado', 'respuesta', 'clave'])
+        x[k] = x[k] == null ? '' : String(x[k]);
+      if (!x.id) x.id = nuevoId();
+      return x;
+    });
+    return r;
+  }
+
+  // ── la matemática en HTML ─────────────────────────────────────
+  /** Una fórmula como la escribió Juan, renderizada. El error del motor, tal cual. */
+  function formula(src) {
+    const s = String(src == null ? '' : src).trim();
+    if (!s) return { html: '', error: 'la fórmula está vacía' };
+    try {
+      return { html: `<span class="mat">${M.html(M.analizar(s))}</span>` };
+    } catch (e) {
+      // «a = 1, b = 1»: varias sustituciones separadas por coma
+      if (/[,;]/.test(s)) {
+        try {
+          return { html: s.split(/[,;]/).map((t) => `<span class="mat">${M.html(M.analizar(t.trim()))}</span>`).join(', ') };
+        } catch (e2) { /* sigue abajo con el primer error */ }
+      }
+      return { html: `<span class="f-mal">${escH(s)}</span>`, error: e.message };
+    }
+  }
+
+  // dos o más espacios seguidos se respetan (a) …   b) …): el HTML los juntaría en uno
+  const enLinea = (t) => escH(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>')
+    .replace(/ {2,}/g, (m) => '&ensp;'.repeat(m.length));
+
+  /** Un renglón de prosa: {n} es la fórmula n; `…` una fórmula suelta;
+      **negrita** y *cursiva*. */
+  function renglon(linea, formulas) {
+    return linea.split(/(\{\d+\}|`[^`]*`)/).map((t, i) => {
+      if (i % 2 === 0) return enLinea(t);
+      if (t[0] === '`') return formula(t.slice(1, -1)).html;
+      const f = formulas[+t.slice(1, -1) - 1];
+      return f == null || !String(f).trim() ? `<span class="f-mal">${t}</span>` : formula(f).html;
+    }).join('');
+  }
+  /** Prosa en bloques: cada renglón, el suyo; un renglón que es solo
+      fórmulas se imprime aparte y con sangría. */
+  function prosa(txt, formulas) {
+    formulas = formulas || [];
+    return String(txt == null ? '' : txt).split('\n').map((l) => {
+      const sola = /^\s*(\{\d+\}\s*)+$/.test(l);
+      const h = renglon(l, formulas);
+      return `<div class="r${sola ? ' f-sola' : ''}">${h.trim() ? h : '&nbsp;'}</div>`;
+    }).join('');
+  }
+  /** Prosa corrida, para recuadros: los saltos de línea pasan a <br>. */
+  const prosaCorrida = (txt, formulas) =>
+    String(txt == null ? '' : txt).split('\n').map((l) => renglon(l, formulas || [])).join('<br>');
+
+  const texAHtml = (t) => escH(t).replace(/\\dfrac\{([^}]*)\}\{([^}]*)\}/g, '$1/$2')
+    .replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>').replace(/\\,/g, ' ').replace(/-/g, '−');
+
+  // ── la respuesta de cada ítem ─────────────────────────────────
+  // Sale del motor y se verifica por un camino distinto del que la
+  // produjo. Solo en 'redactado' la escribe Juan.
+  //   estado: 'ok' · 'falla' (calculó pero no verifica) · 'error' (no se
+  //   entiende) · 'manual' (redactado) · 'vacio'
+  //   busca: lo que no puede aparecer en el enunciado
+  //   numero: la respuesta es un número pelado
+  const S1 = (x) => M.S.de(x);
+  // el motor escribe los enteros negativos con guion corto («-1»): en la
+  // hoja va el signo menos de verdad, como en las fórmulas
+  const menos = (h) => h.replace(/^-/, '−');
+  const hS = (x) => menos(M.htmlS(x));
+  const hF = (x) => menos(M.htmlF(x));
+
+  function calcular(it) {
+    const f = it.formulas || [];
+    const r = { estado: 'ok', html: '', texto: '', mensaje: '', busca: [], numero: false, detalle: '' };
+    const falta = (m) => Object.assign(r, { estado: 'vacio', mensaje: m });
+    try {
+      switch (it.tipo) {
+        case 'resolver': {
+          if (!String(f[0] || '').trim()) return falta('falta la ecuación');
+          const s = M.resolver(f[0]);
+          if (!s.raices.length) {
+            r.texto = s.texto; r.html = escH(s.texto);
+            r.mensaje = s.tipo === 'identidad' ? 'los dos miembros son idénticos'
+              : s.delta ? 'Δ negativo: no hay raíces reales' : 'no hay valor que la cumpla';
+            break;
+          }
+          const v = s.incognita, dos = s.raices.length > 1;
+          r.html = s.raices.map((x, i) => `<i>${escH(v)}</i>${dos ? `<sub>${i + 1}</sub>` : ''} = ${hS(x)}`).join(' ; ');
+          r.texto = s.raices.map((x, i) => `${v}${dos ? i + 1 : ''} = ${x}`).join(' ; ');
+          r.busca = s.raices.map((x) => ({ s: norm(`${v}=${x}`) }));
+          if (!dos) { r.numero = true; r.busca.push({ s: norm(String(s.raices[0])), suelto: true }); }
+          if (s.verificadas.every(Boolean)) r.mensaje = 'verificada: sustituida en la ecuación tal como está escrita';
+          else { r.estado = 'falla'; r.mensaje = 'la verificación por sustitución no cierra'; }
+          break;
+        }
+        case 'cuadratica': {
+          if (!String(f[0] || '').trim()) return falta('falta la ecuación o la función');
+          cuadratica(it, r);
+          break;
+        }
+        case 'factorizar': {
+          if (!String(f[0] || '').trim()) return falta('falta la expresión');
+          if (!String(f[1] || '').trim()) return falta('falta la forma factorizada');
+          const z = M.factorizacion(f[0], f[1]);
+          r.html = formula(f[1]).html; r.texto = f[1].trim();
+          r.busca = [{ s: norm(f[1]) }];
+          if (z.ok) r.mensaje = 'verificada: desarrollada da lo mismo que la expresión';
+          else {
+            r.estado = 'falla';
+            r.mensaje = `no es igual a la expresión: desarrollada da ${texAHtml(M.poliATex(z.expandida))}`;
+          }
+          break;
+        }
+        case 'valor': {
+          if (!String(f[0] || '').trim()) return falta('falta la expresión');
+          if (!String(f[1] || '').trim()) return falta('falta la sustitución (x = -3)');
+          const v = M.valorNumerico(f[0], f[1]);
+          r.html = hS(v); r.texto = String(v); r.numero = true;
+          r.busca = [{ s: norm(String(v)), suelto: true }];
+          // otro camino: desarrollar el polinomio y sumar término a término
+          try {
+            const env = {};
+            for (const t of f[1].split(/[,;·]/)) {
+              const m = t.trim().match(/^([a-zA-Z])\s*=\s*(.+)$/);
+              env[m[1]] = M.evaluar(M.analizar(m[2]), {});
+            }
+            let suma = S1(new M.F(0n));
+            for (const [, t] of M.aPoli(M.analizar(f[0]))) {
+              let term = S1(t.c);
+              for (const x in t.m) term = term.mul(env[x].pot(t.m[x]));
+              suma = suma.add(term);
+            }
+            if (suma.igual(v)) r.mensaje = 'verificada: desarrollada y evaluada término a término da lo mismo';
+            else { r.estado = 'falla'; r.mensaje = `por el otro camino da ${suma}`; }
+          } catch (e) {
+            r.estado = 'falla'; r.mensaje = `no se pudo verificar por un segundo camino (${e.message})`;
+          }
+          break;
+        }
+        default: {        // redactado
+          r.estado = String(it.respuesta || '').trim() ? 'manual' : 'vacio';
+          r.html = prosaCorrida(it.respuesta, f); r.texto = String(it.respuesta || '').trim();
+          r.mensaje = r.estado === 'manual' ? 'sin verificación automática' : 'falta escribir la respuesta';
+          const n = norm(it.respuesta);
+          if (n.length >= 3) r.busca = [{ s: n }];
+          r.numero = /^([a-z]\d?=)?-?[\d.,/]+$/.test(n);
+        }
+      }
+    } catch (e) {
+      Object.assign(r, { estado: 'error', mensaje: e.message, html: '', texto: '' });
+    }
+    return r;
+  }
+
+  /** La función del ítem cuadrático como evaluador exacto, para verificar. */
+  function evaluadorCuad(src) {
+    const a = M.analizar(src);
+    if (a.t !== 'eq') return (env) => M.evaluar(a, env);
+    const soloY = (n) => { const v = M.P.variables(M.aPoli(n)); return v.length === 1 && v[0] === 'y'; };
+    if (soloY(a.a)) return (env) => M.evaluar(a.b, env);
+    if (soloY(a.b)) return (env) => M.evaluar(a.a, env);
+    return (env) => M.evaluar(a.a, env).sub(M.evaluar(a.b, env));
+  }
+
+  function cuadratica(it, r) {
+    const c = M.cuadratica(it.formulas[0]);
+    const v = c.variable, vi = `<i>${escH(v)}</i>`;
+    const pide = it.pide || {};
+    const g = evaluadorCuad(it.formulas[0]);
+    const en = (x) => g({ [v]: S1(x) });
+    const [xv, yv] = c.vertice;
+    const doble = c.raices.length === 2 && c.raices[0].igual(c.raices[1]);
+
+    // verificación por otro camino que la fórmula
+    const malas = [];
+    if (!c.raices.every((x) => en(x).esCero())) malas.push('las raíces no anulan la función');
+    if (!en(xv).igual(S1(yv))) malas.push('el vértice no está sobre la parábola');
+    if (!en(new M.F(0n)).igual(S1(c.ordenada))) malas.push('la ordenada no es f(0)');
+    if (!S1(c.delta).igual(S1(new M.F(-4n).mul(c.a).mul(yv)))) malas.push('Δ no coincide con −4a·yᵥ');
+    if (c.raices.length === 2) {
+      if (!c.raices[0].add(c.raices[1]).igual(S1(c.suma))) malas.push('la suma no es x₁ + x₂');
+      if (!c.raices[0].mul(c.raices[1]).igual(S1(c.producto))) malas.push('el producto no es x₁ · x₂');
+    } else if (c.a.signo() * yv.signo() <= 0) malas.push('dice que no hay raíces, pero el vértice cruza el eje');
+
+    const raicesH = !c.raices.length ? 'no tiene raíces reales'
+      : doble ? `${vi}<sub>1</sub> = ${vi}<sub>2</sub> = ${hS(c.raices[0])}`
+      : `${vi}<sub>1</sub> = ${hS(c.raices[0])} ; ${vi}<sub>2</sub> = ${hS(c.raices[1])}`;
+    const raicesT = !c.raices.length ? 'no tiene raíces reales'
+      : doble ? `${v}1 = ${v}2 = ${c.raices[0]}` : `${v}1 = ${c.raices[0]} ; ${v}2 = ${c.raices[1]}`;
+    const partes = {
+      raices: [raicesH, raicesT],
+      vertice: [`V = (${hF(xv)}, ${hF(yv)})`, `V = (${xv}, ${yv})`],
+      ordenada: [`ordenada = ${hF(c.ordenada)}`, `ordenada = ${c.ordenada}`],
+      delta: [`Δ = ${hF(c.delta)}`, `Δ = ${c.delta}`],
+      sumaProducto: [`suma = ${hF(c.suma)} ; producto = ${hF(c.producto)}`, `suma = ${c.suma} ; producto = ${c.producto}`],
+      extremo: [c.extremo, c.extremo],
+    };
+    const elegidas = PIDE.map(([k]) => k).filter((k) => pide[k]);
+    r.html = elegidas.map((k) => partes[k][0]).join(' | ');  // el · nunca separa
+    r.texto = elegidas.map((k) => partes[k][1]).join(' | ');
+    r.detalle = PIDE.map(([k, nom]) => `<span><b>${nom}:</b> ${partes[k][0]}</span>`).join('') +
+      `<span><b>a, b, c:</b> ${hF(c.a)}, ${hF(c.b)}, ${hF(c.c)} | abre hacia ${c.abre}</span>`;
+    if (pide.raices) r.busca = c.raices.map((x) => ({ s: norm(`${v}=${x}`) }));
+    if (pide.vertice) r.busca.push({ s: norm(`(${xv},${yv})`) });
+    r.numero = elegidas.length === 1 && (elegidas[0] === 'delta' || elegidas[0] === 'ordenada');
+    if (!elegidas.length) { r.estado = 'vacio'; r.mensaje = 'marcá qué datos entran en la respuesta'; }
+    else if (malas.length) { r.estado = 'falla'; r.mensaje = malas.join('; '); }
+    else r.mensaje = 'verificada: raíces, vértice y ordenada sustituidos en la función; Δ, suma y producto cruzados';
+  }
+
+  /** ¿Se usa el marcador {k} en el enunciado? */
+  const usaMarcador = (it, k) => new RegExp(`\\{${k}\\}`).test(it.enunciado || '');
+
+  /** El enunciado como lo lee el alumno, en texto plano normalizado. */
+  function enunciadoPlano(it) {
+    const f = it.formulas || [];
+    return norm(String(it.enunciado || '').replace(/\{(\d+)\}/g, (m, k) => f[+k - 1] || '').replace(/`/g, ''));
+  }
+  /** ¿La respuesta está escrita en el propio enunciado? Devuelve lo que
+      encontró: { s, suelto }. Suelto es el número solo, en la prosa: puede
+      ser casualidad («disminuido en 6» con x = 6), así que es un aviso y no
+      un error. */
+  function respuestaEnEnunciado(it, calc) {
+    calc = calc || calcular(it);
+    const plano = enunciadoPlano(it);
+    // un número suelto se busca solo en la prosa, sin las fórmulas
+    const prosaSola = norm(String(it.enunciado || '').replace(/\{\d+\}|`[^`]*`/g, ' | '));
+    for (const b of calc.busca) {
+      if (!b.s) continue;
+      const donde = b.suelto ? prosaSola : plano;
+      // sin espacios las palabras quedan pegadas: el borde lo marcan solo
+      // los dígitos y lo que continúa un número (x=17 no es x=170 ni 2x=17)
+      const re = new RegExp(`(?<![\\d.,/^])${reEsc(b.s)}(?![\\d.,/^])`);
+      if (re.test(donde)) return { s: b.s, suelto: !!b.suelto };
+    }
+    return null;
+  }
+
+  // ── avisos: errores que ya pasaron de verdad ──────────────────
+  function avisos(val) {
+    const out = [];
+    const its = val.items;
+    const calc = its.map(calcular);
+    const add = (nivel, i, texto) => out.push({ nivel, item: i == null ? null : its[i].id, n: i == null ? null : i + 1, texto });
+
+    if (!its.length) add('aviso', null, 'La valoración no tiene ítems.');
+    if (its.length > 15) add('aviso', null, `Hay ${its.length} ítems: la rejilla de respuestas tiene 15 casillas y se va a alargar.`);
+    if (its.length % 3 === 1 && its.length > 1)
+      add('aviso', its.length - 1, `Con ${its.length} ítems, el último queda en el mismo lugar en las dos filas (la fila B rota de a tres).`);
+
+    its.forEach((it, i) => {
+      const c = calc[i];
+      const f = it.formulas || [];
+      if (c.estado === 'error') add('error', i, `La fórmula no se entiende: ${c.mensaje}.`);
+      else if (c.estado === 'falla') add('error', i, `No verifica: ${c.mensaje}.`);
+      else if (c.estado === 'vacio') add('aviso', i, `Sin respuesta: ${c.mensaje}.`);
+      f.forEach((src, k) => {
+        if (!String(src).trim()) return;
+        const e = formula(src).error;
+        if (e && c.estado !== 'error') add('error', i, `La fórmula {${k + 1}} no se entiende: ${e}.`);
+        const esResp = (ES_RESPUESTA[it.tipo] || []).includes(k);
+        if (!esResp && !usaMarcador(it, k + 1)) add('aviso', i, `La fórmula {${k + 1}} no aparece en el enunciado.`);
+      });
+      for (const m of String(it.enunciado || '').matchAll(/\{(\d+)\}/g)) {
+        const k = +m[1];
+        if (!String(f[k - 1] || '').trim()) add('error', i, `El enunciado usa {${k}} y no hay fórmula ${k}.`);
+      }
+      if (!String(it.enunciado || '').trim()) add('aviso', i, 'El enunciado está vacío.');
+      if (!String(it.indicador || '').trim()) add('aviso', i, 'Falta el indicador: cada ítem evalúa uno.');
+      if (/justific|explic/i.test(it.enunciado || '') && c.numero && c.estado !== 'error')
+        add('aviso', i, 'Pide «justificá» o «explicá», pero la respuesta es un número pelado: ¿la justificación es decorativa?');
+      const en = respuestaEnEnunciado(it, c);
+      if (en && en.suelto) add('aviso', i, `El número ${en.s}, que es la respuesta, aparece en el enunciado: fijate que no la delate.`);
+      else if (en) add('error', i, `La respuesta está escrita en el propio enunciado (${en.s}).`);
+    });
+
+    // dos ítems con la misma respuesta final
+    const vistos = new Map();
+    calc.forEach((c, i) => {
+      const k = norm(c.texto);
+      if (!k || c.estado === 'error') return;
+      if (vistos.has(k)) {
+        const j = vistos.get(k);
+        add('aviso', i, `Los ítems ${j + 1} y ${i + 1} tienen la misma respuesta final (${c.texto}): confunde al corregir la rejilla.`);
+      } else vistos.set(k, i);
+    });
+    return out;
+  }
+
+  // ── las hojas ─────────────────────────────────────────────────
+  function membrete(val, titulo, extra) {
+    return `<header class="membrete">
+  <img class="logo" src="../assets/img/aes.png" alt="AES">
+  <div class="inst"><b>ALBERT EINSTEIN SCHOOL</b><span>Tercer Ciclo de la Educación Escolar Básica</span><span>Año lectivo ${escH(val.anio)}</span></div>
+  <img class="logo" src="../assets/img/einstein.png" alt="Albert Einstein School">
+</header>
+<h1 class="titulo">${titulo}</h1>
+<p class="subtitulo">${escH(val.unidad)} — ${escH(val.titulo)}</p>
+<p class="materia">Materia: Matemática <span class="bul">•</span> Grado: ${escH(val.nombre)} <span class="bul">•</span> Docentes: ${escH(val.docentes)}${extra || ''}</p>`;
+  }
+
+  function itemHoja(it, n) {
+    const esp = Math.max(0, +it.espacio || 0);
+    return `<section class="item" data-item="${escH(it.id)}">
+  <div class="item-cab"><span class="item-n">${n}.</span><div class="item-enun">${prosa(it.enunciado, it.formulas)}</div><span class="item-pts">${fmtPts(+it.pts || 0)}</span></div>
+  <div class="item-espacio" style="height:${esp}cm"></div>
+</section>`;
+  }
+
+  /** La rejilla de respuestas: 3 filas de 5 casillas, solo el número y el hueco. */
+  function rejilla(cant, celdas) {
+    const filas = Math.max(3, Math.ceil(cant / 5));
+    let h = '<table class="rejilla">';
+    for (let f = 0; f < filas; f++) {
+      h += '<tr>';
+      for (let c = 0; c < 5; c++) {
+        const p = f * 5 + c + 1;
+        h += `<td><span class="rj-n">${p <= cant ? `${p}.` : ''}</span><span class="rj-r">${celdas && p <= cant ? celdas[p - 1] || '' : ''}</span></td>`;
+      }
+      h += '</tr>';
+    }
+    return h + '</table>';
+  }
+
+  /** La hoja del alumno de la fila A o B. */
+  function hoja(val, fila) {
+    const its = val.items, idx = orden(its.length, fila);
+    const ind = idx.map((k, p) => `<b>(${p + 1})</b> ${escH(its[k].indicador)}`).join(' ');
+    const secs = idx.map((k, p) => itemHoja(its[k], p + 1));
+    const ultimo = secs.pop() || '';
+    const anio = escH(val.anio);
+    return `<article class="hoja hoja-alumno" data-fila="${fila}">
+${membrete(val, `VALORACIÓN ESCRITA — UNIDAD N.º ${escH(val.numero)}`)}
+<div class="datos">
+  <div class="dl"><span>Nombre y apellido:</span><span class="raya larga"></span><span>Fila:</span><span class="raya corta"></span><span>Fecha:</span><span class="raya mini"></span>/<span class="raya mini"></span>/${anio}</div>
+  <div class="dl"><b class="tp">T. P.: <span data-total>${fmtNum(total(val))}</span> ${total(val) === 1 ? 'punto' : 'puntos'}</b><b>P. O.:</b><span class="raya media"></span><b>Nota:</b><span class="raya media"></span></div>
+</div>
+<div class="capind">
+  <p><b>Capacidades.</b> ${prosaCorrida(val.capacidades)}</p>
+  <p><b>Indicadores.</b> El número entre paréntesis es el ítem que evalúa cada indicador. ${ind}</p>
+</div>
+<div class="consignas"><b>Antes de empezar.</b> ${prosaCorrida(val.consignas)}</div>
+${secs.join('\n')}
+<div class="cierre">
+${ultimo}
+<div class="respuestas">
+  <p class="resp-tit"><b>RESPUESTAS FINALES</b> – escribí acá solamente el resultado de cada ítem. El procedimiento va arriba; un resultado sin su desarrollo no se puntúa.</p>
+  ${rejilla(its.length)}
+</div>
+</div>
+</article>`;
+  }
+
+  /** La clave: un solo documento, ítems en el orden de la fila A, las dos rejillas completas al final. */
+  function clave(val) {
+    const its = val.items, n = its.length;
+    const calc = its.map(calcular);
+    const auto = [], manual = [];
+    calc.forEach((c, i) => (its[i].tipo === 'redactado' ? manual : auto).push(i + 1));
+    const lista = (a) => (a.length === 1 ? `el ítem ${a[0]}` : `los ítems ${a.slice(0, -1).join(', ')} y ${a[a.length - 1]}`);
+    let verif = '';
+    if (auto.length) verif += `Las respuestas de ${lista(auto)} las calculó el motor exacto y están verificadas por un camino distinto del que las produjo. `;
+    if (manual.length) verif += `Las de ${lista(manual)} son redactadas, sin verificación automática.`;
+
+    const items = its.map((it, i) => {
+      const c = calc[i];
+      const marca = c.estado === 'falla' || c.estado === 'error' ? ` <b class="k-alerta">[NO VERIFICA: ${c.mensaje}]</b>`
+        : c.estado === 'vacio' ? ` <b class="k-alerta">[SIN RESPUESTA]</b>` : '';
+      return `<section class="k-item" data-item="${escH(it.id)}">
+  <p class="k-meta">${escH(it.tema)} <span class="bul">•</span> ${escH(it.indicador)} <span class="bul">•</span> ${fmtNum(+it.pts || 0)} ${+it.pts === 1 ? 'pto' : 'ptos'}</p>
+  <div class="k-cab"><span class="item-n">${i + 1}.</span><div class="item-enun">${prosa(it.enunciado, it.formulas)}</div></div>
+  <p class="k-resp"><b>Respuesta:</b> <span class="k-r">${c.html}</span>${marca}</p>
+  ${String(it.clave || '').trim() ? `<div class="k-des">${prosa(it.clave, it.formulas)}</div>` : ''}
+</section>`;
+    });
+    const celdas = (fila) => orden(n, fila).map((k) => calc[k].html);
+    return `<article class="hoja hoja-clave">
+${membrete(val, 'CLAVE DE CORRECCIÓN', ' <span class="bul">•</span> <b>Uso exclusivo del docente</b>')}
+<div class="consignas">
+  <p><b>Cómo se corrige.</b> La prueba vale <b><span data-total>${fmtNum(total(val))}</span> puntos</b> en total y cada ítem lleva su puntaje al margen. El recuadro de respuestas finales sirve para corregir rápido, pero un resultado sin el desarrollo correspondiente no se puntúa.</p>
+  <p><b>Las dos filas.</b> La fila A y la fila B tienen exactamente los mismos ítems, cambiados de lugar. Abajo están numerados como van en la <b>fila A</b>; al final hay una rejilla de respuestas para cada fila.</p>
+  ${verif ? `<p>${verif}</p>` : ''}
+</div>
+${items.join('\n')}
+<div class="k-rejillas">
+  <div class="k-rej"><p class="resp-tit"><b>RESPUESTAS · FILA A</b></p>${rejilla(n, celdas('A'))}</div>
+  <div class="k-rej"><p class="resp-tit"><b>RESPUESTAS · FILA B</b></p>${rejilla(n, celdas('B'))}</div>
+</div>
+</article>`;
+  }
+
+  /** «Valoración U7 - 7mo grado - Fila A»: el nombre que propone el PDF. */
+  function nombreArchivo(val, vista) {
+    const g = String(val.nombre).match(/\d+/);
+    const grado = g ? ({ 7: '7mo', 8: '8vo', 9: '9no' }[g[0]] || g[0]) + ' grado' : val.nombre;
+    const u = `U${val.numero}`;
+    return vista === 'clave' ? `Clave de corrección ${u} - ${grado}` : `Valoración ${u} - ${grado} - Fila ${vista}`;
+  }
+
+  return {
+    TIPOS, PIDE, PTS, ES_RESPUESTA, CONSIGNAS, escH, norm, orden, fmtNum, fmtPts, total,
+    nuevoId, itemMuestra, itemVacio, nuevaValoracion, normalizar,
+    formula, prosa, prosaCorrida, calcular, respuestaEnEnunciado, avisos,
+    itemHoja, rejilla, hoja, clave, nombreArchivo,
+  };
+})();
+</script>
+
+<script>
+(function () {
+  'use strict';
+  const N = NUCLEO;
+  const LS = 'aesweb-valoraciones';
+  const $ = (s) => document.querySelector(s);
+  const esc = N.escH;
+
+  // la hoja de estilo de la matemática vive al lado del renderizador
+  const css = document.createElement('style');
+  css.textContent = MOTOR.CSS_MATEMATICA;
+  document.head.prepend(css);
+
+  // ── estado y guardado ─────────────────────────────────────────
+  let estado;
+  function cargar() {
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(LS)); } catch (e) { d = null; }
+    if (d && Array.isArray(d.grados) && d.grados.length) {
+      estado = { grados: d.grados.map(N.normalizar), activo: d.activo, item: d.item, vista: 'editor' };
+    } else {
+      estado = { grados: [N.nuevaValoracion()], vista: 'editor' };
+    }
+    if (!val()) estado.activo = estado.grados[0].id;
+    if (estado.item !== '__datos' && !itemActual()) estado.item = val().items[0] ? val().items[0].id : '__datos';
+  }
+  let tGuardar = null;
+  function guardar() {
+    clearTimeout(tGuardar); tGuardar = null;
+    const g = $('#guardado');
+    try {
+      localStorage.setItem(LS, JSON.stringify({ grados: estado.grados, activo: estado.activo, item: estado.item }));
+      g.textContent = 'Guardado en este navegador';
+      g.className = 'guardado';
+    } catch (e) {
+      g.textContent = 'No se pudo guardar en el navegador: exportá un respaldo antes de cerrar';
+      g.className = 'guardado guardado-mal';
+    }
+  }
+  const programarGuardado = () => { clearTimeout(tGuardar); tGuardar = setTimeout(guardar, 300); };
+  window.addEventListener('beforeunload', () => { if (tGuardar) guardar(); });
+
+  const val = () => estado.grados.find((v) => v.id === estado.activo);
+  const itemActual = () => val().items.find((it) => it.id === estado.item);
+  const posicion = (id) => val().items.findIndex((it) => it.id === id);
+
+  // ── barra superior ────────────────────────────────────────────
+  function pintarBarra() {
+    const sel = $('#sel-val');
+    sel.innerHTML = estado.grados.map((v) =>
+      `<option value="${esc(v.id)}"${v.id === estado.activo ? ' selected' : ''}>${esc(v.nombre)} · ${esc(v.unidad)} — ${esc(v.titulo)}</option>`).join('');
+    pintarTotal();
+    document.body.dataset.vista = estado.vista;
+    document.querySelectorAll('.pestanas button').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b.dataset.vista === estado.vista)));
+  }
+  function pintarTotal() {
+    const v = val();
+    $('#total').textContent = N.fmtNum(N.total(v));
+    $('#n-items').textContent = `${v.items.length} ${v.items.length === 1 ? 'ítem' : 'ítems'}`;
+  }
+
+  // ── lista de ítems ────────────────────────────────────────────
+  const ROTULO = { ok: 'verificada', falla: 'no verifica', error: 'no se entiende', manual: 'redactada a mano', vacio: 'sin respuesta' };
+  function pintarLista() {
+    const v = val();
+    document.querySelector('.lista-datos').setAttribute('aria-current', String(estado.item === '__datos'));
+    $('#lista-items').innerHTML = v.items.map((it, i) => {
+      const c = N.calcular(it);
+      const txt = it.tema || String(it.enunciado || '').replace(/\{\d+\}/g, '…') || '(sin tema)';
+      return `<li draggable="true" data-id="${esc(it.id)}"${it.id === estado.item ? ' aria-current="true"' : ''}>
+  <span class="li-n">${i + 1}</span>
+  <span class="li-t">${esc(txt)}</span>
+  <span class="li-p">${N.fmtNum(+it.pts || 0)}</span>
+  <span class="punto e-${c.estado}" title="${ROTULO[c.estado]}"></span>
+  <span class="li-flechas"><button type="button" data-mover="-1" title="Subir" aria-label="Subir"${i === 0 ? ' disabled' : ''}>↑</button><button type="button" data-mover="1" title="Bajar" aria-label="Bajar"${i === v.items.length - 1 ? ' disabled' : ''}>↓</button></span>
+</li>`;
+    }).join('');
+  }
+
+  function pintarAvisos() {
+    const a = N.avisos(val());
+    const caja = $('#avisos');
+    if (!a.length) { caja.innerHTML = '<p class="sin-avisos">Sin avisos.</p>'; return; }
+    caja.innerHTML = `<h2>Avisos (${a.length})</h2><ul>${a.map((x) =>
+      `<li class="av-${x.nivel}"${x.item ? ` data-ir="${esc(x.item)}"` : ''}>${x.n ? `<b>Ítem ${x.n}.</b> ` : ''}${x.texto}</li>`).join('')}</ul>`;
+  }
+
+  // ── el panel de la derecha ────────────────────────────────────
+  const opt = (pares, actual) => pares.map(([v, t]) =>
+    `<option value="${esc(v)}"${String(v) === String(actual) ? ' selected' : ''}>${esc(t)}</option>`).join('');
+
+  function abrirPanel() {
+    const p = $('#panel');
+    if (estado.item === '__datos' || !itemActual()) { estado.item = '__datos'; p.innerHTML = panelDatos(); p.dataset.modo = 'datos'; }
+    else { p.innerHTML = panelItem(itemActual()); p.dataset.modo = 'item'; }
+    vivo();
+  }
+
+  function panelDatos() {
+    const v = val();
+    const campo = (k, rotulo, extra) => `<label class="campo"><span>${rotulo}</span><input data-campo="${k}" value="${esc(v[k])}"${extra || ''}></label>`;
+    return `<h2 class="panel-tit">Datos de la valoración</h2>
+<div class="fila-campos">
+  ${campo('nombre', 'Grado', ' placeholder="7.º grado"')}
+  ${campo('unidad', 'Unidad (subtítulo)', ' placeholder="Unidad 7"')}
+  ${campo('numero', 'N.º del título', ' placeholder="7" class="corto"')}
+</div>
+${campo('titulo', 'Nombre de la unidad', ' placeholder="Ecuaciones lineales"')}
+<div class="fila-campos">
+  ${campo('docentes', 'Docentes')}
+  ${campo('anio', 'Año lectivo', ' class="corto"')}
+</div>
+<label class="campo"><span>Capacidades <small>(copiadas del libro; se imprimen en letra muy chica)</small></span><textarea data-campo="capacidades" rows="5">${esc(v.capacidades)}</textarea></label>
+<label class="campo"><span>Consignas generales <small>(«Antes de empezar»; **negrita**)</small></span><textarea data-campo="consignas" rows="4">${esc(v.consignas)}</textarea></label>
+<p class="ayuda">Los indicadores se escriben en cada ítem: en la hoja salen todos juntos, numerados según el orden de cada fila.</p>
+<div class="acciones">
+  <button type="button" class="btn" data-accion="duplicar-val">Duplicar esta valoración</button>
+  <button type="button" class="btn btn-peligro" data-accion="borrar-val">Borrar esta valoración</button>
+</div>`;
+  }
+
+  function panelItem(it) {
+    const i = posicion(it.id);
+    const tipo = N.TIPOS[it.tipo];
+    const nf = Math.max(it.formulas.length, tipo.campos.length);
+    let filas = '';
+    for (let k = 0; k < nf; k++) {
+      const rot = tipo.campos[k] || 'Otra fórmula';
+      const quitable = k >= tipo.campos.length;
+      filas += `<div class="formula">
+  <label><span class="marcador">{${k + 1}}</span> <span class="f-rot">${esc(rot)}</span>
+    <input data-formula="${k}" value="${esc(it.formulas[k] || '')}" spellcheck="false" autocomplete="off"></label>
+  ${quitable ? `<button type="button" class="btn-x" data-accion="menos-formula" data-i="${k}" title="Quitar esta fórmula" aria-label="Quitar fórmula ${k + 1}">×</button>` : ''}
+  <div class="f-vivo" data-render="${k}"></div>
+</div>`;
+    }
+    const pide = it.tipo === 'cuadratica' ? `<fieldset class="pide"><legend>Qué entra en la respuesta final</legend>${N.PIDE.map(([k, t]) =>
+      `<label><input type="checkbox" data-pide="${k}"${it.pide && it.pide[k] ? ' checked' : ''}> ${t}</label>`).join('')}</fieldset>` : '';
+    const resp = it.tipo === 'redactado'
+      ? `<label class="campo campo-manual"><span>Respuesta final <small class="etiqueta-manual">sin verificación automática</small></span><textarea data-campo="respuesta" rows="2">${esc(it.respuesta)}</textarea></label>`
+      : '';
+    const ptsOpc = N.PTS.includes(+it.pts) ? N.PTS : N.PTS.concat(+it.pts).sort((a, b) => a - b);
+    return `<div class="panel-cab">
+  <h2 class="panel-tit">Ítem ${i + 1} de ${val().items.length}</h2>
+  <span class="acciones">
+    <button type="button" class="btn" data-accion="duplicar">Duplicar</button>
+    <button type="button" class="btn btn-peligro" data-accion="borrar">Borrar</button>
+  </span>
+</div>
+<div class="fila-campos">
+  <label class="campo"><span>Tema</span><input data-campo="tema" value="${esc(it.tema)}" placeholder="T3 · Ecuaciones con paréntesis"></label>
+  <label class="campo"><span>Tipo</span><select data-campo="tipo">${opt(Object.entries(N.TIPOS).map(([k, t]) => [k, t.nombre]), it.tipo)}</select></label>
+</div>
+<label class="campo"><span>Indicador</span><textarea data-campo="indicador" rows="2">${esc(it.indicador)}</textarea></label>
+<div class="fila-campos">
+  <label class="campo"><span>Puntaje</span><select data-campo="pts">${opt(ptsOpc.map((p) => [p, N.fmtPts(p).slice(1, -1)]), +it.pts)}</select></label>
+  <label class="campo"><span>Espacio para resolver (cm)</span><input data-campo="espacio" type="number" min="0" max="25" step="0.2" value="${esc(it.espacio)}" class="corto"></label>
+</div>
+<label class="campo"><span>Enunciado <small>{1}, {2}… son las fórmulas · **negrita** · *cursiva* · \`x^2\` fórmula suelta · un renglón con solo {n} sale aparte</small></span><textarea data-campo="enunciado" rows="3">${esc(it.enunciado)}</textarea></label>
+<div class="formulas">
+  <p class="ayuda">Fórmulas: se escriben como cualquiera — <code>3(x-1) = 2x+7</code>, <code>(x-3)/4</code>, <code>x^2</code>, corchetes y llaves. Se imprimen tal cual se escriben.</p>
+  ${filas}
+  <button type="button" class="btn" data-accion="mas-formula">+ Otra fórmula</button>
+</div>
+${pide}
+<h3 class="sub">Así sale impreso</h3>
+<div class="hoja hoja-vivo" id="vivo-item"></div>
+${resp}
+<div class="respuesta-viva" id="vivo-resp"></div>
+<label class="campo"><span>Desarrollo para la clave <small>(solo sale en la clave; \`fórmulas\` entre acentos graves)</small></span><textarea data-campo="clave" rows="4">${esc(it.clave)}</textarea></label>
+<div class="hoja hoja-vivo k-des-vivo" id="vivo-clave"></div>`;
+  }
+
+  /** Lo que se recalcula en vivo mientras Juan escribe, sin rehacer los campos. */
+  function vivo() {
+    const p = $('#panel');
+    if (p.dataset.modo !== 'item') return;
+    const it = itemActual();
+    const i = posicion(it.id);
+    p.querySelectorAll('.f-vivo').forEach((d) => {
+      const src = it.formulas[+d.dataset.render] || '';
+      if (!src.trim()) { d.innerHTML = ''; return; }
+      const f = N.formula(src);
+      d.innerHTML = f.error ? `<span class="f-error">${esc(f.error)}</span>` : f.html;
+    });
+    $('#vivo-item').innerHTML = N.itemHoja(Object.assign({}, it, { espacio: 0 }), i + 1);
+    const c = N.calcular(it);
+    const usa = (N.ES_RESPUESTA[it.tipo] || []);
+    const en = N.respuestaEnEnunciado(it, c);
+    $('#vivo-resp').className = `respuesta-viva rv-${c.estado}`;
+    $('#vivo-resp').innerHTML = `<div class="rv-cab"><span class="rv-rot">Respuesta final</span><span class="chip chip-${c.estado}">${ROTULO[c.estado]}</span></div>
+<div class="rv-valor">${c.html || '<span class="nada">—</span>'}</div>
+${c.mensaje ? `<div class="rv-msj">${c.estado === 'error' ? esc(c.mensaje) : c.mensaje}</div>` : ''}
+${en && !en.suelto ? `<div class="rv-msj rv-mal">La respuesta está escrita en el propio enunciado.</div>` : ''}
+${en && en.suelto ? `<div class="rv-msj">El número ${esc(en.s)}, que es la respuesta, aparece en el enunciado: fijate que no la delate.</div>` : ''}
+${usa.some((k) => new RegExp(`\\{${k + 1}\\}`).test(it.enunciado)) ? `<div class="rv-msj rv-mal">El enunciado muestra la forma factorizada: es la respuesta.</div>` : ''}
+${c.detalle ? `<div class="rv-detalle">${c.detalle}</div>` : ''}`;
+    $('#vivo-clave').innerHTML = String(it.clave || '').trim() ? N.prosa(it.clave, it.formulas) : '<span class="nada">Sin desarrollo todavía.</span>';
+  }
+
+  // ── la vista de impresión ─────────────────────────────────────
+  function pintarImpresion() {
+    const fila = estado.vista === 'editor' ? 'A' : estado.vista;
+    $('#impresion').innerHTML = fila === 'clave' ? N.clave(val()) : N.hoja(val(), fila);
+    document.title = N.nombreArchivo(val(), fila);
+    $('#vista-nombre').textContent = fila === 'clave' ? 'Clave de corrección · uso exclusivo del docente' : `Hoja del alumno · Fila ${fila}`;
+  }
+  window.addEventListener('beforeprint', pintarImpresion);
+  window.addEventListener('afterprint', () => { if (estado.vista === 'editor') document.title = 'Editor de valoraciones'; });
+
+  // ── todo junto ────────────────────────────────────────────────
+  function cambio() {
+    pintarTotal();
+    pintarLista();
+    pintarAvisos();
+    vivo();
+    if (estado.vista !== 'editor') pintarImpresion();
+    programarGuardado();
+  }
+  function todo() {
+    pintarBarra();
+    pintarLista();
+    pintarAvisos();
+    abrirPanel();
+    if (estado.vista !== 'editor') pintarImpresion();
+    else document.title = 'Editor de valoraciones';
+  }
+
+  function elegir(id) {
+    estado.item = id;
+    abrirPanel();
+    pintarLista();
+    programarGuardado();
+    if (window.innerWidth < 860) $('#panel').scrollIntoView({ block: 'start' });
+  }
+
+  function mover(desde, hasta) {
+    const its = val().items;
+    if (hasta < 0 || hasta >= its.length || desde === hasta) return;
+    const [x] = its.splice(desde, 1);
+    its.splice(hasta, 0, x);
+    if ($('#panel').dataset.modo === 'item') abrirPanel();
+    cambio();
+  }
+
+  /** Ajusta las fórmulas al tipo: ni de menos, ni se pierden las que sobran. */
+  function ajustarTipo(it) {
+    while (it.formulas.length < N.TIPOS[it.tipo].campos.length) it.formulas.push('');
+    if (!it.pide) it.pide = { raices: true };
+  }
+
+  // ── confirmaciones propias, nada de confirm() ─────────────────
+  function modal(html, botones) {
+    const m = $('#modal');
+    $('#modal-texto').innerHTML = html;
+    const caja = m.querySelector('.modal-botones');
+    caja.innerHTML = '';
+    for (const b of botones) {
+      const e = document.createElement('button');
+      e.type = 'button';
+      e.className = `btn ${b.clase || ''}`;
+      e.textContent = b.texto;
+      e.addEventListener('click', () => { m.hidden = true; if (b.f) b.f(); });
+      caja.append(e);
+    }
+    m.hidden = false;
+    caja.lastElementChild.focus();
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#modal').hidden) $('#modal').hidden = true; });
+  $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') $('#modal').hidden = true; });
+
+  // ── eventos ───────────────────────────────────────────────────
+  $('#panel').addEventListener('input', (e) => {
+    const el = e.target;
+    const modo = $('#panel').dataset.modo;
+    const destino = modo === 'datos' ? val() : itemActual();
+    if (!destino) return;
+    if (el.dataset.campo) {
+      let v = el.value;
+      if (el.dataset.campo === 'pts' || el.dataset.campo === 'espacio') v = parseFloat(String(v).replace(',', '.')) || 0;
+      destino[el.dataset.campo] = v;
+      if (el.dataset.campo === 'tipo') { ajustarTipo(destino); abrirPanel(); }
+      if (modo === 'datos') pintarBarra();
+    } else if (el.dataset.formula != null) {
+      destino.formulas[+el.dataset.formula] = el.value;
+    } else if (el.dataset.pide) {
+      destino.pide = Object.assign({}, destino.pide, { [el.dataset.pide]: el.checked });
+    } else return;
+    cambio();
+  });
+
+  $('#panel').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-accion]');
+    if (!b) return;
+    const v = val(), it = itemActual();
+    switch (b.dataset.accion) {
+      case 'mas-formula':
+        it.formulas.push(''); abrirPanel(); cambio();
+        $(`[data-formula="${it.formulas.length - 1}"]`).focus();
+        break;
+      case 'menos-formula':
+        it.formulas.splice(+b.dataset.i, 1); abrirPanel(); cambio();
+        break;
+      case 'duplicar': {
+        const copia = JSON.parse(JSON.stringify(it));
+        copia.id = N.nuevoId();
+        v.items.splice(posicion(it.id) + 1, 0, copia);
+        elegir(copia.id); cambio();
+        break;
+      }
+      case 'borrar':
+        modal(`<p>¿Borrar el <b>ítem ${posicion(it.id) + 1}</b>${it.tema ? ` (${esc(it.tema)})` : ''}?</p><p class="nota">No se puede deshacer, salvo desde un respaldo exportado.</p>`, [
+          { texto: 'Cancelar' },
+          { texto: 'Borrar el ítem', clase: 'btn-peligro', f: () => {
+            const i = posicion(it.id);
+            v.items.splice(i, 1);
+            const sig = v.items[Math.min(i, v.items.length - 1)];
+            elegir(sig ? sig.id : '__datos'); cambio();
+          } },
+        ]);
+        break;
+      case 'duplicar-val': {
+        const copia = N.normalizar(JSON.parse(JSON.stringify(v)));
+        copia.id = N.nuevoId();
+        copia.items.forEach((x) => { x.id = N.nuevoId(); });
+        copia.titulo = `${copia.titulo} (copia)`;
+        estado.grados.push(copia); estado.activo = copia.id; estado.item = '__datos';
+        todo(); programarGuardado();
+        break;
+      }
+      case 'borrar-val':
+        modal(`<p>¿Borrar la valoración <b>${esc(v.nombre)} · ${esc(v.unidad)} — ${esc(v.titulo)}</b> con sus ${v.items.length} ítems?</p><p class="nota">No se puede deshacer. Si no tenés un respaldo, exportala antes.</p>`, [
+          { texto: 'Cancelar' },
+          { texto: 'Exportarla primero', f: () => exportar([v], archivoDe(v)) },
+          { texto: 'Borrar la valoración', clase: 'btn-peligro', f: () => {
+            estado.grados = estado.grados.filter((x) => x.id !== v.id);
+            if (!estado.grados.length) estado.grados.push(N.nuevaValoracion());
+            estado.activo = estado.grados[0].id;
+            estado.item = estado.grados[0].items[0] ? estado.grados[0].items[0].id : '__datos';
+            todo(); programarGuardado();
+          } },
+        ]);
+        break;
+    }
+  });
+
+  const lista = $('#lista-items');
+  lista.addEventListener('click', (e) => {
+    const li = e.target.closest('li');
+    if (!li) return;
+    const m = e.target.closest('[data-mover]');
+    if (m) { const i = posicion(li.dataset.id); mover(i, i + +m.dataset.mover); return; }
+    elegir(li.dataset.id);
+  });
+  let arrastrado = null;
+  lista.addEventListener('dragstart', (e) => {
+    const li = e.target.closest('li');
+    arrastrado = li.dataset.id;
+    li.classList.add('arrastrando');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', arrastrado);
+  });
+  lista.addEventListener('dragover', (e) => {
+    const li = e.target.closest('li');
+    if (!arrastrado || !li) return;
+    e.preventDefault();
+    lista.querySelectorAll('.sobre').forEach((x) => x.classList.remove('sobre'));
+    li.classList.add('sobre');
+  });
+  lista.addEventListener('dragend', () => {
+    arrastrado = null;
+    lista.querySelectorAll('.sobre, .arrastrando').forEach((x) => x.classList.remove('sobre', 'arrastrando'));
+  });
+  lista.addEventListener('drop', (e) => {
+    const li = e.target.closest('li');
+    if (!arrastrado || !li) return;
+    e.preventDefault();
+    mover(posicion(arrastrado), posicion(li.dataset.id));
+  });
+
+  document.querySelector('.lista-datos').addEventListener('click', () => elegir('__datos'));
+  $('#agregar').addEventListener('click', () => {
+    const it = N.itemVacio();
+    val().items.push(it);
+    elegir(it.id); cambio();
+  });
+  $('#avisos').addEventListener('click', (e) => {
+    const li = e.target.closest('[data-ir]');
+    if (li) { if (estado.vista !== 'editor') { estado.vista = 'editor'; pintarBarra(); } elegir(li.dataset.ir); }
+  });
+
+  $('#sel-val').addEventListener('change', (e) => {
+    estado.activo = e.target.value;
+    estado.item = val().items[0] ? val().items[0].id : '__datos';
+    todo(); programarGuardado();
+  });
+  $('#nueva-val').addEventListener('click', () => {
+    const v = N.nuevaValoracion();
+    estado.grados.push(v); estado.activo = v.id; estado.item = '__datos';
+    todo(); programarGuardado();
+  });
+  document.querySelector('.pestanas').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-vista]');
+    if (!b) return;
+    estado.vista = b.dataset.vista;
+    pintarBarra();
+    if (estado.vista === 'editor') { document.title = 'Editor de valoraciones'; abrirPanel(); }
+    else pintarImpresion();
+    window.scrollTo(0, 0);
+  });
+  $('#imprimir').addEventListener('click', () => window.print());
+
+  // ── exportar e importar ───────────────────────────────────────
+  const archivoDe = (v) => `${N.nombreArchivo(v, 'A').replace(/ - Fila A$/, '')}.json`;
+  function exportar(grados, nombre) {
+    const datos = { formato: 'aesweb-valoraciones', version: 1, exportado: new Date().toISOString(), grados };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(datos, null, 2)], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = nombre;
+    document.body.append(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
+  }
+  $('#exportar-esta').addEventListener('click', () => exportar([val()], archivoDe(val())));
+  $('#exportar-todo').addEventListener('click', () =>
+    exportar(estado.grados, `Respaldo valoraciones ${new Date().toISOString().slice(0, 10)}.json`));
+
+  $('#importar').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    const lector = new FileReader();
+    lector.onload = () => {
+      let llegan;
+      try {
+        const d = JSON.parse(lector.result);
+        llegan = Array.isArray(d.grados) ? d.grados : Array.isArray(d.items) ? [d] : null;
+        if (!llegan || !llegan.length) throw new Error('no trae ninguna valoración');
+        llegan = llegan.map(N.normalizar);
+      } catch (err) {
+        modal(`<p>No pude leer <b>${esc(file.name)}</b>: ${esc(err.message)}.</p><p class="nota">Tiene que ser un .json exportado desde este editor.</p>`, [{ texto: 'Entendido' }]);
+        return;
+      }
+      const nombres = llegan.map((v) => `<li>${esc(v.nombre)} · ${esc(v.unidad)} — ${esc(v.titulo)} (${v.items.length} ${v.items.length === 1 ? 'ítem' : 'ítems'})</li>`).join('');
+      const ids = new Set(estado.grados.map((v) => v.id));
+      const pisa = llegan.filter((v) => ids.has(v.id)).length;
+      const abrir = (id) => { estado.activo = id; estado.item = val().items[0] ? val().items[0].id : '__datos'; estado.vista = 'editor'; todo(); guardar(); };
+      modal(`<p><b>${esc(file.name)}</b> trae ${llegan.length === 1 ? 'una valoración' : `${llegan.length} valoraciones`}:</p><ul>${nombres}</ul>
+${pisa ? `<p class="nota">${pisa === 1 ? 'Una ya está' : `${pisa} ya están`} en este navegador: si las agregás, la del archivo reemplaza a la de acá.</p>` : ''}`, [
+        { texto: 'Cancelar' },
+        { texto: 'Reemplazar todo lo de acá', clase: 'btn-peligro', f: () => { estado.grados = llegan; abrir(llegan[0].id); } },
+        { texto: 'Agregarlas', clase: 'btn-fuerte', f: () => {
+          for (const v of llegan) {
+            const i = estado.grados.findIndex((x) => x.id === v.id);
+            if (i >= 0) estado.grados[i] = v; else estado.grados.push(v);
+          }
+          abrir(llegan[0].id);
+        } },
+      ]);
+    };
+    lector.readAsText(file);
+  });
+
+  cargar();
+  todo();
+  guardar();
+})();
+</script>
+</body>
+</html>

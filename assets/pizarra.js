@@ -798,10 +798,82 @@ function caja(c){
   return `<div class="caja"><span class="caja-rot">${c.rot}</span>${cont}</div>`;
 }
 
+/* ═══ las diapositivas de teoría ═══
+   Una palabra nueva, un postulado, un teorema: una idea por diapositiva,
+   grande, con su dibujo y una comparación. El cajón dice en qué parte de
+   la caja de herramientas se guarda.
+   { id, cajon, cod?, titulo, pregunta, enun?, html?, revela?:{ txt },
+     mas?:[…], como?, figura?, verFigura?, fuente?, elementos?:[[id, nombre]] }
+   elementos lleva a la entrada del libro de Euclides (matematica/elementos),
+   que a su vez nombra esta diapositiva en su «En clase»: el vínculo va y vuelve.
+   Van antes de un ejemplo (ej.antes), después de los ejemplos de un tema
+   (t.despues) o al principio de la unidad (cfg.INICIO, en #teoria-inicio). */
+const CAJONES = { definicion:'Definición', postulado:'Postulado', nocion:'Noción común',
+  teorema:'Teorema', construccion:'Construcción', estrategia:'Estrategia', lenguaje:'El lenguaje de la geometría' };
+/* Lo que dice la diapositiva aparece por partes, como los pasos de un
+   ejemplo. Al principio, solo el título y la pregunta: la piensan ellos.
+   Con «Siguiente», el enunciado (y el dibujo con él, salvo que la pregunta
+   lo necesite: verFigura), la caja, la respuesta (revela), cada línea más y
+   la comparación. */
+function teoria(td, cinta, attrs = ''){
+  const t = s => sombrero(s);
+  const partes = [
+    ...(td.enun ? [`<p class="teoria-enun">${t(td.enun)}</p>`] : []),
+    ...(td.html ? [td.html] : []),
+    ...(td.revela ? [`<p class="teoria-respuesta">${t(td.revela.txt)}</p>`] : []),
+    ...(td.mas || []).map(m => `<p class="teoria-mas">${t(m)}</p>`),
+    ...(td.como ? [`<p class="teoria-como"><span>Una comparación</span>${t(td.como)}</p>`] : []),
+  ];
+  const fuente = (td.fuente ? `<p class="teoria-fuente">${td.fuente}</p>` : '') +
+    (td.elementos ? `<p class="teoria-elementos">${td.elementos.map(([id, n]) =>
+      `<a href="../elementos/libro-1.html#${id}">En los Elementos de Euclides: ${n} →</a>`).join(' ')}</p>` : '');
+  if (partes.length) partes[partes.length - 1] += fuente;
+  return `
+  <section class="teoria-diapo" id="d-${td.id}" data-cajon="${td.cajon}"${attrs}>
+    ${cinta ? `<p class="cinta">${cinta}</p>` : ''}
+    <p class="cajon-chip">${CAJONES[td.cajon]}${td.cod ? ` <b>${td.cod}</b>` : ''}</p>
+    <h3 class="teoria-tit">${td.titulo}</h3>
+    <div class="teoria-cuerpo${td.figura ? ' con-figura' : ''}">
+      <div class="teoria-txt">
+        ${td.pregunta ? `<p class="teoria-pregunta">${t(td.pregunta)}</p>` : ''}
+        ${partes.map((p, k) => `<div class="teoria-parte" data-parte="${k + 1}" hidden>${p}</div>`).join('')}
+        ${partes.length ? `<div class="pasos-nav abajo teoria-nav" data-teoria="${td.id}" data-visto="0" data-total="${partes.length}">
+          <button class="boton" type="button" data-accion="teoria-atras" disabled>← Anterior</button>
+          <span class="pasos-cuenta">${partes.length} ${partes.length === 1 ? 'paso' : 'pasos'}</span>
+          <button class="boton" type="button" data-accion="teoria-sigue">Siguiente →</button>
+        </div>` : fuente}
+      </div>
+      ${td.figura ? `<div class="teoria-figura${td.verFigura || !partes.length ? '' : ' tapada" data-con-enun="1'}">${td.figura}</div>` : ''}
+    </div>
+  </section>`;
+}
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-accion^="teoria-"]');
+  if (!b) return;
+  const nav = b.closest('.teoria-nav'), total = +nav.dataset.total;
+  const visto = Math.max(0, Math.min(total, +nav.dataset.visto + (b.dataset.accion === 'teoria-sigue' ? 1 : -1)));
+  nav.dataset.visto = visto;
+  nav.parentNode.querySelectorAll('.teoria-parte').forEach(p => {
+    const ver = +p.dataset.parte <= visto;
+    p.classList.toggle('recien-parte', ver && p.hidden);
+    p.hidden = !ver;
+  });
+  const fig = nav.closest('.teoria-diapo').querySelector('.teoria-figura[data-con-enun]');
+  if (fig && fig.classList.contains('tapada') === (visto > 0)){
+    fig.classList.toggle('recien-parte', visto > 0);
+    fig.classList.toggle('tapada', visto === 0);
+  }
+  nav.querySelector('[data-accion="teoria-atras"]').disabled = visto === 0;
+  nav.querySelector('[data-accion="teoria-sigue"]').disabled = visto === total;
+  nav.querySelector('.pasos-cuenta').textContent = visto ? `paso ${visto} de ${total}` : `${total} ${total === 1 ? 'paso' : 'pasos'}`;
+  llevaAlaVista(nav);
+});
+
 Pizarra.unidad = cfg => {
-  const { TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS = {}, grado, temasLibro = TEMAS.length } = cfg;
+  const { TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, LABS = {}, INICIO, grado, temasLibro = TEMAS.length } = cfg;
   const idT = t => t.id || String(t.n);
   const etiqueta = t => t.puente ? 'Puente' : `Tema ${t.n}`;
+  const cintaT = t => `<b>${etiqueta(t)}</b> · ${t.corto} · caja de herramientas`;
 
   document.getElementById('temas').innerHTML = raices(TEMAS.map(t => {
     const c = t.concepto;
@@ -822,9 +894,11 @@ Pizarra.unidad = cfg => {
   </section>
 
   <div class="ejemplos">
-    ${t.ejemplos.map((ej, i) => bloque(`${idT(t)}-${i + 1}`, ej, {
+    ${t.ejemplos.map((ej, i) => (ej.antes || []).map(td => teoria(td, cintaT(t))).join('') +
+      bloque(`${idT(t)}-${i + 1}`, ej, {
         rotulo:`Ejemplo ${i + 1}.`,
         cinta:`<b>${etiqueta(t)}</b> · ${t.corto} · ejemplo ${i + 1} de ${total}` })).join('')}
+    ${(t.despues || []).map(td => teoria(td, cintaT(t))).join('')}
   </div>
 
   ${t.taller ? [].concat(t.taller).map(lab => `<section class="taller-diapo">
@@ -840,10 +914,19 @@ Pizarra.unidad = cfg => {
       attrs:'data-tema="desafio"' }) : ''));
 
   /* la pregunta de arranque, en la introducción */
+  /* si la página le hizo lugar (#arranque-lugar), va en su propia diapositiva */
   const recorrido = document.getElementById('recorrido');
+  const lugar = document.getElementById('arranque-lugar');
   if (PREGUNTA_INICIAL){
-    recorrido.insertAdjacentHTML('beforebegin',
-      bloque('inicial', { titulo:'Para arrancar', ...PREGUNTA_INICIAL }, { clase:'arranque', id:'arranque' }));
+    const html = bloque('inicial', { titulo:'Para arrancar', ...PREGUNTA_INICIAL },
+      { clase:'arranque', id:'arranque', attrs:lugar ? 'data-tema="unidad"' : '' });
+    if (lugar) lugar.outerHTML = html;
+    else recorrido.insertAdjacentHTML('beforebegin', html);
+  }
+  const inicio = document.getElementById('teoria-inicio');
+  if (INICIO && inicio){
+    inicio.outerHTML = raices(INICIO.map(td =>
+      teoria(td, '<b>Antes de empezar</b> · geometría a la manera de los griegos', ' data-tema="unidad"')).join(''));
   }
 
   /* el recorrido de la unidad y el navegador */
