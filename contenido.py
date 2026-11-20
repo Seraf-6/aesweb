@@ -211,6 +211,11 @@ OMAPA = {
     {'tipo': 'lectura', 'titulo': 'El prólogo de Zamorano (1576)',
      'desc': 'La dedicatoria de la primera traducción castellana de los Elementos, completa y por partes.',
      'url': 'omapa/elementos/prologo-zamorano.html'},
+    # La clase de 7.º vive en matematica/7mo/; acá solo se enlaza.
+    {'tipo': 'diapositiva', 'titulo': 'Geometría a la manera de los griegos · Bloque A',
+     'desc': 'La clase de 7.º sobre los Elementos: opuestos por el vértice y paralelas cortadas por '
+             'una secante, demostrados y usados en problemas de la OMA.',
+     'url': 'matematica/7mo/euclides-angulos.html'},
   ],
 }
 
