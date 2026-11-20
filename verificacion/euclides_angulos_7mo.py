@@ -255,6 +255,26 @@ def verifica_pagina():
     for k in range(1, len(renglones)):
         if renglones[k].lstrip().startswith('control:') and not renglones[k - 1].rstrip().endswith(','):
             mal(f'línea {k + 1}: falta la coma antes de «control:», y la página no carga')
+    # el lenguaje: cada herramienta que se cita entre paréntesis tiene su diapositiva
+    guion_todo = cuerpo[cuerpo.index('const RAD'):]
+    for viejo in ('R3', 'R4'):
+        if re.search(rf'\b{viejo}\b', guion_todo.split('const UNIDAD')[0]):
+            mal(f'queda «{viejo}»: ahora se llama con los nombres de Euclides (N3, P5)')
+    cajones = re.findall(r"cajon:'(\w+)'", guion_todo)
+    for c in set(cajones) - {'definicion', 'postulado', 'nocion', 'teorema', 'construccion', 'estrategia', 'lenguaje'}:
+        mal(f'cajón desconocido: {c}')
+    ids = re.findall(r"\{ id:'([\w-]+)', cajon:", guion_todo)
+    if len(ids) != len(set(ids)):
+        mal(f'diapositivas de teoría con el mismo id: {sorted({i for i in ids if ids.count(i) > 1})}')
+    # cada diapositiva de teoría arranca con una pregunta, y nada más
+    for bloque_t in re.split(r"(?=\{ id:'[\w-]+', cajon:)", guion_todo)[1:]:
+        if not re.match(r"\{ id:'[\w-]+', cajon:'\w+',(?: cod:'\w+',)? titulo:'[^']*',\s*pregunta:'", bloque_t):
+            mal(f'la diapositiva de teoría «{bloque_t[6:30]}…» no arranca con su pregunta')
+    codigos = set(re.findall(r"cod:'(\w+)'", guion_todo))
+    citados = set(re.findall(r'\(([NPT]\d)\)', guion_todo))
+    for c in sorted(citados - codigos):
+        mal(f'se cita ({c}) y no tiene diapositiva de teoría')
+    print(f'   {len(cajones)} diapositivas de teoría; citados {sorted(citados)}, todos con su diapositiva')
     if re.search(r'<button[^>]*data-paso', cuerpo):
         mal('un botón usa data-paso: el panel de proyección lo toma para cambiar de lámina')
     # los nombres que ya usa pizarra.js no se pueden redeclarar

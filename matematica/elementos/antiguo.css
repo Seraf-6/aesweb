@@ -1,0 +1,27 @@
+/* ═══════════════════════════════════════════════════════════════
+   El texto de los libros antiguos (Zamorano 1576, la edición de 1774):
+   una letra de imprenta vieja sobre papel envejecido. Los colores son
+   fijos, como una hoja de papel: no cambian con el tema oscuro ni con las
+   paletas del panel de proyección. La página carga la fuente con:
+     family=IM+Fell+English:ital@0;1
+   ═══════════════════════════════════════════════════════════════ */
+.antiguo{
+  padding:14px 18px; border-radius:3px; color:#3a2812;
+  background-color:#f1e4c3;
+  background-image:
+    radial-gradient(ellipse at 18% 12%, rgba(255,255,255,.45), transparent 55%),
+    radial-gradient(ellipse at 85% 88%, rgba(130,90,30,.14), transparent 60%),
+    radial-gradient(ellipse at 60% 40%, rgba(160,120,60,.06), transparent 70%);
+  border:1px solid #cbb684; box-shadow:inset 0 0 26px rgba(120,80,20,.18), 0 1px 3px rgba(60,40,10,.12);
+  font-family:'IM Fell English', 'Alegreya', Georgia, serif; font-size:1.16em; line-height:1.55;
+}
+.antiguo p{margin:0 0 8px}
+.antiguo p:last-child{margin-bottom:0}
+.antiguo i,.antiguo em{font-style:italic}
+/* lo que no es del libro (rótulos, citas que llevan a otra entrada) va en la letra del sitio */
+.antiguo .rot-antiguo{display:block; margin-bottom:6px; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.08em; text-transform:uppercase; color:#7a6235}
+.antiguo .cita-vieja{font-family:var(--sans); font-size:.72em; white-space:nowrap; padding:0 5px;
+  border-radius:3px; background:rgba(255,255,255,.55); border:1px solid #cbb684; color:#7a1d10; text-decoration:none}
+.antiguo .pag{font-family:var(--mono); font-size:10.5px; color:#8a7247; letter-spacing:.06em; margin:0 2px; white-space:nowrap}
+.antiguo .nota-trad{font-size:.8em; color:#6b5530}

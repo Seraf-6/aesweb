@@ -7,7 +7,7 @@
 <meta name="description" content="Bloque A de la geometría a la manera de los griegos, en 7.º: los opuestos por el vértice y las paralelas cortadas por una secante, demostrados como en los Elementos de Euclides y usados en problemas de la OMA.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500;1,700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <link rel="stylesheet" href="../../assets/base.css">
 <link rel="stylesheet" href="../../assets/sitio.css">
 <link rel="stylesheet" href="../../assets/clase.css">
@@ -20,19 +20,25 @@
 .fuente{display:block; margin-top:8px; font-family:var(--mono); font-style:normal; font-size:11px;
   letter-spacing:.06em; text-transform:uppercase; color:var(--lapiz)}
 body[data-solo="1"] .fuente{font-size:.45em}
-/* la lista de lo que ya sabemos: crece clase a clase */
-.lista-teoremas{display:grid; gap:6px; margin:10px 0 0; padding:0; list-style:none}
-.lista-teoremas li{display:grid; grid-template-columns:3.2em minmax(0,1fr); gap:10px; align-items:baseline;
-  font-family:var(--sans); font-size:16px; line-height:1.35}
-.lista-teoremas b{font-family:var(--mono); font-size:13px; color:var(--acento2)}
-body[data-solo="1"] .lista-teoremas li{font-size:1em}
-body[data-solo="1"] .lista-teoremas b{font-size:.8em}
+/* los dibujos de la teoría: el edificio de Euclides, la balanza, los carteles */
+.l-def{fill:var(--acento2-suave); stroke:var(--acento2); stroke-width:1.5}
+.l-ax{fill:var(--dest-suave); stroke:var(--dest); stroke-width:1.5}
+.l-teo{fill:var(--acento-suave); stroke:var(--acento); stroke-width:1.5}
+.l-caja{fill:var(--papel); stroke:var(--tinta); stroke-width:1.5}
+/* la ilusión va sobre blanco liso, sin cuadrícula, en cualquier paleta */
+.l-blanco{fill:#fff; stroke:#C3D0D9; stroke-width:1.5}
+.l-ml{stroke:#16283A; stroke-width:2.6; stroke-linecap:round}
+.l-ml-rojo{stroke:#C8102E; stroke-width:3.4; stroke-linecap:round}
+.l-txt{fill:var(--tinta); font-family:var(--sans); font-size:18px}
+.l-nota{fill:var(--lapiz); font-family:var(--mono); font-size:16px}
+.l-si{fill:var(--acento2); font-family:var(--sans); font-size:17px; font-weight:700}
+.l-no{fill:var(--acento); font-family:var(--sans); font-size:17px; font-weight:700}
 /* la figura del concepto va a la derecha y los puntos la rodean: abajo no entraba */
 #t1 .concepto-figura,#t2 .concepto-figura{float:right; width:min(360px, 42%); margin:4px 0 8px 22px}
 #t1 .puntos,#t2 .puntos{overflow:visible}
 </style>
 </head>
-<body data-diapos=".intro, .concepto, .ejemplo-diapo, .desafio">
+<body data-diapos=".intro, .arranque, .teoria-diapo, .concepto, .ejemplo-diapo, .desafio">
 <nav class="sitio-nav">
   <div class="sitio-nav-int">
     <a class="sitio-marca" href="../../index.html">AESWeb</a>
@@ -66,23 +72,23 @@ body[data-solo="1"] .lista-teoremas b{font-size:.8em}
     <p class="cinta">Bloque A · geometría a la manera de los griegos</p>
     <h2>No se mide: se demuestra</h2>
     <ul class="puntos">
-      <li>Los griegos no medían con el transportador: <b>demostraban</b>. Cada cosa nueva se apoya en lo que ya está en la lista.</li>
-      <li>De los ángulos alcanzan <b>dos hechos</b>: los opuestos por el vértice y las paralelas cortadas por una secante.</li>
-      <li>La lista arranca con lo que se acepta sin demostrar:</li>
-    </ul>
-    <ul class="lista-teoremas">
-      <li><b>R3</b><span>Dos ángulos que juntos forman un llano suman 180°.</span></li>
-      <li><b>R4</b><span>Dos rectas cortadas por una secante son paralelas si y solo si sus ángulos correspondientes son iguales.</span></li>
+      <li>Los griegos no medían con el transportador: <b>demostraban</b>. Cada cosa nueva se apoya en lo que ya sabemos.</li>
+      <li>De los ángulos alcanzan <b>dos hechos</b>, uno por clase: qué pasa cuando dos rectas se cortan, y qué pasa cuando una recta corta a dos paralelas.</li>
+      <li>Y en el camino, el lenguaje de la geometría: cada palabra nueva, cada herramienta, en su lugar.</li>
     </ul>
     <div class="recorrido" id="recorrido"></div>
   </section>
+
+  <div id="arranque-lugar"></div>
+  <div id="teoria-inicio"></div>
 
   <main id="temas"></main>
 
   <footer class="creditos">
     Material de clase · Geometría a la manera de los griegos, bloque A. El orden y las
     demostraciones siguen el Libro I de los <i>Elementos</i> de Euclides (I.15 y I.27–29),
-    reescritos para 7.º. Los problemas de olimpiada son de la OMA (Argentina), con su
+    reescritos para 7.º; las definiciones, el postulado y las nociones comunes también son de
+    ese libro, en palabras nuestras. Los problemas de olimpiada son de la OMA (Argentina), con su
     certamen y año; los de la tira de papel, la bisectriz y el zigzag, de <i>100 problemas
     de geometría básica</i> (Taller de verano, 2025). Cada medida de esta página está
     verificada en <span class="ec">verificacion/euclides_angulos_7mo.py</span>.
@@ -154,10 +160,77 @@ function refleja(p, a, b){
 const horizontal = (y, rot, cls = 'g-linea') =>
   g.seg([18, y], [382, y], cls) + (rot ? g.txt([372, y - 12], rot, 'g-rot') : '');
 
+/* ═══ la teoría ═══
+   Cada palabra nueva, cada postulado y cada teorema tiene su diapositiva,
+   justo antes del ejemplo donde aparece por primera vez. Las categorías son
+   las del libro I de Euclides (definiciones, postulados, nociones comunes,
+   proposiciones), más dos cajones nuestros: construcciones y estrategias. */
+const dib = (svg, rot, vb = '0 0 400 260') => `<svg viewBox="${vb}" role="img" aria-label="${rot}">${svg}</svg>`;
+const ladrillo = (x, y, w, h, cls, s) =>
+  `<rect class="${cls}" x="${x}" y="${y}" width="${w}" height="${h}" rx="3"/>` + g.txt([x + w / 2, y + h / 2], s, 'l-txt');
+const CAJAS = [
+  ['definicion', 'Definiciones', 'se acuerdan', 'Qué quiere decir cada palabra. No se discuten: se acuerdan, como en un diccionario.'],
+  ['postulado', 'Postulados', 'se aceptan', 'Lo que se acepta sin demostrar sobre las rectas, los ángulos y las circunferencias.'],
+  ['nocion', 'Nociones comunes', 'se aceptan', 'Lo que se acepta sin demostrar sobre cualquier cantidad: ángulos, longitudes, números.'],
+  ['teorema', 'Teoremas', 'se demuestran', 'Lo que se demuestra, paso a paso, con lo que ya está en la caja.'],
+  ['construccion', 'Construcciones', 'se construyen', 'Lo que se dibuja con regla y compás. Llegan en el bloque B.'],
+  ['estrategia', 'Estrategias', 'se prueban', 'Ideas para encontrar el camino. No son verdades: son trucos del oficio.'],
+];
+/* la caja con lo que tiene adentro: { cajon:[[nombre, nuevo?], …] } */
+const cajonera = contenido => `<div class="cajones${contenido ? ' lleno' : ''}">${CAJAS.map(([k, tit, verbo, que]) => `
+  <div class="cajon" data-cajon="${k}"><h4>${tit}</h4><span class="verbo">${verbo}</span>${
+    !contenido ? `<p>${que}</p>`
+    : contenido[k] && contenido[k].length ? `<ul>${contenido[k].map(([s, nuevo]) => `<li${nuevo ? ' class="es-nuevo"' : ''}>${s}</li>`).join('')}</ul>`
+    : `<p class="vacio">${k === 'construccion' ? 'en el bloque B' : 'todavía vacío'}</p>`}</div>`).join('')}</div>`;
+
+const INICIO = [
+  { id:'ojo', cajon:'lenguaje', titulo:'Los ojos engañan',
+    pregunta:'¿Cuál de los dos segmentos rojos es más largo: el de arriba o el de abajo?', verFigura:true,
+    revela:{ txt:'Miden exactamente lo mismo. Las puntas de los costados engañan al ojo.' },
+    mas:['Un dibujo puede engañar, y el transportador también se equivoca: un poquito, siempre. Por eso en geometría no se mide: se demuestra.'],
+    /* sobre blanco liso: con la cuadrícula se podían contar los cuadraditos */
+    figura:dib(`<rect class="l-blanco" x="2" y="2" width="396" height="256" rx="8"/>` +
+      g.seg([110, 80], [290, 80], 'l-ml-rojo') + g.seg([110, 80], [134, 60], 'l-ml') + g.seg([110, 80], [134, 100], 'l-ml') +
+      g.seg([290, 80], [266, 60], 'l-ml') + g.seg([290, 80], [266, 100], 'l-ml') +
+      g.seg([110, 190], [290, 190], 'l-ml-rojo') + g.seg([110, 190], [86, 170], 'l-ml') + g.seg([110, 190], [86, 210], 'l-ml') +
+      g.seg([290, 190], [314, 170], 'l-ml') + g.seg([290, 190], [314, 210], 'l-ml'),
+      'Dos segmentos iguales: uno con puntas hacia afuera y otro con puntas hacia adentro') },
+  { id:'demostrar', cajon:'lenguaje', titulo:'¿Qué es demostrar?',
+          pregunta:'¿Qué quiere decir demostrar algo?',
+    enun:'Demostrar es convencer a alguien que no te cree, usando solo cosas que ya aceptó.',
+    mas:['Cada paso dice de dónde sale, entre paréntesis. Si un paso no tiene de dónde salir, la demostración no vale.',
+         'Una demostración vale para todos los dibujos a la vez, también para los que nadie hizo.'],
+    como:'Un juicio. Al juez no le alcanza con «a mí me parece»: hay que mostrar las pruebas, una por una, y cada una se puede revisar.' },
+  { id:'axiomas', cajon:'lenguaje', titulo:'¿Y de dónde se arranca?',
+          pregunta:'¿Se puede demostrar todo?',
+    enun:'Si cada cosa se apoya en otra anterior, en algún momento hay que parar. Lo primero se acepta sin demostrar: son los <b>axiomas</b>.',
+    mas:['Es como el chico que pregunta «¿por qué?» después de cada respuesta: la cadena de porqués tiene que terminar en algún lado.'],
+    como:'Las reglas de un juego. En el ajedrez nadie demuestra que el alfil se mueve en diagonal: es la regla, y se acepta para poder jugar. Lo que sí se demuestra es que con el rey y una torre siempre se le gana a un rey solo.' },
+  { id:'euclides', cajon:'lenguaje', titulo:'El libro de Euclides',
+          pregunta:'¿Quién fue Euclides, y qué escribió?',
+    enun:'Hace unos 2300 años, en Alejandría, Euclides escribió los <i>Elementos</i>: empieza con unas pocas cosas aceptadas y demuestra, una por una, cientos de propiedades.',
+    mas:['El libro I tiene 23 definiciones, 5 postulados, 5 nociones comunes y 48 proposiciones. Cada proposición se apoya en las de abajo, como los ladrillos de una pared.',
+         'Se usó para enseñar geometría durante más de dos mil años. Es el modelo de esta unidad.'],
+    elementos:[['indice', 'el libro I completo']],
+    figura:dib(
+      ladrillo(20, 204, 118, 44, 'l-def', 'definiciones') + ladrillo(141, 204, 118, 44, 'l-ax', 'postulados') +
+      ladrillo(262, 204, 118, 44, 'l-ax', 'nociones') +
+      [26, 118, 210, 302].map((x, k) => ladrillo(x, 156, 88, 44, 'l-teo', `prop. ${k + 1}`)).join('') +
+      [72, 164, 256].map((x, k) => ladrillo(x, 108, 88, 44, 'l-teo', ['prop. 5', 'prop. 6', '…'][k])).join('') +
+      [118, 210].map(x => ladrillo(x, 60, 88, 44, 'l-teo', '…')).join('') +
+      ladrillo(164, 12, 88, 44, 'l-teo', 'prop. 48'),
+      'Una pared de ladrillos: abajo las definiciones, los postulados y las nociones comunes; arriba las proposiciones') },
+  { id:'caja', cajon:'lenguaje', titulo:'La caja de herramientas',
+          pregunta:'¿Son todas iguales las herramientas de la geometría?',
+    html:cajonera(),
+    mas:['Postulados y nociones comunes, juntos, son los <b>axiomas</b>.',
+         'Cuando usamos una herramienta, la nombramos entre paréntesis: (N3), (T1), (def. de bisectriz).'] },
+];
+
 /* ═══════════════════════════════════════════════════════════════
    Las dos clases del bloque A, con la cadena de teoremas de la
    currícula: T1 (opuestos por el vértice, Euclides I.15) y T2 (paralelas
-   y secante, I.27–29), cada uno demostrado con R3 y R4 y lo anterior.
+   y secante, I.27–29), cada uno demostrado con lo que ya está en la caja de herramientas.
    Toda medida está calculada y verificada en
    verificacion/euclides_angulos_7mo.py. No se escribe ninguna a mano.
    ═══════════════════════════════════════════════════════════════ */
@@ -167,7 +240,7 @@ const TEMAS = [
   /* la demostración: la recta a va a 20°, la b a 80° */
   const O1 = [200, 130];
   const cruz = recta(O1, 20, 150) + recta(O1, 80, 120) + g.pto(O1, 'g-vert', 4.5) +
-    g.txt(en(O1, 20, 160), 'a', 'g-rot') + g.txt(en(O1, 80, 128), 'b', 'g-rot');
+    g.txt(en(O1, 20, 160), 'a', 'g-rot') + g.txt([en(O1, 80, 118)[0] + 16, en(O1, 80, 118)[1] + 8], 'b', 'g-rot');
   /* la tira: el borde de abajo en y = 240, el doblez sale de F a 50° */
   const Fp = [230, 240], arriba = 170, der = 330;
   const T = corte(Fp, en(Fp, 50, 1), [0, arriba], [1, arriba]);
@@ -181,35 +254,102 @@ const TEMAS = [
   /* la semicircunferencia de la OMA 2022 */
   const O5 = [200, 205], R5 = 160;
   const pt5 = { A:180, B:165, C:90, D:30, E:0 };
+  /* los dibujos de la teoría de A1 */
+  const Oa = [80, 205], Aa = en(Oa, 10, 270), Ba = en(Oa, 58, 205);
+  const Ol = [200, 175];
+  const llanoBase = g.seg([30, Ol[1]], [370, Ol[1]]) + g.pto(Ol, 'g-vert', 4.5) + nombre(Ol, 'O', 0, 24);
+  const Oc = [100, 200], Od = [300, 200];
+  const Or = [200, 205], Ob = [90, 215];
+  const Cc = [200, 128], Rc = 100;
+  const opuestos = cruz + sector(O1, 20, 80, 34, 'g-arco3') + rotAng(O1, 20, 80, 56, 'α') +
+    sector(O1, 200, 260, 34, 'g-arco3') + rotAng(O1, 200, 260, 56, 'γ');
   return {
   n:1, corto:'Opuestos por el vértice', titulo:'Los ángulos opuestos por el vértice', pag:'clase A1 · Euclides, Elementos I.15',
   concepto:{
-    serie:[
-      { rot:'lo que ya sabemos · R3', txt:'dos ángulos que forman un llano suman 180°' },
-      { rot:'teorema 1', txt:'los ángulos opuestos por el vértice son iguales' },
-    ],
     figura:`<svg viewBox="0 0 400 260" role="img" aria-label="Dos rectas que se cortan y sus ángulos α, β y γ">${
       cruz + sector(O1, 20, 80, 34) + rotAng(O1, 20, 80, 56, 'α') + sector(O1, 80, 200, 26, 'g-arco2') + rotAng(O1, 80, 200, 50, 'β') +
       sector(O1, 200, 260, 34) + rotAng(O1, 200, 260, 56, 'γ')}</svg>`,
     puntos:[
-      'Dos ángulos son <b>opuestos por el vértice</b> si los lados de uno son las prolongaciones de los lados del otro, como α y γ.',
-      'No se mide: se <b>demuestra</b> con R3. Desde hoy, el teorema 1 entra en la lista y se puede usar.',
+      'Hoy: qué es un ángulo, qué es un llano y qué pasa con los ángulos cuando dos rectas se cortan.',
+      'Y la primera demostración del bloque: la proposición 15 del libro de Euclides.',
     ]
   },
   ejemplos:[
     { titulo:'la demostración', enun:'Las rectas a y b se cortan. ¿Por qué α y γ, opuestos por el vértice, miden lo mismo?', prosa:true,
+      antes:[
+        { id:'angulo', cajon:'definicion', titulo:'Ángulo',
+          pregunta:'¿Qué es un ángulo?',
+          enun:'Dos semirrectas que salen del mismo punto forman un ángulo. El punto es el <b>vértice</b> y las semirrectas son los <b>lados</b>.',
+          mas:['Un ángulo se nombra con una letra griega, como α, o con tres letras y el vértice en el medio, con un sombrero: AÔB.'],
+          como:'Las dos agujas de un reloj: el centro, donde están clavadas, es el vértice.',
+          figura:dib(semi(Oa, 10, 270) + semi(Oa, 58, 205) + sector(Oa, 10, 58, 52) + rotAng(Oa, 10, 58, 76, 'α') +
+            g.pto(Oa, 'g-vert', 4.5) + nombre(Oa, 'O', -6, 22) + nombre(Aa, 'A', -8, 22) + nombre(Ba, 'B', 18, 6) +
+            g.txt([Oa[0] + 6, Oa[1] + 44], 'vértice', 'l-nota') + g.txt(en(Oa, 18, 200), 'lado', 'l-nota') + g.txt(en(Oa, 66, 150), 'lado', 'l-nota', 'end'),
+            'El ángulo AÔB, con su vértice O y sus dos lados') },
+        { id:'llano', cajon:'definicion', titulo:'Ángulo llano y grado',
+          pregunta:'¿Qué es un ángulo llano? ¿Y qué es un grado?',
+          enun:'Si los dos lados forman una recta, el ángulo es <b>llano</b>. Partido en 180 partes iguales, cada parte es un <b>grado</b>: el llano mide 180°.',
+          mas:['La vuelta entera son dos llanos: 360°.'],
+          como:'Media vuelta: lo que girás para mirar para atrás.',
+          figura:dib(llanoBase + sector(Ol, 0, 180, 62) + rotAng(Ol, 0, 180, 90, '180°'), 'Un ángulo llano: sus dos lados forman una recta', '0 0 400 230') },
+        { id:'n3', cajon:'nocion', cod:'N3', titulo:'El todo es la suma de sus partes',
+          pregunta:'Si un ángulo está partido en pedazos, ¿cuánto suman los pedazos?',
+          enun:'Si un ángulo está partido en pedazos, los pedazos juntos suman lo que mide el ángulo entero.',
+          mas:['Por eso, dos ángulos que juntos forman un llano suman 180°.'],
+          como:'Una pizza cortada en porciones: todas las porciones juntas son la pizza entera.',
+          fuente:'Euclides, quinta noción común: «el todo es mayor que la parte»',
+          figura:dib(llanoBase + semi(Ol, 62, 160) + sector(Ol, 0, 62, 50) + rotAng(Ol, 0, 62, 74, 'α') +
+            sector(Ol, 62, 180, 40, 'g-arco2') + rotAng(Ol, 62, 180, 64, 'β') + g.txt([200, 232], 'α + β = 180°', 'g-dato'),
+            'Un llano partido en dos ángulos, α y β', '0 0 400 250') },
+        { id:'opuestos', cajon:'definicion', titulo:'Opuestos por el vértice',
+          pregunta:'¿Qué son dos ángulos opuestos por el vértice?',
+          enun:'Dos ángulos son <b>opuestos por el vértice</b> si los lados de uno son las prolongaciones de los lados del otro.',
+          mas:['Cuando dos rectas se cortan, se forman dos pares de opuestos por el vértice. En el dibujo, α y γ son uno de los pares.'],
+          como:'Una tijera abierta: el ángulo entre las hojas y el ángulo entre los mangos son opuestos por el vértice, y el vértice es el tornillo.',
+          figura:dib(opuestos, 'Dos rectas que se cortan, con los ángulos opuestos α y γ') },
+        { id:'t1', cajon:'teorema', cod:'T1', titulo:'Teorema 1',
+          pregunta:'¿Qué pasa con dos ángulos opuestos por el vértice?',
+          enun:'Los ángulos opuestos por el vértice son iguales.',
+          mas:['Es la proposición 15 del libro I de Euclides.', 'Un teorema no se acepta: se demuestra. Para demostrarlo nos faltan dos herramientas.'],
+          elementos:[['prop-15', 'proposición 15']],
+          figura:dib(opuestos + g.txt([200, 245], 'α = γ', 'g-num'), 'Dos rectas que se cortan: α = γ') },
+        { id:'n1', cajon:'nocion', cod:'N1', titulo:'Iguales a lo mismo',
+          pregunta:'Si dos cosas son iguales a una tercera, ¿qué se puede decir de ellas dos?',
+          enun:'Dos cosas iguales a una misma cosa son iguales entre sí.',
+          mas:['Si a = c y b = c, entonces a = b.'],
+          como:'Si Ana mide lo mismo que Bruno, y Caro mide lo mismo que Bruno, Ana y Caro miden lo mismo: no hace falta ponerlas espalda con espalda.',
+          fuente:'Euclides, primera noción común',
+          elementos:[['nc-1', 'noción común 1']],
+          figura:dib(g.seg([40, 70], [360, 70], 'g-aux') +
+            [['Ana', 70], ['Bruno', 175], ['Caro', 280]].map(([s, x]) => g.pol([[x, 220], [x + 50, 220], [x + 50, 70], [x, 70]], 'g-fig') + g.txt([x + 25, 240], s, 'l-txt')).join(''),
+            'Tres barras de la misma altura: Ana, Bruno y Caro') },
+        { id:'n2', cajon:'nocion', cod:'N2', titulo:'Lo mismo de los dos lados',
+          pregunta:'Si a dos cosas iguales les sumo o les resto lo mismo, ¿siguen siendo iguales?',
+          enun:'Si a dos cosas iguales se les suma o se les resta lo mismo, siguen siendo iguales.',
+          mas:['Es lo que hacemos al resolver una ecuación: lo mismo de los dos lados del igual.'],
+          como:'Una balanza en equilibrio: si saco el mismo peso de los dos platillos, sigue en equilibrio.',
+          fuente:'Euclides, segunda y tercera nociones comunes',
+          elementos:[['nc-2', 'noción común 2'], ['nc-3', 'noción común 3']],
+          figura:dib(g.seg([200, 82], [200, 210]) + g.seg([160, 212], [240, 212]) + g.seg([70, 80], [330, 80]) + g.pto([200, 80], 'g-vert', 5) +
+            [100, 300].map(x => g.seg([x, 80], [x - 46, 168]) + g.seg([x, 80], [x + 46, 168]) + g.seg([x - 52, 168], [x + 52, 168])).join('') +
+            g.pol([[70, 166], [98, 166], [98, 138], [70, 138]], 'g-fig') + g.pol([[270, 166], [300, 166], [285, 138]], 'g-fig2') +
+            g.circ([118, 153], 13, 'g-arco3') + g.circ([318, 153], 13, 'g-arco3') +
+            g.txt([200, 240], 'saco el mismo peso de los dos lados', 'l-nota'),
+            'Una balanza en equilibrio, con el mismo peso en los dos platillos', '0 0 400 250') },
+      ],
       lienzo:F([
         [0, cruz + sector(O1, 20, 80, 34) + rotAng(O1, 20, 80, 56, 'α') + sector(O1, 200, 260, 34) + rotAng(O1, 200, 260, 56, 'γ')],
         [1, sector(O1, 80, 200, 26, 'g-arco2') + rotAng(O1, 80, 200, 50, 'β')],
         [1, g.seg(en(O1, 200, 140), en(O1, 20, 140), 'g-foco'), 2],
         [2, g.seg(en(O1, 260, 115), en(O1, 80, 115), 'g-foco'), 3],
-        [3, sector(O1, 200, 260, 34, 'g-arco3'), null, { gira:[180, O1[0], O1[1]] }],
-        [3, sector(O1, 20, 80, 34, 'g-arco3')],
+        [4, sector(O1, 200, 260, 34, 'g-arco3'), null, { gira:[180, O1[0], O1[1]] }],
+        [4, sector(O1, 20, 80, 34, 'g-arco3')],
       ], 'Dos rectas que se cortan: α y β forman un llano sobre a, β y γ forman un llano sobre b'),
       pasos:[
-        P('α y β están uno al lado del otro sobre la recta a: forman un llano (R3).', 'α + β = 180°'),
-        P('β y γ también forman un llano, sobre la recta b.', 'γ + β = 180°'),
-        P('Los dos son lo que le falta a β para llegar a 180°.', 'α = 180° − β', 'γ = 180° − β'),
+        P('α y β juntos forman el llano de la recta a (N3).', 'α + β = 180°'),
+        P('β y γ juntos forman el llano de la recta b (N3).', 'γ + β = 180°'),
+        P('Las dos sumas son iguales a 180°: son iguales entre sí (N1).', 'α + β = γ + β'),
+        P('Le resto β a los dos lados (N2).', `α + β ${N('− β')} = γ + β ${N('− β')}`, 'α = γ'),
       ], final:'α = γ: los opuestos por el vértice son iguales (T1)',
       control:`En la figura β mide 120°. Lo pruebo con ese número:${A('α = 180° − 120°', ' = 60°', 'γ = 180° − 120°', ' = 60° ✓')}` },
     { titulo:'el doblez copia un ángulo', enun:'Se dobla una tira de papel por la línea punteada, que forma 50° con el borde. ¿Cuánto mide el ángulo x?', prosa:true,
@@ -223,10 +363,41 @@ const TEMAS = [
       pasos:[
         'Al doblar, la parte de la derecha se da vuelta sobre la línea del doblez.',
         'El doblez no cambia los ángulos: el borde doblado forma 50° con la línea del doblez, igual que el borde de antes.',
-        P('Sobre el borde de abajo hay un llano: x, 50° y 50° (R3).', 'x + 50° + 50° = 180°', 'x = 180° − 100°', ' = 80°'),
+        P('Sobre el borde de abajo hay un llano partido en tres: x, 50° y 50° (N3).', 'x + 50° + 50° = 180°', 'x = 180° − 100°', ' = 80°'),
       ], final:'x mide 80°',
       control:`${A('80° + 50° + 50° = 180° ✓')}` },
     { titulo:'la bisectriz parte en dos', enun:'A, O y B están alineados, OV es perpendicular a AB y OP es la bisectriz de BÔC. ¿Cuánto mide α?', prosa:true,
+      antes:[
+        { id:'consecutivos', cajon:'definicion', titulo:'Consecutivos y adyacentes',
+          pregunta:'¿Cuándo dos ángulos son consecutivos? ¿Y cuándo son adyacentes?',
+          enun:'Dos ángulos son <b>consecutivos</b> si tienen el mismo vértice y un lado en común, uno al lado del otro. Si además juntos forman un llano, son <b>adyacentes</b>.',
+          mas:['Dos adyacentes suman 180° (N3).'],
+          como:'Dos porciones vecinas de una pizza: comparten un corte.',
+          elementos:[['prop-13', 'proposición 13']],
+          figura:dib(semi(Oc, 0, 90) + semi(Oc, 60, 90) + semi(Oc, 130, 90) + sector(Oc, 0, 60, 34) + sector(Oc, 60, 130, 26, 'g-arco2') +
+            g.pto(Oc, 'g-vert', 4.5) + g.txt([Oc[0], 236], 'consecutivos', 'l-nota') +
+            semi(Od, 0, 90) + semi(Od, 180, 90) + semi(Od, 70, 90) + sector(Od, 0, 70, 34) + sector(Od, 70, 180, 26, 'g-arco2') +
+            g.pto(Od, 'g-vert', 4.5) + g.txt([Od[0], 236], 'adyacentes', 'l-nota'),
+            'Dos ángulos consecutivos y dos adyacentes') },
+        { id:'recto', cajon:'definicion', titulo:'Ángulo recto y perpendiculares',
+          pregunta:'¿Qué es un ángulo recto? ¿Cuándo dos rectas son perpendiculares?',
+          enun:'Si una recta corta a otra y los dos ángulos adyacentes que forma son iguales, cada uno es un ángulo <b>recto</b>, y las rectas son <b>perpendiculares</b>.',
+          mas:['Los dos juntos forman un llano y son iguales: cada recto mide 180° : 2 = 90°. Se marca con una escuadrita.'],
+          como:'La esquina de una hoja, o la de una baldosa.',
+          fuente:'Euclides, libro I, definición 10',
+          elementos:[['def-10', 'definición 10']],
+          figura:dib(g.seg([40, Or[1]], [360, Or[1]]) + semi(Or, 90, 170) + g.recto(Or, [40, Or[1]], en(Or, 90, 10), 18) + g.recto(Or, [360, Or[1]], en(Or, 90, 10), 18) +
+            g.pto(Or, 'g-vert', 4.5) + rotAng(Or, 90, 180, 62, '90°') + rotAng(Or, 0, 90, 62, '90°'),
+            'Dos rectas perpendiculares: los dos ángulos adyacentes son rectos', '0 0 400 230') },
+        { id:'bisectriz', cajon:'definicion', titulo:'Bisectriz',
+          pregunta:'¿Qué es la bisectriz de un ángulo?',
+          enun:'La <b>bisectriz</b> de un ángulo es la semirrecta que sale del vértice y lo parte en dos ángulos iguales.',
+          mas:['Cada mitad mide la mitad del ángulo.'],
+          como:'Si se dibuja el ángulo en un papel y se dobla de manera que un lado caiga justo sobre el otro, el doblez es la bisectriz.',
+          figura:dib(semi(Ob, 0, 270) + semi(Ob, 70, 200) + semi(Ob, 35, 240, 'g-roja') + sector(Ob, 0, 35, 70) + sector(Ob, 35, 70, 70) +
+            rotAng(Ob, 0, 35, 96, 'α') + rotAng(Ob, 35, 70, 96, 'α') + g.pto(Ob, 'g-vert', 4.5) + g.txt(en(Ob, 35, 262), 'bisectriz', 'l-nota', 'end'),
+            'Un ángulo con su bisectriz: las dos mitades miden α', '0 0 400 240') },
+      ],
       lienzo:F([
         [0, g.seg([30, O3[1]], [370, O3[1]], 'g-linea') + semi(O3, 90, 165) + semi(O3, 58, 165) + semi(O3, 29, 175, 'g-roja') +
             g.recto(O3, [30, O3[1]], V3) + g.pto(O3, 'g-vert', 4.5) +
@@ -238,11 +409,18 @@ const TEMAS = [
         ['final', rotAng(O3, 0, 29, 98, '29°', 'g-num')],
       ], 'Un ángulo recto partido en 32° y BÔC, con la bisectriz OP', '0 0 400 240'),
       pasos:[
-        P('Entre OB y OV hay un recto. BÔC es lo que queda al sacarle los 32°.', 'BÔC = 90° − 32°', ' = 58°'),
-        P('OP es la bisectriz: parte BÔC en dos ángulos iguales.', 'α = 58° : 2', ' = 29°'),
+        P('OV es perpendicular a AB: entre OB y OV hay un recto (def. de perpendicular). BÔC es lo que queda al sacarle los 32° (N3).', 'BÔC = 90° − 32°', ' = 58°'),
+        P('OP parte BÔC en dos ángulos iguales (def. de bisectriz).', 'α = 58° : 2', ' = 29°'),
       ], final:'α mide 29°',
       control:`Los tres pedazos del recto:${A('29° + 29° + 32° = 90° ✓')}` },
     { titulo:'cambio: dos bisectrices', enun:`Dos ángulos consecutivos suman 136°. ¿Qué ángulo forman ${N('sus bisectrices')}?`, prosa:true,
+      antes:[
+        { id:'nombrar', cajon:'estrategia', titulo:'Ponerle nombre a lo que no se sabe',
+          pregunta:'¿Qué hago si no sé cuánto mide algo?',
+          enun:'Si no sé cuánto mide algo, le pongo un nombre, una letra, y trabajo con la letra como si fuera un número.',
+          mas:['Muchas veces, al final, la letra se va sola y la respuesta no depende de ella.'],
+          como:'Un detective que todavía no sabe quién es el ladrón lo llama «el sospechoso», y razona con eso: es más alto que la ventana, usa guantes…' },
+      ],
       lienzo:F([
         [0, semi(O4, 0, 170) + semi(O4, 96, 170) + semi(O4, 136, 170) + g.pto(O4, 'g-vert', 4.5) +
             sector(O4, 0, 96, 36) + rotAng(O4, 0, 96, 60, 'a') + sector(O4, 96, 136, 50, 'g-arco2') + rotAng(O4, 96, 136, 74, 'b')],
@@ -252,11 +430,24 @@ const TEMAS = [
       ], 'Dos ángulos consecutivos, a y b, con sus bisectrices', '0 0 400 250'),
       pasos:[
         'Llamo a y b a los dos ángulos. No sé cuánto mide cada uno: solo que a + b = 136°.',
-        P('Cada bisectriz se queda con la mitad de su ángulo. Entre las dos hay media a y media b.', 'a : 2 + b : 2 = (a + b) : 2'),
+        P('Cada bisectriz se queda con la mitad de su ángulo (def. de bisectriz). Entre las dos hay media a y media b (N3).', 'a : 2 + b : 2 = (a + b) : 2'),
         P('Y a + b ya lo sé.', ' = 136° : 2', ' = 68°'),
       ], final:'las bisectrices forman 68°',
       control:`En la figura a = 96° y b = 40°. Las mitades:${A('48° + 20° = 68° ✓')}` },
     { titulo:'de la OMA: cuatro ángulos en un llano', enun:`En una semicircunferencia de centro O y diámetro AE se marcan B, C y D, en ese orden. AÔB es la quinta parte de BÔC, la cuarta parte de CÔD y la mitad de DÔE. ¿Cuánto mide cada ángulo?${fte('OMA 2022 · Intercolegial · Nivel 1 · problema 3')}`, prosa:true,
+      antes:[
+        { id:'circunferencia', cajon:'definicion', titulo:'Circunferencia',
+          pregunta:'¿Qué es una circunferencia?',
+          enun:'La <b>circunferencia</b> es la línea de todos los puntos que están a la misma distancia de un punto, el <b>centro</b>. Esa distancia es el <b>radio</b>.',
+          mas:['Un <b>diámetro</b> es un segmento que pasa por el centro y une dos puntos de la circunferencia. La parte en dos <b>semicircunferencias</b>, y con vértice en el centro es un llano.'],
+          como:'Es lo que dibuja el compás: la punta fija es el centro y la abertura es el radio.',
+          fuente:'Euclides, libro I, definiciones 15 a 18',
+          elementos:[['def-15', 'definición 15']],
+          figura:dib(g.circ(Cc, Rc, 'g-linea') + g.seg(en(Cc, 180, Rc), en(Cc, 0, Rc), 'g-roja') + g.seg(Cc, en(Cc, 50, Rc)) +
+            g.pto(Cc, 'g-vert', 4.5) + g.txt([Cc[0] + 8, Cc[1] + 20], 'centro', 'l-nota', 'start') + g.txt(en(Cc, 50, 62), 'radio', 'l-nota', 'end') +
+            g.txt([Cc[0] - 52, Cc[1] + 20], 'diámetro', 'l-nota'),
+            'Una circunferencia con su centro, un radio y un diámetro', '0 0 400 250') },
+      ],
       lienzo:F([
         [0, `<path class="g-linea" d="${arcoD(O5, 0, 180, R5)}"/>` + g.seg(en(O5, 180, R5), en(O5, 0, R5), 'g-linea') +
             ['B', 'C', 'D'].map(k => g.seg(O5, en(O5, pt5[k], R5), 'g-linea')).join('') + g.pto(O5, 'g-vert', 4.5) +
@@ -269,11 +460,22 @@ const TEMAS = [
       ], 'Una semicircunferencia de diámetro AE con los radios OB, OC y OD', '0 0 400 230'),
       pasos:[
         P('Pongo todo en función del más chico, AÔB = x.', 'BÔC = 5x', 'CÔD = 4x', 'DÔE = 2x'),
-        P('Los cuatro juntos forman el llano AÔE (R3).', 'x + 5x + 4x + 2x = 180', '12x = 180'),
+        P('Los cuatro juntos forman el llano AÔE (N3).', 'x + 5x + 4x + 2x = 180', '12x = 180'),
         P('Divido por 12.', `12x ${N(': 12')} = 180 ${N(': 12')}`, 'x = 15'),
         P('Los otros tres.', ['BÔC', '5 · 15 = 75'], ['CÔD', '4 · 15 = 60'], ['DÔE', '2 · 15 = 30']),
       ], final:'AÔB = 15°, BÔC = 75°, CÔD = 60° y DÔE = 30°',
       control:`${A('15° + 75° + 60° + 30° = 180° ✓')}` },
+  ],
+  despues:[
+    { id:'caja-a1', cajon:'lenguaje', titulo:'La caja después de la clase A1',
+          pregunta:'¿Qué tenemos en la caja después de la clase A1?',
+      html:cajonera({
+        definicion:[['ángulo'], ['llano y grado'], ['opuestos por el vértice'], ['consecutivos y adyacentes'], ['recto y perpendiculares'], ['bisectriz'], ['circunferencia']],
+        nocion:[['N1 · iguales a lo mismo'], ['N2 · lo mismo de los dos lados'], ['N3 · el todo es la suma de sus partes']],
+        teorema:[['T1 · opuestos por el vértice']],
+        estrategia:[['ponerle nombre a lo que no se sabe']],
+      }),
+      mas:['Todavía no usamos ningún postulado: el primero llega en la clase A2.'] },
   ],
   preguntas:[
     { p:'¿Para qué demostrar que α = γ si con el transportador se ve que miden lo mismo?',
@@ -287,16 +489,24 @@ const TEMAS = [
     { p:'En el de la OMA, ¿por qué conviene llamar x al más chico?',
       r:'Porque los otros son múltiplos de él: 5x, 4x y 2x. Si llamaba x a otro, aparecían fracciones.' },
   ],
-  notas:`<p><b>La clase A1 abre el bloque.</b> El primer ejemplo es la demostración del teorema 1
-      (Euclides I.15) en tres renglones: es la primera vez que los chicos ven una demostración,
-      y conviene escribirla entera en el pizarrón y pedirles que la copien. Al final, T1 se
-      agrega a la lista de teoremas del cuaderno.</p>
-    <p>Los ejemplos 2 a 4 usan lo mismo, el llano (R3), en tres disfraces: un papel doblado,
-      un recto partido y dos bisectrices. El 4 tiene una sorpresa: no hace falta saber cuánto
+  notas:`<p><b>La clase A1 abre el bloque.</b> Antes del primer ejemplo van siete diapositivas
+      de teoría, una idea cada una: ángulo, llano y grado, N3, opuestos por el vértice, el
+      enunciado de T1, N1 y N2. Se leen en voz alta, se discute la comparación y cada alumno
+      copia la herramienta en su cajón del cuaderno.</p>
+    <p>El ejemplo 1 es la demostración del teorema 1 tal como la escribe Euclides (I.15), en
+      cuatro renglones: dos llanos (N3), iguales a lo mismo (N1) y restar lo mismo de los dos
+      lados (N2). Es la primera demostración que ven: conviene escribirla entera en el
+      pizarrón y pedir que la copien con los paréntesis.</p>
+    <p>Los ejemplos 2 a 4 usan lo mismo, el llano partido (N3), en tres disfraces: un papel
+      doblado, un recto partido y dos bisectrices. Antes del 3 van las definiciones de
+      consecutivos y adyacentes, recto y perpendiculares, y bisectriz; antes del 4, la primera
+      estrategia. El 4 tiene una sorpresa: no hace falta saber cuánto
       mide cada ángulo. La pregunta del observador sobre los adyacentes (90°, siempre) es la
       que tiene que hacer ruido.</p>
     <p>El 5 es un problema 3 de Intercolegial: los chicos ya pueden resolver un problema de la
-      OMA en la primera clase. La ecuación es de la unidad de ecuaciones lineales.</p>
+      OMA en la primera clase. La ecuación es de la unidad de ecuaciones lineales. El enunciado
+      describe la figura entera: vale la pena tapar el dibujo (Proyección → Dibujo → Ocultar)
+      y que lo hagan ellos antes de resolver.</p>
     <p>Los de la tira y la bisectriz son de <i>100 problemas de geometría básica</i> (tópico 2).
       En la ficha del bloque A quedan el de la bisectriz con 46° (α = 67°), el de las
       bisectrices que forman 52° y la OMA 2001 Intercolegial.</p>`
@@ -319,23 +529,70 @@ const TEMAS = [
   const A4 = corte(C4, en(C4, 139, 1), [0, 50], [1, 50]);
   /* al revés: 72° y 72° */
   const Y1 = [230, 60], Y2 = corte(Y1, en(Y1, 252, 1), [0, 190], [1, 190]);
+  /* los dibujos de la teoría de A2 */
+  const ang = (P, a1, a2, s, cls = 'g-arco', r = 30) => sector(P, a1, a2, r, cls) + rotAng(P, a1, a2, r + 22, s);
+  const cartel = (x, y, s) => `<rect class="l-caja" x="${x}" y="${y}" width="150" height="48" rx="6"/>` + g.txt([x + 75, y + 24], s, 'l-txt');
   return {
   n:2, corto:'Paralelas y secante', ficha:13, titulo:'Dos paralelas cortadas por una secante', pag:'clase A2 · Euclides, Elementos I.27–29',
   concepto:{
-    serie:[
-      { rot:'lo que aceptamos · R4', txt:'r ∥ s si y solo si los ángulos correspondientes son iguales' },
-      { rot:'teorema 2', txt:'entre paralelas, los alternos internos son iguales y los conjugados internos suman 180°; y al revés' },
-    ],
     figura:`<svg viewBox="0 0 400 260" role="img" aria-label="Dos paralelas r y s cortadas por la secante t">${
       base + sector(X1, 180, 245, 30) + rotAng(X1, 180, 245, 52, 'α') + sector(X2, 0, 65, 30) + rotAng(X2, 0, 65, 52, 'γ') +
       sector(X1, 0, 65, 30, 'g-arco2') + rotAng(X1, 0, 65, 52, 'δ') + sector(X2, 65, 180, 24, 'g-arco2') + rotAng(X2, 65, 180, 46, 'ε')}</svg>`,
     puntos:[
-      '<b>Correspondientes</b>, como δ y γ: el mismo lugar en cada cruce. <b>Alternos internos</b>, como α y γ: entre las paralelas, a distinto lado de t. <b>Conjugados internos</b>, como α y ε: entre las paralelas, del mismo lado.',
-      'R4 no se demuestra: es el quinto postulado de Euclides, mirado de frente. El teorema 2 sale de R4 y del teorema 1.',
+      'Hoy: qué son las paralelas, cómo se llaman los ángulos que forma una recta que las corta, y el primer postulado del bloque.',
+      'Con eso demostramos el teorema 2 y resolvemos dos problemas de la OMA con una recta que no estaba en la figura.',
     ]
   },
   ejemplos:[
     { titulo:'la demostración: alternos internos', enun:'r ∥ s y la secante t las corta. ¿Por qué α y γ, alternos internos, miden lo mismo?', prosa:true,
+      antes:[
+        { id:'paralelas', cajon:'definicion', titulo:'Paralelas y secante',
+          pregunta:'¿Qué son dos rectas paralelas?',
+          enun:'Dos rectas son <b>paralelas</b> si, prolongadas todo lo que se quiera hacia los dos lados, nunca se cortan. Se escribe r ∥ s.',
+          mas:['Una recta que corta a las dos es una <b>secante</b>.'],
+          como:'Los dos rieles de una vía de tren: van juntos hasta donde se pierden de vista, y nunca se tocan.',
+          fuente:'Euclides, libro I, definición 23',
+          elementos:[['def-23', 'definición 23']],
+          figura:dib(base, 'Dos paralelas r y s y una secante t') },
+        { id:'correspondientes', cajon:'definicion', titulo:'Ángulos correspondientes',
+          pregunta:'¿Qué son dos ángulos correspondientes?',
+          enun:'La secante forma cuatro ángulos en cada cruce. Dos ángulos son <b>correspondientes</b> si ocupan el mismo lugar en los dos cruces.',
+          mas:['δ está arriba a la derecha del cruce de r; γ, arriba a la derecha del cruce de s.'],
+          elementos:[['prop-28', 'proposición 28']],
+          como:'Dos ventanas en el mismo lugar de dos pisos de un edificio: la de arriba a la derecha del primer piso y la de arriba a la derecha del segundo.',
+          figura:dib(base + ang(X1, 0, 65, 'δ', 'g-arco2') + ang(X2, 0, 65, 'γ', 'g-arco2'), 'Dos paralelas cortadas por una secante, con los correspondientes δ y γ') },
+        { id:'alternos', cajon:'definicion', titulo:'Alternos internos y conjugados internos',
+          pregunta:'¿Qué son los ángulos alternos internos? ¿Y los conjugados internos?',
+          enun:'Los ángulos <b>internos</b> son los que quedan entre las dos rectas. Si están a distinto lado de la secante, son <b>alternos</b>; si están del mismo lado, son <b>conjugados</b>.',
+          mas:['α y γ son alternos internos: uno de cada lado de t, en zigzag.', 'α y ε son conjugados internos: los dos a la izquierda de t.'],
+          elementos:[['prop-27', 'proposición 27']],
+          figura:dib(base + ang(X1, 180, 245, 'α', 'g-arco3') + ang(X2, 0, 65, 'γ', 'g-arco3') + ang(X2, 65, 180, 'ε', 'g-arco2', 24),
+            'Dos paralelas cortadas por una secante, con α, γ y ε') },
+        { id:'reciproco', cajon:'lenguaje', titulo:'Ida y vuelta',
+          pregunta:'Si «si A, entonces B» es cierto, ¿también es cierto «si B, entonces A»?',
+          enun:'«Si A, entonces B» no dice lo mismo que «si B, entonces A». La segunda es la <b>recíproca</b> de la primera, y puede ser falsa.',
+          mas:['Cuando valen las dos, la ida y la vuelta, se dice «A <b>si y solo si</b> B».'],
+          como:'«Si llueve, la calle se moja» es cierta. La recíproca, «si la calle está mojada, llovió», no: puede haber pasado el camión regador.',
+          figura:dib(cartel(14, 40, 'llueve') + cartel(236, 40, 'la calle se moja') +
+            g.seg([166, 56], [232, 56], 'g-linea') + punta([166, 56], [234, 56]) + g.txt([200, 36], '✓ siempre', 'l-si') +
+            g.seg([234, 76], [168, 76], 'g-linea') + punta([234, 76], [166, 76]) + g.txt([200, 106], '✗ no siempre', 'l-no'),
+            'Si llueve, la calle se moja; al revés no siempre', '0 0 400 130') },
+        { id:'p5', cajon:'postulado', cod:'P5', titulo:'El postulado de las paralelas',
+          pregunta:'¿Cómo se sabe si dos rectas son paralelas?',
+          enun:'Dos rectas cortadas por una secante son paralelas si y solo si sus ángulos correspondientes son iguales.',
+          mas:['Es el quinto postulado de Euclides, en la forma más fácil de ver. Durante dos mil años muchos matemáticos intentaron demostrarlo con lo anterior, y nadie pudo: hoy se sabe que es imposible.'],
+          fuente:'Euclides, libro I, postulado 5 (dicho de otra manera)',
+          elementos:[['post-5', 'postulado 5']],
+          figura:dib(base + ang(X1, 0, 65, 'δ', 'g-arco2') + ang(X2, 0, 65, 'γ', 'g-arco2') + g.txt([392, 250], 'r ∥ s si y solo si δ = γ', 'g-num', 'end'),
+            'Dos paralelas cortadas por una secante: los correspondientes δ y γ son iguales') },
+        { id:'t2', cajon:'teorema', cod:'T2', titulo:'Teorema 2',
+          pregunta:'¿Qué pasa con los ángulos que forma una secante entre dos paralelas?',
+          enun:'Si dos rectas son paralelas, los alternos internos son iguales y los conjugados internos suman 180°. Y al revés: si los alternos internos son iguales, las rectas son paralelas.',
+          mas:['Son las proposiciones 27 a 29 del libro I de Euclides. Lo demostramos en los ejemplos 1, 2 y 5, con P5 y el teorema 1.'],
+          elementos:[['prop-27', 'proposición 27'], ['prop-29', 'proposición 29']],
+          figura:dib(base + ang(X1, 180, 245, 'α', 'g-arco3') + ang(X2, 0, 65, 'γ', 'g-arco3') + ang(X2, 65, 180, 'ε', 'g-arco2', 24),
+            'Dos paralelas cortadas por una secante: α = γ y α + ε = 180°') },
+      ],
       lienzo:F([
         [0, base + sector(X1, 180, 245, 30) + rotAng(X1, 180, 245, 52, 'α') + sector(X2, 0, 65, 30) + rotAng(X2, 0, 65, 52, 'γ')],
         [1, sector(X1, 0, 65, 30, 'g-arco2') + rotAng(X1, 0, 65, 52, 'δ'), null, { desde:sube }],
@@ -343,8 +600,9 @@ const TEMAS = [
         ['final', sector(X2, 0, 65, 30, 'g-arco3')],
       ], 'Dos paralelas cortadas por una secante, con α, γ y δ'),
       pasos:[
-        'δ está arriba a la derecha del cruce de r, y γ arriba a la derecha del cruce de s: son correspondientes. Como r ∥ s, δ = γ (R4).',
+        'δ está arriba a la derecha del cruce de r, y γ arriba a la derecha del cruce de s: son correspondientes. Como r ∥ s, δ = γ (P5).',
         'δ y α son opuestos por el vértice: δ = α (T1).',
+        'α y γ son iguales a δ: son iguales entre sí (N1).',
       ], final:'α = γ: los alternos internos son iguales (T2)',
       control:`En la figura t corta a r con 65°:${A('δ = 65°', 'α = 65°', 'γ = 65° ✓')}` },
     { titulo:'cambio: el ángulo de al lado', enun:`r ∥ s. ¿Cuánto suman α y ${N('ε')}, conjugados internos?`, prosa:true,
@@ -354,11 +612,22 @@ const TEMAS = [
         [2, sector(X2, 0, 65, 30, 'g-arco3') + sector(X1, 180, 245, 30, 'g-arco3')],
       ], 'Dos paralelas cortadas por una secante, con α, γ y ε'),
       pasos:[
-        P('ε y γ forman un llano sobre s (R3).', 'ε + γ = 180°'),
+        P('ε y γ son adyacentes: juntos forman el llano de s (N3).', 'ε + γ = 180°'),
         P('Pero γ = α: lo acabamos de demostrar. Cambio γ por α.', `ε + ${N('α')} = 180°`),
       ], final:'α + ε = 180°: los conjugados internos suman 180° (T2)',
       control:`Con t a 65°, ε es el vecino de 65° sobre s:${A('115° + 65° = 180° ✓')}` },
     { titulo:'el zigzag', enun:'r ∥ s. ¿Cuánto mide el ángulo x?', prosa:true,
+      antes:[
+        { id:'auxiliar', cajon:'estrategia', titulo:'Trazar una recta auxiliar',
+          pregunta:'¿Qué hago si con la figura no alcanza?',
+          enun:'Si la figura no alcanza, se le agrega una recta que no estaba, para que aparezcan ángulos que ya sabemos usar. Se llama recta <b>auxiliar</b>.',
+          mas:['La más útil de este bloque: una paralela por un punto. Cómo se traza con regla y compás lo vemos en el bloque B.'],
+          como:'Una escalera para llegar a un estante alto: no es parte del problema, pero sin ella no se llega.',
+          figura:dib(horizontal(50, 'r') + horizontal(220, 's') + g.seg(P3, A3) + g.seg(A3, B3) +
+            g.pto(P3, 'g-vert', 4.5) + g.pto(A3, 'g-pto', 5) + g.pto(B3, 'g-vert', 4.5) +
+            g.seg([18, A3[1]], [382, A3[1]], 'g-diag') + g.txt([372, A3[1] - 12], 'm', 'g-rot') + g.txt([30, A3[1] - 12], 'auxiliar', 'l-nota', 'start'),
+            'Dos paralelas y un zigzag, con una paralela auxiliar m por el punto del medio', '0 0 400 240') },
+      ],
       lienzo:F([
         [0, horizontal(50, 'r') + horizontal(220, 's') + g.seg(P3, A3, 'g-linea') + g.seg(A3, B3, 'g-linea') +
             g.pto(P3, 'g-vert', 4.5) + g.pto(A3, 'g-pto', 5) + g.pto(B3, 'g-vert', 4.5) +
@@ -373,7 +642,7 @@ const TEMAS = [
       ], 'Dos paralelas y un zigzag de P a A y de A a B'),
       pasos:[
         'Trazo por A una recta m, paralela a r y a s. Es una recta que no estaba en la figura.',
-        P('En P, el vecino del de 120° completa un llano sobre r (R3).', '180° − 120° = 60°'),
+        P('En P, el adyacente del de 120° completa el llano de r (N3).', '180° − 120° = 60°'),
         'Ese 60° y el pedazo de x de arriba son alternos internos entre r y m, con la secante PA: el pedazo mide 60° (T2).',
         'Abajo, el pedazo de x y el de 35° son alternos internos entre m y s, con la secante AB: mide 35°.',
         P('x es la suma de los dos pedazos.', 'x = 60° + 35°', ' = 95°'),
@@ -412,13 +681,27 @@ const TEMAS = [
       pasos:[
         'El opuesto por el vértice del 72° de arriba también mide 72° (T1).',
         'Ese opuesto y el 72° de abajo ocupan el mismo lugar en cada cruce: son correspondientes, y son iguales.',
-        'R4 dice que si los correspondientes son iguales, las rectas son paralelas.',
+        'El postulado de las paralelas dice que si los correspondientes son iguales, las rectas son paralelas (P5).',
       ], final:'sí: r y s son paralelas',
       control:`Entonces los conjugados tienen que sumar 180°. En s, el vecino del 72° mide 108°:${A('72° + 108° = 180° ✓')}` },
   ],
+  despues:[
+    { id:'caja-a2', cajon:'lenguaje', titulo:'La caja al terminar el bloque A',
+          pregunta:'¿Qué tenemos en la caja al terminar el bloque A?',
+      html:cajonera({
+        definicion:[['ángulo'], ['llano y grado'], ['opuestos por el vértice'], ['consecutivos y adyacentes'], ['recto y perpendiculares'], ['bisectriz'], ['circunferencia'],
+          ['paralelas y secante', 1], ['correspondientes', 1], ['alternos y conjugados internos', 1], ['recíproca · si y solo si', 1]],
+        postulado:[['P5 · las paralelas', 1]],
+        nocion:[['N1 · iguales a lo mismo'], ['N2 · lo mismo de los dos lados'], ['N3 · el todo es la suma de sus partes']],
+        teorema:[['T1 · opuestos por el vértice'], ['T2 · paralelas y secante', 1]],
+        estrategia:[['ponerle nombre a lo que no se sabe'], ['trazar una recta auxiliar', 1]],
+      }) },
+  ],
   preguntas:[
-    { p:'¿Por qué R4 se acepta sin demostrar y el teorema 2 no?',
-      r:'Porque R4 no se puede demostrar con lo que hay antes: Euclides lo puso como postulado, y durante dos mil años muchos intentaron demostrarlo sin lograrlo. El teorema 2 sí sale de R4 y del teorema 1.' },
+    { p:'¿Por qué el postulado de las paralelas se acepta sin demostrar y el teorema 2 no?',
+      r:'Porque P5 no se puede demostrar con lo que hay antes: Euclides lo puso como postulado, y durante dos mil años muchos intentaron demostrarlo sin lograrlo. En el siglo XIX se probó que es imposible. El teorema 2, en cambio, sale de P5 y del teorema 1.' },
+    { p:'¿«Si y solo si» no es lo mismo que «si»?',
+      r:'No. «Si los correspondientes son iguales, las rectas son paralelas» es la ida; «si las rectas son paralelas, los correspondientes son iguales» es la vuelta. P5 dice las dos. Con el «si» solo, dice una.' },
     { p:'En el ejemplo 1, ¿por qué δ se desliza por la secante hasta γ?',
       r:'Porque r y s tienen la misma dirección: el cruce de abajo es una copia del de arriba, corrida a lo largo de t.' },
     { p:'En el zigzag, ¿de dónde sale la recta m?',
@@ -426,13 +709,24 @@ const TEMAS = [
     { p:'¿El del medio es siempre la suma de las puntas?',
       r:'Si las puntas se miden entre el segmento y la paralela, hacia el lado de adentro del zigzag, sí. En el ejemplo 3 la punta de arriba no era 120° sino su vecino, 60°.' },
     { p:'En el último, ¿y si abajo hubiera 74° en vez de 72°?',
-      r:'Los correspondientes serían 72° y 74°: distintos. Por R4, r y s no serían paralelas, y se cortarían de algún lado.' },
+      r:'Los correspondientes serían 72° y 74°: distintos. Por P5, r y s no serían paralelas, y se cortarían de algún lado.' },
   ],
-  notas:`<p><b>La clase A2 cierra el bloque.</b> El teorema 2 (Euclides I.27–29) se demuestra
-      con R4 y el teorema 1: el cruce de abajo es una copia del de arriba (correspondientes), y
-      adentro de un cruce valen los opuestos. Los ejemplos 1 y 2 son las dos mitades de la
-      demostración; el 5 es la vuelta (I.27), que es la que se usa en B2 para trazar una
-      paralela.</p>
+  notas:`<p><b>La clase A2 cierra el bloque.</b> Antes del primer ejemplo van seis diapositivas
+      de teoría: paralelas y secante, correspondientes, alternos y conjugados internos, la
+      recíproca («si y solo si», con la lluvia y la calle mojada), el postulado P5 y el
+      enunciado de T2. La de la recíproca es la que más se usa después: en el bloque C aparecen
+      teoremas cuya vuelta es falsa.</p>
+    <p>Al final, la caja del bloque A completo: con el borde marcado, lo que entró en esta
+      clase. El cajón de las construcciones se llena en el bloque B.</p>
+    <p>El teorema 2 (Euclides I.27–29) se demuestra con P5 y el teorema 1: el cruce de abajo es
+      una copia del de arriba (correspondientes), y adentro de un cruce valen los opuestos. Los
+      ejemplos 1 y 2 son las dos mitades de la demostración; el 5 es la vuelta (I.27), que es
+      la que se usa en B2 para trazar una paralela.</p>
+    <p><b>Rigor, para el docente.</b> En Euclides, la ida de P5 (correspondientes iguales ⇒
+      paralelas, I.27–28) es un teorema que se demuestra por el absurdo; solo la vuelta (I.29)
+      necesita el quinto postulado. P5 junta las dos para no hacer una demostración por el
+      absurdo en la segunda clase. Si un alumno pregunta, es una buena respuesta: «una mitad se
+      puede demostrar, y la vamos a demostrar más adelante».</p>
     <p>El zigzag (ejemplo 3, de <i>100 problemas de geometría básica</i>, tópico 5) introduce
       la idea más útil del bloque: <b>trazar una recta que no estaba</b>. El 4 es el mismo
       zigzag al revés, y es el problema 3 del Zonal 2020: en el examen, con la figura.</p>
@@ -480,7 +774,7 @@ const DESAFIO = (() => {
       { p:'¿Dónde se usó que MÔN es recto?',
         r:'En el paso 4: AÔN se puede escribir de dos maneras, 4x y x + 90. Esa doble cuenta es la ecuación.' },
       { p:'¿Hay algún opuesto por el vértice o alguna paralela acá?',
-        r:'No: todo sale del llano AÔB y de las bisectrices. Pero es la misma manera de pensar del bloque: nombrar lo que no se sabe y usar lo que ya está en la lista.' },
+        r:'No: todo sale del llano AÔB y de las bisectrices. Pero es la misma manera de pensar del bloque: nombrar lo que no se sabe y usar lo que ya está en la caja.' },
     ],
     notas:`<p>El desafío es el problema 3 de Intercolegial 2007. Junta lo de A1 (el llano y las
         bisectrices, como el ejemplo 5) con una cadena larga: conviene dejar que lo intenten
@@ -507,12 +801,12 @@ const PREGUNTA_INICIAL = (() => {
       [2, rotAng(O, -m, m, 108, '27°', 'g-num'), null, { gira:[180, O[0], O[1]] }],
     ], 'Dos rectas que se cortan: arriba 153°, x a la izquierda e y a la derecha', '0 0 400 220'),
     pasos:[
-      P('x y el de 153° están uno al lado del otro sobre la misma recta: forman un llano.', 'x = 180° − 153°', ' = 27°'),
+      P('x y el de 153° están uno al lado del otro sobre la misma recta: juntos son media vuelta, 180°.', 'x = 180° − 153°', ' = 27°'),
       P('Con y pasa lo mismo, sobre la otra recta.', 'y = 180° − 153°', ' = 27°'),
       P('Sumo.', 'x + y = 27° + 27°', ' = 54°'),
     ],
     final:'x + y = 54°',
-    control:'x e y son opuestos por el vértice: tenían que salir iguales, y salieron iguales ✓',
+    control:'x e y están enfrentados en el cruce: parecía que medían lo mismo, y miden lo mismo ✓',
   };
 })();
 
@@ -520,8 +814,12 @@ const UNIDAD = {
   preguntas:[
     { p:'¿Por qué no se puede usar el transportador?',
       r:'Porque mide un dibujo, y un dibujo siempre tiene un error. Una demostración vale para todos los dibujos a la vez, incluso los que nadie hizo.' },
+    { p:'¿Qué es un axioma?',
+      r:'Algo que se acepta sin demostrar, para poder empezar. Euclides los separó en dos cajones: los postulados, que hablan de geometría, y las nociones comunes, que valen para cualquier cantidad.' },
+    { p:'¿Una definición se puede demostrar?',
+      r:'No: una definición dice qué quiere decir una palabra. Se puede discutir si es una buena definición, pero no si es verdadera. Lo que se demuestra son los teoremas.' },
     { p:'¿Quién fue Euclides?',
-      r:'Un matemático griego que vivió en Alejandría hace unos 2300 años. Escribió los Elementos: arranca con cinco reglas y demuestra, una por una, cientos de propiedades. Se usó para enseñar geometría durante más de dos mil años.' },
+      r:'Un matemático griego que vivió en Alejandría hace unos 2300 años. Escribió los Elementos: arranca con unas pocas cosas aceptadas y demuestra, una por una, cientos de propiedades. Se usó para enseñar geometría durante más de dos mil años.' },
     { p:'¿Qué tiene que ver la cita de Einstein?',
       r:'A los doce años leyó un librito de geometría y le impresionó que algo que no es evidente, como que las tres alturas de un triángulo se cortan en un punto, se pudiera demostrar con total certeza. Eso vamos a hacer en esta unidad.' },
   ],
@@ -533,10 +831,20 @@ const UNIDAD = {
     <p>De los ángulos quedan solo estos dos hechos: clasificar, consecutivos y complementarios
       aparecen cuando hacen falta, en una línea. Lo demás de la unidad 6 del libro está en la
       clase de Ángulos, que sigue publicada.</p>
-    <p><b>La lista de teoremas</b> es la columna vertebral de la unidad: cada alumno la lleva
-      pegada en el cuaderno y crece clase a clase. Arranca con R3 y R4 (en la introducción);
-      después de A1 se agrega T1, y después de A2, T2. La regla es que <b>toda respuesta se
-      justifica con algo de la lista</b>, entre paréntesis, como en los pasos de los ejemplos.</p>
+    <p><b>La caja de herramientas</b> es la columna vertebral de la unidad. Tiene seis cajones:
+      los cuatro del libro I de Euclides (definiciones, postulados, nociones comunes y
+      teoremas) y dos nuestros (construcciones y estrategias). Cada alumno la lleva en el
+      cuaderno, una página por cajón, y crece clase a clase: al final de A1 y de A2 hay una
+      diapositiva con la caja llena hasta ahí. La regla es que <b>toda respuesta se justifica
+      con algo de la caja</b>, entre paréntesis: (N3), (T1), (P5), (def. de bisectriz).</p>
+    <p>Las diapositivas de teoría van una idea por vez, justo antes del ejemplo donde la
+      palabra o la herramienta aparece por primera vez. Cada una trae una comparación para
+      discutir en voz alta; el color del rótulo dice el cajón. Las cinco del principio
+      (los ojos engañan, qué es demostrar, los axiomas, Euclides y la caja) son la primera
+      media hora de la unidad.</p>
+    <p>Los nombres reemplazan a los de la primera versión de la currícula: lo que era R3 (dos
+      ángulos que forman un llano suman 180°) ahora sale de la definición de grado y de N3, y
+      lo que era R4 es P5. En los bloques B y C, R1 y R2 son los postulados 1 y 3 de Euclides.</p>
     <p>La cita es de las <i>Notas autobiográficas</i> de Einstein (1949), sobre el «librito
       sagrado de geometría» que leyó a los doce años; la traducción es nuestra.</p>`
 };
@@ -544,7 +852,7 @@ const UNIDAD = {
 /* ═══ el armado ═══
    La plantilla, los pasos, las figuras y el movimiento están en
    assets/pizarra.js: esta página trae solo sus datos. */
-Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, grado:'7mo', temasLibro:2 });
+Pizarra.unidad({ TEMAS, DESAFIO, PREGUNTA_INICIAL, UNIDAD, INICIO, grado:'7mo', temasLibro:2 });
 </script>
 <script src="../../assets/proyeccion.js" defer></script>
 <script src="../../assets/timer.js" defer></script>

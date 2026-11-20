@@ -5,6 +5,11 @@
 **/*clave*.pdf
 **/*Clave*.pdf
 
+# El contenido de las valoraciones (enunciados, respuestas, claves) se
+# queda en el navegador y en los respaldos .json del docente.
+valoraciones/*.json
+valoraciones/respaldos/
+
 # archivos de trabajo
 __pycache__/
 *.pyc
