@@ -18,7 +18,7 @@ dice cuántas le quedan a cada sala para el párrafo de `encontramos`.
 
 ENTRADA = {
     # Las tres opciones de Textos_de_sala.md: «Adentro de su cabeza»,
-    # «Pensá como ella pensó» y «Museo de problemas · AES 2026».
+    # «Pensá como ella pensó» y «Museo de problemas · Open House 2026».
     'titulo': 'Adentro de su cabeza',
     'texto': [
         'Durante tres semanas, cada alumno del colegio, de 2.º a 9.º grado, hizo algo '
