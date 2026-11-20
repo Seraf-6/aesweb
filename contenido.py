@@ -204,9 +204,9 @@ OMAPA = {
   ],
   # Los Elementos de Euclides, en omapa/elementos/: material de referencia, no una clase.
   'elementos': [
-    {'tipo': 'lectura', 'titulo': 'Elementos de Euclides · libro I',
-     'desc': 'Las definiciones, los postulados, las nociones comunes y las proposiciones, con la '
-             'edición de 1774 y un dicho sencillo, y la demostración paso a paso con regla y compás.',
+    {'tipo': 'interactivo', 'titulo': 'Elementos de Euclides · libro I',
+     'desc': 'Cada definición, postulado y proposición con el texto de 1774 y un dicho sencillo. '
+             'Las demostraciones van paso a paso: con «Siguiente», la figura se construye con regla y compás.',
      'url': 'omapa/elementos/libro-1.html'},
     {'tipo': 'lectura', 'titulo': 'El prólogo de Zamorano (1576)',
      'desc': 'La dedicatoria de la primera traducción castellana de los Elementos, completa y por partes.',

@@ -87,6 +87,7 @@ def tarjeta(m, prof):
     et = {'diapositiva': ('diapo-et', 'Diapositivas'),
           'ficha': ('ficha-et', 'Ficha'),
           'lectura': ('diapo-et', 'Lectura'),
+          'interactivo': ('diapo-et', 'Demostraciones paso a paso'),
           'pendiente': ('pend', 'En preparación')}[m['tipo']]
     interior = (f'<span class="etiqueta {et[0]}">{et[1]}</span>'
                 f'<h3>{html.escape(m["titulo"])}</h3>'
@@ -291,10 +292,10 @@ def indice_omapa():
     cuerpo.append('</div></section>')
 
     cuerpo.append("""<section class="bloque" id="elementos">
-  <p class="eyebrow">Para leer</p>
+  <p class="eyebrow">Geometría</p>
   <h2>Los Elementos de Euclides</h2>
   <p>El libro I completo, para entrar a la geometría como la pensaron los griegos: definiciones,
-    postulados y cada proposición demostrada a partir de las anteriores.</p>
+    postulados y cada proposición demostrada paso a paso a partir de las anteriores.</p>
   <div class="tarjetas">""")
     for m in OMAPA['elementos']:
         cuerpo.append(tarjeta(m, prof=1))
