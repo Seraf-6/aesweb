@@ -270,7 +270,7 @@ def pagina_pieza(p, ant, sig, raiz_mod):
 </header>
 {chr(10).join(bloques)}
 {''.join(nav)}
-<p class="o-pie">Pieza {e(cod)} · Open House 2026 · Albert Einstein School</p>
+<p class="o-pie">Pieza {e(cod)} · Open House 2026</p>
 </main>"""
     tit = f'{p["nombre"]} · {titulo}' if titulo else f'{p["nombre"]} · {p["grado"]} grado'
     return documento(tit, cuerpo, prof=3)
@@ -306,7 +306,7 @@ def portada(piezas, salas, entrada):
 <h2>Las salas</h2>
 <div class="o-salas">{lista_salas}</div>
 </section>
-<p class="o-pie">Albert Einstein School · sábado 24 de octubre de 2026</p>
+<p class="o-pie">Open House 2026 · sábado 24 de octubre de 2026</p>
 </main>
 <script>
 (function () {{
@@ -387,7 +387,7 @@ def pagina_sala(s, piezas):
 <h2>Las piezas de esta sala</h2>
 <ul class="o-lista">{items}</ul>
 <nav class="o-nav"><a class="ancho" href="../../index.html">Todas las salas y el buscador</a></nav>
-<p class="o-pie">Open House 2026 · Albert Einstein School</p>
+<p class="o-pie">Open House 2026</p>
 </main>"""
     return documento(f'{s["grado"]} grado · {s["titulo"]}', cuerpo, prof=3)
 
@@ -434,8 +434,8 @@ def paneles(salas, entrada):
     hojas = []
     entrada_txt = ''.join(f'<p>{md(x)}</p>' for x in entrada['texto'])
     pasos = ''.join(f'<li>{md(x)}</li>' for x in entrada['pasos'])
-    sello = ('' if entrada['titulo'] == 'Museo de problemas · AES 2026'
-             else '<p class="grado">Museo de problemas · AES 2026</p>')
+    sello = ('' if entrada['titulo'] == 'Museo de problemas · Open House 2026'
+             else '<p class="grado">Museo de problemas · Open House 2026</p>')
     hojas.append(f"""<article class="panel" id="panel-entrada">
 {sello}
 <h1>{e(entrada['titulo'])}</h1>

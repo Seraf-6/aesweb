@@ -1,4 +1,4 @@
-"""AESWeb · el contenido del sitio.
+"""SeraWeb · el contenido del sitio.
 
 Este archivo es la única fuente de verdad del índice: los grados, sus
 unidades y qué material tiene cada una. `build.py` lo lee y arma las
@@ -12,9 +12,9 @@ Cada material es un dict:
 """
 
 SITIO = {
-    'nombre': 'AESWeb',
-    'subtitulo': 'Material de clase · Albert Einstein School',
-    'docentes': 'Eduardo Ovelar / Juan Serafini',
+    'nombre': 'SeraWeb',
+    'subtitulo': 'Material de clase',
+    'docentes': 'Juan Serafini',
     'anio': '2026',
 }
 
@@ -221,6 +221,35 @@ QUIMICA = [
               'Pauli y Hund; la abreviada; el lugar en la tabla, y cómo hallar un elemento a partir '
               'de su último electrón. Con un taller para tocar la tabla.',
       'url': 'quimica/configuracion.html'},
+   ]},
+]
+
+# ══════════════════════════════════════════════════════════════════
+#  Cursillo de ingreso
+#  Preparación para el examen de ingreso a la facultad. Mismo formato
+#  que QUIMICA: cada bloque es una sección del índice. Todavía sin clases.
+# ══════════════════════════════════════════════════════════════════
+CURSILLO = [
+  {'titulo': 'Las clases del cursillo',
+   'eyebrow': 'Preparación para el ingreso',
+   'nota': 'Las clases se van a ir sumando acá, una tarjeta por tema.',
+   'material': [
+     {'tipo': 'pendiente', 'titulo': 'Primeras clases',
+      'desc': 'Los temas del programa de ingreso, con sus diapositivas para proyectar.'},
+   ]},
+]
+
+# ══════════════════════════════════════════════════════════════════
+#  Física
+#  Mismo formato que QUIMICA. Todavía sin clases.
+# ══════════════════════════════════════════════════════════════════
+FISICA = [
+  {'titulo': 'Las clases de Física',
+   'eyebrow': 'Física',
+   'nota': 'Las clases se van a ir sumando acá, una tarjeta por tema.',
+   'material': [
+     {'tipo': 'pendiente', 'titulo': 'Primeras clases',
+      'desc': 'Las unidades del año, con sus diapositivas para proyectar.'},
    ]},
 ]
 

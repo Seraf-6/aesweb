@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   AESWeb · la pizarra: el motor de las páginas de clase
+   SeraWeb · la pizarra: el motor de las páginas de clase
 
    Una página de clase trae solo sus datos (los temas, los ejemplos, las
    preguntas del observador, las notas) y llama a Pizarra.unidad(). Todo
