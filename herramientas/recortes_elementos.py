@@ -1,5 +1,5 @@
 """Saca de los escaneos las páginas que muestra el prólogo de Zamorano
-(matematica/elementos/img/). Antes recortaba también el texto de cada
+(omapa/elementos/img/). Antes recortaba también el texto de cada
 entrada; Juan prefirió el texto con letra antigua (elementos/antiguo.css).
 
     python herramientas/recortes_elementos.py
@@ -22,7 +22,7 @@ ESCANEOS = {
     'e1774': FUENTES / 'euclides-1774' / 'Euclides_1774.pdf',
     'zam': FUENTES / 'zamorano-1576' / 'Zamorano_1576_libro_I.pdf',
 }
-DESTINO = RAIZ / 'matematica' / 'elementos' / 'img'
+DESTINO = RAIZ / 'omapa' / 'elementos' / 'img'
 
 # id del recorte: (escaneo, página del escaneo contando desde 1, (x0, y0, x1, y1)
 # o None para la página entera)

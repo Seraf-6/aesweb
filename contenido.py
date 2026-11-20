@@ -202,6 +202,16 @@ OMAPA = {
     ('5grado', '5.º grado', ['01', '02', '03']),
     ('6grado', '6.º grado', ['01', '02', '03']),
   ],
+  # Los Elementos de Euclides, en omapa/elementos/: material de referencia, no una clase.
+  'elementos': [
+    {'tipo': 'lectura', 'titulo': 'Elementos de Euclides · libro I',
+     'desc': 'Las definiciones, los postulados, las nociones comunes y las proposiciones, con la '
+             'edición de 1774 y un dicho sencillo, y la demostración paso a paso con regla y compás.',
+     'url': 'omapa/elementos/libro-1.html'},
+    {'tipo': 'lectura', 'titulo': 'El prólogo de Zamorano (1576)',
+     'desc': 'La dedicatoria de la primera traducción castellana de los Elementos, completa y por partes.',
+     'url': 'omapa/elementos/prologo-zamorano.html'},
+  ],
 }
 
 # ══════════════════════════════════════════════════════════════════

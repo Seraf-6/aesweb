@@ -43,8 +43,7 @@ matematica/
   8vo/factoreo.html         diapositivas                 ← escritas a mano
   8vo/sistemas.html         diapositivas                 ← escritas a mano
   9no/cuadraticas.html      diapositivas                 ← escritas a mano
-  elementos/libro-1.html    Euclides, libro I (la página) ← lee libro1.js
-  elementos/libro1.js       Euclides, libro I (los datos, JSON tras el =)
+  elementos/                se mudó a omapa/elementos/: solo quedan redirecciones
 fichas/
   index.html                listado                      ← lo genera build.py
   pdf/<grado>/Ficha_NN.pdf  los archivos
@@ -53,6 +52,8 @@ fisica/index.html           Física (por ahora vacía)     ← lo genera build.p
 cursillo/index.html         Cursillo de ingreso (vacío)  ← lo genera build.py
 omapa/index.html            módulo de olimpiada          ← lo genera build.py
 omapa/clases/bloque-N.html  clases por herramienta       ← escritas a mano
+omapa/elementos/libro-1.html  Euclides, libro I (la página) ← lee libro1.js
+omapa/elementos/libro1.js     Euclides, libro I (los datos, JSON tras el =)
 omapa/fichas/               fichas de alumno OMAPA y Kanguro (sin claves)
 progreso/index.html         progreso del tramo           ← escrita a mano
 open-2026/                  Open House 2026: piezas, salas, QR  ← lo genera build.py
@@ -303,9 +304,11 @@ su propia diapositiva. La página agrega `.arranque, .teoria-diapo` a
 `data-diapos`. Lo pidió Juan: el lenguaje también se enseña, y nada de una
 sola diapositiva cargada de recuadros.
 
-**Los Elementos de Euclides** (`matematica/elementos/`) son el material de
+**Los Elementos de Euclides** (`omapa/elementos/`) son el material de
 referencia completo del libro I, pedido por Juan el 28/10: no es una clase,
-es el libro. Cada entrada (definición, postulado, noción común, proposición)
+es el libro. Viven dentro de OMAPA (lo pidió Juan el 20/11) y el índice de
+OMAPA los enlaza desde `OMAPA['elementos']`; en `matematica/elementos/`
+quedan dos páginas que redirigen, para no romper enlaces viejos. Cada entrada (definición, postulado, noción común, proposición)
 trae **dos versiones**, como pidió Juan: la edición de Madrid de 1774 (sobre
 el latín de Comandino, con las notas de Simson) y un dicho sencillo. **El
 texto antiguo va con letra de imprenta vieja sobre papel envejecido**
@@ -925,7 +928,7 @@ Sin ella, el navegador la fabrica a partir de la cursiva 500, y con el halo
 de los rótulos algunas letras (la A, la E) salían con el relleno gris.
 
 La letra antigua de los Elementos (IM Fell English, también OFL) está en la
-misma carpeta, con sus reglas al principio de `matematica/elementos/antiguo.css`.
+misma carpeta, con sus reglas al principio de `omapa/elementos/antiguo.css`.
 
 ---
 

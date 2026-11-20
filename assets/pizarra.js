@@ -804,7 +804,7 @@ function caja(c){
    la caja de herramientas se guarda.
    { id, cajon, cod?, titulo, pregunta, enun?, html?, revela?:{ txt },
      mas?:[…], como?, figura?, verFigura?, fuente?, elementos?:[[id, nombre]] }
-   elementos lleva a la entrada del libro de Euclides (matematica/elementos),
+   elementos lleva a la entrada del libro de Euclides (omapa/elementos),
    que a su vez nombra esta diapositiva en su «En clase»: el vínculo va y vuelve.
    Van antes de un ejemplo (ej.antes), después de los ejemplos de un tema
    (t.despues) o al principio de la unidad (cfg.INICIO, en #teoria-inicio). */
@@ -826,7 +826,7 @@ function teoria(td, cinta, attrs = ''){
   ];
   const fuente = (td.fuente ? `<p class="teoria-fuente">${td.fuente}</p>` : '') +
     (td.elementos ? `<p class="teoria-elementos">${td.elementos.map(([id, n]) =>
-      `<a href="../elementos/libro-1.html#${id}">En los Elementos de Euclides: ${n} →</a>`).join(' ')}</p>` : '');
+      `<a href="../../omapa/elementos/libro-1.html#${id}">En los Elementos de Euclides: ${n} →</a>`).join(' ')}</p>` : '');
   if (partes.length) partes[partes.length - 1] += fuente;
   return `
   <section class="teoria-diapo" id="d-${td.id}" data-cajon="${td.cajon}"${attrs}>
