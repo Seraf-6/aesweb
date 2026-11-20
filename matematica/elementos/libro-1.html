@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Elementos de Euclides, libro I · SeraWeb</title>
+<meta name="description" content="El libro I de los Elementos de Euclides en castellano: la edición de 1774 con las notas de Simson y un dicho más sencillo, la demostración paso a paso, lo que hace falta saber antes y la historia, con la primera traducción castellana de Rodrigo Zamorano (1576).">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; font-src 'self' file:; media-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<script src="../../assets/acceso.js"></script>
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<link rel="stylesheet" href="antiguo.css">
+<style>
+/* ---------- solo de esta página ---------- */
+.ed-intro{padding-block:22px 26px; border-bottom:2px solid var(--tinta)}
+.ed-intro p{max-width:66ch; font-size:1.05em; line-height:1.55}
+.ed-capas{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:14px 0 6px; max-width:760px}
+.ed-capas div{padding:9px 12px; border-radius:6px; border:1px solid var(--linea-fuerte); background:var(--papel)}
+.ed-capas b{display:block; font-family:var(--serif); font-size:1.05em}
+.ed-capas span{font-size:.92em; color:var(--lapiz)}
+.ed-nota{font-size:.88em; color:var(--lapiz)}
+
+/* el índice: todo el libro, lo cargado se puede abrir */
+.indice{padding-block:22px; border-bottom:1px solid var(--linea-fuerte)}
+.indice h2{font-size:1.3rem; margin:0 0 4px}
+.indice h3{margin:14px 0 6px; font-family:var(--mono); font-size:11.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--lapiz); font-weight:600}
+.indice .fila{display:flex; flex-wrap:wrap; gap:5px}
+.indice .num{min-width:2.3em; padding:2px 6px; text-align:center; border-radius:4px;
+  font-family:var(--mono); font-size:13px; border:1px solid var(--linea); color:var(--lapiz)}
+.indice a.num{border-color:var(--acento2); background:var(--acento2-suave); color:var(--tinta); font-weight:600; text-decoration:none}
+/* las proposiciones: los teoremas en rojo, los problemas (construcciones) en azul */
+:root{--problema:#2B6CB0; --problema-suave:#E3EEF9}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){--problema:#7FB2F0; --problema-suave:#13202E} }
+:root[data-theme="dark"]{--problema:#7FB2F0; --problema-suave:#13202E}
+[data-cajon="problema"]{--cajon:var(--problema); --cajon-suave:var(--problema-suave)}
+.indice a.num[data-cajon]{border-color:var(--cajon); background:var(--cajon-suave)}
+.indice .leyenda{margin-left:10px; text-transform:none; letter-spacing:0; font-weight:500}
+.indice .leyenda i{display:inline-block; width:.8em; height:.8em; margin:0 4px 0 10px; border-radius:2px;
+  vertical-align:-.05em; border:1.5px solid var(--cajon); background:var(--cajon-suave)}
+
+/* una entrada del libro */
+.entrada{padding-block:30px; border-bottom:1px solid var(--linea-fuerte); scroll-margin-top:70px}
+.entrada:target{background:linear-gradient(90deg, var(--dest-suave), transparent 70%)}
+.ent-chip{display:inline-block; margin:0 0 6px; padding:2px 10px; border-radius:999px;
+  border:1px solid var(--cajon); background:var(--cajon-suave); color:var(--cajon);
+  font-family:var(--mono); font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase}
+.entrada h3{margin:0 0 14px; font-family:var(--serif); font-weight:800; font-size:clamp(1.5rem,3.6vw,2rem); line-height:1.1}
+.l-nota{fill:var(--lapiz); font-family:var(--mono); font-size:15px; paint-order:stroke; stroke:var(--papel); stroke-width:5px}
+.ent-grid{display:grid; grid-template-columns:minmax(0,1fr) min(340px,40%); gap:26px; align-items:start}
+.ent-fig{margin:0; position:sticky; top:70px}
+.ent-fig svg{display:block; width:100%; height:auto}
+.ent-fig .g-rot,.ent-fig .g-dato{font-size:20px}
+.version{margin:0 0 10px; padding:10px 14px; border-radius:6px; border:1px solid var(--linea-fuerte); background:var(--papel)}
+.version .v-rot{display:block; margin-bottom:3px; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--lapiz)}
+.version p{margin:0; line-height:1.5}
+.version.antigua{margin:0 0 10px}
+.version.antigua .entra{font-size:1.12em}
+.zam{margin:0 0 12px}
+.version.facil p{font-size:1.08em}
+.ent-dem{margin-top:18px}
+.ent-dem h4,.ent-mas h4,.ent-cor h4,.ent-desafio h4{margin:0 0 8px; font-family:var(--serif); font-size:1.2rem}
+.pasos-el{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px}
+.pasos-el li{display:grid; grid-template-columns:2.4em minmax(0,1fr); line-height:1.5; font-size:1.06em; padding:2px 6px; border-radius:4px}
+.pasos-el .np{color:var(--lapiz); font-variant-numeric:tabular-nums}
+/* los pasos de una proposición anterior, hechos adentro de esta */
+.pasos-el li.sub{margin-left:2.2em; font-size:1em; border-left:3px solid var(--linea-fuerte); border-radius:0 4px 4px 0}
+.pasos-el li.sub.actual{border-left-color:var(--acento2)}
+.pasos-el li[hidden]{display:none}
+.pasos-el li.actual{background:var(--acento2-suave)}
+.pasos-el li.recien-parte{animation:parte-llega .45s ease-out both}
+/* la demostración con su figura que se construye */
+.dem-grid{display:grid; grid-template-columns:minmax(0,1fr) min(420px,46%); gap:24px; align-items:start}
+.dem-nav{display:flex; gap:8px; align-items:center; margin-top:12px}
+.dem-cuenta{font-family:var(--mono); font-size:12.5px; color:var(--lapiz); min-width:6.5em; text-align:center}
+.dem-lienzo{margin:0; position:sticky; top:70px; border:1px solid var(--linea-fuerte); border-radius:6px; background:var(--papel)}
+.dem-lienzo svg{display:block; width:100%; height:auto}
+.dem-vacia{position:absolute; inset:0; display:grid; place-items:center; padding:20px; text-align:center;
+  font-size:.95em; color:var(--lapiz)}
+.dem-vacia[hidden]{display:none}
+/* lo que dibuja construcciones.js */
+.c-seg{stroke:var(--tinta); stroke-width:2.6; stroke-linecap:round}
+.c-circ{fill:none; stroke:var(--acento2); stroke-width:1.8}
+.c-punto circle{fill:var(--tinta)}
+.c-punto text{fill:var(--tinta); font-family:var(--serif); font-style:italic; font-weight:700; font-size:19px;
+  paint-order:stroke; stroke:var(--papel); stroke-width:4px; stroke-linejoin:round}
+.c-raya{stroke:var(--acento); stroke-width:2.4; stroke-linecap:round}
+.c-resalta{stroke:var(--acento); stroke-width:7; stroke-linecap:round; opacity:.35}
+.c-relleno{fill:var(--acento2-suave); stroke:none}
+.c-relleno2{fill:var(--acento-suave); fill-opacity:.6}
+.ent-cor{margin:22px 0 0}
+.ent-desafio{margin:22px 0 0; padding:14px 16px 16px; border:1.5px dashed var(--acento2); border-radius:8px}
+.ent-desafio .des-enun{font-size:1.1em; font-weight:500; margin:0 0 8px}
+.ent-desafio > p{max-width:70ch; line-height:1.5}
+.ent-desafio .ent-mas{margin-top:10px}
+.des-ggb{margin:0; padding:10px 12px; background:var(--papel-2); border-radius:6px; font-family:var(--mono); font-size:.88em; line-height:1.55; overflow-x:auto}
+.ent-cor .version{margin:8px 0 0}
+.c-aux{stroke:var(--lapiz); stroke-width:1.3; stroke-dasharray:5 5; opacity:.7}
+.c-prol{stroke-width:2}
+.c-destaca{stroke:var(--acento); stroke-width:5; stroke-linecap:round}
+/* los ángulos: un arco y su cuña; los iguales, del mismo color */
+:root{--ang1:#C98A00; --ang2:#2B6CB0; --ang3:#8B3FB8; --ang4:#4D7C0F}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){--ang1:#F2C14E; --ang2:#7FB2F0; --ang3:#C792EA; --ang4:#A3D65C} }
+:root[data-theme="dark"]{--ang1:#F2C14E; --ang2:#7FB2F0; --ang3:#C792EA; --ang4:#A3D65C}
+.c-ang1{--c:var(--ang1)} .c-ang2{--c:var(--ang2)} .c-ang3{--c:var(--ang3)} .c-ang4{--c:var(--ang4)}
+.c-ang .c-arco{fill:none; stroke:var(--c); stroke-width:2.4}
+.c-ang .c-cuna{fill:var(--c); fill-opacity:.3; stroke:none}
+.c-copia{fill:var(--acento-suave); fill-opacity:.55; stroke:var(--acento); stroke-width:2.2; stroke-dasharray:7 5}
+.c-curva path{fill:none; stroke:var(--acento); stroke-width:2.2; stroke-dasharray:6 5}
+.c-curva .c-tacha{stroke-dasharray:none; stroke-width:3; stroke-linecap:round}
+.c-auxlinea{opacity:.45}
+.c-auxpunto{opacity:.55}
+.c-fantasma{stroke:var(--acento2); stroke-width:4; stroke-linecap:round; stroke-dasharray:7 6; opacity:.75}
+.c-pata{stroke:#5a4a32; stroke-width:3.2; stroke-linecap:round}
+.c-mango{stroke:#5a4a32; stroke-width:5; stroke-linecap:round}
+.c-eje{fill:#d8c79f; stroke:#5a4a32; stroke-width:2}
+.c-mina{fill:var(--acento)}
+.c-regla rect{fill:rgba(214,186,120,.45); stroke:#9a7a3a; stroke-width:1.2}
+.c-regla-raya{stroke:#9a7a3a; stroke-width:1}
+.c-aparece{transform-box:fill-box; transform-origin:center; animation:c-pop .38s cubic-bezier(.3,1.6,.5,1) both}
+.c-aparece-suave{animation:c-suave .5s ease-out both}
+@keyframes c-pop{from{transform:scale(0); opacity:0} to{transform:scale(1); opacity:1}}
+@keyframes c-suave{from{opacity:0} to{opacity:1}}
+@media (prefers-reduced-motion:reduce){ .c-aparece,.c-aparece-suave,.pasos-el li.recien-parte{animation:none} }
+.cita{display:inline-block; margin-left:6px; padding:0 7px; border-radius:4px; font-family:var(--mono);
+  font-size:.78em; text-decoration:none; white-space:nowrap; border:1px solid var(--linea-fuerte); background:var(--papel-2); color:var(--tinta)}
+.ent-cierre{margin:10px 0 0; font-family:var(--serif); font-style:italic; font-weight:500; font-size:1.15em}
+.ent-mas{display:flex; flex-direction:column; gap:8px; margin-top:16px}
+.ent-mas details{border:1px solid var(--linea-fuerte); border-radius:6px; background:var(--papel)}
+.ent-mas summary{cursor:pointer; padding:9px 14px; font-weight:700; list-style:none}
+.ent-mas summary::-webkit-details-marker{display:none}
+.ent-mas summary::before{content:"▸ "; color:var(--acento)}
+.ent-mas details[open] summary::before{content:"▾ "}
+.ent-mas .cuerpo{padding:0 14px 12px}
+.ent-mas .cuerpo p{margin:0 0 8px; line-height:1.5; max-width:70ch}
+details.previo summary{color:var(--acento2)}
+.previo ul{margin:0 0 8px; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px}
+.previo li{padding:6px 10px; border-radius:4px; background:var(--papel-2)}
+.previo li a{font-weight:700}
+.previo .pend{color:var(--lapiz); font-style:italic}
+.ent-pie{margin:12px 0 0; font-size:.95em; color:var(--lapiz)}
+.ent-pie a{font-weight:600}
+.prologos{padding-block:26px}
+.prologos li{margin-bottom:6px}
+@media (max-width:760px){
+  .ed-capas{grid-template-columns:1fr 1fr}
+  .ent-grid{grid-template-columns:1fr}
+  .ent-fig{position:static; max-width:360px}
+  .dem-grid{grid-template-columns:1fr}
+  .dem-lienzo{position:relative; max-width:440px}
+}
+</style>
+</head>
+<body>
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">Sera<span>Web</span></a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <span>Elementos de Euclides · libro I</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+
+  <header class="tapa">
+    <p class="sello">SeraWeb · Matemática</p>
+    <h1>Los Elementos de Euclides · Libro I</h1>
+    <p class="bajada">«Los Elementos de Euclides son una Obra tan excelente entre quantas nos han
+      quedado de la Antigüedad, que su conservacion se debe atribuir á un especial beneficio de
+      la Providencia.»<span class="firma">Christian Wolff, citado en la portada de la edición de 1774</span></p>
+    <div class="pie-tapa">
+      <span>Geometría a la manera de los griegos · el libro completo</span>
+      <span>Docente: Juan Serafini</span>
+    </div>
+  </header>
+
+  <section class="ed-intro">
+    <p>Euclides escribió los <i>Elementos</i> en griego, en Alejandría, hacia el año 300 antes de
+      Cristo. El libro I arranca con 23 definiciones, 5 postulados y 5 nociones comunes, y de ahí
+      demuestra, una por una, 48 proposiciones. Cada entrada de esta página trae dos versiones:</p>
+    <div class="ed-capas">
+      <div><b>Edición de 1774</b><span>Madrid, sobre el latín de Comandino, con las notas de Simson, con su ortografía</span></div>
+      <div><b>Dicho más sencillo</b><span>para entenderlo a la primera</span></div>
+    </div>
+    <p class="ed-nota">En la historia de cada entrada está cómo lo escribió Rodrigo Zamorano en
+      1576, en la primera traducción al castellano. Las citas de los libros antiguos son las suyas,
+      y llevan a la entrada que citan. La numeración es la de hoy; al lado está el número que tiene
+      en cada edición. Transcripción: ortografía original; en Zamorano, la ſ larga va como s y las
+      abreviaturas se desarrollan.</p>
+  </section>
+
+  <section class="indice" id="indice">
+    <h2>El libro I</h2>
+    <p class="ed-nota" id="cuenta"></p>
+    <div id="indice-grupos"></div>
+  </section>
+
+  <main id="entradas"></main>
+
+  <section class="prologos" id="prologos">
+    <h2>Los prólogos y las notas</h2>
+    <p class="ed-nota">Van completos, en una página propia cada uno.</p>
+    <ul>
+      <li><b>Zamorano, 1576.</b> <a href="prologo-zamorano.html">La dedicatoria a Luciano de Negrón y
+        el prólogo «Al curioso lector»</a>, que cuenta la historia de la geometría desde los egipcios:
+        completos, por partes, con la historia detrás de cada cosa.</li>
+      <li><b>Edición de 1774.</b> Las «Advertencias sobre esta traducción», donde se nombra la de
+        Zamorano (págs. 5 a 20 del escaneo), y el prólogo de Roberto Simson (págs. 21 a 24). <i>Todavía no cargadas.</i></li>
+      <li><b>Las notas críticas y geométricas de Simson</b> sobre el libro I (págs. 317 a 327 del escaneo). <i>Todavía no cargadas.</i></li>
+    </ul>
+  </section>
+
+  <footer class="creditos">
+    Fuentes: Rodrigo Zamorano, <i>Los seis libros primeros de la geometría de Euclides</i>
+    (Sevilla, 1576), escaneo en <a href="https://commons.wikimedia.org/wiki/File:Los_Elementos_de_Euclides_(1576)_-_Libro_I.pdf">Wikimedia Commons</a>;
+    <i>Los seis primeros libros, y el undécimo, y duodécimo de los Elementos de Euclides</i>
+    (Madrid, Ibarra, 1774), escaneo de Google Books en
+    <a href="https://upload.wikimedia.org/wikipedia/commons/1/1f/Los_seis_primeros_libros_y_el_undecimo%2C_y_duodecimo_de_los_elementos_de_Euclides.pdf">Wikimedia Commons</a>.
+    Las dos son de dominio público. Nuestra traducción y los dichos sencillos son del
+    Departamento de Matemática. Lo que usa cada proposición está verificado en
+    <span class="ec">verificacion/elementos_libro1.py</span>.
+  </footer>
+</div>
+
+<script src="../../assets/pizarra.js"></script>
+<script src="libro1.js"></script>
+<script src="construcciones.js"></script>
+<script>
+const g = Geo;
+const L = window.LIBRO1;
+const POR_ID = Object.fromEntries(L.entradas.map(e => [e.id, e]));
+const TIPOS = {
+  definicion:{ nombre:'Definición', corto:'Def.', cajon:'definicion', grupo:'Definiciones' },
+  postulado:{ nombre:'Postulado', corto:'Post.', cajon:'postulado', grupo:'Postulados' },
+  nocion:{ nombre:'Noción común', corto:'N. C.', cajon:'nocion', grupo:'Nociones comunes' },
+  proposicion:{ nombre:'Proposición', corto:'I.', cajon:'teorema', grupo:'Proposiciones' },
+};
+const PREFIJO = { definicion:'def', postulado:'post', nocion:'nc', proposicion:'prop' };
+/* el color de una entrada: el de su tipo, y entre las proposiciones, teorema o problema */
+const cajonDe = e => e.clase === 'problema' ? 'problema' : TIPOS[e.tipo].cajon;
+const nombre = id => {
+  const [p, n] = id.split('-'), t = Object.keys(PREFIJO).find(k => PREFIJO[k] === p);
+  return `${TIPOS[t].nombre} ${n}`;
+};
+const corto = id => {
+  const [p, n] = id.split('-'), t = Object.keys(PREFIJO).find(k => PREFIJO[k] === p);
+  return t === 'proposicion' ? `I.${n}` : `${TIPOS[t].corto} ${n}`;
+};
+const enlace = (id, txt = nombre(id)) => POR_ID[id] ? `<a href="#${id}">${txt}</a>` : `<span class="pend">${txt} (todavía no cargada)</span>`;
+/* las citas de las ediciones antiguas: [[id|texto del libro]] */
+const citas = s => s.replace(/\[\[([\w-]+)\|([^\]]+)\]\]/g, (m, id, t) => `<a class="cita-vieja" href="#${id}">${t}</a>`);
+
+/* lo que hace falta antes: lo que usa, y lo que usa eso, hasta los principios */
+function cadena(id, vistos = new Set()){
+  (POR_ID[id] ? POR_ID[id].usa : []).forEach(u => { if (!vistos.has(u)){ vistos.add(u); cadena(u, vistos); } });
+  return vistos;
+}
+const ORDEN = ['definicion', 'postulado', 'nocion', 'proposicion'];
+const ordena = ids => [...ids].sort((a, b) => {
+  const ta = ORDEN.indexOf(Object.keys(PREFIJO).find(k => PREFIJO[k] === a.split('-')[0]));
+  const tb = ORDEN.indexOf(Object.keys(PREFIJO).find(k => PREFIJO[k] === b.split('-')[0]));
+  return ta - tb || +a.split('-')[1] - +b.split('-')[1];
+});
+const usadoPor = id => L.entradas.filter(e => e.usa.includes(id)).map(e => e.id);
+
+/* ═══ las figuras ═══ */
+/* un ángulo como los marca el motor: arco y cuña, del color de su par (de p hacia q, el lado chico) */
+function ang(v, p, q, color, r = 24){
+  const a1 = Math.atan2(p[1] - v[1], p[0] - v[0]);
+  let d = Math.atan2(q[1] - v[1], q[0] - v[0]) - a1;
+  while (d > Math.PI) d -= 2 * Math.PI;
+  while (d < -Math.PI) d += 2 * Math.PI;
+  const x = a => (v[0] + r * Math.cos(a)).toFixed(2), y = a => (v[1] + r * Math.sin(a)).toFixed(2);
+  const borde = `${x(a1)} ${y(a1)} A ${r} ${r} 0 0 ${d > 0 ? 1 : 0} ${x(a1 + d)} ${y(a1 + d)}`;
+  return `<g class="c-ang c-ang${color}"><path class="c-cuna" d="M ${v[0]} ${v[1]} L ${borde} Z"/><path class="c-arco" d="M ${borde}"/></g>`;
+}
+const FIG = {
+  'def-1': () => g.pto([200, 120], 'g-vert', 6) + g.txt([216, 104], 'A', 'g-rot'),
+  'def-15': () => { const O = [200, 125], r = 95;
+    return g.circ(O, r, 'g-linea') + [40, 120, 200, 245, 320].map(a => g.seg(O, [O[0] + r * Math.cos(a * Math.PI / 180), O[1] - r * Math.sin(a * Math.PI / 180)], 'g-aux')).join('') +
+      g.pto(O, 'g-vert', 4.5) + g.txt([O[0], O[1] + 28], 'centro', 'l-nota'); },
+  'post-1': () => g.seg([90, 150], [310, 100], 'g-linea') + g.pto([90, 150], 'g-vert', 5) + g.pto([310, 100], 'g-vert', 5) +
+      g.txt([78, 172], 'A', 'g-rot') + g.txt([322, 86], 'B', 'g-rot'),
+  'post-3': () => { const A = [200, 125], B = [285, 125];
+    return g.circ(A, 85, 'g-linea') + g.seg(A, B, 'g-aux') + g.pto(A, 'g-vert', 5) + g.pto(B, 'g-pto', 5) +
+      g.txt([200, 148], 'A', 'g-rot') + g.txt([302, 120], 'B', 'g-rot'); },
+  'nc-1': () => g.seg([40, 60], [360, 60], 'g-aux') +
+      [['a', 70], ['c', 175], ['b', 280]].map(([s, x]) => g.pol([[x, 210], [x + 50, 210], [x + 50, 60], [x, 60]], 'g-fig') + g.txt([x + 25, 232], s, 'g-rot')).join(''),
+  'def-20': () => {
+    const tri = (pts, x, rot) => g.pol(pts.map(([a, b]) => [a + x, b]), 'g-fig') + g.txt([x + 60, 238], rot, 'l-nota');
+    const h = 104 * Math.sqrt(3) / 2;
+    return tri([[8, 200], [112, 200], [60, 200 - h]], 0, 'equilátero') + tri([[18, 200], [102, 200], [60, 70]], 130, 'isósceles') +
+      tri([[0, 200], [120, 200], [30, 115]], 262, 'escaleno');
+  },
+  'post-2': () => g.seg([70, 150], [220, 110], 'g-linea') + g.seg([220, 110], [345, 76.7], 'g-diag') +
+      g.pto([70, 150], 'g-vert', 5) + g.pto([220, 110], 'g-vert', 5) + g.txt([62, 172], 'A', 'g-rot') + g.txt([222, 134], 'B', 'g-rot') +
+      g.txt([300, 120], 'se prolonga', 'l-nota'),
+  'nc-3': () => [['a', 90], ['b', 250]].map(([s, x]) =>
+      g.pol([[x, 210], [x + 60, 210], [x + 60, 60], [x, 60]], 'g-fig') + g.pol([[x, 210], [x + 60, 210], [x + 60, 160], [x, 160]], 'g-fig2') +
+      g.txt([x + 30, 186], 'c', 'g-rot') + g.txt([x + 30, 234], s, 'g-rot')).join('') +
+      g.txt([200, 40], 'a − c = b − c', 'g-dato'),
+  /* de las proposiciones, arriba va solo lo que da el enunciado: la construcción
+     se arma abajo, paso a paso */
+  'prop-1': () => g.seg([100, 130], [300, 130], 'g-linea') + g.pto([100, 130], 'g-vert', 5) + g.pto([300, 130], 'g-vert', 5) +
+      g.txt([100, 156], 'A', 'g-rot') + g.txt([300, 156], 'B', 'g-rot') + g.txt([200, 196], 'el segmento dado', 'l-nota'),
+  'prop-2': () => g.pto([280, 90], 'g-vert', 5) + g.txt([296, 78], 'A', 'g-rot') + g.txt([280, 124], 'el punto dado', 'l-nota') +
+      g.seg([70, 190], [210, 190], 'g-linea') + g.pto([70, 190], 'g-vert', 5) + g.pto([210, 190], 'g-vert', 5) +
+      g.txt([62, 214], 'B', 'g-rot') + g.txt([218, 214], 'C', 'g-rot') + g.txt([140, 236], 'el segmento dado', 'l-nota'),
+  'prop-3': () => g.seg([50, 170], [350, 170], 'g-linea') + g.pto([50, 170], 'g-vert', 5) + g.pto([350, 170], 'g-vert', 5) +
+      g.txt([50, 194], 'A', 'g-rot') + g.txt([350, 194], 'B', 'g-rot') + g.txt([200, 202], 'el mayor', 'l-nota') +
+      g.seg([140, 80], [260, 80], 'g-linea') + g.pto([140, 80], 'g-vert', 5) + g.pto([260, 80], 'g-vert', 5) +
+      g.txt([128, 64], 'M', 'g-rot') + g.txt([272, 64], 'N', 'g-rot') + g.txt([200, 106], 'el menor', 'l-nota'),
+  'nc-5': () => g.pol([[60, 200], [340, 200], [340, 70], [60, 70]], 'g-fig') + g.pol([[60, 200], [180, 200], [180, 70], [60, 70]], 'g-fig2') +
+      g.txt([120, 140], 'la parte', 'l-nota') + g.txt([200, 232], 'el todo: la parte y lo que le falta', 'l-nota'),
+  'nc-4': () => g.pol([[60, 200], [180, 200], [120, 80]], 'g-fig') + g.pol([[60, 200], [180, 200], [120, 80]], 'c-copia') +
+      g.pol([[230, 200], [350, 200], [290, 80]], 'g-fig') + g.pol([[245, 185], [365, 185], [305, 65]], 'c-copia') +
+      g.txt([120, 232], 'coinciden', 'l-nota') + g.txt([290, 232], 'no coinciden', 'l-nota'),
+  'prop-4': () => { const T = (x, k) => g.pol([[x, 60], [x - 50, 200], [x + 75, 185]], 'g-fig');
+    return T(110, 0) + T(290, 0) + g.txt([110, 44], 'A', 'g-rot') + g.txt([290, 44], 'D', 'g-rot') +
+      g.txt([200, 238], 'dos lados y el ángulo entre ellos, iguales', 'l-nota'); },
+  'prop-5': () => { const A = [200, 22], B = [145, 165], C = [255, 165], D = [112, 251], E = [288, 251];
+    const raya = (p, q) => { const m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2], L = Math.hypot(q[0] - p[0], q[1] - p[1]), u = [(q[0] - p[0]) / L, (q[1] - p[1]) / L];
+      return g.seg([m[0] - u[1] * 8, m[1] + u[0] * 8], [m[0] + u[1] * 8, m[1] - u[0] * 8], 'g-linea'); };
+    return g.seg(B, D, 'g-diag') + g.seg(C, E, 'g-diag') + g.pol([A, B, C], 'g-fig') + raya(A, B) + raya(A, C) +
+      ang(B, A, C, 1) + ang(C, B, A, 1) + ang(B, C, D, 2) + ang(C, E, B, 2) +
+      g.txt([200, 8], 'A', 'g-rot') + g.txt([126, 158], 'B', 'g-rot') + g.txt([274, 158], 'C', 'g-rot') +
+      g.txt([200, 272], 'AB = AC: iguales los del mismo color', 'l-nota'); },
+  'prop-6': () => { const A = [200, 30], B = [130, 200], C = [270, 200];
+    return g.pol([A, B, C], 'g-fig') + ang(B, A, C, 1, 26) + ang(C, B, A, 1, 26) +
+      g.txt([200, 14], 'A', 'g-rot') + g.txt([114, 210], 'B', 'g-rot') + g.txt([286, 210], 'C', 'g-rot') +
+      g.txt([200, 238], 'ángulos iguales en B y en C: AB = AC', 'l-nota'); },
+  'prop-7': () => { const A = [70, 200], B = [330, 200], C = [150, 60], D = [215, 75];
+    return g.seg(A, C, 'g-linea') + g.seg(C, B, 'g-linea') + g.seg(A, D, 'g-diag') + g.seg(D, B, 'g-diag') + g.seg(A, B, 'g-linea') +
+      [A, B, C].map(p => g.pto(p, 'g-vert', 5)).join('') + g.pto(D, 'g-pto', 5) +
+      g.txt([58, 222], 'A', 'g-rot') + g.txt([342, 222], 'B', 'g-rot') + g.txt([140, 44], 'C', 'g-rot') + g.txt([228, 60], 'D', 'g-rot') +
+      g.txt([200, 238], 'con AC = AD y BC = BD, D no puede existir', 'l-nota'); },
+  'prop-8': () => { const T = x => [[x, 60], [x - 50, 200], [x + 75, 185]];
+    const raya = (p, q, n) => { const L = Math.hypot(q[0] - p[0], q[1] - p[1]), u = [(q[0] - p[0]) / L, (q[1] - p[1]) / L];
+      return [...Array(n).keys()].map(j => { const o = (j - (n - 1) / 2) * 6, m = [(p[0] + q[0]) / 2 + u[0] * o, (p[1] + q[1]) / 2 + u[1] * o];
+        return g.seg([m[0] - u[1] * 8, m[1] + u[0] * 8], [m[0] + u[1] * 8, m[1] - u[0] * 8], 'g-linea'); }).join(''); };
+    return [110, 290].map(x => { const [P, Q, R] = T(x); return g.pol([P, Q, R], 'g-fig') + raya(P, Q, 1) + raya(P, R, 2) + raya(Q, R, 3); }).join('') +
+      g.txt([200, 238], 'los tres lados iguales', 'l-nota'); },
+  'prop-9': () => { const A = [90, 200], B = [340, 200], C = [190, 30], m = Math.atan2(C[1] - A[1], C[0] - A[0]) / 2;
+    return g.seg(A, B, 'g-linea') + g.seg(A, C, 'g-linea') + g.seg(A, [A[0] + 230 * Math.cos(m), A[1] + 230 * Math.sin(m)], 'g-diag') +
+      g.pto(A, 'g-vert', 5) + g.txt([76, 214], 'A', 'g-rot') + g.txt([340, 222], 'B', 'g-rot') + g.txt([176, 26], 'C', 'g-rot') +
+      g.txt([200, 238], 'la recta que lo parte por la mitad', 'l-nota'); },
+  'prop-10': () => g.seg([60, 140], [340, 140], 'g-linea') + g.pto([60, 140], 'g-vert', 5) + g.pto([340, 140], 'g-vert', 5) +
+      g.pto([200, 140], 'g-pto', 5) + g.txt([60, 166], 'A', 'g-rot') + g.txt([340, 166], 'B', 'g-rot') + g.txt([200, 120], '?', 'g-rot') +
+      g.txt([200, 200], 'el punto que lo parte por la mitad', 'l-nota'),
+  'def-10': () => { const O = [200, 190];
+    return g.seg([50, 190], [350, 190], 'g-linea') + g.seg(O, [200, 40], 'g-linea') +
+      g.recto(O, [50, 190], [200, 40], 18) + g.recto(O, [350, 190], [200, 40], 18) + g.pto(O, 'g-vert', 4.5) +
+      g.txt([200, 228], 'los dos ángulos iguales: rectos', 'l-nota'); },
+  'prop-11': () => g.seg([50, 190], [350, 190], 'g-linea') + g.seg([200, 190], [200, 50], 'g-diag') + g.pto([200, 190], 'g-vert', 5) +
+      g.txt([50, 214], 'A', 'g-rot') + g.txt([350, 214], 'B', 'g-rot') + g.txt([214, 210], 'C', 'g-rot') +
+      g.txt([200, 238], 'la perpendicular en C', 'l-nota'),
+  'prop-12': () => g.seg([50, 190], [350, 190], 'g-linea') + g.seg([200, 60], [200, 190], 'g-diag') + g.pto([200, 60], 'g-vert', 5) +
+      g.txt([50, 214], 'A', 'g-rot') + g.txt([350, 214], 'B', 'g-rot') + g.txt([216, 52], 'C', 'g-rot') +
+      g.txt([200, 238], 'la perpendicular desde C', 'l-nota'),
+  'nc-2': () => [['a', 90], ['b', 250]].map(([s, x]) =>
+      g.pol([[x, 210], [x + 60, 210], [x + 60, 110], [x, 110]], 'g-fig') + g.pol([[x, 110], [x + 60, 110], [x + 60, 60], [x, 60]], 'g-fig2') +
+      g.txt([x + 30, 86], 'c', 'g-rot') + g.txt([x + 30, 234], s, 'g-rot')).join('') +
+      g.txt([200, 40], 'a + c = b + c', 'g-dato'),
+  'prop-13': () => { const B = [200, 190], A = [270, 70], D = [40, 190], C = [360, 190];
+    return g.seg(D, C, 'g-linea') + g.seg(B, A, 'g-linea') + ang(B, C, A, 1, 34) + ang(B, A, D, 4, 34) + g.pto(B, 'g-vert', 4.5) +
+      g.txt([200, 214], 'B', 'g-rot') + g.txt([280, 62], 'A', 'g-rot') + g.txt([40, 214], 'D', 'g-rot') + g.txt([360, 214], 'C', 'g-rot') +
+      g.txt([200, 240], 'juntos, dos rectos', 'l-nota'); },
+  'post-4': () => g.seg([40, 190], [170, 190], 'g-linea') + g.seg([60, 190], [60, 60], 'g-linea') + g.recto([60, 190], [170, 190], [60, 60], 18) +
+      g.seg([240, 170], [330, 80], 'g-linea') + g.seg([240, 170], [330, 260], 'g-linea') +
+      g.recto([240, 170], [330, 80], [330, 260], 18) + g.txt([200, 238], 'dos rectos: iguales', 'l-nota'),
+  'prop-14': () => { const B = [200, 170], A = [170, 40], C = [40, 170], D = [360, 170];
+    return g.seg(C, B, 'g-linea') + g.seg(B, D, 'g-linea') + g.seg(B, A, 'g-linea') + ang(B, A, C, 1, 30) + ang(B, A, D, 2, 30) +
+      g.pto(B, 'g-vert', 4.5) + g.txt([200, 194], 'B', 'g-rot') + g.txt([158, 34], 'A', 'g-rot') + g.txt([40, 194], 'C', 'g-rot') + g.txt([360, 194], 'D', 'g-rot') +
+      g.txt([200, 232], 'si suman dos rectos, CBD es una recta', 'l-nota'); },
+  'prop-15': () => { const E = [200, 130], A = [50, 130], B = [350, 130], C = [80, 60], D = [320, 200];
+    return g.seg(A, B, 'g-linea') + g.seg(C, D, 'g-linea') + ang(E, A, C, 1, 32) + ang(E, D, B, 1, 32) + ang(E, C, B, 3, 32) + ang(E, A, D, 3, 32) +
+      g.pto(E, 'g-vert', 4.5) + g.txt([200, 238], 'los opuestos por el vértice, iguales', 'l-nota'); },
+  'prop-16': () => { const B = [60, 190], C = [240, 190], A = [150, 50], D = [360, 190];
+    return g.pol([A, B, C], 'g-fig') + g.seg(C, D, 'g-diag') + ang(C, A, D, 1, 30) + ang(A, B, C, 3, 28) + ang(B, C, A, 3, 30) +
+      g.txt([150, 36], 'A', 'g-rot') + g.txt([46, 206], 'B', 'g-rot') + g.txt([236, 212], 'C', 'g-rot') + g.txt([360, 212], 'D', 'g-rot') +
+      g.txt([200, 238], 'el exterior, mayor que cada interior opuesto', 'l-nota'); },
+  'prop-17': () => { const A = [200, 50], B = [70, 190], C = [320, 190];
+    return g.pol([A, B, C], 'g-fig') + ang(B, C, A, 4, 34) + ang(C, A, B, 3, 34) +
+      g.txt([200, 36], 'A', 'g-rot') + g.txt([56, 206], 'B', 'g-rot') + g.txt([334, 206], 'C', 'g-rot') +
+      g.txt([200, 232], 'B + C, menos que dos rectos', 'l-nota'); },
+  'prop-18': () => { const A = [150, 40], B = [60, 190], C = [340, 190];
+    return g.pol([A, B, C], 'g-fig') + g.seg(A, C, 'c-destaca') + ang(B, C, A, 1, 30) + ang(C, A, B, 3, 30) +
+      g.txt([150, 26], 'A', 'g-rot') + g.txt([46, 206], 'B', 'g-rot') + g.txt([354, 206], 'C', 'g-rot') +
+      g.txt([200, 232], 'frente al lado mayor, el ángulo mayor', 'l-nota'); },
+  'prop-19': () => { const A = [150, 40], B = [60, 190], C = [340, 190];
+    return g.pol([A, B, C], 'g-fig') + ang(B, C, A, 1, 34) + g.seg(A, C, 'g-diag') +
+      g.txt([150, 26], 'A', 'g-rot') + g.txt([46, 206], 'B', 'g-rot') + g.txt([354, 206], 'C', 'g-rot') +
+      g.txt([200, 232], 'frente al ángulo mayor, el lado mayor', 'l-nota'); },
+  'prop-20': () => { const A = [240, 50], B = [60, 190], C = [340, 190];
+    return g.pol([A, B, C], 'g-fig') + g.seg(B, A, 'c-destaca') + g.seg(A, C, 'c-destaca') +
+      g.txt([240, 36], 'A', 'g-rot') + g.txt([46, 206], 'B', 'g-rot') + g.txt([354, 206], 'C', 'g-rot') +
+      g.txt([200, 232], 'BA + AC, mayor que BC', 'l-nota'); },
+  'prop-21': () => { const A = [170, 40], B = [50, 190], C = [340, 190], D = [190, 140];
+    return g.pol([A, B, C], 'g-fig') + g.seg(B, D, 'g-diag') + g.seg(D, C, 'g-diag') + g.pto(D, 'g-pto', 4.5) +
+      g.txt([170, 26], 'A', 'g-rot') + g.txt([36, 206], 'B', 'g-rot') + g.txt([354, 206], 'C', 'g-rot') + g.txt([190, 166], 'D', 'g-rot') +
+      g.txt([200, 232], 'por adentro: más corto, pero más abierto', 'l-nota'); },
+  'prop-22': () => [[60, 'MN', 150], [100, 'PQ', 190], [140, 'RS', 120]].map(([y, n, l]) =>
+      g.seg([110, y], [110 + l, y], 'g-linea') + g.pto([110, y], 'g-vert', 4) + g.pto([110 + l, y], 'g-vert', 4) +
+      g.txt([84, y + 4], n, 'g-rot')).join('') + g.txt([200, 200], 'tres segmentos: ¿qué triángulo forman?', 'l-nota'),
+  'prop-23': () => { const C = [80, 170], A = [230, 170];
+    return g.seg(C, [200, 170], 'g-linea') + g.seg(C, [80 + 120 * Math.cos(-1), 170 + 120 * Math.sin(-1)], 'g-linea') +
+      ang(C, [200, 170], [80 + 120 * Math.cos(-1), 170 + 120 * Math.sin(-1)], 1, 30) +
+      g.seg(A, [370, 170], 'g-linea') + g.seg(A, [230 + 120 * Math.cos(-1), 170 + 120 * Math.sin(-1)], 'g-diag') + g.pto(A, 'g-vert', 5) +
+      g.txt([66, 186], 'C', 'g-rot') + g.txt([224, 190], 'A', 'g-rot') + g.txt([370, 190], 'B', 'g-rot') +
+      g.txt([200, 228], 'el mismo ángulo, en A', 'l-nota'); },
+  'prop-24': () => { const A = [110, 50], B = [50, 190], C = [180, 175], D = [290, 50], E = [230, 190], F = [320, 192];
+    return g.pol([A, B, C], 'g-fig') + g.pol([D, E, F], 'g-fig') + g.seg(B, C, 'c-destaca') + ang(A, B, C, 1, 30) + ang(D, E, F, 2, 30) +
+      g.txt([110, 36], 'A', 'g-rot') + g.txt([290, 36], 'D', 'g-rot') +
+      g.txt([200, 232], 'más abierto el ángulo, más larga la base', 'l-nota'); },
+  'prop-25': () => { const A = [110, 50], B = [50, 190], C = [200, 170], D = [290, 50], E = [230, 190], F = [320, 192];
+    return g.pol([A, B, C], 'g-fig') + g.pol([D, E, F], 'g-fig') + g.seg(B, C, 'c-destaca') + ang(A, B, C, 1, 30) + ang(D, E, F, 2, 30) +
+      g.txt([110, 36], 'A', 'g-rot') + g.txt([290, 36], 'D', 'g-rot') +
+      g.txt([200, 232], 'más larga la base, más abierto el ángulo', 'l-nota'); },
+  'prop-26': () => { const T = x => [[x + 30, 50], [x, 190], [x + 140, 190]];
+    return [40, 220].map(x => { const [P, Q, R] = T(x); return g.pol([P, Q, R], 'g-fig') + ang(Q, R, P, 1, 26) + ang(R, P, Q, 2, 28) + g.seg(Q, R, 'c-destaca'); }).join('') +
+      g.txt([200, 232], 'dos ángulos y un lado iguales', 'l-nota'); },
+  'def-23': () => g.seg([40, 90], [360, 90], 'g-linea') + g.seg([40, 170], [360, 170], 'g-linea') +
+      g.txt([200, 130], 'nunca se cortan', 'l-nota'),
+  'prop-27': () => { const E = [170, 80], F = [230, 170];
+    return g.seg([40, 80], [360, 80], 'g-linea') + g.seg([40, 170], [360, 170], 'g-linea') + g.seg([143, 39.5], [257, 210.5], 'g-linea') +
+      ang(E, [40, 80], F, 1, 28) + ang(F, [360, 170], E, 1, 28) + g.txt([200, 232], 'alternos iguales: paralelas', 'l-nota'); },
+  'prop-28': () => { const G = [170, 80], H = [230, 170];
+    return g.seg([40, 80], [360, 80], 'g-linea') + g.seg([40, 170], [360, 170], 'g-linea') + g.seg([143, 39.5], [257, 210.5], 'g-linea') +
+      ang(G, [143, 39.5], [360, 80], 1, 26) + ang(H, G, [360, 170], 1, 26) + g.txt([200, 232], 'correspondientes iguales: paralelas', 'l-nota'); },
+  'post-5': () => { const A = [153.4, 71.3], B = [185.6, 175.4];
+    return g.seg([40, 60], [360, 92], 'g-linea') + g.seg([40, 190], [360, 158], 'g-linea') + g.seg([140, 28], [200, 222], 'g-linea') +
+      ang(A, [360, 92], B, 1, 26) + ang(B, A, [360, 158], 3, 26) + g.txt([300, 128], 'se cortan de este lado', 'l-nota') +
+      g.txt([200, 245], 'si suman menos que dos rectos', 'l-nota'); },
+  'prop-29': () => { const G = [170, 80], H = [230, 170];
+    return g.seg([40, 80], [360, 80], 'g-linea') + g.seg([40, 170], [360, 170], 'g-linea') + g.seg([143, 39.5], [257, 210.5], 'g-linea') +
+      ang(G, [40, 80], H, 1, 28) + ang(H, G, [360, 170], 1, 28) + g.txt([200, 232], 'paralelas: alternos iguales', 'l-nota'); },
+  'prop-30': () => [50, 120, 190].map((y, i) => g.seg([40, y], [360, y], i === 1 ? 'g-diag' : 'g-linea')).join('') +
+      g.txt([200, 232], 'paralelas a una misma: paralelas entre sí', 'l-nota'),
+  'prop-31': () => g.seg([40, 180], [360, 180], 'g-linea') + g.seg([60, 80], [340, 80], 'g-diag') + g.pto([230, 80], 'g-vert', 5) +
+      g.txt([40, 204], 'B', 'g-rot') + g.txt([360, 204], 'C', 'g-rot') + g.txt([230, 64], 'A', 'g-rot') +
+      g.txt([200, 232], 'la paralela a BC por A', 'l-nota'),
+  'prop-32': () => { const A = [140, 60], B = [40, 200], C = [270, 200];
+    return g.pol([A, B, C], 'g-fig') + g.seg(C, [370, 200], 'g-diag') + ang(A, B, C, 1, 26) + ang(B, C, A, 2, 26) + ang(C, A, B, 3, 26) +
+      g.txt([140, 44], 'A', 'g-rot') + g.txt([34, 222], 'B', 'g-rot') + g.txt([270, 222], 'C', 'g-rot') +
+      g.txt([200, 246], 'los tres juntos: dos rectos (180°)', 'l-nota'); },
+  'prop-33': () => { const A = [70, 70], B = [270, 70], C = [130, 190], D = [330, 190];
+    return g.seg(A, B, 'g-linea') + g.seg(C, D, 'g-linea') + g.seg(A, C, 'g-diag') + g.seg(B, D, 'g-diag') +
+      g.txt([60, 56], 'A', 'g-rot') + g.txt([280, 56], 'B', 'g-rot') + g.txt([120, 212], 'C', 'g-rot') + g.txt([340, 212], 'D', 'g-rot') +
+      g.txt([200, 240], 'AB y CD iguales y paralelas: AC y BD también', 'l-nota'); },
+  'prop-34': () => { const A = [70, 60], B = [290, 60], C = [130, 190], D = [350, 190];
+    return g.pol([A, B, D, C], 'g-fig') + g.seg(B, C, 'g-diag') + ang(A, B, C, 1, 24) + ang(D, C, B, 1, 24) +
+      g.txt([60, 46], 'A', 'g-rot') + g.txt([300, 46], 'B', 'g-rot') + g.txt([120, 212], 'C', 'g-rot') + g.txt([360, 212], 'D', 'g-rot') +
+      g.txt([200, 240], 'lados y ángulos opuestos iguales', 'l-nota'); },
+  'prop-35': () => g.seg([20, 70], [380, 70], 'g-diag') + g.seg([20, 200], [380, 200], 'g-diag') +
+      g.pol([[50, 70], [80, 200], [200, 200], [170, 70]], 'g-fig') + g.pol([[230, 70], [80, 200], [200, 200], [350, 70]], 'g-fig2') +
+      g.pol([[50, 70], [80, 200], [200, 200], [170, 70]], 'g-fig hueco') +
+      g.txt([200, 240], 'misma base, mismas paralelas: misma área', 'l-nota'),
+  'prop-36': () => g.seg([20, 70], [380, 70], 'g-diag') + g.seg([20, 200], [380, 200], 'g-diag') +
+      g.pol([[70, 70], [40, 200], [150, 200], [180, 70]], 'g-fig') + g.pol([[250, 70], [260, 200], [370, 200], [360, 70]], 'g-fig2') +
+      g.txt([200, 240], 'bases iguales, mismas paralelas: misma área', 'l-nota'),
+  'prop-37': () => g.seg([20, 70], [380, 70], 'g-diag') + g.seg([20, 200], [380, 200], 'g-diag') +
+      g.pol([[110, 70], [140, 200], [260, 200]], 'g-fig') + g.pol([[310, 70], [140, 200], [260, 200]], 'g-fig2') +
+      g.pol([[110, 70], [140, 200], [260, 200]], 'g-fig hueco') +
+      g.txt([200, 240], 'misma base, mismas paralelas: misma área', 'l-nota'),
+  'prop-38': () => g.seg([20, 70], [380, 70], 'g-diag') + g.seg([20, 200], [380, 200], 'g-diag') +
+      g.pol([[150, 70], [40, 200], [170, 200]], 'g-fig') + g.pol([[250, 70], [230, 200], [360, 200]], 'g-fig2') +
+      g.txt([200, 240], 'bases iguales, mismas paralelas: misma área', 'l-nota'),
+  'prop-39': () => g.seg([20, 70], [380, 70], 'g-diag') + g.seg([20, 200], [380, 200], 'g-diag') +
+      g.pol([[110, 70], [60, 200], [300, 200]], 'g-fig') + g.pol([[280, 70], [60, 200], [300, 200]], 'g-fig2') +
+      g.pol([[110, 70], [60, 200], [300, 200]], 'g-fig hueco') +
+      g.txt([200, 240], 'misma base, misma área: mismas paralelas', 'l-nota'),
+  'prop-40': () => g.seg([20, 70], [380, 70], 'g-diag') + g.seg([20, 200], [380, 200], 'g-diag') +
+      g.pol([[110, 70], [40, 200], [170, 200]], 'g-fig') + g.pol([[310, 70], [230, 200], [360, 200]], 'g-fig2') +
+      g.txt([200, 240], 'bases iguales, misma área: mismas paralelas', 'l-nota'),
+  'prop-41': () => g.seg([20, 70], [380, 70], 'g-diag') + g.seg([20, 200], [380, 200], 'g-diag') +
+      g.pol([[100, 70], [60, 200], [210, 200], [250, 70]], 'g-fig') + g.pol([[340, 70], [60, 200], [210, 200]], 'g-fig2') +
+      g.pol([[100, 70], [60, 200], [210, 200], [250, 70]], 'g-fig hueco') +
+      g.txt([200, 240], 'misma base, mismas paralelas: el doble', 'l-nota'),
+  'prop-42': () => { const D = [330, 190], R = [390, 190], S = [330 + 80 * Math.cos(1.309), 190 - 80 * Math.sin(1.309)],
+      E = [200, 190], F = [200 + 120 * Math.cos(1.309) / Math.sin(1.309), 70], C = [270, 190], G = [F[0] + 70, 70];
+    return g.pol([[80, 70], [20, 190], [160, 190]], 'g-fig') + g.pol([F, E, C, G], 'g-fig') +
+      g.seg(D, R, 'g-linea') + g.seg(D, S, 'g-linea') + ang(D, R, S, 1, 26) + ang(E, C, F, 1, 22) + g.txt([322, 212], 'D', 'g-rot') +
+      g.txt([200, 240], 'misma área, con un ángulo igual a D', 'l-nota'); },
+  'prop-43': () => { const A = [100, 30], B = [70, 180], C = [310, 180], D = [340, 30],
+      K = [184, 90], E = [88, 90], F = [328, 90], H = [196, 30], G = [166, 180];
+    return g.pol([E, B, G, K], 'g-fig') + g.pol([H, K, F, D], 'g-fig2') + g.pol([A, B, C, D], 'g-fig hueco') +
+      g.seg(A, C, 'g-linea') + g.seg(E, F, 'g-linea') + g.seg(H, G, 'g-linea') +
+      g.txt([200, 225], 'los dos complementos tienen la misma área', 'l-nota'); },
+  'prop-44': () => { const A = [190, 200], B = [290, 200], Lq = [190 + 70 / Math.tan(1.1345), 130], M = [Lq[0] + 100, 130],
+      V = [300, 70], R = [370, 70], S = [300 + 50 * Math.cos(1.1345), 70 - 50 * Math.sin(1.1345)];
+    return g.pol([[20, 200], [140, 200], [60, 83.3]], 'g-fig') + g.pol([A, B, M, Lq], 'g-fig') +
+      g.seg(A, B, 'g-linea') + g.seg(V, R, 'g-linea') + g.seg(V, S, 'g-linea') + ang(V, R, S, 1, 22) + ang(A, B, Lq, 1, 22) +
+      g.txt([72, 168], 'C', 'g-rot') + g.txt([292, 92], 'D', 'g-rot') + g.txt([184, 222], 'A', 'g-rot') + g.txt([296, 222], 'B', 'g-rot') +
+      g.txt([200, 245], 'sobre AB, igual a C y con el ángulo D', 'l-nota'); },
+};
+const VB = { 'prop-5':'0 -8 400 290' };
+
+/* los números de los pasos: 1, 2, 3…; los subpasos ({ sub:true }, la
+   construcción de una proposición anterior) van 2.1, 2.2… del paso de arriba */
+function numeraPasos(pasos){
+  let n = 0, m = 0;
+  return pasos.map(([t, us, op]) => {
+    if (op && op.sub) return [t, us, `${n}.${++m}`, true];
+    m = 0;
+    return [t, us, `${++n}.`, false];
+  });
+}
+
+/* ═══ una entrada ═══ */
+function entrada(e){
+  const version = (cls, rot, txt) => `<div class="version ${cls}"><span class="v-rot">${rot}</span><p>${txt}</p></div>`;
+  const previos = ordena(cadena(e.id));
+  const directos = ordena(e.usa);
+  const lo = usadoPor(e.id);
+  return `
+  <article class="entrada" id="${e.id}" data-cajon="${cajonDe(e)}">
+    <p class="ent-chip">${nombre(e.id)}${e.clase ? ` · ${e.clase}` : ''}</p>
+    <h3>${e.titulo}</h3>
+    <div class="ent-grid">
+      <div class="ent-textos">
+        <div class="version antigua antiguo"><span class="rot-antiguo">Edición de 1774 · ${e.e1774.num} · pág. ${e.e1774.pag}</span>
+          <p class="entra">${e.e1774.enun}</p></div>
+        ${version('facil', 'Dicho más sencillo', e.facil)}
+      </div>
+      <figure class="ent-fig">${FIG[e.id] ? `<svg viewBox="${VB[e.id] || '0 0 400 260'}" role="img" aria-label="La figura de ${nombre(e.id)}">${FIG[e.id]()}</svg>` : ''}</figure>
+    </div>
+    ${e.pasos ? `<section class="ent-dem" data-dem="${e.id}">
+      <h4>La demostración, paso a paso</h4>
+      <div class="dem-grid">
+        <div>
+          <ol class="pasos-el">${numeraPasos(e.pasos).map(([t, us, num, sub], i) => `<li data-i="${i + 1}"${sub ? ' class="sub"' : ''}${e.construccion ? ' hidden' : ''}><span class="np">${num}</span><span>${t}${us.map(u => `<a class="cita" href="#${u}">${corto(u)}</a>`).join('')}</span></li>`).join('')}</ol>
+          <p class="ent-cierre"${e.construccion ? ' hidden' : ''}>${e.cierre}</p>
+          ${e.construccion ? `<div class="dem-nav">
+            <button class="boton" type="button" data-dem-paso="-1" disabled>← Anterior</button>
+            <span class="dem-cuenta">${e.pasos.length} pasos</span>
+            <button class="boton" type="button" data-dem-paso="1">Siguiente →</button>
+          </div>` : ''}
+        </div>
+        ${e.construccion ? `<figure class="dem-lienzo"><svg role="img" aria-label="La construcción de la ${nombre(e.id).toLowerCase()}, paso a paso"></svg>
+          <figcaption class="dem-vacia">Con «Siguiente», la figura se arma paso a paso.</figcaption></figure>` : ''}
+      </div>
+    </section>` : ''}
+    ${e.corolario ? `<section class="ent-cor">
+      <h4>Corolario: lo que sale de regalo</h4>
+      <div class="version antigua antiguo"><span class="rot-antiguo">Edición de 1774 · Corolario</span><p>${citas(e.corolario.e1774)}</p></div>
+      ${version('facil', 'Dicho más sencillo', e.corolario.facil)}
+    </section>` : ''}
+    ${e.desafio ? `<section class="ent-desafio">
+      <h4>Desafío</h4>
+      <p class="des-enun">${e.desafio.enun}</p>
+      ${e.desafio.explora ? `<p>${e.desafio.explora}</p>` : ''}
+      <div class="ent-mas">
+        ${e.desafio.geogebra ? `<details><summary>Para construirla en GeoGebra</summary><div class="cuerpo">
+          <p>Cada línea va en la barra de Entrada, en este orden. Después se arrastra A con la flecha.</p>
+          <pre class="des-ggb">${e.desafio.geogebra.join('\n')}</pre></div></details>` : ''}
+        <details class="previo"><summary>¿Qué hace falta saber?</summary><div class="cuerpo"><ul>${
+          e.desafio.necesita.map(([u, txt]) => `<li>${enlace(u)} · ${txt}</li>`).join('')}</ul></div></details>
+        <details><summary>Una pista</summary><div class="cuerpo"><p>${e.desafio.pista}</p></div></details>
+        <details><summary>Una solución</summary><div class="cuerpo">${e.desafio.solucion.map(p => `<p>${p}</p>`).join('')}</div></details>
+      </div>
+    </section>` : ''}
+    <div class="ent-mas">
+      <details class="previo"><summary>¿Qué necesito antes?</summary><div class="cuerpo">${
+        !e.usa.length ? `<p>Nada: es un punto de partida. ${e.tipo === 'definicion' ? 'Una definición se acuerda, no se demuestra.' : 'Se acepta sin demostrar.'}</p>`
+        : `<p>Lo que usa directamente:</p><ul>${directos.map(u => `<li>${enlace(u)}${POR_ID[u] ? ` · ${POR_ID[u].facil}` : ''}</li>`).join('')}</ul>
+           ${previos.length > directos.length ? `<p>Y toda la cadena, hasta los principios:</p><ul>${previos.map(u => `<li>${enlace(u)}</li>`).join('')}</ul>`
+             : directos.some(u => u.startsWith('prop-')) ? '<p>No hace falta nada más: lo que usan esas proposiciones ya está en esta lista.</p>'
+             : '<p>No hace falta nada más: todo eso son principios.</p>'}`}
+      </div></details>
+      ${e.e1774.dem ? `<details><summary>La demostración en la edición de 1774</summary><div class="cuerpo">
+        <div class="antiguo"><p>${citas(e.e1774.dem)}</p>${e.e1774.nota ? `<p class="nota-trad">${e.e1774.nota}</p>` : ''}</div></div></details>` : ''}
+      <details><summary>Historia</summary><div class="cuerpo">
+        <p>Así lo escribió Rodrigo Zamorano en 1576, en la primera traducción al castellano:</p>
+        <div class="zam antiguo"><span class="rot-antiguo">Zamorano, 1576 · ${e.zam.num} · pág. ${e.zam.escaneo} del escaneo</span>
+          <p>${e.zam.enun}</p></div>
+        ${e.zam.dem ? `<p>Y así la demostraba:</p><div class="zam antiguo"><p>${citas(e.zam.dem)}</p></div>` : ''}
+        ${e.historia.map(h => `<p>${h}</p>`).join('')}</div></details>
+    </div>
+    <p class="ent-pie">${lo.length ? `Se usa en: ${lo.map(u => enlace(u)).join(', ')}.` : 'Todavía no la usa ninguna proposición cargada.'}
+      ${e.enClase.length ? `En clase: ${e.enClase.map(c => `<a href="${c.href}">${c.txt}</a>`).join('; ')}.` : 'Todavía no aparece en las clases.'}</p>
+  </article>`;
+}
+
+document.getElementById('entradas').innerHTML = ordena(L.entradas.map(e => e.id)).map(id => entrada(POR_ID[id])).join('');
+
+/* ═══ la demostración paso a paso: el texto y la figura avanzan juntos ═══ */
+const DEMOS = {};
+document.querySelectorAll('[data-dem]').forEach(sec => {
+  const e = POR_ID[sec.dataset.dem];
+  if (!e.construccion) return;
+  DEMOS[e.id] = { k:0, n:e.pasos.length, sec, c:new Construccion(sec.querySelector('.dem-lienzo svg'), e.construccion) };
+});
+function demIr(d, k, animar){
+  d.k = Math.max(0, Math.min(d.n, k));
+  d.sec.querySelectorAll('.pasos-el li').forEach(li => {
+    const i = +li.dataset.i;
+    if (i === d.k && li.hidden && animar) li.classList.add('recien-parte');
+    li.hidden = i > d.k;
+    li.classList.toggle('actual', i === d.k);
+  });
+  d.sec.querySelector('.ent-cierre').hidden = d.k < d.n;
+  d.sec.querySelector('.dem-vacia').hidden = d.k > 0;
+  d.sec.querySelector('[data-dem-paso="-1"]').disabled = d.k === 0;
+  d.sec.querySelector('[data-dem-paso="1"]').disabled = d.k === d.n;
+  d.sec.querySelector('.dem-cuenta').textContent = d.k ? `paso ${d.k} de ${d.n}` : `${d.n} pasos`;
+  d.c.ir(d.k, animar);
+}
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-dem-paso]');
+  if (!b) return;
+  const d = DEMOS[b.closest('[data-dem]').dataset.dem], paso = +b.dataset.demPaso;
+  demIr(d, d.k + paso, paso > 0);
+});
+const cargadas = L.entradas.length, total = Object.values(L.total).reduce((a, b) => a + b, 0);
+document.getElementById('cuenta').textContent = `${cargadas} de ${total} entradas cargadas. Las que están en color se pueden abrir.`;
+const LEYENDA = '<span class="leyenda"><i data-cajon="teorema"></i>teorema<i data-cajon="problema"></i>problema</span>';
+document.getElementById('indice-grupos').innerHTML = ORDEN.map(t => `<h3>${TIPOS[t].grupo}${t === 'proposicion' ? LEYENDA : ''}</h3><div class="fila">${
+  Array.from({ length:L.total[t] }, (_, k) => { const id = `${PREFIJO[t]}-${k + 1}`, e = POR_ID[id];
+    return e ? `<a class="num" href="#${id}" title="${e.titulo}"${t === 'proposicion' ? ` data-cajon="${cajonDe(e)}"` : ''}>${k + 1}</a>` : `<span class="num">${k + 1}</span>`; }).join('')}</div>`).join('');
+/* si se llega con #id desde una clase, que la entrada quede a la vista */
+if (location.hash && document.querySelector(location.hash)) document.querySelector(location.hash).scrollIntoView();
+</script>
+<script src="../../assets/proyeccion.js" defer></script>
+</body>
+</html>

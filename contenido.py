@@ -1,4 +1,4 @@
-"""AESWeb · el contenido del sitio.
+"""SeraWeb · el contenido del sitio.
 
 Este archivo es la única fuente de verdad del índice: los grados, sus
 unidades y qué material tiene cada una. `build.py` lo lee y arma las
@@ -12,9 +12,9 @@ Cada material es un dict:
 """
 
 SITIO = {
-    'nombre': 'AESWeb',
-    'subtitulo': 'Material de clase · Albert Einstein School',
-    'docentes': 'Eduardo Ovelar / Juan Serafini',
+    'nombre': 'SeraWeb',
+    'subtitulo': 'Material de clase',
+    'docentes': 'Juan Serafini',
     'anio': '2026',
 }
 
@@ -46,8 +46,6 @@ GRADOS = [
         'desc': 'Opuestos por el vértice y paralelas cortadas por una secante, demostrados con R3 y R4 '
                 'y usados en problemas de la OMA. Dos clases, A1 y A2, y un desafío del Intercolegial.',
         'url': 'matematica/7mo/euclides-angulos.html'},
-       {'tipo': 'ficha', 'titulo': 'Bloque A: opuestos y paralelas',
-        'desc': 'Ficha 13.', 'url': 'fichas/index.html#7mo'},
        {'tipo': 'pendiente', 'titulo': 'Bloque B · Construcciones con regla y compás',
         'desc': 'El triángulo de Euclides y los criterios, paralela, perpendicular, mediatriz, bisectriz.'},
        {'tipo': 'pendiente', 'titulo': 'Bloque C · Triángulos',
@@ -225,6 +223,35 @@ QUIMICA = [
 ]
 
 # ══════════════════════════════════════════════════════════════════
+#  Cursillo de ingreso
+#  Preparación para el examen de ingreso a la facultad. Mismo formato
+#  que QUIMICA: cada bloque es una sección del índice. Todavía sin clases.
+# ══════════════════════════════════════════════════════════════════
+CURSILLO = [
+  {'titulo': 'Las clases del cursillo',
+   'eyebrow': 'Preparación para el ingreso',
+   'nota': 'Las clases se van a ir sumando acá, una tarjeta por tema.',
+   'material': [
+     {'tipo': 'pendiente', 'titulo': 'Primeras clases',
+      'desc': 'Los temas del programa de ingreso, con sus diapositivas para proyectar.'},
+   ]},
+]
+
+# ══════════════════════════════════════════════════════════════════
+#  Física
+#  Mismo formato que QUIMICA. Todavía sin clases.
+# ══════════════════════════════════════════════════════════════════
+FISICA = [
+  {'titulo': 'Las clases de Física',
+   'eyebrow': 'Física',
+   'nota': 'Las clases se van a ir sumando acá, una tarjeta por tema.',
+   'material': [
+     {'tipo': 'pendiente', 'titulo': 'Primeras clases',
+      'desc': 'Las unidades del año, con sus diapositivas para proyectar.'},
+   ]},
+]
+
+# ══════════════════════════════════════════════════════════════════
 #  Fichas de ejercitación
 #  Los PDF se copian a fichas/pdf/<grado>/ al construir el sitio.
 #  Las CLAVES no van al repositorio: quedan en la computadora del docente.
@@ -243,7 +270,6 @@ FICHAS = {
   (10, 'Polígonos y clasificación'),
   (11, 'Triángulos y sus ángulos'),
   (12, 'Ecuaciones lineales — 128 ejercicios graduados'),
-  (13, 'Geometría griega · bloque A: opuestos y paralelas'),
  ],
  '8vo': [
   (1,  'Miscelánea de factoreo'),

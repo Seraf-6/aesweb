@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   AESWeb · panel de proyección
+   SeraWeb · panel de proyección
    Se incluye en cualquier página de clase con:
        <script src="../assets/proyeccion.js" defer></script>
    y, si la página tiene diapositivas, declarándolas en el body:
@@ -40,6 +40,11 @@
   var diapos = selector
     ? Array.prototype.slice.call(document.querySelectorAll(selector)) : [];
   diapos.forEach(function(d){ d.classList.add('diapo'); });
+
+  // Tapar el dibujo, para que lo hagan ellos a partir del enunciado. No se
+  // guarda: al pasar a otra diapositiva el dibujo vuelve.
+  var hayDibujos = !!document.querySelector('.lienzo, .concepto-figura, .teoria-figura');
+  var sinDibujo = false, diapoTapada = -1;
 
   function guardar(){
     try{ localStorage.setItem('aesweb-proy', JSON.stringify(estado)); }catch(e){}
@@ -97,6 +102,12 @@
         '<button class="proy-op" type="button" data-solo="0">Todo seguido</button>' +
         '<button class="proy-op" type="button" data-solo="1">Una a la vez</button>' +
         '</div></div>'
+      : '') +
+    (hayDibujos
+      ? '<div class="proy-grupo"><h5>Dibujo</h5><div class="proy-fila">' +
+        '<button class="proy-op" type="button" data-dibujo="1">Mostrar</button>' +
+        '<button class="proy-op" type="button" data-dibujo="0">Ocultar</button>' +
+        '</div><p class="proy-nota">Se oculta en esta diapositiva; al pasar a otra, vuelve.</p></div>'
       : '') +
     '<div class="proy-grupo"><h5>Zona libre para escribir</h5>' +
       '<div class="proy-fila" id="proy-libre"></div></div>' +
@@ -185,6 +196,13 @@
     document.querySelectorAll('[data-paleta]').forEach(function(b){
       b.setAttribute('aria-pressed', String(b.dataset.paleta === estado.paleta));
     });
+
+    if (sinDibujo && estado.solo && estado.i !== diapoTapada) sinDibujo = false;
+    if (sinDibujo) cuerpo.setAttribute('data-sin-dibujo', '1');
+    else cuerpo.removeAttribute('data-sin-dibujo');
+    document.querySelectorAll('[data-dibujo]').forEach(function(b){
+      b.setAttribute('aria-pressed', String((b.dataset.dibujo === '0') === sinDibujo));
+    });
     guardar();
   }
 
@@ -200,6 +218,9 @@
       }
       if (b.dataset.grillaOp){ estado.grilla = b.dataset.grillaOp; aplicar(); return; }
       if (b.dataset.libreOp){ estado.libre = b.dataset.libreOp; aplicar(); return; }
+      if (b.dataset.dibujo){
+        sinDibujo = b.dataset.dibujo === '0'; diapoTapada = estado.i; aplicar(); return;
+      }
       if (b.dataset.solo !== undefined){
         estado.solo = Number(b.dataset.solo); estado.i = 0; aplicar();
         window.scrollTo(0, 0); return;

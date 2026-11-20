@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   AESWeb · componentes de las páginas de clase
+   SeraWeb · componentes de las páginas de clase
 
    Lo que comparten las diapositivas: la tapa con su cita, el navegador
    de pasos, la ficha de cada paso, el enunciado, los recuadros de
@@ -796,11 +796,93 @@ body[data-solo="1"] .envoltura:has(.pizarra.activa){max-width:none}
 body[data-solo="1"] .t-mini{font-size:.85em}
 body[data-solo="1"] .t-mini th{font-size:1em}
 
+/* ═══ teoría: una idea por diapositiva ═══
+   El color dice el cajón de la caja de herramientas: definiciones en
+   verde azulado, lo que se acepta (postulados y nociones comunes) en
+   ámbar, los teoremas en rojo. */
+.teoria-diapo{padding-block:28px; border-bottom:1px solid var(--linea-fuerte); scroll-margin-top:72px}
+.teoria-diapo,.cajon{--cajon:var(--lapiz); --cajon-suave:var(--papel-2)}
+[data-cajon="definicion"]{--cajon:var(--acento2); --cajon-suave:var(--acento2-suave)}
+[data-cajon="postulado"],[data-cajon="nocion"]{--cajon:var(--dest); --cajon-suave:var(--dest-suave)}
+[data-cajon="teorema"]{--cajon:var(--acento); --cajon-suave:var(--acento-suave)}
+[data-cajon="construccion"]{--cajon:var(--tinta); --cajon-suave:var(--papel-2)}
+.cajon-chip{display:inline-block; margin:0 0 8px; padding:3px 11px; border-radius:999px;
+  border:1px solid var(--cajon); background:var(--cajon-suave); color:var(--cajon);
+  font-family:var(--mono); font-size:11.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase}
+.cajon-chip b{margin-left:5px}
+.teoria-tit{font-family:var(--serif); font-weight:800; font-size:clamp(1.6rem,4vw,2.3rem);
+  line-height:1.1; margin:0 0 16px}
+.teoria-cuerpo.con-figura{display:grid; grid-template-columns:minmax(0,1fr) min(440px,45%); gap:28px; align-items:start}
+.teoria-enun{margin:0 0 14px; padding:12px 16px; border-left:4px solid var(--cajon); background:var(--cajon-suave);
+  font-family:var(--serif); font-size:1.45rem; line-height:1.4}
+.teoria-mas{margin:0 0 10px; font-size:1.12em; line-height:1.5; max-width:60ch}
+.teoria-como{margin:16px 0 0; padding:10px 14px; border:1px dashed var(--linea-fuerte); border-radius:6px;
+  font-size:1.05em; line-height:1.45; max-width:60ch}
+.teoria-como span{display:block; margin-bottom:3px; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--lapiz)}
+.teoria-fuente{margin:12px 0 0; font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--lapiz)}
+/* al principio, solo la pregunta: el dibujo espera al enunciado sin mover nada */
+.teoria-pregunta{margin:0 0 14px; font-family:var(--serif); font-style:italic; font-size:1.5rem; line-height:1.35}
+body[data-solo="1"] .teoria-pregunta{font-size:1.45em}
+.teoria-figura.tapada{visibility:hidden}
+.teoria-elementos{margin:8px 0 0; font-family:var(--sans); font-size:.95em}
+.teoria-elementos a{font-weight:700}
+.teoria-respuesta{margin:0 0 12px; padding:8px 14px; border-radius:4px; background:var(--acento-suave);
+  font-size:1.2em; line-height:1.45; font-weight:700}
+/* las partes aparecen de a una, con Siguiente */
+.teoria-parte[hidden]{display:none}
+.recien-parte{animation:parte-llega .45s ease-out both}
+@keyframes parte-llega{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+.pasos-nav.teoria-nav{justify-content:flex-start; margin-top:14px}
+.teoria-figura svg{display:block; width:100%; height:auto}
+/* el dibujo de la teoría es más chico que el de un ejemplo: los rótulos crecen */
+.teoria-figura .g-rot,.teoria-figura .g-dato{font-size:22px}
+.teoria-figura .g-num{font-size:20px}
+/* la caja de herramientas: un cajón por tipo de herramienta */
+.cajones{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:4px 0 12px}
+.cajon{position:relative; padding:10px 14px 12px; border:1.5px solid var(--cajon); border-radius:6px; background:var(--papel)}
+.cajon::before{content:""; position:absolute; top:10px; right:12px; width:30px; height:7px;
+  border-radius:4px; background:var(--cajon); opacity:.5}
+.cajon h4{margin:0; font-family:var(--serif); font-size:1.15em; color:var(--cajon)}
+.cajon .verbo{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--lapiz)}
+.cajon p{margin:6px 0 0; font-size:.98em; line-height:1.4}
+.cajon ul{display:flex; flex-wrap:wrap; gap:5px; margin:8px 0 0; padding:0; list-style:none}
+.cajon li{padding:1px 8px; border-radius:6px; background:var(--cajon-suave); font-size:.9em}
+.cajon li.es-nuevo{box-shadow:0 0 0 2px var(--cajon)}
+/* la caja llena: lo que se guardó, más apretado */
+.cajones.lleno .verbo{display:none}
+.cajones.lleno ul{gap:4px}
+.cajones.lleno li{padding:0 7px; font-size:.85em; line-height:1.45}
+.cajon .vacio{color:var(--lapiz); font-style:italic}
+@media (max-width:700px){
+  .teoria-cuerpo.con-figura{grid-template-columns:1fr}
+  .cajones{grid-template-columns:1fr 1fr}
+}
+@media (max-width:460px){ .cajones{grid-template-columns:1fr} }
+body[data-solo="1"] .teoria-diapo{border-bottom:none; padding-block:12px}
+body[data-solo="1"] .teoria-tit{font-size:2.1em}
+body[data-solo="1"] .teoria-enun{font-size:1.4em}
+body[data-solo="1"] .teoria-mas,
+body[data-solo="1"] .teoria-como{max-width:none}
+body[data-solo="1"] .cajon-chip,
+body[data-solo="1"] .teoria-fuente,
+body[data-solo="1"] .cajon .verbo{font-size:.6em}
+body[data-solo="1"] .cajon{padding:8px 12px 10px}
+body[data-solo="1"] .cajon p{font-size:.9em}
+
+/* el panel de proyección puede tapar el dibujo, para que lo hagan ellos:
+   se tapa sin moverse nada, y el lugar queda libre en la pizarra */
+body[data-sin-dibujo="1"] .lienzo,
+body[data-sin-dibujo="1"] .concepto-figura,
+body[data-sin-dibujo="1"] .teoria-figura{visibility:hidden}
+
 @media (prefers-reduced-motion:reduce){
   .recien *,.recien > *,.fila-nueva td,.aparece,.aparece-rot,.onda,.guia,.marca-x,
   .cuaderno *,.capa-nueva,.capa-nueva *,.capa-mueve,.capa-gira{animation:none!important}
   .capa-nueva .traza{stroke-dasharray:none; stroke-dashoffset:0}
   .dibuja{animation:none; stroke-dasharray:none; stroke-dashoffset:0}
+  .recien-parte{animation:none}
   .onda{display:none}
   .pasos li{transition:none}
 }

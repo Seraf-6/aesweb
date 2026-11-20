@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   AESWeb · hoja base
+   SeraWeb · hoja base
    Todo lo compartido entre páginas: los colores, la tipografía, la
    notación matemática, el panel de proyección y el modo diapositiva.
    Una página de contenido solo agrega sus propios componentes.
@@ -146,8 +146,8 @@
 
   /* acentos: los nombres largos son los del sistema, los cortos son
      alias que usan las páginas heredadas */
-  --acento:#C8102E;        --rojo:var(--acento);     --r1:var(--acento);
-  --acento-suave:#FCEEF0;  --rojo-suave:var(--acento-suave);
+  --acento:#3F37C9;        --rojo:var(--acento);     --r1:var(--acento);
+  --acento-suave:#ECEBFA;  --rojo-suave:var(--acento-suave);
                            --r1-suave:var(--acento-suave);
   --acento2:#0B6E75;       --r2:var(--acento2);
   --acento2-suave:#E7F2F2; --r2-suave:var(--acento2-suave);
@@ -164,7 +164,7 @@
   :root:not([data-theme="light"]){
     --papel:#0E151C; --papel-2:#151F29; --linea:#1F2B36; --linea-fuerte:#2C3B49;
     --tinta:#E4ECF2; --lapiz:#93A6B5;
-    --acento:#FF7186; --acento-suave:#2A151B;
+    --acento:#A9A4FF; --acento-suave:#1D1A3A;
     --acento2:#4FC3CB; --acento2-suave:#0F2427;
     --dest:#EFC162; --punto:#EFC162; --dest-suave:#231C0E; --dest-borde:#5C4A1E;
   }
@@ -172,7 +172,7 @@
 :root[data-theme="dark"]{
   --papel:#0E151C; --papel-2:#151F29; --linea:#1F2B36; --linea-fuerte:#2C3B49;
   --tinta:#E4ECF2; --lapiz:#93A6B5;
-  --acento:#FF7186; --acento-suave:#2A151B;
+  --acento:#A9A4FF; --acento-suave:#1D1A3A;
   --acento2:#4FC3CB; --acento2-suave:#0F2427;
   --dest:#EFC162; --punto:#EFC162; --dest-suave:#231C0E; --dest-borde:#5C4A1E;
 }
@@ -212,35 +212,35 @@ h1,h2,h3,h4{font-family:var(--serif); text-wrap:balance}
 :root[data-proy="alto"]{
   --papel:#FFFFFF; --papel-2:#EFF2F5; --linea:#C6D1D9; --linea-fuerte:#8FA0AD;
   --tinta:#000000; --lapiz:#2E4050;
-  --acento:#A8001F; --acento-suave:#FBE4E8; --acento2:#00565C;
+  --acento:#2A1FA8; --acento-suave:#E6E4FA; --acento2:#00565C;
   --acento2-suave:#DCEEEF; --dest:#6B4500; --punto:#7A4E00;
   --dest-suave:#FBF0D6; --dest-borde:#C9A24A;
 }
 :root[data-proy="crema"]{
   --papel:#FFF6DC; --papel-2:#FAEBC0; --linea:#E0CB90; --linea-fuerte:#BFA45B;
   --tinta:#140E02; --lapiz:#463714;
-  --acento:#A2001E; --acento-suave:#F7DFD6; --acento2:#00545A;
+  --acento:#2C2396; --acento-suave:#ECE3E6; --acento2:#00545A;
   --acento2-suave:#DDEBDF; --dest:#6A4300; --punto:#6F4600;
   --dest-suave:#F3E1B0; --dest-borde:#C29B3F;
 }
 :root[data-proy="celeste"]{
   --papel:#E9F4FB; --papel-2:#D5E9F6; --linea:#A5CBE2; --linea-fuerte:#74AAC8;
   --tinta:#041E2A; --lapiz:#264657;
-  --acento:#A8001F; --acento-suave:#F9DFE4; --acento2:#005A61;
+  --acento:#2A1FA8; --acento-suave:#E2E1F7; --acento2:#005A61;
   --acento2-suave:#CFE7E9; --dest:#6B4500; --punto:#7A4E00;
   --dest-suave:#F6EBCB; --dest-borde:#C4A257;
 }
 :root[data-proy="oscuro"]{
   --papel:#04070B; --papel-2:#0F1720; --linea:#21303F; --linea-fuerte:#3A4B5D;
   --tinta:#FFFFFF; --lapiz:#B8C8D6;
-  --acento:#FF8A9B; --acento-suave:#2B0E14; --acento2:#5FD8E0;
+  --acento:#B3AEFF; --acento-suave:#17143A; --acento2:#5FD8E0;
   --acento2-suave:#082629; --dest:#FFD479; --punto:#FFD479;
   --dest-suave:#241B06; --dest-borde:#7A6021;
 }
 :root[data-proy="pizarra"]{
   --papel:#103629; --papel-2:#164536; --linea:#2A6050; --linea-fuerte:#427C68;
   --tinta:#F4FBF6; --lapiz:#B4D5C5;
-  --acento:#FFB3BE; --acento-suave:#2A2020; --acento2:#7FE3D8;
+  --acento:#D2CEFF; --acento-suave:#26283F; --acento2:#7FE3D8;
   --acento2-suave:#14413A; --dest:#FFDA8A; --punto:#FFDA8A;
   --dest-suave:#2C2A17; --dest-borde:#7E7238;
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AESWeb · generador del sitio.
+"""SeraWeb · generador del sitio.
 
 Lee `contenido.py` y escribe las páginas de índice. Las páginas de clase
 (las diapositivas) se escriben a mano en matematica/<grado>/ y este
@@ -23,7 +23,7 @@ import shutil
 CSP = ('<meta http-equiv="Content-Security-Policy" content="'
        "default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; font-src 'self' file:; media-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
        '">')
-from contenido import SITIO, GRADOS, OMAPA, FICHAS, QUIMICA
+from contenido import SITIO, GRADOS, OMAPA, FICHAS, QUIMICA, CURSILLO, FISICA
 from open2026 import generar as open2026
 
 RAIZ = pathlib.Path(__file__).resolve().parent
@@ -41,8 +41,9 @@ def pagina(titulo, cuerpo, prof=0, css_extra=(), descripcion=''):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{html.escape(titulo)} · {SITIO['nombre']}</title>
+<title>{html.escape(titulo) + ' · ' + SITIO['nombre'] if titulo != SITIO['nombre'] else SITIO['nombre']}</title>
 <meta name="description" content="{html.escape(descripcion)}">
+<link rel="icon" href="{sube}assets/img/seraweb.svg" type="image/svg+xml">
 {CSP}
 <script src="{sube}assets/acceso.js"></script>{hojas}
 </head>
@@ -65,7 +66,7 @@ def barra(prof, ruta):
                      if destino else '<span>%s</span>' % html.escape(texto))
     return f"""<nav class="sitio-nav">
   <div class="sitio-nav-int">
-    <a class="sitio-marca" href="{sube}index.html">{SITIO['nombre']}</a>
+    <a class="sitio-marca" href="{sube}index.html">Sera<span>Web</span></a>
     <div class="sitio-ruta">{''.join(migas)}</div>
   </div>
 </nav>"""
@@ -74,7 +75,7 @@ def barra(prof, ruta):
 def pie(prof):
     return f"""<footer class="pie-sitio">
   <div class="envoltura ancha">
-    {SITIO['subtitulo']} · Año lectivo {SITIO['anio']} · Docentes: {SITIO['docentes']}<br>
+    {SITIO['subtitulo']} · Año lectivo {SITIO['anio']} · Docente: {SITIO['docentes']}<br>
     Las claves de corrección no forman parte de este sitio.
   </div>
 </footer>"""
@@ -99,13 +100,13 @@ def portada():
     cuerpo = [barra(0, [])]
     cuerpo.append('<div class="envoltura ancha">')
     cuerpo.append(f"""<header class="portada">
-  <p class="sello">Albert Einstein School · Tercer Ciclo</p>
-  <h1>{SITIO['nombre']}</h1>
+  <p class="sello">Material de clase de {SITIO['docentes']}</p>
+  <h1>Sera<span>Web</span></h1>
   <p class="bajada">El material de clase en un solo lugar: las diapositivas para
     proyectar, las fichas de ejercitación y la preparación para la olimpiada.</p>
   <div class="pie">
     <span>Año lectivo {SITIO['anio']}</span>
-    <span>Docentes: {SITIO['docentes']}</span>
+    <span>Docente: {SITIO['docentes']}</span>
   </div>
 </header>""")
 
@@ -121,6 +122,14 @@ def portada():
       <h3>Química</h3>
       <p>Números cuánticos y configuración electrónica: del último electrón al lugar
         en la tabla periódica.</p></a>""")
+    cuerpo.append("""<a class="tarjeta" href="fisica/index.html">
+      <span class="rotulo">En preparación</span>
+      <h3>Física</h3>
+      <p>Las clases de Física, sobre el mismo motor que las de Matemática.</p></a>""")
+    cuerpo.append("""<a class="tarjeta" href="cursillo/index.html">
+      <span class="rotulo">Ingreso a la facultad</span>
+      <h3>Cursillo</h3>
+      <p>Preparación para el examen de ingreso: las clases para proyectar, tema por tema.</p></a>""")
     cuerpo.append("""<a class="tarjeta" href="omapa/index.html">
       <span class="rotulo">2.º a 9.º grado</span>
       <h3>OMAPA</h3>
@@ -186,16 +195,16 @@ def indice_matematica():
     return pagina('Matemática', '\n'.join(cuerpo), prof=1)
 
 
-def indice_quimica():
-    cuerpo = [barra(1, [('Química', None)])]
+def indice_materia(nombre, bloques, sello, bajada, descripcion):
+    """El índice de una materia que no es Matemática: un bloque por sección."""
+    cuerpo = [barra(1, [(nombre, None)])]
     cuerpo.append('<div class="envoltura ancha">')
-    cuerpo.append("""<header class="portada">
-  <p class="sello">Albert Einstein School</p>
-  <h1>Química</h1>
-  <p class="bajada">Clases para proyectar, sobre el mismo motor que las de Matemática:
-    cada ejemplo, paso a paso y con su control.</p>
+    cuerpo.append(f"""<header class="portada">
+  <p class="sello">{html.escape(sello)}</p>
+  <h1>{html.escape(nombre)}</h1>
+  <p class="bajada">{bajada}</p>
 </header>""")
-    for b in QUIMICA:
+    for b in bloques:
         cuerpo.append('<section class="bloque">')
         cuerpo.append(f'<p class="eyebrow">{html.escape(b["eyebrow"])}</p>')
         cuerpo.append(f'<h2>{html.escape(b["titulo"])}</h2>')
@@ -207,8 +216,31 @@ def indice_quimica():
         cuerpo.append('</div></section>')
     cuerpo.append('</div>')
     cuerpo.append(pie(1))
-    return pagina('Química', '\n'.join(cuerpo), prof=1,
-                  descripcion='Material de clase de Química: números cuánticos y configuración electrónica.')
+    return pagina(nombre, '\n'.join(cuerpo), prof=1, descripcion=descripcion)
+
+
+def indice_quimica():
+    return indice_materia(
+        'Química', QUIMICA, 'Clases para proyectar',
+        """Clases para proyectar, sobre el mismo motor que las de Matemática:
+    cada ejemplo, paso a paso y con su control.""",
+        'Material de clase de Química: números cuánticos y configuración electrónica.')
+
+
+def indice_fisica():
+    return indice_materia(
+        'Física', FISICA, 'Clases para proyectar',
+        """Clases para proyectar, sobre el mismo motor que las de Matemática:
+    cada ejemplo, paso a paso y con su control.""",
+        'Material de clase de Física.')
+
+
+def indice_cursillo():
+    return indice_materia(
+        'Cursillo', CURSILLO, 'Ingreso a la facultad',
+        """La preparación para el examen de ingreso: las clases para proyectar,
+    tema por tema.""",
+        'Cursillo de preparación para el ingreso a la facultad.')
 
 
 def indice_grado(g):
@@ -357,6 +389,8 @@ def main():
         escribe('index.html', portada()),
         escribe('matematica/index.html', indice_matematica()),
         escribe('quimica/index.html', indice_quimica()),
+        escribe('fisica/index.html', indice_fisica()),
+        escribe('cursillo/index.html', indice_cursillo()),
         escribe('omapa/index.html', indice_omapa()),
         escribe('fichas/index.html', indice_fichas()),
     ]

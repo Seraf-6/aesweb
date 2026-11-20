@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El prólogo de Zamorano · SeraWeb</title>
+<meta name="description" content="La dedicatoria y el prólogo «Al curioso lector» de la primera traducción castellana de Euclides (Rodrigo Zamorano, Sevilla, 1576), completos y por partes, con la historia detrás de cada cosa que cuenta.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; font-src 'self' file:; media-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<script src="../../assets/acceso.js"></script>
+<link rel="stylesheet" href="../../assets/base.css">
+<link rel="stylesheet" href="../../assets/sitio.css">
+<link rel="stylesheet" href="../../assets/clase.css">
+<link rel="stylesheet" href="antiguo.css">
+<style>
+/* ---------- solo de esta página ---------- */
+.pr-intro{padding-block:22px 18px; border-bottom:2px solid var(--tinta)}
+.pr-intro p{max-width:66ch; font-size:1.05em; line-height:1.55}
+.pr-modo{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+.pr-modo button{font-family:var(--sans); font-size:14px; font-weight:700; padding:6px 12px; border-radius:4px;
+  border:1px solid var(--tinta); background:var(--papel); color:var(--tinta); cursor:pointer}
+.pr-modo button[aria-pressed="true"]{background:var(--tinta); color:var(--papel)}
+
+.parte{padding-block:26px 6px; border-bottom:1px solid var(--linea-fuerte); scroll-margin-top:70px}
+.parte-cab{display:flex; gap:12px; align-items:baseline; flex-wrap:wrap; margin-bottom:10px}
+.parte-cab .n{font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--acento)}
+.parte-cab h2{margin:0; font-size:clamp(1.3rem,3vw,1.7rem)}
+.paso[hidden]{display:none}
+.paso{margin:0 0 14px}
+.paso.recien-parte{animation:parte-llega .45s ease-out both}
+/* el texto de 1576: la letra y el papel de antiguo.css */
+.texto-viejo{padding:18px 22px; font-size:1.22em; line-height:1.6}
+.texto-viejo .firma{display:block; text-align:right; margin-top:6px}
+.ver-pagina{margin-top:8px}
+.ver-pagina summary{cursor:pointer; font-size:14px; font-weight:700; color:var(--acento2); list-style:none}
+.ver-pagina summary::-webkit-details-marker{display:none}
+.ver-pagina summary::before{content:"▸ "}
+.ver-pagina[open] summary::before{content:"▾ "}
+.paginas-libro{display:flex; flex-wrap:wrap; gap:10px; margin-top:8px}
+.paginas-libro img{width:min(330px, 100%); height:auto; border:1px solid #d9cfb8; box-shadow:0 2px 6px rgba(60,40,10,.18); background:#fff}
+.pocas{padding:10px 14px; border-left:4px solid var(--acento2); background:var(--acento2-suave); border-radius:0 4px 4px 0}
+.pocas b{display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--acento2); margin-bottom:2px}
+.lore{padding:12px 16px; border-radius:6px; border:1px solid var(--dest-borde); background:var(--dest-suave)}
+.lore h3{margin:0 0 6px; font-family:var(--serif); font-size:1.15rem}
+.lore h3::before{content:"Detrás de la historia · "; font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--dest); display:block; margin-bottom:2px}
+.lore p{margin:0 0 6px; line-height:1.55; max-width:72ch}
+.lore p:last-child{margin-bottom:0}
+.lore a{font-weight:700}
+/* la barra para ir paso a paso: queda debajo de lo último que apareció,
+   sin tapar el texto, y la página la acompaña */
+.pr-barra{display:flex; gap:8px; align-items:center; margin:14px 0 0; scroll-margin-bottom:90px}
+.pr-barra[hidden]{display:none}
+.pr-cuenta{font-family:var(--mono); font-size:13px; min-width:6.5em; text-align:center; color:var(--lapiz)}
+body[data-solo="1"] .texto-viejo{font-size:1.15em}
+</style>
+</head>
+<body>
+<nav class="sitio-nav">
+  <div class="sitio-nav-int">
+    <a class="sitio-marca" href="../../index.html">Sera<span>Web</span></a>
+    <div class="sitio-ruta">
+      <a href="../../index.html">Inicio</a><span class="sep">/</span>
+      <a href="../index.html">Matemática</a><span class="sep">/</span>
+      <a href="libro-1.html">Elementos de Euclides · libro I</a><span class="sep">/</span>
+      <span>El prólogo de Zamorano</span>
+    </div>
+  </div>
+</nav>
+
+<div class="envoltura">
+  <header class="tapa">
+    <p class="sello">SeraWeb · Matemática</p>
+    <h1>«Al curioso lector»</h1>
+    <p class="bajada">«Ha sido siempre tan tenida y estimada esta scientia que Platon mandaua
+      ninguno de sus discipulos entrase a oyrle philosophia sino supiese primero Geometria.»
+      <span class="firma">Rodrigo Zamorano, Sevilla, 1576</span></p>
+    <div class="pie-tapa">
+      <span>Los Elementos de Euclides · los prólogos</span>
+      <span>Autor humano: Juan Marcos Serafini</span>
+    </div>
+  </header>
+
+  <section class="pr-intro">
+    <p>En 1576, en Sevilla, Rodrigo Zamorano publicó la primera traducción al castellano de los
+      <i>Elementos</i> de Euclides: los seis primeros libros. Antes del libro puso una dedicatoria y un
+      prólogo para el lector, donde cuenta de dónde viene la geometría y para qué sirve. Acá están
+      completos, con su ortografía, en partes. Después de cada parte, <b>en pocas palabras</b> qué
+      dice, y lo que hay <b>detrás de la historia</b>: quiénes eran los que nombra, qué es leyenda
+      y qué se sabe.</p>
+    <div class="pr-modo" role="group" aria-label="Cómo leer">
+      <button type="button" data-modo="pasos" aria-pressed="true">De a una parte</button>
+      <button type="button" data-modo="todo" aria-pressed="false">Todo junto</button>
+    </div>
+  </section>
+
+  <main id="partes"></main>
+  <div class="pr-barra" id="barra">
+    <button class="boton" type="button" data-pr="-1">← Anterior</button>
+    <span class="pr-cuenta" id="cuenta"></span>
+    <button class="boton" type="button" data-pr="1">Siguiente →</button>
+  </div>
+
+  <footer class="creditos">
+    Fuente: Rodrigo Zamorano, <i>Los seis libros primeros de la geometría de Euclides</i> (Sevilla,
+    en casa de Alonso de la Barrera, 1576), págs. 4 a 14 del escaneo de
+    <a href="https://commons.wikimedia.org/wiki/File:Los_Elementos_de_Euclides_(1576)_-_Libro_I.pdf">Wikimedia Commons</a>,
+    de dominio público. Transcripción con la ortografía original: la ſ larga va como s y las
+    abreviaturas se desarrollan (q̃ = que, ẽ = en). Volver a <a href="libro-1.html">los Elementos, libro I</a>.
+  </footer>
+</div>
+
+<script>
+/* Cada parte: el texto de Zamorano (con la página del escaneo donde empieza
+   cada tramo, |pN|), en pocas palabras, y los bloques de historia. Lo que se
+   afirma en la historia es lo que se sabe con seguridad; lo dudoso se dice
+   como dudoso. */
+const PARTES = [
+{ titulo:'La dedicatoria', pags:[4, 5],
+  texto:`|p4|<b>Al illustre señor Luciano de Negron, canonigo de la sancta yglesia de Seuilla.</b>
+Obligame (Illustre señor) lo mucho que V. M. merece, y la deuda particular en que todas las buenas artes a V. M. le está, a dedicarle como a patron y tan estudioso de todas ellas, estos seys libros de la Geometria de Euclides traduzidos en nuestra lengua Española, para començar con esto a seruir alguna parte de lo mucho que a V. M. deuo y desseo: como a persona que no solo en sus principales estudios de las letras sagradas, pero aun en este genero de profession tiene tan buena parte, que bastarà dar nombre no solo a este, pero a otros mas Illustres trabajos. El qual confio que sera gratamente recebido de todos los curiosos de las Mathematicas, tanto por yr debaxo de tal protection y amparo, quanto |p5|por el titulo de su proprio author principe de la Geometria, tan celebrado en todas las hedades. El qual si en nuestra lengua a V. M. diere alguna satisfacion, estare cierto que podra contentar a todos los que gustan de tan loables estudios. Suplico a V. M. le admita, que aunque para el merecimiento de V. M. el don sea pequeño, le ofrece vna voluntad muy grande para seruirle en cosas mayores.
+<span class="firma">Illustre señor. Besa las manos de v. m. su seruidor, Rodrigo Çamorano.</span>`,
+  pocas:'Zamorano le dedica el libro a un canónigo de la catedral de Sevilla, que sabía de matemática, para que lo proteja. Dice que el libro va a gustar por ir bajo su amparo y por ser de Euclides, «príncipe de la geometría».',
+  lore:[
+    { t:'¿Por qué se dedicaba un libro?', p:['En el siglo XVI imprimir un libro era caro y podía traer problemas. Los autores lo dedicaban a una persona importante, un mecenas, que lo protegía y a veces pagaba la impresión. Por eso la dedicatoria está llena de elogios.'] },
+    { t:'¿Qué es «V. M.»?', p:['Es «Vuestra Merced», la forma respetuosa de hablarle a alguien. Con los siglos, «vuestra merced» se fue gastando en la boca de la gente: vuesarced, vuesté… y terminó siendo <b>usted</b>.'] },
+    { t:'Çamorano, con ç', p:['Así firmaba: Rodrigo Çamorano, y así está también en la portada. La ç (ce con cedilla) se usaba en castellano para un sonido parecido a «ts», y después desapareció. Hoy se lo conoce como Zamorano.'] },
+  ]},
+{ titulo:'El Nilo borraba los límites', pags:[6],
+  texto:`|p6|<b>Al curioso lector.</b>
+Primero que la Geometria (curioso lector) se reduxese al ser que aora tiene, anduuo en vso entre las gentes. Cuyos inuentores dizen hauer sido los Egyptios por la gran necessidad que della tenian. Porque como el rio Nilo en el estio crecia tanto que su creciente les regasse y aun anegasse todos los campos, venia a deshacer y borrar los terminos y linderos de las heredades de toda la tierra. Y assi sobre la aueriguacion de lo que a cada vno despues de la menguante le pertenecia, auia ordinariamente no pequeños pleytos y contiendas entre los vnos y los otros, escogiendo cada vno para si lo mas y mejor. Por lo qual les era forçado cada año acudir de nueuo a los juezes y gouernadores de la tierra, para que los concertassen. De aqui vino que los juezes median por las reglas que cada vno hallaua mas ciertas y verdaderas lo que a cada vno le pertenecia.`,
+  pocas:'La geometría se usó mucho antes de ser una ciencia. Nació en Egipto: cada verano el Nilo inundaba los campos y borraba los límites entre los terrenos, y había que volver a medir para saber qué era de quién.',
+  lore:[
+    { t:'«Geometría» quiere decir «medir la tierra»', p:['La palabra es griega: <i>gê</i>, tierra, y <i>metría</i>, medida. El nombre guarda el recuerdo de este origen: medir campos.'] },
+    { t:'¿Quién contó esto primero?', p:['El historiador griego Heródoto, hace unos 2450 años. En sus <i>Historias</i> cuenta que en Egipto la tierra estaba repartida en lotes, y que cuando el río se llevaba un pedazo había que medir de nuevo cuánto quedaba, para cobrar el impuesto justo. Y agrega que, según le parece, de ahí nació la geometría, que después pasó a Grecia.'] },
+    { t:'La crecida del Nilo', p:['El Nilo crece todos los veranos por las lluvias del centro de África, y durante miles de años inundó los campos de Egipto y los dejó cubiertos de barro fértil. Desde 1970, la gran represa de Asuán detiene la crecida.'] },
+  ]},
+{ titulo:'Meris, Pitágoras y la hecatombe', pags:[6, 7],
+  texto:`De los quales el primero que se lee hauer dado reglas para la medida fue Meris Rey de Egypto, al qual se atribuye la inuencion de la Geometria. |p7| Desde este vino la facultad del medir poco a poco cresciendo en nueuas inuenciones hasta los tiempos de Pythagoras philosopho natural de la Isla de Samo: el qual despues dicen haber inuentado en ella las delineationes, las formas, los interuallos, las distantias y las quantidades. Y acabò muchas cosas de esta scientia, entre las quales hallò la virtud o potencia del triangulo rectangulo, con tanto contentamiento y satisfaction de haberle hallado, que se dice del, en pago de la merced recebida haber offrecido a la Diosa Minerua el sacrificio Hecatombe que entonces llamaban, en el qual sacrificò cien vacas.`,
+  pocas:'El primero que dio reglas para medir fue un rey de Egipto, Meris. Mucho después, Pitágoras descubrió la propiedad del triángulo rectángulo, y estaba tan contento que, según se cuenta, sacrificó cien vacas para agradecerlo.',
+  lore:[
+    { t:'¿Quién era Meris?', p:['Un rey de Egipto que los escritores griegos nombran muchas veces; Heródoto lo cuenta entre los reyes antiguos y le atribuye un gran lago artificial. Que haya inventado la geometría lo dice una tradición que recoge Diógenes Laercio, un biógrafo griego: Meris habría descubierto los principios, y Pitágoras los habría perfeccionado. Hoy no se puede saber quién fue el primero.'] },
+    { t:'La «virtud o potencia del triángulo rectángulo»', p:['Es el teorema de Pitágoras: en un triángulo rectángulo, el cuadrado del lado más largo es igual a la suma de los cuadrados de los otros dos. Es la proposición 47 de este mismo libro I, casi la última. Los babilonios ya conocían ejemplos mil años antes que Pitágoras; lo nuevo de los griegos fue demostrarlo.'] },
+    { t:'¿Qué es una hecatombe?', p:['En griego, <i>hekatón</i> es cien: una hecatombe era un sacrificio de cien bueyes. Hoy la palabra quiere decir «una catástrofe».', 'Ya en la Antigüedad se dudaba de la historia: Cicerón escribió que no la creía, porque los pitagóricos no derramaban sangre en los altares. Minerva es el nombre romano de Atenea, la diosa de la sabiduría.'] },
+  ]},
+{ titulo:'Arquímedes, Anaximandro y Parménides', pags:[7, 8],
+  texto:`Despues de Pythagoras hubo muchos hombres excelentes en esta facultad y profession de la Geometria. De los quales fue vno excelentissimo entre todos Archimedes natural de Saragoça en Sicilia. Fueron tambien principales en ella Anaximandro Milesio y Parmenides, el qual por razon Geometrica affirmò que la tierra era redonda y de figura spherica, y que estaua asentada en el medio del vniuerso. Llego el negocio de la Geometria entonces a tanta cumbre, que entre los antiguos parescia |p8|que en competencia por general inclinacion se mouian todos a tratar de la medida, y assi vnos a otros se ponian diuersas preguntas y difficultades: y qualquiera cosa que les parecia que estaua bien hallada, la guardauan en escripto, y assi la comunicauan no solamente en Egipto, pero poco a poco se vino tambien a tratar entre las gentes assi apartadas, como vezinas.`,
+  pocas:'Después de Pitágoras hubo grandes geómetras: Arquímedes, Anaximandro, Parménides. La geometría se puso de moda: se hacían preguntas unos a otros, escribían lo que encontraban y lo compartían, primero en Egipto y después por todas partes.',
+  lore:[
+    { t:'¿Zaragoza en Sicilia?', p:['Es Siracusa, la ciudad griega de Sicilia donde nació Arquímedes. En el castellano de la época se la llamaba «Zaragoza de Sicilia», con el mismo nombre que la ciudad de Aragón.'] },
+    { t:'Arquímedes', p:['Vivió hace unos 2250 años y fue, probablemente, el mayor matemático de la Antigüedad: calculó el área del círculo y el volumen de la esfera, y encerró el número π entre dos fracciones. Murió en el año 212 antes de Cristo, cuando los romanos tomaron Siracusa. Se cuenta que un soldado lo mató mientras estaba concentrado en un problema de geometría; la historia llegó en varias versiones distintas, y no se sabe cuál es la cierta.'] },
+    { t:'¿La Tierra redonda, en la Antigüedad?', p:['Sí: los griegos lo sabían desde hacía siglos. Algunos se lo atribuyen a Parménides, otros a Pitágoras. Anaximandro, en cambio, pensaba que la Tierra era un cilindro, como el tambor de una columna, flotando en el centro de todo. Más tarde Eratóstenes midió el tamaño de la Tierra con la sombra de un palo y un poco de geometría.'] },
+  ]},
+{ titulo:'Euclides y los quince libros', pags:[8],
+  texto:`Asta que entre todos Euclides philosopho natural de Megara en Grecia, que fue el que mas florecio, tomando muy muchas de aquellas inuenciones antiguas, les añadio con su agudeza y subtileza de ingenio otras muchas. Y porque no se perdiessen los trabajos y estudios de los antiguos: las junto todas en quinze libros, los quales llamo Elementos porque siendo estas figuras de esta obra las primeras demonstrationes que de Geometria se hazen, todas las de mas que desta y de las otras scientias proceden, se han de reduzir a estas como a principios: o porque assi como de los quatro elementos se hazen y penden todas las cosas, assi de aqui penden todas las artes y sciencias.`,
+  pocas:'Euclides juntó lo que sabían los antiguos, le agregó mucho de su cosecha y lo ordenó en un libro, los Elementos. Se llama así porque todo lo demás se apoya en él, como todas las cosas están hechas de los cuatro elementos.',
+  lore:[
+    { t:'¿Euclides de Megara?', p:['Zamorano se equivoca, y no es el único: durante la Edad Media y el Renacimiento se confundió a Euclides el geómetra, que enseñó en Alejandría (Egipto), con Euclides de Megara, un filósofo discípulo de Sócrates que vivió casi un siglo antes. La traducción latina que usó Zamorano, la de Zamberti (1505), ya dice «Euclides megarense». Hoy se sabe que son dos personas distintas.'] },
+    { t:'¿Quince libros?', p:['Euclides escribió trece. Los libros XIV y XV se agregaron después y se copiaron siempre junto con los otros: el XIV es de Hipsicles, un matemático de Alejandría, y el XV es todavía más tardío. Zamorano lo sabía en parte: más adelante nombra a Hipsicles.'] },
+    { t:'Los cuatro elementos', p:['Los griegos pensaban que todo estaba hecho de cuatro elementos: tierra, agua, aire y fuego. En griego, el título del libro es <i>Stoicheîa</i>, la misma palabra que se usaba para las letras del alfabeto: las piezas mínimas con las que se arma todo lo demás.'] },
+  ]},
+{ titulo:'Sin geometría se caen los edificios', pags:[8, 9, 10],
+  texto:`En las quales clarissimamente se vee la necessidad que tienen de la Geometria. Porque si procedemos de vna en |p9|otra hallaremos que lo principal que tiene en las artes la Architectura en el deseñar de las plantas y constitucion de los alçados de los hedificios, y de donde mas se ayuda, es de la Geometria. Y assi se vee claro que por falta de esta sciencia se han caydo muchos hedificios, por no les hauer dado la forma deuida y que les era necessaria. La pintura y esculptura en sus deseños y debujos (como parece por Alberto Durero en el libro de Symmetria corporis humani, y por Leon Baptista Alberto en los de pittura) tienen tanta necessidad de ella, que lo principal de su arte esta puesto, y consiste en el buen conoscimiento de la Geometria, sin la qual a ninguna cosa de las que hazen se le puede dar buena proportion y medida. Muy mal puede el Nibelador de aguas traerlas bien al lugar donde dessea, sin ayuda de la Geometria. Ni el Ingeniero assi en la guerra como en la paz dara bien sin Geometria la proportion que a sus machinas se deue. El capitan y el soldado, fuera de otras muchas cosas en que cada dia experimentan esto, lo echan de ver, en quanto haze la figura para la fortaleza del esquadron. El artillero tambien con la Geometria mide las distantias |p10|o interuallos segun la potentia de las pieças con que tira y haze las minas para volar los fuertes.`,
+  pocas:'Todas las artes necesitan geometría: el arquitecto para que no se le caigan los edificios, el pintor y el escultor para las proporciones, el que lleva el agua de un lugar a otro, el ingeniero con sus máquinas, el capitán para formar a sus soldados y el artillero para apuntar.',
+  lore:[
+    { t:'Durero y Alberti', p:['Alberto Durero fue un pintor y grabador alemán; en 1528 publicó un libro sobre las proporciones del cuerpo humano, lleno de figuras medidas con regla y compás. León Battista Alberti, arquitecto italiano, escribió en 1435 <i>De la pintura</i>, donde explica la perspectiva: cómo dibujar en un plano lo que se ve en tres dimensiones. Los dos usan la geometría de Euclides.'] },
+    { t:'La geometría del cañón', p:['En 1537 el matemático italiano Niccolò Tartaglia publicó un libro para artilleros: cómo apuntar un cañón para que la bala llegue donde se quiere. Cuarenta años después, cuando escribe Zamorano, la artillería ya se enseñaba con números y figuras.'] },
+  ]},
+{ titulo:'La geometría de las ciencias', pags:[10, 11],
+  texto:`Pero mucho mas se echa de ver esto en las scientias: de las quales la Astronomia podria muy mal probar y demonstrar las quantidades y proportiones de los cuerpos celestiales y de la tierra para el conoscimiento de los mouimientos y eclipses del Sol y Luna, si todas sus demonstrationes no las hiziese en Geometria: de la qual en la Astronomia se han sacado tanta multitud de cosas dignas de admiracion y subtileza que parecen transcender la capacidad humana. La Cosmographia bien claramente da a entender quanto se aproueche de esta scientia en la description de las prouincias y sitio de los lugares, y ambas a dos en la composicion de tantos instrumentos como tienen por medio e intercession de la Geometria. La scientia de la Perspectiua con Geometria prueua todas sus conclusiones, y por medio della no solo inuestiga y escudriña los interiores secretos de las obras de natura, pero tambien saca aquella subtil inuention de los espejos vstorios o comburentes. La philosophia natural que escriuieron Platon, Aristoteles y todos los antiguos |p11|esta tan llena de exemplos Geometricos, que sin esta sciencia es impossible poder en philosophia saber el dia de oy cosa alguna.`,
+  pocas:'Más todavía la necesitan las ciencias: la astronomía, para calcular los eclipses; la cosmografía, para hacer mapas e instrumentos; la óptica, para entender la luz y los espejos; y la filosofía de Platón y Aristóteles, que está llena de ejemplos de geometría.',
+  lore:[
+    { t:'Zamorano era cosmógrafo', p:['Zamorano no era un profesor cualquiera: enseñaba cosmografía en la Casa de la Contratación de Sevilla, el lugar desde donde se organizaban los viajes a América. Allí se formaba a los pilotos de los barcos, y él llegó a ser piloto mayor. Para él, la geometría servía para que los barcos llegaran a destino: con ella se hacían las cartas de navegar y los instrumentos para ubicarse en el mar.'] },
+    { t:'Los espejos ustorios', p:['«Ustorio» quiere decir «que quema». Un espejo curvo junta los rayos del Sol en un punto y puede encender fuego. Se cuenta que Arquímedes quemó con espejos las naves romanas que sitiaban Siracusa; la historia aparece recién siglos después de su muerte, y probablemente es una leyenda. Las curvas que sirven para esos espejos son las cónicas, que estudió Apolonio, que aparece más adelante.'] },
+  ]},
+{ titulo:'Platón: nadie entre sin geometría', pags:[11],
+  texto:`Tambien la philosophia moral es cosa clara la necessidad de Geometria que tiene, pues Aristoteles en las Eticas compara las dos partes de la justicia distributiua y commutatiua a las dos proportiones, Geometrica y Arithmetica, Quintiliano haze la Geometria necessaria al Orador, y Bartolo al Iurisperito. Y generalmente a todas las demas artes y sciencias se les hecha de ver la necessidad, pues vnas sin ella no pueden passar, y a las demas les es vtil en grande manera, como lo vera quien a ello vn poco atender quisiere. Ha sido siempre tan tenida y estimada esta scientia que Platon mandaua ninguno de sus discipulos entrase a oyrle philosophia sino supiese primero Geometria.`,
+  pocas:'Hasta la justicia, la oratoria y el derecho usan geometría. Y la geometría fue tan estimada que Platón no dejaba entrar a sus clases de filosofía a nadie que no la supiera.',
+  lore:[
+    { t:'La justicia y las proporciones', p:['En la <i>Ética a Nicómaco</i>, Aristóteles distingue dos justicias. Repartir premios o cargos se hace «en proporción geométrica»: a cada uno según lo que merece. Reparar un daño se hace «en proporción aritmética»: devolver exactamente lo que se quitó.'] },
+    { t:'¿Quién era Bartolo?', p:['Bartolo de Sassoferrato, un jurista italiano del siglo XIV, el más famoso de su tiempo. Escribió un tratado sobre los ríos: cuando un río cambia de curso o deja una isla, ¿de quién es la tierra nueva? Lo resolvía con figuras geométricas. Es el mismo problema de los egipcios y el Nilo, dos mil años después.'] },
+    { t:'«Que no entre nadie que no sepa geometría»', p:['Es la frase más famosa sobre la Academia, la escuela que Platón fundó en Atenas: se dice que estaba escrita en la puerta. Pero la cuentan por primera vez escritores que vivieron muchos siglos después; no se sabe si la puerta tuvo de verdad ese cartel. Lo seguro es que Platón consideraba la geometría el entrenamiento necesario para pensar bien.'] },
+  ]},
+{ titulo:'Los libros de los geómetras', pags:[11, 12],
+  texto:`Hyppocrates escriuio vn libro de el quadrar el circulo, Auicena otro de lineas y numeros, Archimedes muchos, de los quales algunos se han perdido con la injuria del tiempo, y otros andan aun el dia de oy entre las manos de los curiosos. Hypsicles scriuio dos libros de Geometria que tratan de la proporcion de los cinco cuerpos regulares, |p12|los quales con algunos de los quince de Euclides traduxo en latin Seuerino Boetio. Apollonio Pergeo solia ser llamado diuino por los ocho libros que escribio de las sectiones Conicas, de los quales salen tanta diuersidad de subtilezas en los Reloges solares, en los instrumentos Mathematicos, y principalmente en aquella delicada y admirable inuention de el Astrolabio. Y finalmente a nadie podemos juzgar por docto, a nadie por perito y exercitado en su scientia o en arte alguna: si carece del conocimiento de la Geometria basis y fundamento de todas ellas.`,
+  pocas:'Muchos sabios escribieron libros de geometría: Hipócrates, Avicena, Arquímedes, Hipsicles, Apolonio. Nadie puede llamarse sabio sin saber geometría, que es la base de todas las ciencias.',
+  lore:[
+    { t:'¿Hipócrates, el médico?', p:['No: es otro. Hipócrates de Quíos fue un geómetra que vivió en Atenas hace unos 2400 años, y no tiene que ver con Hipócrates de Cos, el médico del juramento. Intentó «cuadrar el círculo»: construir, con regla y compás, un cuadrado de la misma área que un círculo dado. No lo logró, pero cuadró unas figuras con forma de luna, las «lúnulas de Hipócrates».', 'En 1882 se demostró que la cuadratura del círculo es imposible con regla y compás. Por eso hoy, «buscar la cuadratura del círculo» quiere decir intentar algo que no se puede.'] },
+    { t:'Los cinco cuerpos regulares', p:['Son los únicos cuerpos con todas las caras iguales y regulares: el tetraedro, el cubo, el octaedro, el dodecaedro y el icosaedro. Son los dados de los juegos de rol. El libro XIII de Euclides termina demostrando que no hay ninguno más.'] },
+    { t:'Boecio', p:['Severino Boecio fue un filósofo romano de hace unos 1500 años. Tradujo al latín parte de los <i>Elementos</i>, y durante siglos fue casi lo único de Euclides que se leía en Europa occidental. De su traducción quedaron solo pedazos.'] },
+    { t:'Apolonio y el astrolabio', p:['Apolonio de Perge escribió ocho libros sobre las cónicas: las curvas que aparecen al cortar un cono (la elipse, la parábola y la hipérbola). Le decían «el gran geómetra». De sus ocho libros quedaron siete. Las cónicas sirven para los relojes de sol, para los espejos, y siglos después Kepler descubrió que los planetas giran en elipses.', 'El astrolabio era el instrumento con que los astrónomos y los navegantes medían la altura de las estrellas; para dibujar el cielo en un disco plano usa una proyección que estudiaban los griegos.'] },
+  ]},
+{ titulo:'Por qué en castellano', pags:[12, 13],
+  texto:`Por lo qual siendo esta sciencia tan antigua, necesaria y noble procure de comunicarla a todos para que se puedan vniuersalmente aprouechar della en todas las artes y scientias. Y no me ha parecido sacar aora a luz mas de los primeros seys libros por ser estos mas necessarios que los otros. Ni he querido poner en ellos comentarios, scholios, ni additiones (que pudiera) porque el auctor fue en esto tan ingenioso que el que quisiere, con facilidad puede, atendiendo bien a la letra, percebir el sentido y demonstracion de lo que el enseña. Y aunque este |p13|mi pequeño trabajo entiendo ha de ser agradable a muchos, pero a otros no les parecera tambien, porque aun no le hauia bien començado quando me dixeron vnos bien y otros mal de mi diligencia. Mas despues persuadido por ruegos de algunos amigos, y de la necesidad que de andar este libro en nuestra lengua vulgar hauia: teniendo ya alçada la mano de la traduction quise voluer a ella, asta acabar los seys primeros libros, que son los mas necessarios de todos los que Euclides escribio. Pareciendo me mejor el prouecho que a los vnos hazia que no la murmuracion que por fuerça tengo de sufrir de los demas, que les parece, que el andar las scientias en lengua vulgar es hazer las Mechanicas, no mirando que los authores que al principio las scribieron, las dexaron scriptas en lengua que entonces era tan vulgar como aora lo es la nuestra, y que no buscaron otras agenas en que screbir porque su intencion fue mas de aprouechar a todos que no de encubrir a nadie la scientia.`,
+  pocas:'Zamorano tradujo solo los seis primeros libros, sin comentarios, porque Euclides se entiende solo si se lee con atención. Algunos lo criticaron por escribir ciencia en castellano y no en latín; él les contesta que Euclides escribió en el griego que hablaba todo el mundo, para que lo entendieran todos.',
+  lore:[
+    { t:'Ciencia en la lengua de todos', p:['En 1576, los libros de ciencia se escribían en latín, la lengua de las universidades: así los leían los sabios de toda Europa, pero no los artesanos, los pilotos ni los soldados. Traducir a Euclides al castellano era ponerlo al alcance de ellos, y algunos lo veían como rebajar la ciencia a un oficio manual: eso es «hazer las mechanicas».', 'Zamorano tiene razón en su respuesta: Euclides escribió en griego, que era la lengua de todos los días en Alejandría. Medio siglo después, Galileo escribió sus libros más famosos en italiano, por el mismo motivo.'] },
+    { t:'«Alzar la mano»', p:['«Teniendo ya alçada la mano de la traduction» quiere decir que la había abandonado, que había levantado la mano del trabajo. Las críticas lo hicieron dejar, y los amigos lo convencieron de volver.'] },
+  ]},
+{ titulo:'Vale', pags:[13, 14],
+  texto:`Pero porque estas gentes me parece que van fuera de buen camino, no curare de gastar palabras en esto, mas de encomendar al curioso |p14|lector, tenga por bueno mi trabajo, el qual si yo entendiere que le es acepto sacare breuemente lo que falta de Euclides, con otras cosas tocantes a la Astronomia, Astrologia y Cosmographia, que entiendo a placerà a los curiosos.
+<span class="firma">Vale.</span>`,
+  pocas:'No va a perder más tiempo con los críticos. Le pide al lector que acepte su trabajo, y promete que, si gusta, va a traducir lo que falta de Euclides y otras cosas de astronomía y cosmografía.',
+  lore:[
+    { t:'«Vale»', p:['Es latín: «que estés bien», «adiós». Así terminaban las cartas los romanos, y los escritores del Renacimiento lo copiaban para despedirse del lector.'] },
+    { t:'Astronomía y astrología', p:['En el siglo XVI se nombraban juntas, y Zamorano firma la portada como «astrólogo y matemático». La astronomía estudia el movimiento de los astros; la astrología pretendía adivinar el futuro con ellos. Recién con la ciencia moderna se separaron del todo: la primera es una ciencia y la segunda no.'] },
+  ]},
+];
+
+/* el texto: |pN| marca dónde empieza la página N del escaneo */
+const viejo = s => s.replace(/\|p(\d+)\|/g, (m, n) => `<span class="pag" title="página ${n} del escaneo">[pág. ${n}]</span>`)
+  .replace(/\n/g, '<br>');
+let k = 0;
+document.getElementById('partes').innerHTML = PARTES.map((p, i) => `
+  <section class="parte" id="parte-${i + 1}">
+    <div class="parte-cab"><span class="n">Parte ${i + 1} de ${PARTES.length}</span><h2>${p.titulo}</h2></div>
+    <div class="paso" data-k="${k++}">
+      <div class="texto-viejo antiguo">${viejo(p.texto)}</div>
+      <details class="ver-pagina"><summary>Ver ${p.pags.length > 1 ? 'las páginas' : 'la página'} del libro</summary>
+        <div class="paginas-libro">${p.pags.map(n => `<img src="img/zam-p${String(n).padStart(2, '0')}.webp" alt="Página ${n} del escaneo de Zamorano, 1576" loading="lazy">`).join('')}</div></details>
+    </div>
+    <div class="paso" data-k="${k++}"><div class="pocas"><b>En pocas palabras</b>${p.pocas}</div></div>
+    ${p.lore.map(l => `<div class="paso" data-k="${k++}"><div class="lore"><h3>${l.t}</h3>${l.p.map(x => `<p>${x}</p>`).join('')}</div></div>`).join('')}
+  </section>`).join('');
+
+/* de a un paso o todo junto; el paso se recuerda en la dirección (#paso-12) */
+const pasos = [...document.querySelectorAll('.paso')];
+let visto = 0, modo = 'pasos';
+function muestra(llevar){
+  pasos.forEach((p, i) => {
+    const ver = modo === 'todo' || i <= visto;
+    if (ver && p.hidden && llevar) p.classList.add('recien-parte');
+    p.hidden = !ver;
+  });
+  document.querySelectorAll('.parte').forEach(s => { s.hidden = modo !== 'todo' && [...s.querySelectorAll('.paso')].every(p => p.hidden); });
+  document.getElementById('barra').hidden = modo === 'todo';
+  document.getElementById('cuenta').textContent = `${visto + 1} de ${pasos.length}`;
+  document.querySelector('[data-pr="-1"]').disabled = visto === 0;
+  document.querySelector('[data-pr="1"]').disabled = visto === pasos.length - 1;
+  document.querySelectorAll('[data-modo]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.modo === modo)));
+  if (llevar) document.getElementById('barra').scrollIntoView({ block:'end', behavior:'smooth' });
+}
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('button');
+  if (!b) return;
+  if (b.dataset.pr){ visto = Math.max(0, Math.min(pasos.length - 1, visto + +b.dataset.pr)); muestra(+b.dataset.pr > 0); }
+  if (b.dataset.modo){ modo = b.dataset.modo; muestra(false); }
+});
+muestra(false);
+</script>
+<script src="../../assets/proyeccion.js" defer></script>
+</body>
+</html>
