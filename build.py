@@ -23,7 +23,7 @@ import shutil
 CSP = ('<meta http-equiv="Content-Security-Policy" content="'
        "default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; font-src 'self' file:; media-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
        '">')
-from contenido import SITIO, GRADOS, OMAPA, FICHAS, QUIMICA, CURSILLO, FISICA
+from contenido import SITIO, PORTADA, GRADOS, OMAPA, FICHAS, QUIMICA, CURSILLO, FISICA
 from open2026 import generar as open2026
 
 RAIZ = pathlib.Path(__file__).resolve().parent
@@ -72,11 +72,12 @@ def barra(prof, ruta):
 </nav>"""
 
 
-def pie(prof):
+def pie(prof, firma=True):
+    linea = (f"{SITIO['subtitulo']} · Año lectivo {SITIO['anio']} · "
+             f"Docente: {SITIO['docentes']}<br>\n    ") if firma else ''
     return f"""<footer class="pie-sitio">
   <div class="envoltura ancha">
-    {SITIO['subtitulo']} · Año lectivo {SITIO['anio']} · Docente: {SITIO['docentes']}<br>
-    Las claves de corrección no forman parte de este sitio.
+    {linea}Las claves de corrección no forman parte de este sitio.
   </div>
 </footer>"""
 
@@ -98,79 +99,82 @@ def tarjeta(m, prof):
 
 
 # ─────────────────── páginas ───────────────────
+def plural(n, uno, varios):
+    return f'{n} {uno if n == 1 else varios}'
+
+
+def cuenta_materia(bloques):
+    return sum(1 for b in bloques for m in b['material'] if m['tipo'] == 'diapositiva')
+
+
+def rotulo_modulo(mod):
+    """El rótulo de una tarjeta de la portada: el material contado, para que
+    no quede viejo. Devuelve (texto, hay_material)."""
+    i = mod['id']
+    if i == 'matematica':
+        n = sum(1 for g in GRADOS for u in g['unidades'] for m in u['material']
+                if m['tipo'] == 'diapositiva')
+        f = sum(len(v) for v in FICHAS.values())
+        return f"7.º a 9.º · {plural(n, 'clase', 'clases')} · {plural(f, 'ficha', 'fichas')}", n > 0
+    if i == 'omapa':
+        n = len(OMAPA['clases'])
+        f = sum(len(t) for k in ('fichas_olimpiada', 'fichas_kanguro', 'fichas_nandu')
+                for _, _, t in OMAPA.get(k, []))
+        return f"2.º a 9.º · {plural(n, 'clase', 'clases')} · {plural(f, 'ficha', 'fichas')}", n > 0
+    materias = {'quimica': QUIMICA, 'fisica': FISICA, 'cursillo': CURSILLO}
+    if i in materias:
+        n = cuenta_materia(materias[i])
+        return (plural(n, 'clase', 'clases'), True) if n else ('En preparación', False)
+    return mod['rotulo'], True
+
+
+def tarjeta_modulo(mod):
+    rot, hay = rotulo_modulo(mod)
+    cab = (f'<span class="rotulo">{html.escape(rot)}</span>'
+           f'<h3>{html.escape(mod["titulo"])}</h3>'
+           f'<p>{html.escape(mod["desc"])}</p>')
+    if not hay:
+        return f'<div class="tarjeta vacia">{cab}</div>'
+    if mod.get('extra'):
+        # Un enlace adentro de otro no vale: la tarjeta es un div y su enlace
+        # principal la cubre entera (.cubre), con el enlace chico por encima.
+        texto, url = mod['extra']
+        return (f'<div class="tarjeta con-extra">'
+                f'<span class="rotulo">{html.escape(rot)}</span>'
+                f'<h3><a class="cubre" href="{mod["url"]}">{html.escape(mod["titulo"])}</a></h3>'
+                f'<p>{html.escape(mod["desc"])}</p>'
+                f'<a class="extra" href="{url}">{html.escape(texto)} →</a></div>')
+    return f'<a class="tarjeta" href="{mod["url"]}">{cab}</a>'
+
+
 def portada():
     cuerpo = [barra(0, [])]
     cuerpo.append('<div class="envoltura ancha">')
     cuerpo.append(f"""<header class="portada">
-  <p class="sello">Material de clase de {SITIO['docentes']}</p>
   <h1>Sera<span>Web</span></h1>
-  <p class="bajada">El material de clase en un solo lugar: las diapositivas para
-    proyectar, las fichas de ejercitación y la preparación para la olimpiada.</p>
-  <div class="pie">
-    <span>Año lectivo {SITIO['anio']}</span>
-    <span>Docente: {SITIO['docentes']}</span>
-  </div>
+  <p class="bajada">Material de clase de {SITIO['docentes']} · {SITIO['anio']}</p>
 </header>""")
+    for sec in PORTADA:
+        clase = 'bloque chica' if sec.get('chica') else 'bloque'
+        cuerpo.append(f'<section class="{clase}"><p class="eyebrow">{html.escape(sec["eyebrow"])}</p>')
+        cuerpo.append(f'<h2>{html.escape(sec["titulo"])}</h2>')
+        cuerpo.append('<div class="tarjetas en-portada">')
+        for mod in sec['modulos']:
+            cuerpo.append(tarjeta_modulo(mod))
+        cuerpo.append('</div></section>')
 
-    cuerpo.append('<section class="bloque"><p class="eyebrow">Por dónde entrar</p>')
-    cuerpo.append('<h2>Los módulos</h2>')
-    cuerpo.append('<div class="tarjetas">')
-    cuerpo.append("""<a class="tarjeta" href="matematica/index.html">
-      <span class="rotulo">7.º · 8.º · 9.º grado</span>
-      <h3>Matemática</h3>
-      <p>Las unidades del año, con sus diapositivas y sus fichas.</p></a>""")
-    cuerpo.append("""<a class="tarjeta" href="quimica/index.html">
-      <span class="rotulo">Una clase</span>
-      <h3>Química</h3>
-      <p>Números cuánticos y configuración electrónica: del último electrón al lugar
-        en la tabla periódica.</p></a>""")
-    cuerpo.append("""<a class="tarjeta" href="fisica/index.html">
-      <span class="rotulo">En preparación</span>
-      <h3>Física</h3>
-      <p>Las clases de Física, sobre el mismo motor que las de Matemática.</p></a>""")
-    cuerpo.append("""<a class="tarjeta" href="cursillo/index.html">
-      <span class="rotulo">Ingreso a la facultad</span>
-      <h3>Cursillo</h3>
-      <p>Preparación para el examen de ingreso: las clases para proyectar, tema por tema.</p></a>""")
-    cuerpo.append("""<a class="tarjeta" href="omapa/index.html">
-      <span class="rotulo">2.º a 9.º grado</span>
-      <h3>OMAPA</h3>
-      <p>Preparación para la olimpiada, agrupada por idea y no por unidad.</p></a>""")
-    cuerpo.append("""<a class="tarjeta" href="fichas/index.html">
-      <span class="rotulo">Todas juntas</span>
-      <h3>Fichas de ejercitación</h3>
-      <p>Las fichas de los tres grados, en PDF, para imprimir.</p></a>""")
-    cuerpo.append("""<a class="tarjeta" href="open-2026/index.html">
-      <span class="rotulo">Sábado 24 de octubre</span>
-      <h3>Open House 2026</h3>
-      <p>Museo de problemas: cada alumno de 2.º a 9.º inventó uno. Las piezas, sus audios
-        y las salas.</p></a>""")
-    cuerpo.append("""<a class="tarjeta" href="progreso/index.html">
-      <span class="rotulo">Para el docente</span>
-      <h3>Progreso del tramo</h3>
-      <p>Cuántos puntos tiene el tramo final, dónde cae cada nota, las reglas para
-        dictar y la carrera del curso para proyectar.</p></a>""")
-    cuerpo.append('</div></section>')
-
-    cuerpo.append("""<section class="bloque">
-  <p class="eyebrow">Cómo se usa en el aula</p>
-  <h2>Las diapositivas se proyectan</h2>
-  <p>Cada página de clase tiene abajo a la derecha un botón <b>Proyección</b>. Desde ahí
-    se elige el contraste, el color de letra, el tamaño, la cuadrícula, y se puede reservar
-    una franja de pantalla en blanco para escribir en la pizarra. También está el modo
-    <b>una diapositiva a la vez</b>, que se pasa con las flechas del teclado.</p>
-  <p>Arriba a la derecha, en cualquier página, está el botón <b>Timer</b>: se elige de
-    cuántos minutos y la cuenta regresiva toma la pantalla entera, con música de fondo si
-    se quiere. Al llegar a cero suena un aviso.</p>
-  <div class="aviso"><strong>Probado en el aula:</strong> sobre pizarra blanca gana el
-    fondo crema, que es el que viene puesto por defecto. Conviene abrir la página en
-    pantalla completa con F11 antes de empezar.</div>
-</section>""")
-
+    cuerpo.append("""<details class="como-se-usa">
+  <summary>Cómo se usa en el aula</summary>
+  <p>Cada clase tiene abajo a la derecha el botón <b>Proyección</b> (contraste, letra,
+    tamaño, cuadrícula, zona libre para escribir y el modo <b>una diapositiva a la vez</b>,
+    con las flechas) y arriba el <b>Timer</b>. Sobre pizarra blanca gana el fondo crema,
+    que viene por defecto; conviene abrir la página con F11.</p>
+</details>""")
     cuerpo.append('</div>')
-    cuerpo.append(pie(0))
+    cuerpo.append(pie(0, firma=False))
     return pagina(SITIO['nombre'], '\n'.join(cuerpo), prof=0,
-                  descripcion='Material de clase de Matemática del Tercer Ciclo.')
+                  descripcion='Material de clase de Juan Serafini: Matemática, OMAPA, '
+                              'Química, Física y Cursillo.')
 
 
 def indice_matematica():
