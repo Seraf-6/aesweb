@@ -22,7 +22,7 @@
   /* CUENTAS:inicio */
   var VUELTAS = 100000;
   var CUENTAS = {
-    "docente": ["434cc67887859e50", "0526a08864cfd937671baf9023080f045d04be56c0b19bc9128c037c2db00a70"]
+    "docente": ["c66e783d10ae2455", "0892ebd35e33d50de9c35744c962c043f651ef0dba1b07df5c12ecd0dd392c3c"]
   };
   /* CUENTAS:fin */
 
