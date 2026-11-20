@@ -41,6 +41,9 @@ matematica/
 fichas/
   index.html                listado                      ← lo genera build.py
   pdf/<grado>/Ficha_NN.pdf  los archivos
+quimica/index.html          Química                      ← lo genera build.py
+fisica/index.html           Física (por ahora vacía)     ← lo genera build.py
+cursillo/index.html         Cursillo de ingreso (vacío)  ← lo genera build.py
 omapa/index.html            módulo de olimpiada          ← lo genera build.py
 omapa/clases/bloque-N.html  clases por herramienta       ← escritas a mano
 omapa/fichas/               fichas de alumno OMAPA y Kanguro (sin claves)

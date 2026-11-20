@@ -17,7 +17,7 @@ import os
 import pathlib
 import shutil
 
-from contenido import SITIO, GRADOS, OMAPA, FICHAS, QUIMICA
+from contenido import SITIO, GRADOS, OMAPA, FICHAS, QUIMICA, CURSILLO, FISICA
 from open2026 import generar as open2026
 
 RAIZ = pathlib.Path(__file__).resolve().parent
@@ -116,6 +116,14 @@ def portada():
       <h3>Química</h3>
       <p>Números cuánticos y configuración electrónica: del último electrón al lugar
         en la tabla periódica.</p></a>""")
+    cuerpo.append("""<a class="tarjeta" href="fisica/index.html">
+      <span class="rotulo">En preparación</span>
+      <h3>Física</h3>
+      <p>Las clases de Física, sobre el mismo motor que las de Matemática.</p></a>""")
+    cuerpo.append("""<a class="tarjeta" href="cursillo/index.html">
+      <span class="rotulo">Ingreso a la facultad</span>
+      <h3>Cursillo</h3>
+      <p>Preparación para el examen de ingreso: las clases para proyectar, tema por tema.</p></a>""")
     cuerpo.append("""<a class="tarjeta" href="omapa/index.html">
       <span class="rotulo">2.º a 9.º grado</span>
       <h3>OMAPA</h3>
@@ -181,16 +189,16 @@ def indice_matematica():
     return pagina('Matemática', '\n'.join(cuerpo), prof=1)
 
 
-def indice_quimica():
-    cuerpo = [barra(1, [('Química', None)])]
+def indice_materia(nombre, bloques, sello, bajada, descripcion):
+    """El índice de una materia que no es Matemática: un bloque por sección."""
+    cuerpo = [barra(1, [(nombre, None)])]
     cuerpo.append('<div class="envoltura ancha">')
-    cuerpo.append("""<header class="portada">
-  <p class="sello">Albert Einstein School</p>
-  <h1>Química</h1>
-  <p class="bajada">Clases para proyectar, sobre el mismo motor que las de Matemática:
-    cada ejemplo, paso a paso y con su control.</p>
+    cuerpo.append(f"""<header class="portada">
+  <p class="sello">{html.escape(sello)}</p>
+  <h1>{html.escape(nombre)}</h1>
+  <p class="bajada">{bajada}</p>
 </header>""")
-    for b in QUIMICA:
+    for b in bloques:
         cuerpo.append('<section class="bloque">')
         cuerpo.append(f'<p class="eyebrow">{html.escape(b["eyebrow"])}</p>')
         cuerpo.append(f'<h2>{html.escape(b["titulo"])}</h2>')
@@ -202,8 +210,31 @@ def indice_quimica():
         cuerpo.append('</div></section>')
     cuerpo.append('</div>')
     cuerpo.append(pie(1))
-    return pagina('Química', '\n'.join(cuerpo), prof=1,
-                  descripcion='Material de clase de Química: números cuánticos y configuración electrónica.')
+    return pagina(nombre, '\n'.join(cuerpo), prof=1, descripcion=descripcion)
+
+
+def indice_quimica():
+    return indice_materia(
+        'Química', QUIMICA, 'Albert Einstein School',
+        """Clases para proyectar, sobre el mismo motor que las de Matemática:
+    cada ejemplo, paso a paso y con su control.""",
+        'Material de clase de Química: números cuánticos y configuración electrónica.')
+
+
+def indice_fisica():
+    return indice_materia(
+        'Física', FISICA, 'Albert Einstein School',
+        """Clases para proyectar, sobre el mismo motor que las de Matemática:
+    cada ejemplo, paso a paso y con su control.""",
+        'Material de clase de Física.')
+
+
+def indice_cursillo():
+    return indice_materia(
+        'Cursillo', CURSILLO, 'Ingreso a la facultad',
+        """La preparación para el examen de ingreso: las clases para proyectar,
+    tema por tema.""",
+        'Cursillo de preparación para el ingreso a la facultad.')
 
 
 def indice_grado(g):
@@ -352,6 +383,8 @@ def main():
         escribe('index.html', portada()),
         escribe('matematica/index.html', indice_matematica()),
         escribe('quimica/index.html', indice_quimica()),
+        escribe('fisica/index.html', indice_fisica()),
+        escribe('cursillo/index.html', indice_cursillo()),
         escribe('omapa/index.html', indice_omapa()),
         escribe('fichas/index.html', indice_fichas()),
     ]
