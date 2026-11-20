@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AESWeb · generador del sitio.
+"""SeraWeb · generador del sitio.
 
 Lee `contenido.py` y escribe las páginas de índice. Las páginas de clase
 (las diapositivas) se escriben a mano en matematica/<grado>/ y este
@@ -35,8 +35,9 @@ def pagina(titulo, cuerpo, prof=0, css_extra=(), descripcion=''):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{html.escape(titulo)} · {SITIO['nombre']}</title>
+<title>{html.escape(titulo) + ' · ' + SITIO['nombre'] if titulo != SITIO['nombre'] else SITIO['nombre']}</title>
 <meta name="description" content="{html.escape(descripcion)}">
+<link rel="icon" href="{sube}assets/img/seraweb.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">{hojas}
@@ -60,7 +61,7 @@ def barra(prof, ruta):
                      if destino else '<span>%s</span>' % html.escape(texto))
     return f"""<nav class="sitio-nav">
   <div class="sitio-nav-int">
-    <a class="sitio-marca" href="{sube}index.html">{SITIO['nombre']}</a>
+    <a class="sitio-marca" href="{sube}index.html">Sera<span>Web</span></a>
     <div class="sitio-ruta">{''.join(migas)}</div>
   </div>
 </nav>"""
@@ -69,7 +70,7 @@ def barra(prof, ruta):
 def pie(prof):
     return f"""<footer class="pie-sitio">
   <div class="envoltura ancha">
-    {SITIO['subtitulo']} · Año lectivo {SITIO['anio']} · Docentes: {SITIO['docentes']}<br>
+    {SITIO['subtitulo']} · Año lectivo {SITIO['anio']} · Docente: {SITIO['docentes']}<br>
     Las claves de corrección no forman parte de este sitio.
   </div>
 </footer>"""
@@ -94,13 +95,13 @@ def portada():
     cuerpo = [barra(0, [])]
     cuerpo.append('<div class="envoltura ancha">')
     cuerpo.append(f"""<header class="portada">
-  <p class="sello">Albert Einstein School · Tercer Ciclo</p>
-  <h1>{SITIO['nombre']}</h1>
+  <p class="sello">Material de clase de {SITIO['docentes']}</p>
+  <h1>Sera<span>Web</span></h1>
   <p class="bajada">El material de clase en un solo lugar: las diapositivas para
     proyectar, las fichas de ejercitación y la preparación para la olimpiada.</p>
   <div class="pie">
     <span>Año lectivo {SITIO['anio']}</span>
-    <span>Docentes: {SITIO['docentes']}</span>
+    <span>Docente: {SITIO['docentes']}</span>
   </div>
 </header>""")
 
@@ -215,7 +216,7 @@ def indice_materia(nombre, bloques, sello, bajada, descripcion):
 
 def indice_quimica():
     return indice_materia(
-        'Química', QUIMICA, 'Albert Einstein School',
+        'Química', QUIMICA, 'Clases para proyectar',
         """Clases para proyectar, sobre el mismo motor que las de Matemática:
     cada ejemplo, paso a paso y con su control.""",
         'Material de clase de Química: números cuánticos y configuración electrónica.')
@@ -223,7 +224,7 @@ def indice_quimica():
 
 def indice_fisica():
     return indice_materia(
-        'Física', FISICA, 'Albert Einstein School',
+        'Física', FISICA, 'Clases para proyectar',
         """Clases para proyectar, sobre el mismo motor que las de Matemática:
     cada ejemplo, paso a paso y con su control.""",
         'Material de clase de Física.')

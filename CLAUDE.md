@@ -1,9 +1,14 @@
-# AESWeb
+# SeraWeb
 
-Sitio estático con el material de clase de Matemática del Tercer Ciclo del
-Albert Einstein School, más un módulo de preparación para la OMAPA.
+Sitio estático con el material de clase de Juan Serafini: Matemática del
+Tercer Ciclo, Química y un módulo de preparación para la OMAPA.
 
-Docentes: Eduardo Ovelar / Juan Serafini. Año lectivo 2026.
+**La marca es SeraWeb.** Juan ya no trabaja en el Albert Einstein School:
+ni sus logos, ni su nombre, ni el de otros docentes de ahí van en el sitio.
+El logo es `assets/img/seraweb.svg` (la onda sobre la cuadrícula); el acento
+de color es el índigo de `--acento` en `base.css`.
+
+Docente: Juan Serafini. Año lectivo 2026.
 
 ---
 

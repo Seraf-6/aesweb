@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   AESWeb · los paneles de una página de clase
+   SeraWeb · los paneles de una página de clase
 
    Botones flotantes, en fila con el del timer:
 
