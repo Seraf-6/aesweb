@@ -19,6 +19,45 @@ SITIO = {
 }
 
 # ══════════════════════════════════════════════════════════════════
+#  La portada
+#  Las secciones de la página de inicio, en orden. Cada módulo es una
+#  tarjeta. El rótulo de las materias (Matemática, OMAPA, Química, Física,
+#  Cursillo) lo calcula build.py contando el material: no se escribe acá.
+#  Una materia sin clases sale punteada, «En preparación», y sin enlace.
+#     id       matematica | omapa | quimica | fisica | cursillo (cuenta sola)
+#              o cualquier otro, con su 'rotulo' escrito
+#     extra    (texto, url): un enlace chico al pie de la tarjeta
+# ══════════════════════════════════════════════════════════════════
+PORTADA = [
+  {'titulo': 'Clases', 'eyebrow': 'Para proyectar en el aula', 'modulos': [
+    {'id': 'matematica', 'titulo': 'Matemática', 'url': 'matematica/index.html',
+     'desc': 'Las unidades del año de 7.º, 8.º y 9.º grado, con sus diapositivas y sus fichas.',
+     'extra': ('Todas las fichas juntas', 'fichas/index.html')},
+    {'id': 'omapa', 'titulo': 'OMAPA', 'url': 'omapa/index.html',
+     'desc': 'Preparación para la olimpiada, de 2.º a 9.º grado, agrupada por idea y no por unidad.'},
+    {'id': 'quimica', 'titulo': 'Química', 'url': 'quimica/index.html',
+     'desc': 'Números cuánticos y configuración electrónica: del último electrón al lugar '
+             'en la tabla periódica.'},
+    {'id': 'fisica', 'titulo': 'Física', 'url': 'fisica/index.html',
+     'desc': 'Las clases de Física, sobre el mismo motor que las de Matemática.'},
+    {'id': 'cursillo', 'titulo': 'Cursillo', 'url': 'cursillo/index.html',
+     'desc': 'Preparación para el examen de ingreso a la facultad, tema por tema.'},
+  ]},
+  {'titulo': 'Para el docente', 'eyebrow': 'Herramientas', 'modulos': [
+    {'id': 'progreso', 'titulo': 'Progreso del tramo', 'url': 'progreso/index.html',
+     'rotulo': 'Calibrar · dictar · proyectar',
+     'desc': 'Cuántos puntos tiene el tramo final, dónde cae cada nota, las reglas para '
+             'dictar y la carrera del curso.'},
+  ]},
+  {'titulo': 'Archivo', 'eyebrow': 'Lo que ya pasó', 'chica': True, 'modulos': [
+    {'id': 'open-2026', 'titulo': 'Open House 2026', 'url': 'open-2026/index.html',
+     'rotulo': 'Sábado 24 de octubre',
+     'desc': 'Museo de problemas: cada alumno de 2.º a 9.º inventó uno. Las piezas, sus '
+             'audios y las salas.'},
+  ]},
+]
+
+# ══════════════════════════════════════════════════════════════════
 #  Matemática · Tercer Ciclo
 # ══════════════════════════════════════════════════════════════════
 GRADOS = [
