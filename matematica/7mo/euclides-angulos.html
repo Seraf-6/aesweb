@@ -534,7 +534,7 @@ const TEMAS = [
   const ang = (P, a1, a2, s, cls = 'g-arco', r = 30) => sector(P, a1, a2, r, cls) + rotAng(P, a1, a2, r + 22, s);
   const cartel = (x, y, s) => `<rect class="l-caja" x="${x}" y="${y}" width="150" height="48" rx="6"/>` + g.txt([x + 75, y + 24], s, 'l-txt');
   return {
-  n:2, corto:'Paralelas y secante', ficha:13, titulo:'Dos paralelas cortadas por una secante', pag:'clase A2 · Euclides, Elementos I.27–29',
+  n:2, corto:'Paralelas y secante', titulo:'Dos paralelas cortadas por una secante', pag:'clase A2 · Euclides, Elementos I.27–29',
   concepto:{
     figura:`<svg viewBox="0 0 400 260" role="img" aria-label="Dos paralelas r y s cortadas por la secante t">${
       base + sector(X1, 180, 245, 30) + rotAng(X1, 180, 245, 52, 'α') + sector(X2, 0, 65, 30) + rotAng(X2, 0, 65, 52, 'γ') +

@@ -930,9 +930,9 @@ las páginas de clase.
 
 ## Estado actual
 
-Hecho: portada, índices de los tres grados, listado de fichas con 29 PDF,
+Hecho: portada, índices de los tres grados, listado de fichas con 28 PDF,
 las diapositivas de 7.º (ecuaciones lineales, ángulos y polígonos, y el bloque A de la
-geometría a la manera de los griegos, con su ficha 13) y las tres de 8.º
+geometría a la manera de los griegos, todavía sin ficha) y las tres de 8.º
 (factoreo, expresiones racionales y sistemas), la de ecuaciones de segundo grado de 9.º
 (unidades 5 y 6), todas sobre el motor de la pizarra, con su
 verificador; el panel de proyección, el timer de aula y el módulo de
