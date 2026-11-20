@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   AESWeb · el timer del aula
+   SeraWeb · el timer del aula
 
    Un botón en toda página: se elige cuántos minutos y la cuenta
    regresiva toma la pantalla entera, con números grandes para que se

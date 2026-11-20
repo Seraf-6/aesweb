@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   AESWeb · panel de proyección
+   SeraWeb · panel de proyección
    Se incluye en cualquier página de clase con:
        <script src="../assets/proyeccion.js" defer></script>
    y, si la página tiene diapositivas, declarándolas en el body:

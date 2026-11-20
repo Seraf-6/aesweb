@@ -1,4 +1,4 @@
-"""AESWeb · el contenido del sitio.
+"""SeraWeb · el contenido del sitio.
 
 Este archivo es la única fuente de verdad del índice: los grados, sus
 unidades y qué material tiene cada una. `build.py` lo lee y arma las
@@ -12,9 +12,9 @@ Cada material es un dict:
 """
 
 SITIO = {
-    'nombre': 'AESWeb',
-    'subtitulo': 'Material de clase · Albert Einstein School',
-    'docentes': 'Eduardo Ovelar / Juan Serafini',
+    'nombre': 'SeraWeb',
+    'subtitulo': 'Material de clase',
+    'docentes': 'Juan Serafini',
     'anio': '2026',
 }
 
