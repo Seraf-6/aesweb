@@ -29,10 +29,12 @@ import struct
 URL_BASE = 'https://seraf-6.github.io/aesweb/open-2026/'
 CARPETA = 'open-2026'
 ROBOTS = '<meta name="robots" content="noindex, nofollow">'
-FUENTES = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n'
-           '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-           '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:'
-           'ital,wght@0,500;0,700;0,800;1,500&family=IBM+Plex+Mono:wght@600&display=swap">')
+# La misma política de seguridad que build.py pone en el resto del sitio.
+# Las páginas del Open House no llevan la pantalla de acceso: se abren
+# desde los QR de la muestra.
+CSP = ('<meta http-equiv="Content-Security-Policy" content="'
+       "default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; font-src 'self' file:; media-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+       '">')
 ESTRELLA, ESTRELLA_VACIA = '★', '☆'
 # El código de una pieza: <grado>-<nn>. El colegio no tiene secciones.
 CODIGO = re.compile(r'^([2-9])-(\d{2})$')
@@ -106,6 +108,7 @@ def documento(titulo, cuerpo, prof, extra_head='', clase_body='', css=True):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 {ROBOTS}
+{CSP}
 <meta name="referrer" content="no-referrer">
 <title>{e(titulo)}</title>
 <link rel="stylesheet" href="{sube}assets/base.css">{hoja}{extra_head}
@@ -465,7 +468,7 @@ encabezados ni pies de página. Cada panel sale en su hoja.{aviso}
 </div>
 {chr(10).join(hojas)}"""
     return documento('Paneles de sala · Open House 2026', cuerpo, prof=2,
-                     extra_head='\n' + FUENTES + PANEL_CSS, css=False)
+                     extra_head=PANEL_CSS, css=False)
 
 
 # ─────────────────── hoja de QR A4 ───────────────────

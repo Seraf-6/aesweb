@@ -17,6 +17,12 @@ import os
 import pathlib
 import shutil
 
+# La política de seguridad de cada página: solo se cargan archivos del
+# propio sitio (o de la carpeta, sin conexión), y ninguna página hace
+# pedidos de red. Las páginas escritas a mano llevan la misma línea.
+CSP = ('<meta http-equiv="Content-Security-Policy" content="'
+       "default-src 'self' file:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; font-src 'self' file:; media-src 'self' file:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+       '">')
 from contenido import SITIO, GRADOS, OMAPA, FICHAS, QUIMICA, CURSILLO, FISICA
 from open2026 import generar as open2026
 
@@ -38,9 +44,8 @@ def pagina(titulo, cuerpo, prof=0, css_extra=(), descripcion=''):
 <title>{html.escape(titulo) + ' · ' + SITIO['nombre'] if titulo != SITIO['nombre'] else SITIO['nombre']}</title>
 <meta name="description" content="{html.escape(descripcion)}">
 <link rel="icon" href="{sube}assets/img/seraweb.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">{hojas}
+{CSP}
+<script src="{sube}assets/acceso.js"></script>{hojas}
 </head>
 <body>
 {cuerpo}

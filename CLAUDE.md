@@ -911,20 +911,59 @@ Estas vienen de cómo se viene trabajando y conviene no aflojarlas:
 
 ## Tipografía y modo sin conexión
 
-Las fuentes (Alegreya, Alegreya Sans, IBM Plex Mono) se cargan desde Google
-Fonts. Sin conexión el sitio funciona igual, pero cae a las alternativas
-del sistema (Georgia y la sans del sistema operativo).
+Las fuentes (Alegreya, Alegreya Sans, IBM Plex Mono) están en
+`assets/fuentes/`, con su licencia (SIL OFL 1.1, se pueden redistribuir), y
+las reglas `@font-face` al principio de `base.css`. Se bajaron de Google
+Fonts con los subconjuntos latin, latin-ext y greek (las letras griegas hacen
+falta en física). Ninguna página le pide nada a Google: el sitio no avisa
+quién lo visita, y la tipografía anda también sin conexión.
 
-**Toda página de clase pide Alegreya con la cursiva negrita** (`1,700` en
-`family=Alegreya:ital,wght@0,500;0,700;0,800;1,500;1,700`): los rótulos de
-las figuras (`.g-rot`, los puntos de las construcciones) son cursiva 700. Sin
-ella, el navegador la fabrica a partir de la cursiva 500, y con el halo de los
-rótulos algunas letras (la A, la E) salían con el relleno gris.
+**La cursiva negrita de Alegreya hace falta**: los rótulos de las figuras
+(`.g-rot`, los puntos de las construcciones) son cursiva 700. Las reglas de
+`base.css` la traen (es el mismo archivo variable que la cursiva 400 y 500).
+Sin ella, el navegador la fabrica a partir de la cursiva 500, y con el halo
+de los rótulos algunas letras (la A, la E) salían con el relleno gris.
 
-Para que también la tipografía ande sin conexión: bajar los `.woff2`, ponerlos
-en `assets/fuentes/`, agregar las reglas `@font-face` al principio de
-`base.css` y sacar el `<link>` de Google de las plantillas en `build.py` y de
-las páginas de clase.
+La letra antigua de los Elementos (IM Fell English, también OFL) está en la
+misma carpeta, con sus reglas al principio de `matematica/elementos/antiguo.css`.
+
+---
+
+## La política de seguridad (CSP)
+
+Toda página lleva, en el `<head>`, la línea
+`<meta http-equiv="Content-Security-Policy" ...>` que está en `CSP` de
+`build.py` (y repetida en `open2026/generar.py`). Le dice al navegador que
+solo cargue archivos del propio sitio o de la carpeta (`file:`, para el uso
+sin conexión), y que no haga ningún pedido de red (`connect-src 'none'`).
+Una página nueva escrita a mano copia esa línea tal cual. Si algún día hace
+falta algo de afuera (un video, una biblioteca), se agrega el dominio a la
+CSP: si no, el navegador lo bloquea en silencio y aparece en la consola.
+
+---
+
+## La pantalla de acceso
+
+Todas las páginas, menos las del Open House, cargan `assets/acceso.js`
+(sin `defer`, justo después de la CSP), que tapa la página y pide usuario y
+contraseña. **No es seguridad, y no se presenta como tal**: el contenido
+está en el HTML de un repositorio público. Desalienta el uso sin permiso, nada
+más. Lo que sí cuida es que la contraseña no esté escrita en ningún lado: en
+`acceso.js` queda solo una huella (SHA-256 repetido 100 000 veces, con una sal
+por cuenta), en JavaScript puro porque `crypto.subtle` no existe fuera de
+https ni con doble clic.
+
+Las cuentas se manejan con `python herramientas/clave.py` (sin argumentos las
+lista; `clave.py <usuario>` crea o cambia; `--quitar <usuario>`). Pide la
+contraseña sin mostrarla, exige al menos 10 caracteres y reescribe el bloque
+`CUENTAS` de `acceso.js`. «Recordar en esta computadora» la guarda en
+`localStorage`; si no, dura hasta cerrar el navegador. Al cambiar una
+contraseña, las computadoras que la tenían recordada la vuelven a pedir.
+
+Las páginas del Open House no la llevan a propósito: se abren desde los QR
+de la muestra, en el celular de los padres. Una regla de contraseña según la
+hora se descartó: tendría que estar escrita en el JavaScript para que el
+navegador la compruebe, y ahí se lee.
 
 ---
 
