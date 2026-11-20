@@ -74,7 +74,7 @@ assets/
   timer.js                  el timer de pantalla completa, con música generada
   img/                      logos
 citas.md                    las citas de las tapas, con su fuente
-contenido.py                EL ÍNDICE DEL SITIO: grados, unidades, material
+contenido.py                EL ÍNDICE DEL SITIO: la portada, grados, unidades, material
 build.py                    genera las páginas de índice desde contenido.py
 verificacion/               un guion por página de clase, que comprueba sus cuentas
 ```
@@ -83,6 +83,12 @@ verificacion/               un guion por página de clase, que comprueba sus cue
 del índice. Para agregar una unidad o un material nuevo se edita ese archivo y
 se corre `build.py`. Nunca se edita a mano una página de índice: el generador
 la pisa.
+
+**La portada** sale de `PORTADA` en `contenido.py`: tres secciones (Clases,
+Para el docente, Archivo), una tarjeta por módulo. El rótulo de las materias
+lo cuenta `build.py` (clases y fichas), y una materia sin clases sale punteada
+«En preparación», sin enlace: no se escribe a mano. Una sección nueva del
+sitio es una entrada ahí.
 
 Las páginas de clase (las diapositivas) sí se escriben a mano, porque cada una
 tiene su propio contenido y sus propios componentes. `build.py` las lista al
