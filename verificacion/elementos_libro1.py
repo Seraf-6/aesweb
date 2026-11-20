@@ -1,4 +1,4 @@
-"""Verifica matematica/elementos/libro1.js, el libro I de Euclides.
+"""Verifica omapa/elementos/libro1.js, el libro I de Euclides.
 
 Lo que se comprueba:
   - cada entrada tiene su texto de 1774 y de Zamorano, su dicho sencillo y
@@ -16,8 +16,8 @@ Lo que se comprueba:
 import json, math, pathlib, re, sys
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
-DATOS = RAIZ / 'matematica' / 'elementos' / 'libro1.js'
-PAGINA = RAIZ / 'matematica' / 'elementos' / 'libro-1.html'
+DATOS = RAIZ / 'omapa' / 'elementos' / 'libro1.js'
+PAGINA = RAIZ / 'omapa' / 'elementos' / 'libro-1.html'
 fallos = []
 
 

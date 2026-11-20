@@ -80,7 +80,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-circunferencia",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-circunferencia",
           "slide": "d-circunferencia",
           "txt": "Geometría griega · bloque A · diapositiva «Circunferencia»"
         }
@@ -158,7 +158,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-n1",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-n1",
           "slide": "d-n1",
           "txt": "Geometría griega · bloque A · diapositiva «Iguales a lo mismo» (N1)"
         }
@@ -460,7 +460,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-n2",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-n2",
           "slide": "d-n2",
           "txt": "Geometría griega · bloque A · diapositiva «Lo mismo de los dos lados» (N2)"
         }
@@ -4826,7 +4826,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-recto",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-recto",
           "slide": "d-recto",
           "txt": "Geometría griega · bloque A · diapositiva «Ángulo recto y perpendiculares»"
         }
@@ -5898,7 +5898,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-n2",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-n2",
           "slide": "d-n2",
           "txt": "Geometría griega · bloque A · diapositiva «Lo mismo de los dos lados» (N2)"
         }
@@ -6007,7 +6007,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-consecutivos",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-consecutivos",
           "slide": "d-consecutivos",
           "txt": "Geometría griega · bloque A · diapositiva «Consecutivos y adyacentes»"
         }
@@ -6774,7 +6774,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-t1",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-t1",
           "slide": "d-t1",
           "txt": "Geometría griega · bloque A · diapositiva «Teorema 1» (T1)"
         }
@@ -11434,7 +11434,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-paralelas",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-paralelas",
           "slide": "d-paralelas",
           "txt": "Geometría griega · bloque A · diapositiva «Paralelas y secante»"
         }
@@ -11502,12 +11502,12 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-alternos",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-alternos",
           "slide": "d-alternos",
           "txt": "Geometría griega · bloque A · diapositiva «Alternos internos y conjugados internos»"
         },
         {
-          "href": "../7mo/euclides-angulos.html#d-t2",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-t2",
           "slide": "d-t2",
           "txt": "Geometría griega · bloque A · diapositiva «Teorema 2» (T2)"
         }
@@ -11956,7 +11956,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-correspondientes",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-correspondientes",
           "slide": "d-correspondientes",
           "txt": "Geometría griega · bloque A · diapositiva «Ángulos correspondientes»"
         }
@@ -12231,7 +12231,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-p5",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-p5",
           "slide": "d-p5",
           "txt": "Geometría griega · bloque A · diapositiva «El postulado de las paralelas» (P5)"
         }
@@ -12313,7 +12313,7 @@ window.LIBRO1 = {
       ],
       "enClase": [
         {
-          "href": "../7mo/euclides-angulos.html#d-t2",
+          "href": "../../matematica/7mo/euclides-angulos.html#d-t2",
           "slide": "d-t2",
           "txt": "Geometría griega · bloque A · diapositiva «Teorema 2» (T2)"
         }
