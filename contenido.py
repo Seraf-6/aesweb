@@ -225,6 +225,35 @@ QUIMICA = [
 ]
 
 # ══════════════════════════════════════════════════════════════════
+#  Cursillo de ingreso
+#  Preparación para el examen de ingreso a la facultad. Mismo formato
+#  que QUIMICA: cada bloque es una sección del índice. Todavía sin clases.
+# ══════════════════════════════════════════════════════════════════
+CURSILLO = [
+  {'titulo': 'Las clases del cursillo',
+   'eyebrow': 'Preparación para el ingreso',
+   'nota': 'Las clases se van a ir sumando acá, una tarjeta por tema.',
+   'material': [
+     {'tipo': 'pendiente', 'titulo': 'Primeras clases',
+      'desc': 'Los temas del programa de ingreso, con sus diapositivas para proyectar.'},
+   ]},
+]
+
+# ══════════════════════════════════════════════════════════════════
+#  Física
+#  Mismo formato que QUIMICA. Todavía sin clases.
+# ══════════════════════════════════════════════════════════════════
+FISICA = [
+  {'titulo': 'Las clases de Física',
+   'eyebrow': 'Física',
+   'nota': 'Las clases se van a ir sumando acá, una tarjeta por tema.',
+   'material': [
+     {'tipo': 'pendiente', 'titulo': 'Primeras clases',
+      'desc': 'Las unidades del año, con sus diapositivas para proyectar.'},
+   ]},
+]
+
+# ══════════════════════════════════════════════════════════════════
 #  Fichas de ejercitación
 #  Los PDF se copian a fichas/pdf/<grado>/ al construir el sitio.
 #  Las CLAVES no van al repositorio: quedan en la computadora del docente.
